@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skills Hub — Agent Skills by soumyaRauth</title>
+<meta name="description" content="Installable Agent Skills for real engineering work. Install with the Skills CLI, use with Claude Code and other Agent Skills-compatible agents.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="impact-map.html">Impact Map</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Agent Skills</span>
+    <h1>Skills that do engineering work,<br>not demos.</h1>
+    <p class="lede">
+      A small, curated set of installable Agent Skills. Each one encodes a
+      working methodology an experienced engineer would follow — not a prompt
+      that sounds clever. Install with one command; no MCP server, no CLI, no
+      hosted service.
+    </p>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill impact-map</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>Skills</h2>
+    <div class="grid">
+
+      <a class="card" href="impact-map.html">
+        <h3>Impact Map</h3>
+        <p>
+          Answers one question before you write any code: <em>before I change
+          this, what else could this change affect?</em> Produces an
+          evidence-based blast-radius report — what is affected, why, how
+          confident the analysis is, and what to do next.
+        </p>
+        <div class="tags">
+          <span class="tag">read-only</span>
+          <span class="tag">impact analysis</span>
+          <span class="tag">refactoring</span>
+          <span class="tag">legacy code</span>
+          <span class="tag">code review</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Why these exist</h2>
+    <p>
+      Coding agents are good at writing code and bad at knowing what the code
+      touches. The expensive failures are not syntax errors — they are the raw
+      SQL nobody grepped for, the nightly job comparing a status string, the
+      fixture that keeps CI green while the behavior is wrong.
+    </p>
+    <p>
+      These skills exist to close that gap: they encode the investigation an
+      experienced engineer does before touching anything, so the agent does it
+      too, every time, and shows its evidence.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Installing</h2>
+    <p>Skills install through the Skills CLI and work with any Agent Skills-compatible agent.</p>
+
+    <h3>Any compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill impact-map</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Claude Code</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <p style="margin-top:20px">
+      Installed skills are selected by their description, so there is no slash
+      command to memorize — you ask for what the skill does and the agent picks
+      it up.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What is an Agent Skill?</h2>
+    <p>
+      A folder containing a <code>SKILL.md</code> file: frontmatter naming the
+      skill and describing when it applies, plus markdown instructions the agent
+      follows when it does. Supporting reference files load on demand, so deep
+      guidance costs nothing until it is needed.
+    </p>
+    <p>
+      There is no runtime and no engine. The intelligence is the agent's; the
+      skill supplies the methodology — which is exactly why a good one is worth
+      writing carefully.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">soumyaRauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

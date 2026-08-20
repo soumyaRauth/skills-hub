@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Impact Map — Skills Hub</title>
+<meta name="description" content="An Agent Skill that maps the blast radius of a proposed change before implementation: what is affected, why, how confident, and what to do next.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill · read-only</span>
+    <h1>Impact Map</h1>
+    <p class="lede">
+      Before I change this, what else could this change affect? Impact Map turns
+      a change request into an evidence-based blast-radius report — what is
+      affected, <em>why</em> it is affected, how confident the analysis is, and
+      what should happen next. It stops before touching your code.
+    </p>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill impact-map</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono">
+      <span class="bad">ticket &nbsp;→&nbsp; find the obvious file &nbsp;→&nbsp; change it &nbsp;→&nbsp; discover later what broke</span>
+    </p>
+    <p>
+      The obvious file is rarely what breaks. What breaks is the raw SQL in a
+      report, the string comparison in a nightly job, the fixture that keeps CI
+      green while the behavior is wrong, the policy that never learned about the
+      new state. None of those show up in an import graph, and none of them fail
+      at build time.
+    </p>
+
+    <h3>What Impact Map does instead</h3>
+    <p class="flow mono">
+      ticket &nbsp;→&nbsp; <b>impact map</b> &nbsp;→&nbsp; architecture &nbsp;→&nbsp; dependencies &nbsp;→&nbsp; hidden coupling<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp; tests &nbsp;→&nbsp; risks &nbsp;→&nbsp; implementation plan &nbsp;→&nbsp; coding
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Not a file list</h2>
+    <p>
+      Every significant finding carries a classification, the evidence behind
+      it, and a concrete next action. Confidence is tracked separately, and a
+      low-confidence finding is never promoted to <em>must change</em>.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Classification</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="klass">🟥 Must change</td><td>Strong evidence this location requires modification.</td></tr>
+          <tr><td class="klass">🟧 Likely affected</td><td>Strong relationship established; whether it changes needs confirmation.</td></tr>
+          <tr><td class="klass">🟨 Needs verification</td><td>Plausible relationship that must be checked before implementing.</td></tr>
+          <tr><td class="klass">⚠️ Hidden coupling</td><td>Indirect dependency — raw strings, SQL, config, duplicated logic, fixtures, serialization.</td></tr>
+          <tr><td class="klass">⬜ Out of scope</td><td>Inspected and found not materially related.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>Evidence or nothing.</strong> Speculation is never presented as
+      fact, invented file counts are forbidden, and the skill names what it
+      could not inspect rather than leaving a silent gap.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Example output</h2>
+    <p>Abbreviated. A rename that a type checker would call complete:</p>
+<pre class="block">🟥 MUST CHANGE
+
+backend/models/enrollment.py
+  Symbol:       EnrollmentStatus.COMPLETED
+  Evidence:     COMPLETED = "completed" — member name and stored string
+                both carry the old name.
+  Confidence:   High
+
+⚠️ HIDDEN COUPLING
+
+backend/reports/completion_report.py
+  Coupling type: Raw SQL
+  Evidence:      WHERE status = 'completed' — never touches the enum.
+  Confidence:    High
+  Action:        Silently returns zero rows after the rename.
+
+backend/jobs/nightly_sync.py
+  Coupling type: Raw string + direct data access
+  Evidence:      if row["status"] == "completed" — bypasses the service layer.
+  Confidence:    High
+
+RISK
+
+High — spans four runtimes, requires a data migration, and three critical
+paths are string-coupled with no test coverage. Nothing in CI fails if
+they are missed.</pre>
+    <p>
+      Four full worked examples ship with the skill:
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/simple-change.md">simple change</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/api-change.md">API change</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/database-change.md">database change</a>, and
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/cross-module-change.md">cross-module change</a>.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Install</h2>
+
+    <h3>Any Agent Skills-compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill impact-map</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Claude Code</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Using it</h3>
+    <p>
+      No slash command — installed skills are matched by description, so you
+      just ask for what it does:
+    </p>
+    <ul class="plain">
+      <li>“What's the blast radius of adding an approval step to course completions?”</li>
+      <li>“Before you change anything, map the impact of renaming this status.”</li>
+      <li>“Deep impact analysis on switching the notification provider.”</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Normal vs deep</h2>
+    <p>
+      Deep mode triggers on <em>deep analysis</em>, <em>full impact analysis</em>,
+      <em>blast radius</em>, <em>thorough</em>, or <em>comprehensive</em>. It means
+      more investigation — not a longer file list.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Normal</th><th>Deep</th></tr></thead>
+        <tbody>
+          <tr><td>Repository reconnaissance</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Direct dependency tracing</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Cross-layer inspection</td><td>✅</td><td>✅</td></tr>
+          <tr><td>High-value hidden coupling</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Exhaustive string / SQL / config sweep</td><td>—</td><td>✅</td></tr>
+          <tr><td>Events, jobs, schedules, permissions</td><td>as relevant</td><td>✅</td></tr>
+          <tr><td>Fixtures, generated code, external boundaries</td><td>as relevant</td><td>✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When to use it</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>Good fit</h3>
+        <ul class="plain">
+          <li>Business logic, shared services, state machines</li>
+          <li>Schema and API contract changes</li>
+          <li>Unfamiliar or legacy codebases</li>
+          <li>Changes crossing modules, layers, or teams</li>
+          <li>Auth, permissions, and visibility rules</li>
+          <li>Anything consumed by jobs, reports, or integrations</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Skip it</h3>
+        <ul class="plain">
+          <li>Typos, copy changes, formatting</li>
+          <li>Dependency bumps</li>
+          <li>Greenfield code with no consumers</li>
+          <li>You already know the surface and it is one file</li>
+          <li>You need the code written right now</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Read-only by design</h2>
+    <p>
+      During analysis the skill does not modify source files, create migrations,
+      edit configuration, install packages, delete files, commit, push, or “fix”
+      what it finds. It reads files, git metadata, and dependency manifests.
+      Implementation happens only when you explicitly ask, after the map.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Team customization</h2>
+    <p>
+      Drop a <code>company-architecture.md</code> into the skill's
+      <code>references/</code> folder describing your domain boundaries, layer
+      locations, naming conventions, shared modules, integrations, and business
+      terminology. The skill reads it during reconnaissance, where it overrides
+      generic framework assumptions. A
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/references/company-architecture.template.md">template</a>
+      ships with the skill.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Limitations</h2>
+    <p>
+      Impact Map is instruction-driven, not a static analyzer. It does not claim
+      completeness, and it cannot prove one.
+    </p>
+    <ul class="plain">
+      <li>Results vary with the agent, the repository, and how the request is phrased</li>
+      <li>Dynamic dispatch, reflection, runtime configuration, and generated clients are where it is weakest</li>
+      <li>It only sees one repository — cross-repo and warehouse consumers surface as open questions at best</li>
+      <li>Large monorepos need scoping</li>
+      <li>It does not run your tests and cannot verify its own findings</li>
+    </ul>
+    <p>Treat the output as a well-evidenced starting point for engineering judgment.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/SKILL.md">Read the skill source</a></span>
+    <span><a href="./">← All skills</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

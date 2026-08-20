@@ -12,6 +12,8 @@ analysis is, and what to do next — without touching a single file.
 npx skills add soumyaRauth/skills-hub --skill impact-map
 ```
 
+**[Browse the skills →](https://soumyaRauth.github.io/skills-hub/)**
+
 ---
 
 ## The problem
