@@ -7,6 +7,37 @@ methodology and documentation.
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-08-20
+
+### Added
+
+- `production-guard` skill: a 14-phase production-readiness validation workflow
+  producing a report that ends in 🟢 SHIP, 🟠 CONDITIONAL SHIP, or 🔴 DO NOT SHIP
+- Verdict derived from explicit rules rather than judgement; four-level severity
+  (blocker, high, medium, low) with evidence, confidence, and recommendation on
+  every finding
+- Mandatory `EXECUTED` vs `ANALYZED` labelling, so reasoning is never presented
+  as an observed test result
+- Baseline establishment, so pre-existing failures are never blamed on the change
+- Explicit prohibition on invented quality scores, enforced by the validator
+- Risk-based depth (low / medium / high) selecting which categories run
+- References: behavioral validation, failure analysis, security validation, data
+  integrity, performance, observability, report schema, change-type checklists
+- Team customization template (`team-standards.template.md`)
+- Five worked examples: payment, bulk operation, API change, database migration,
+  authentication — one ending in SHIP
+- Four test fixtures containing intentional production bugs (payment,
+  bulk-operation, api, migration) with documented expected findings
+
+### Changed
+
+- Fixtures are now grouped per skill: `tests/fixtures/<skill>/<name>/`
+- `scripts/validate.sh` discovers every skill under `skills/` instead of
+  hardcoding one; adds orphan-reference, invented-score, and per-skill fixture
+  checks
+- Top-level README is now a two-skill catalog
+- `tests/README.md` and `CONTRIBUTING.md` cover both skills
+
 ## [0.1.0] — 2026-08-20
 
 Initial release.
@@ -31,5 +62,6 @@ Initial release.
   with documented expected findings
 - `scripts/validate.sh` and a GitHub Actions workflow running it
 
-[Unreleased]: https://github.com/soumyaRauth/skills-hub/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/soumyaRauth/skills-hub/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/soumyaRauth/skills-hub/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/soumyaRauth/skills-hub/releases/tag/v0.1.0

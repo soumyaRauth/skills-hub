@@ -1,14 +1,14 @@
-# Testing Impact Map
+# Testing the skills
 
 ## Testing philosophy
 
-Impact Map is instruction-driven. It has no engine to unit-test, and it does not
+These skills are instruction-driven. It has no engine to unit-test, and it does not
 produce deterministic output — two good reports on the same request will differ
 in wording, ordering, and level of detail.
 
-So this is **not** a pass/fail assertion suite, and the skill makes no claim of
-being "100% accurate". What these fixtures test is whether the instructions
-produce the **desired reasoning behavior**:
+So this is **not** a pass/fail assertion suite, and neither skill claims to be
+"100% accurate". What these fixtures test is whether the instructions produce the
+**desired reasoning behavior**:
 
 - Did the agent find the relationships that matter?
 - Did it find the *indirect* ones a naive import search would miss?
@@ -19,19 +19,34 @@ produce the **desired reasoning behavior**:
 Exact wording may vary. Missing a documented hidden coupling is a real failure.
 Inventing a finding is a worse one.
 
+## Reasoning vs runtime execution
+
+Both skills draw a line between what was **observed** and what was **reasoned**,
+and the fixtures test that line as much as they test the findings.
+
+Impact Map never executes anything — it is read-only by design, so every finding
+is analysis, carrying a confidence level instead of a result.
+
+Production Guard may execute checks where the environment allows, and must label
+each one `EXECUTED` or `ANALYZED`. These fixtures are **not runnable**, so a
+correct Production Guard run against them reports its findings as analyzed, with
+the relevant scenarios marked `UNVERIFIED`. An agent that claims it ran the test
+suite here has failed the fixture regardless of what it found.
+
 ## Running a fixture test
 
 ```bash
-# 1. Install the skill, or point your agent at skills/impact-map
+# 1. Install the skill, or point your agent at skills/<skill>
 # 2. Open the fixture as the working repository
-cd tests/fixtures/mixed-architecture
+cd tests/fixtures/impact-map/mixed-architecture
 
 # 3. Give the agent the request below for that fixture
-# 4. Compare the report against the expected findings
+# 4. Compare the output against the expected findings
 ```
 
-The fixtures deliberately contain **no README explaining their coupling** —
-that would hand the agent the answers. All expected findings live here.
+The fixtures deliberately contain **no README explaining their bugs or
+coupling** — that would hand the agent the answers. All expected findings live
+here.
 
 Fixtures are illustrative skeletons, not runnable applications. They do not
 install, build, or execute; some reference framework symbols that are not
@@ -40,18 +55,40 @@ non-runnable keeps them small.
 
 ## Scoring a run
 
+Applies to both skills:
+
 | Check | Failure means |
 | --- | --- |
-| All expected MUST CHANGE locations found | The core dependency trace is too shallow |
-| All expected hidden coupling found | Phase 6 is not being executed properly |
-| No finding classified above its evidence | Confidence discipline is eroding |
-| No invented files, consumers, or counts | The most serious failure mode |
-| No file was modified | Read-only rule broken — a bug, not a preference |
-| Report includes relationship + evidence per finding | It degraded into a file list |
+| The expected findings were found | The core analysis is too shallow |
+| The expected *indirect* findings were found | The signature phase is not running |
+| Nothing classified above its evidence | Severity or confidence discipline is eroding |
+| Nothing invented — no files, consumers, counts, or results | The most serious failure mode |
+| Executed and analyzed are labeled correctly | The evidence contract is broken |
+| No source file was modified | Both skills are non-modifying during analysis |
+| Every finding carries evidence | It degraded into a generic checklist |
+
+Impact Map specifically:
+
+| Check | Failure means |
+| --- | --- |
+| Expected MUST CHANGE locations found | Dependency tracing is too shallow |
+| Expected hidden coupling found | Phase 6 is being skipped |
+| Findings explain the relationship, not just the path | It degraded into a file list |
+
+Production Guard specifically:
+
+| Check | Failure means |
+| --- | --- |
+| Expected blockers found and rated BLOCKER | Severity calibration is off |
+| Verdict follows mechanically from the findings | The verdict rule is being overridden |
+| No percentage or composite score anywhere | The core anti-pattern has returned |
+| Untestable scenarios listed under UNVERIFIED | Gaps are being hidden |
 
 ---
 
-## Fixture: `simple-node`
+# Impact Map fixtures
+
+### `impact-map/simple-node`
 
 Small Node/TypeScript service: model, service, controller, tests.
 
@@ -76,7 +113,7 @@ impact — none exist in this fixture.
 
 ---
 
-## Fixture: `nextjs`
+### `impact-map/nextjs`
 
 Next.js App Router structure: route handler, server component, client component,
 shared type, test fixture, API doc.
@@ -102,7 +139,7 @@ that they definitely do not.
 
 ---
 
-## Fixture: `laravel`
+### `impact-map/laravel`
 
 Laravel-style structure: model, enum, service, controller, API resource, policy,
 job, migration, factory, routes, feature test, raw-SQL report.
@@ -134,7 +171,7 @@ certificate on completion or on approval; how a "manager" is identified.
 
 ---
 
-## Fixture: `mixed-architecture`
+### `impact-map/mixed-architecture`
 
 The hidden-coupling fixture. One status value is referenced five ways: through
 the enum, through the service, in raw SQL, in a job's string comparison, and in
@@ -171,13 +208,105 @@ an inventory.
 
 ---
 
+---
+
+# Production Guard fixtures
+
+Unlike the Impact Map fixtures, these contain **intentional production bugs**. A
+run that reports everything is fine has failed the fixture. Every one of them
+should end in 🔴 DO NOT SHIP.
+
+### `production-guard/payment`
+
+A pay-invoice endpoint plus its provider wrapper and webhook handler.
+
+**Request:** *"Is this payment flow safe to ship?"*
+
+Expected: **🔴 DO NOT SHIP**, risk classified High.
+
+| Severity | Finding | Where |
+| --- | --- | --- |
+| 🔴 BLOCKER | No idempotency — a retried request charges twice | `paymentService.ts` — no key, no duplicate check before `provider.charge()` |
+| 🔴 BLOCKER | Provider charged inside a rollback-able transaction | `paymentService.ts` — `provider.charge()` sits inside `db.transaction()`, so a later failure rolls back the local record but not the charge |
+| 🟠 HIGH | Webhook handler is not idempotent | `webhookController.ts` — marks paid and sends a receipt on every delivery, no event-id check |
+| 🟠 HIGH / 🟡 MEDIUM | Webhook signature never verified | `webhookController.ts` — accepts any caller |
+| 🟡 MEDIUM | No timeout on the provider client | `provider.ts` / `http.ts` |
+| 🟡 MEDIUM | The controller swallows the error detail | `paymentController.ts` — every failure becomes a generic 500 |
+
+The two blockers are the point of this fixture: both can double-charge a
+customer, and neither is visible from the application's own records afterwards.
+
+**Should not appear:** claims that any test was executed. There are none.
+
+### `production-guard/bulk-operation`
+
+Bulk user deletion, with the single-delete path present for contrast.
+
+**Request:** *"I finished bulk delete. Is it safe to ship?"*
+
+Expected: **🔴 DO NOT SHIP**, risk classified High.
+
+| Severity | Finding | Where |
+| --- | --- | --- |
+| 🔴 BLOCKER | Authorization checked once for the actor, never per target | `api/bulk_delete.py` checks `is_admin` only; `bulk_delete.py` deletes every supplied id. `user_service.py` *does* check `can_delete` per record — the discrepancy is the evidence |
+| 🔴 BLOCKER | Partial failure leaves arbitrary half-applied state | `bulk_delete.py` — `commit()` inside the loop, no transaction, no per-item result |
+| 🟠 HIGH | No audit record in the bulk path | `user_service.delete()` calls `AuditLog.record()`; `BulkDeleteService.execute()` never does |
+| 🟠 HIGH | N+1 queries across the loop | `bulk_delete.py` — two queries per user inside the loop |
+| 🟡 MEDIUM | Partial results never reach the user | `web/BulkActions.jsx` — every failure renders "Something went wrong." |
+| 🔵 LOW | No confirmation for an irreversible bulk action | `web/BulkActions.jsx` |
+
+The contrast between `user_service.py` and `bulk_delete.py` is deliberate: the
+correct behavior exists in the codebase, which is what makes the omissions
+findings rather than opinions.
+
+### `production-guard/api`
+
+A revenue report endpoint restricted in the UI only.
+
+**Request:** *"Ready to ship the revenue report endpoint?"*
+
+Expected: **🔴 DO NOT SHIP**, risk classified High (unauthorized data access).
+
+| Severity | Finding | Where |
+| --- | --- | --- |
+| 🔴 BLOCKER | Backend enforces authentication but never the admin role | `app/api/reports/route.ts` — any logged-in user can call it; `ReportsPage.tsx` hides it from non-admins, which is not a control |
+| 🔴 BLOCKER | Tenant scope is attacker-controlled | `route.ts` — `teamId` comes from the query string with `session.teamId` only as a fallback, so any user can read another team's orders |
+| 🟠 HIGH | Personal data exposed | The response returns `customer_email` for every row |
+| 🟡 MEDIUM | Unbounded result set | No pagination or limit on the report query |
+
+Finding the second blocker requires noticing that a parameter *overrides* the
+session value rather than merely defaulting from it. A run that reports only
+"missing role check" has found half the vulnerability.
+
+### `production-guard/migration`
+
+A Django migration adding a non-nullable column with a backfill and an index.
+
+**Request:** *"Can I ship this migration?"*
+
+Expected: **🔴 DO NOT SHIP**, risk classified High.
+
+| Severity | Finding | Where |
+| --- | --- | --- |
+| 🔴 BLOCKER | Non-nullable column with no default added to a populated table | `0002_add_region.py` — `AddField` with `CharField(max_length=64)`, no `default`, no `null=True` |
+| 🟠 HIGH | Single-statement backfill over the whole table | The `RunSQL` update is unbatched and locks for its duration |
+| 🟠 HIGH | Index created non-concurrently in the same migration | `AddIndex` in the same transaction as the write |
+| 🟠 HIGH | Reverse SQL is a no-op, so rollback silently loses the backfill | `reverse_sql=migrations.RunSQL.noop` |
+| 🟡 MEDIUM | Orders without an address get `''`, not a real region | `COALESCE(..., '')`, and `reports.py` groups by region, producing a silent empty bucket |
+| 🟡 MEDIUM | Deploy ordering unsafe for a rolling release | Old code inserting an order without a region violates the new constraint |
+
+A strong run notes that all three operations run in one migration, so a failure
+partway leaves the schema in an intermediate state.
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
    behavior, not to be a realistic application.
-2. Seed at least one piece of coupling that shares **no symbol** with the change
-   target.
-3. Do not explain the coupling inside the fixture.
-4. Document the request and expected findings in this file.
-5. Note which findings a naive import-graph search would miss — that gap is what
-   the fixture is measuring.
+2. Put it under `tests/fixtures/<skill>/<name>/`.
+3. For Impact Map, seed at least one piece of coupling that shares **no symbol**
+   with the change target. For Production Guard, seed at least one genuine
+   blocker — a fixture where everything passes teaches nothing.
+4. Do not explain the bugs or the coupling inside the fixture.
+5. Document the request and expected findings in this file.
+6. Note which findings a naive search or a green test suite would miss — that
+   gap is what the fixture is measuring.

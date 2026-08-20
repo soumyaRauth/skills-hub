@@ -15,6 +15,7 @@
     <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
     <nav class="links">
       <a href="impact-map.html">Impact Map</a>
+      <a href="production-guard.html">Production Guard</a>
       <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
     </nav>
   </div>
@@ -53,7 +54,7 @@
 <section>
   <div class="wrap">
     <h2>Skills</h2>
-    <div class="grid">
+    <div class="grid two">
 
       <a class="card" href="impact-map.html">
         <h3>Impact Map</h3>
@@ -73,7 +74,31 @@
         <span class="more">Read the guide &rarr;</span>
       </a>
 
+      <a class="card" href="production-guard.html">
+        <h3>Production Guard</h3>
+        <p>
+          An AI-assisted production-readiness gate. Validates behavior,
+          regressions, failure modes, security boundaries, data integrity,
+          performance and operations &mdash; then returns one verdict:
+          <strong>ship</strong>, <strong>conditional ship</strong>, or
+          <strong>do not ship</strong>.
+        </p>
+        <div class="tags">
+          <span class="tag">pre-merge</span>
+          <span class="tag">failure analysis</span>
+          <span class="tag">security</span>
+          <span class="tag">data integrity</span>
+          <span class="tag">idempotency</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
     </div>
+
+    <p style="margin-top:22px;color:var(--text-muted);font-size:14.5px">
+      They compose, and neither requires the other:
+      <code>ticket &rarr; impact-map &rarr; implement &rarr; production-guard &rarr; ship</code>
+    </p>
   </div>
 </section>
 
@@ -104,10 +129,18 @@
       <code>npx skills add soumyaRauth/skills-hub --skill impact-map</code>
       <button type="button" data-copy>Copy</button>
     </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill production-guard</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
 
     <h3>Claude Code</h3>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code</code>
       <button type="button" data-copy>Copy</button>
     </div>
 

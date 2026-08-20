@@ -232,6 +232,20 @@ Keep internal details out of public forks.
 
 ---
 
+## Pairs with Production Guard
+
+[Production Guard](../production-guard/README.md) is the other half of the loop.
+Impact Map runs *before* implementation and maps what a change will touch;
+Production Guard runs *after* and validates that what was built is safe to ship.
+
+```
+ticket → impact-map → implement → production-guard → ship
+```
+
+Neither requires the other.
+
+---
+
 ## Limitations
 
 - **Instruction-driven, not a static analyzer.** Results depend on the agent

@@ -1,0 +1,8 @@
+{
+  "name": "fixture-payment",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Production Guard test fixture. Contains intentional production bugs.",
+  "type": "module",
+  "scripts": { "test": "node --test" }
+}

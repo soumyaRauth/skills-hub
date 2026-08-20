@@ -1,0 +1,6 @@
+[project]
+name = "fixture-migration"
+version = "0.0.0"
+description = "Production Guard test fixture. Contains intentional production bugs."
+requires-python = ">=3.11"
+dependencies = ["django"]
