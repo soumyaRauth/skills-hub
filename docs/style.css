@@ -307,33 +307,59 @@ footer.site {
 }
 footer.site .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
 
-/* --------------------------------------------------------------- creator -- */
+/* ------------------------------------------------------------ hero footer -- */
 
-.creator {
+.hero-foot {
+  margin-top: 36px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
+}
+
+.byline {
   display: flex;
   align-items: center;
   gap: 13px;
-  margin-bottom: 26px;
+  margin: 0 0 20px;
 }
-.creator img {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
+
+.byline .portrait {
+  flex: none;
+  display: block;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;          /* squircle — rhymes with the cards and brand mark */
+  overflow: hidden;
   border: 1px solid var(--border);
   background: var(--surface-2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 6px 16px -10px rgba(0, 0, 0, .35);
+  transition: transform .18s ease, border-color .18s ease;
+}
+.byline .portrait:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+}
+.byline .portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  flex: none;
 }
-.creator .who { display: flex; flex-direction: column; line-height: 1.35; }
-.creator .name {
-  color: var(--text);
-  font-weight: 640;
-  font-size: 15.5px;
-  letter-spacing: -.01em;
-}
-.creator .name:hover { color: var(--accent); text-decoration: none; }
-.creator .role {
-  font-size: 12.5px;
+
+.byline .credit {
+  font-size: 14.5px;
+  line-height: 1.45;
   color: var(--text-muted);
-  letter-spacing: .02em;
+  min-width: 0;
+}
+.byline .credit .name {
+  color: var(--text);
+  font-weight: 620;
+  letter-spacing: -.008em;
+}
+.byline .credit .name:hover { color: var(--accent); text-decoration: none; }
+.byline .credit .sep { margin: 0 7px; opacity: .5; }
+
+@media (max-width: 460px) {
+  .byline .credit .sep { display: none; }
+  .byline .credit .role { display: block; font-size: 13px; }
 }
