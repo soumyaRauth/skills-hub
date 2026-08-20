@@ -1,0 +1,4 @@
+[
+  { "id": "ord_1", "state": "pending", "total": 25 },
+  { "id": "ord_2", "state": "shipped", "total": 99 }
+]

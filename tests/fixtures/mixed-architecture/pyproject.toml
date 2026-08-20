@@ -1,0 +1,6 @@
+[project]
+name = "fixture-mixed-architecture"
+version = "0.0.0"
+description = "Impact Map test fixture. Not a real application."
+requires-python = ">=3.11"
+dependencies = ["fastapi", "sqlalchemy"]
