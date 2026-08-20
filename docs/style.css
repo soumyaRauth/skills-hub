@@ -306,3 +306,34 @@ footer.site {
   font-size: 14px;
 }
 footer.site .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
+
+/* --------------------------------------------------------------- creator -- */
+
+.creator {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 26px;
+}
+.creator img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  object-fit: cover;
+  flex: none;
+}
+.creator .who { display: flex; flex-direction: column; line-height: 1.35; }
+.creator .name {
+  color: var(--text);
+  font-weight: 640;
+  font-size: 15.5px;
+  letter-spacing: -.01em;
+}
+.creator .name:hover { color: var(--accent); text-decoration: none; }
+.creator .role {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  letter-spacing: .02em;
+}
