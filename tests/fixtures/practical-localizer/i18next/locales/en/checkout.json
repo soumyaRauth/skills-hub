@@ -1,0 +1,10 @@
+{
+  "title": "Checkout",
+  "tax": "Tax ({{rate}}%)",
+  "total": "Total {{amount}}",
+  "itemsInCart_one": "{{count}} item in your cart",
+  "itemsInCart_other": "{{count}} items in your cart",
+  "placeOrder": "Place order",
+  "left_one": "Only {{count}} left in stock",
+  "left_other": "Only {{count}} left in stock"
+}

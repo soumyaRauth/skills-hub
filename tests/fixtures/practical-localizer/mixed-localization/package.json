@@ -1,0 +1,9 @@
+{
+  "name": "fixture-mixed-localization",
+  "private": true,
+  "dependencies": {
+    "react": "18.3.1",
+    "react-i18next": "14.1.2",
+    "i18next": "23.11.5"
+  }
+}

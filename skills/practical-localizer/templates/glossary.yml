@@ -1,0 +1,77 @@
+# Practical Localizer — project glossary template
+#
+# One entry per PRODUCT CONCEPT, not per English word. If one English word means
+# two things in this product, write two entries with different `context` values.
+#
+# Copy this file into the project (for example alongside the locale catalogs),
+# fill it in as decisions are made, and keep it under version control. A glossary
+# the project already ships always outranks anything the agent would infer.
+
+locale: bn-BD          # the target locale these decisions apply to
+source_locale: en
+product: ""            # what the product is — decides register and vocabulary
+audience: ""           # who uses it — decides how much borrowed vocabulary fits
+updated: ""            # ISO date of the last review
+
+# strategy:   translate | transliterate | preserve | adapt
+# confidence: high | medium | low        (see references/confidence.md)
+# context:    the UI role and domain that make this the right term
+# notes:      rejected alternatives, related concepts, open questions
+
+terms:
+  - source: Login
+    target: লগইন
+    strategy: transliterate
+    context: authentication — nav link, page title and primary button
+    confidence: high
+    notes: "Established across 18 keys in this project. Do not introduce a synonym."
+
+  - source: Password
+    target: পাসওয়ার্ড
+    strategy: transliterate
+    context: authentication and account security
+    confidence: high
+    notes: ""
+
+  - source: Delete
+    target: মুছে ফেলুন
+    strategy: translate
+    context: destructive, irreversible action on a record
+    confidence: medium
+    notes: "Distinct from Remove — see the next entry."
+
+  - source: Remove
+    target: সরিয়ে দিন
+    strategy: translate
+    context: reversible removal from a list or a group (e.g. a team member)
+    confidence: high
+    notes: "Same English word as Delete in some UIs; the concepts differ here."
+
+  - source: Get Started
+    target: শুরু করুন
+    strategy: adapt
+    context: onboarding call to action
+    confidence: medium
+    notes: "Not translated word-for-word; matches the tone of the source CTA."
+
+  - source: API
+    target: API
+    strategy: preserve
+    context: developer-facing documentation and settings
+    confidence: high
+    notes: "Identifier. Preserving is a decision, not a default for all technical terms."
+
+# Concepts that must never drift, once decided. List them explicitly so a review
+# can check them mechanically.
+locked:
+  - product name
+  - plan names
+  - primary action verbs (save, delete, cancel, submit, share)
+  - navigation labels
+
+# Conflicts found and not yet resolved. Each needs a human decision; leaving
+# them here is better than silently picking one.
+open_questions:
+  - concept: "sign out"
+    candidates: ["", ""]
+    blocked_on: "product owner — which term the marketing site already uses"

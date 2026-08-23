@@ -1,0 +1,21 @@
+{
+  "app.name": "Furnish",
+  "nav.home": "Home",
+  "nav.catalog": "Catalog",
+  "nav.account": "Account",
+  "catalog.chair": "Chair",
+  "catalog.table": "Table",
+  "catalog.sofa": "Sofa",
+  "auth.login": "Login",
+  "auth.loginCta": "Log in",
+  "auth.password": "Password",
+  "auth.signOut": "Sign out",
+  "greeting.hello": "Hello, {{name}}",
+  "cart.itemsAdded": "Added {{count}} items to your cart",
+  "settings.title": "Settings",
+  "settings.apiKey": "API key",
+  "actions.save": "Save",
+  "actions.delete": "Delete",
+  "actions.getStarted": "Get Started",
+  "errors.network": "Something went wrong. Please try again."
+}

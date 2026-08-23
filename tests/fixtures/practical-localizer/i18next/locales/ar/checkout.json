@@ -1,0 +1,8 @@
+{
+  "title": "الدفع",
+  "tax": "الضريبة ({rate}%)",
+  "total": "الإجمالي {{amount}}",
+  "itemsInCart_one": "عنصر واحد في سلتك",
+  "itemsInCart_other": "{{count}} عناصر في سلتك",
+  "placeOrder": "إتمام الطلب"
+}

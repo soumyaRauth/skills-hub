@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "team": "Team",
+    "files": "Files",
+    "accountSettings": "Account settings"
+  },
+  "team": {
+    "title": "Team members",
+    "invite": "Invite member",
+    "seats": "{count, plural, =0 {No seats left} one {# seat left} other {# seats left}}"
+  },
+  "files": {
+    "title": "Files",
+    "uploaded": "{count, plural, =0 {No files} one {# file} other {# files}}",
+    "uploadFailed": "Could not upload {filename}"
+  },
+  "common": {
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "save": "Save",
+    "confirmDelete": "Are you sure you want to delete {name}?"
+  },
+  "checkout": {
+    "total": "Total: {amount}",
+    "placeOrder": "Place order",
+    "dueDate": "Due by {date}"
+  }
+}

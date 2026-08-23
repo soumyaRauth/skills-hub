@@ -1,0 +1,69 @@
+# Practical Localizer — locale profile template
+#
+# Records the decisions that would otherwise be re-made, differently, on every
+# run: register, digits, plural mechanics, formatting conventions.
+#
+# Fill in only what is established. An empty field is honest; a guessed field
+# becomes a rule nobody agreed to. Never write blanket claims about a language
+# or its speakers here — record what THIS product does for THIS audience, and
+# why.
+
+locale: ""             # e.g. bn-BD, pt-BR, zh-Hans-CN — region included
+language: ""           # human-readable name
+region: ""             # matters: vocabulary and formats differ within a language
+script: ""             # e.g. Bengali, Devanagari, Arabic, Latin, Han
+direction: ""          # ltr | rtl
+
+audience: ""           # who uses the product; decides register and vocabulary
+tone: ""               # formal | professional | friendly | casual | technical
+address_form: ""       # which second-person form, and whether it is consistent
+                       # across the whole product. Decide once.
+
+# How this locale's software ecosystem tends to handle borrowed vocabulary.
+# Describe tendencies with evidence, not absolutes.
+common_software_terms: ""
+transliteration_preferences: ""
+terms_to_preserve: []          # identifiers, protocols, brands
+terms_never_to_preserve: []    # concepts with an established local term
+
+pluralization:
+  categories: []       # the categories this locale's CLDR rules select
+  mechanism: ""        # ICU | i18next suffixes | gettext | Laravel | Rails | …
+  notes: ""            # dual forms, counters/classifiers, ordinal differences
+
+grammar:
+  gender: ""           # does the target need gender the source does not carry?
+  agreement: ""        # what agrees with what, and which strings are at risk
+  honorifics: ""
+  notes: ""
+
+date_format: ""        # the convention, not a hardcoded pattern — prefer Intl
+time_format: ""        # 12h | 24h, separator, day-period handling
+first_day_of_week: ""
+calendar: ""           # gregorian, or another expected by this audience
+
+number_format:
+  decimal_separator: ""
+  group_separator: ""
+  grouping: ""         # e.g. three-digit, or another system used locally
+  digits: ""           # which digit set the product displays — decide and hold
+
+currency:
+  code: ""
+  symbol: ""
+  placement: ""        # before | after, with or without a space
+  decimals: ""
+
+punctuation:
+  quotes: ""           # the locale's quotation marks
+  spacing: ""          # e.g. spacing before certain marks, where it applies
+  notes: ""
+
+ui:
+  expansion: ""        # observed length behaviour vs the source, if measured
+  line_breaking: ""    # spaces between words? special breaking rules?
+  fonts: ""            # does the bundled family cover the script?
+
+known_ambiguous_terms: []   # source terms that need context every time
+open_questions: []          # decisions waiting on a human
+sources: []                 # what these decisions were checked against

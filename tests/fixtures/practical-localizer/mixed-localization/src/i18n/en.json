@@ -1,0 +1,33 @@
+{
+  "brand": "SwiftDesk",
+  "nav": {
+    "tickets": "Tickets",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?"
+  },
+  "tickets": {
+    "title": "Tickets",
+    "assignedTo": "Assigned to {{agent}}",
+    "openCount": "{{count}} open tickets",
+    "delete": "Delete",
+    "removeTag": "Remove tag",
+    "getStarted": "Get Started"
+  },
+  "system": {
+    "serverError": "The server is not responding",
+    "cacheCleared": "Cache cleared",
+    "downloadReport": "Download report",
+    "uploadAttachment": "Upload attachment",
+    "apiKey": "API key"
+  },
+  "billing": {
+    "total": "Total {{amount}}",
+    "renewsOn": "Renews on {{date}}"
+  }
+}

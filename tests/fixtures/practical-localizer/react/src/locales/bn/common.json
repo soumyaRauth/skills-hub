@@ -1,0 +1,27 @@
+{
+  "common": {
+    "cancel": "বাতিল",
+    "save": "সংরক্ষণ করুন",
+    "close": "বন্ধ",
+    "back": "পিছনে"
+  },
+  "actions": {
+    "complete": "সম্পূর্ণ"
+  },
+  "status": {
+    "complete": "সম্পূর্ণ করুন",
+    "pending": "অপেক্ষমাণ"
+  },
+  "billing": {
+    "planTitle": "আপনার প্ল্যান",
+    "cancelSubscription": "বাতিল",
+    "keepSubscription": "আমার প্ল্যান রাখুন",
+    "confirmTitle": "আপনার সাবস্ক্রিপশন বাতিল করবেন?",
+    "confirmBody": "আপনি {{ endDate }} পর্যন্ত অ্যাক্সেস পাবেন।"
+  },
+  "invoice": {
+    "title": "ইনভয়েস",
+    "invoice_one": "{{count}} টি ইনভয়েস",
+    "overdue": "আপনার ইনভয়েসগুলির মেয়াদ পার হয়ে গেছে"
+  }
+}

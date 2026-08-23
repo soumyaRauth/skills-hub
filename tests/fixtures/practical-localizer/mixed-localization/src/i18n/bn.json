@@ -1,0 +1,27 @@
+{
+  "brand": "সুইফটডেস্ক",
+  "nav": {
+    "tickets": "টিকিট",
+    "reports": "রিপোর্ট",
+    "settings": "বিন্যাস"
+  },
+  "auth": {
+    "signIn": "সাইন ইন",
+    "signOut": "সাইন আউট",
+    "password": "গুপ্তসংকেত"
+  },
+  "tickets": {
+    "title": "টিকিট",
+    "assignedTo": "{agent} কে দেওয়া হয়েছে",
+    "openCount": "খোলা টিকিট",
+    "delete": "মুছে ফেলুন",
+    "removeTag": "ট্যাগ মুছে ফেলুন",
+    "getStarted": "শুরু করা পান"
+  },
+  "system": {
+    "serverError": "পরিবেশক সাড়া দিচ্ছে না",
+    "cacheCleared": "লুকায়িত ভাণ্ডার পরিষ্কার করা হয়েছে",
+    "downloadReport": "রিপোর্ট অবতরণ করুন",
+    "apiKey": "অ্যাপ্লিকেশন প্রোগ্রামিং ইন্টারফেস চাবি"
+  }
+}

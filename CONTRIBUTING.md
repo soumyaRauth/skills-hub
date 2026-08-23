@@ -5,7 +5,7 @@ instructions, so contributions are judged on whether they make the agent's
 analysis **more accurate and better evidenced** — not on whether they make it
 produce more output.
 
-## The two hard rules
+## The three hard rules
 
 ### 1. Do not make the skills more speculative
 
@@ -38,6 +38,34 @@ sounds like a fact, which is what makes it worse than saying nothing. If a
 summary score is ever added, it must come from a documented, reproducible scoring
 system — and `scripts/validate.sh` fails the build on the anti-pattern to keep
 it out of the docs.
+
+### 3. No unsupported linguistic claims
+
+This one governs `practical-localizer`. Language is not a place for confident
+generalization, and a skill that generalizes teaches the agent to do the same.
+
+Never add:
+
+- **Native-authority claims.** "Native speakers say X." Write "X is the more
+  common convention in modern software for this locale", and name what that
+  rests on.
+- **Blanket language rules.** "Language X always prefers …", "Speakers of Y never
+  …". Usage varies by region, age, profession, audience, product and register.
+  Those are factors to weigh, never rules to encode.
+- **Blanket strategy rules.** "Keep all technical terms in English", "always
+  transliterate", "always translate". The right answer differs per language, per
+  term, per product — which is the whole point of the skill.
+- **Machine translation pasted without review**, in examples, references or
+  fixtures. If you cannot say why a target string is the right choice, it does
+  not belong in the documentation.
+- **Hardcoded locale assumptions.** Plural categories, digit shapes, date order,
+  formality defaults and currency placement belong in a locale profile the user
+  can override, not baked into the workflow.
+
+Contributions that add or correct target-language material should say what the
+choice rests on — project evidence, platform convention, or your own experience
+as a speaker, stated as such. Marking a judgement MEDIUM confidence is always
+acceptable; presenting it as fact is not.
 
 ## Ways to contribute
 
@@ -92,6 +120,30 @@ Resist the urge to add scenarios that cannot be checked. A scenario an agent
 cannot detect from the repository produces an `UNVERIFIED` line in every report,
 which is noise, not rigor.
 
+### Add a language example or localization reference
+
+New files under `skills/practical-localizer/examples/`, or edits to
+`skills/practical-localizer/references/`.
+
+A good language example is not a word list. It shows *decisions*: a term where
+the obvious dictionary answer is wrong for a UI and why, a string whose meaning
+only the call site resolves, a technical defect (placeholder or plural) that no
+amount of language knowledge would catch, and at least one item the method
+correctly refuses to decide without a human.
+
+Requirements:
+
+- Distinguish **example convention** from **universal rule**, explicitly. Every
+  language example in this repository ends with a section stating what it does
+  not claim; keep that.
+- Prefer evidence a reader can check — how the surrounding catalog already words
+  things, what the platform's own UI does — over assertion.
+- Cover something the existing examples do not. A sixth language that
+  demonstrates the same three phenomena adds length, not value. Genuinely new
+  ground: languages with case systems that break interpolated fragments, tonal
+  or logographic input concerns, locales with contested script or digit
+  conventions, languages where the software ecosystem is young.
+
 ### Add examples
 
 New files under `skills/<skill>/examples/`.
@@ -124,6 +176,12 @@ Every fixture needs documented expected findings in `tests/README.md`.
   where everything passes tests nothing. Seed real bugs: a missing per-item
   authorization check, an external call inside a transaction, a non-nullable
   column with no default.
+- **Practical Localizer fixtures** need at least one defect that only the *call
+  site* reveals — a key whose correct translation depends on the handler around
+  it — plus one purely technical defect: a lost placeholder, a corrupted
+  interpolation syntax, or a plural structure flattened into a single form. Seed
+  the target strings deliberately, and document in `tests/README.md` why each
+  one is wrong.
 
 Do not explain the seeded problem inside the fixture — that hands the agent the
 answer.
@@ -149,8 +207,12 @@ Judge on relationships, not wording:
 - Were the expected findings found — especially the indirect ones?
 - Did anything get classified above its evidence?
 - Were any findings invented?
-- Did the agent modify a source file? (Both skills are non-modifying during
-  analysis.)
+- Did the agent modify a source file? (All three skills are non-modifying during
+  analysis; Practical Localizer writes only in LOCALIZE mode, and only to
+  localization resources.)
+- For Practical Localizer: were the placeholder and plural defects caught, was
+  the established project terminology preferred over a new synonym, and did the
+  report avoid claiming native authority?
 - For Production Guard: does the verdict follow mechanically from the findings,
   and did it correctly label everything as analyzed rather than executed? The
   fixtures are not runnable, so a claim that the suite ran is a failure.
@@ -164,7 +226,8 @@ valuable kind.
 | --- | --- |
 | Workflow phases, classification, behavioral rules | `skills/<skill>/SKILL.md` |
 | Detailed per-topic guidance the agent consults on demand | `skills/<skill>/references/` |
-| Worked reports | `skills/<skill>/examples/` |
+| Worked reports and language examples | `skills/<skill>/examples/` |
+| Copy-into-your-project starting points | `skills/<skill>/templates/` |
 | Fake repositories that exercise reasoning | `tests/fixtures/<skill>/` |
 | Expected findings per fixture | `tests/README.md` |
 | Usage, installation, limitations | `skills/<skill>/README.md` |

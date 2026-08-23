@@ -9,16 +9,19 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | --- | --- | --- |
 | **[impact-map](skills/impact-map/README.md)** | Maps the blast radius of a proposed change — what it affects, why, and how confident the analysis is | *Before* you write the code |
 | **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
+| **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
 npx skills add soumyaRauth/skills-hub --skill production-guard
+npx skills add soumyaRauth/skills-hub --skill practical-localizer
 ```
 
-They compose, and neither requires the other:
+They compose, and none requires the others:
 
 ```
 ticket → impact-map → implement → production-guard → ship
+                                                   → practical-localizer → ship in another language
 ```
 
 ---
@@ -221,16 +224,113 @@ state and never modifies it.
 
 ---
 
+---
+
+# Practical Localizer
+
+**Make your application speak like a local product — not like a translated
+document.**
+
+> Traditional translation asks: *"what does this sentence translate to?"*
+> Practical Localizer asks: *"what would a real user expect this application to
+> say here?"*
+
+## The problem
+
+A technically correct translation is not necessarily a natural one.
+
+```
+English:   Chair
+Literal:   a dictionary-valid, formal/literary word
+Practical: the borrowed word people actually use for the object
+```
+
+Both are "the translation". Only one sounds like a modern app — and which one
+that is differs by language, product and audience. The same reasoning gives the
+*opposite* answer in a neighbouring language where an ordinary native word is in
+everyday use, which is exactly why no blanket rule works.
+
+And the failure is rarely only stylistic:
+
+```
+"Hello, {{name}}"  →  "হ্যালো"          the placeholder is gone; nothing fails
+t("remove")        →  "delete forever"  the handler was removeMember()
+one concept        →  three target words, one per translation batch
+{count, plural,…}  →  a single fixed form in a locale that needs six
+```
+
+## The solution
+
+```
+source application → localization architecture → language usage profile
+   → existing terminology → context extraction → translation strategy
+   → natural localization → technical validation → consistency review
+```
+
+Every meaningful term is classified — **TRANSLATE**, **TRANSLITERATE**,
+**PRESERVE** or **ADAPT** — from context, existing project terminology and the
+target locale's software conventions, and every non-trivial decision carries a
+confidence level so the parts a human should check are visible.
+
+Three modes: **analyze** (read-only inventory and plan), **localize** (writes
+locale resources and nothing else), **review** (findings with source, current,
+recommended, reason and confidence).
+
+## Example
+
+```
+You:  Review the Bengali localization for naturalness and consistency.
+
+Agent: LOCALIZATION REVIEW
+       ────────────────────────────────
+       Target  Bengali (bn-BD)   Reviewed  742 strings
+       High-confidence 18 · Medium 27 · Technical 3
+
+       #1  greeting.hello — BLOCKING TECHNICAL ISSUE
+           Source "Hello, {{name}}" → current "হ্যালো"
+           The interpolation was dropped; the name never renders.
+
+       #2  team.remove — Context / terminology
+           Current মুছে ফেলুন ("erase") → recommended সরিয়ে দিন
+           Rendered in <TeamMemberRow>, handler removeMember(). The member is
+           taken off the team, not deleted. Bengali distinguishes the two;
+           English does not.
+
+       #3  sign in — Terminology inconsistency
+           লগইন (18 occurrences) · প্রবেশ করুন (2 occurrences)
+           Recommend the established project term everywhere.
+```
+
+Five worked language examples: [Bengali](skills/practical-localizer/examples/bengali.md) ·
+[Hindi](skills/practical-localizer/examples/hindi.md) ·
+[Japanese](skills/practical-localizer/examples/japanese.md) ·
+[Arabic](skills/practical-localizer/examples/arabic.md) ·
+[European](skills/practical-localizer/examples/european-language.md)
+
+## What it will not do
+
+Never claim native authority — "this is the more common software convention",
+not "native speakers say this". Never guess grammatical gender the source hides.
+Never encode "language X always …". Never invent counts or claim a validation it
+did not run. Never touch application source: hardcoded strings, concatenated
+sentences and formatter bugs are reported, not silently refactored.
+
+**[Full documentation →](skills/practical-localizer/README.md)**
+
+---
+
 ## Installation
 
 ```bash
 # any Agent Skills-compatible agent
 npx skills add soumyaRauth/skills-hub --skill impact-map
 npx skills add soumyaRauth/skills-hub --skill production-guard
+npx skills add soumyaRauth/skills-hub --skill practical-localizer
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
 ```
 
 Then just ask for what it does — installed skills are matched by description, so
@@ -239,12 +339,14 @@ no slash command is needed:
 ```
 What's the blast radius of adding an approval step to course completions?
 Before you change anything, map the impact of renaming this status.
-Deep impact analysis on switching the notification provider.
+Is this payment flow safe to ship?
+Analyze this app for Bengali localization.
+Review the French locale — I think it reads like a translation.
 ```
 
 ## Supported agents
 
-Impact Map is plain Agent Skills markdown. It requires **no MCP server, no
+These skills are plain Agent Skills markdown. They require **no MCP server, no
 custom CLI, no hosted service, and no proprietary API** — only the repository
 inspection an agent already has.
 
@@ -254,7 +356,7 @@ inspection an agent already has.
 | Other Agent Skills-compatible agents | Expected to work — the skill uses no agent-specific features |
 
 If your agent supports the Agent Skills format and can read files and search a
-repository, it can run this skill.
+repository, it can run these skills.
 
 ---
 
@@ -268,15 +370,22 @@ repository, it can run this skill.
 │   │   ├── README.md             ← human documentation
 │   │   ├── references/           ← deeper guidance the agent consults on demand
 │   │   └── examples/             ← four worked impact maps
-│   └── production-guard/
+│   ├── production-guard/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/
+│   │   └── examples/             ← five worked readiness reports
+│   └── practical-localizer/
 │       ├── SKILL.md
 │       ├── README.md
-│       ├── references/
-│       └── examples/             ← five worked readiness reports
+│       ├── references/           ← ten localization references
+│       ├── examples/             ← five worked language examples
+│       └── templates/            ← glossary, locale profile, review report
 ├── tests/
 │   ├── fixtures/
 │   │   ├── impact-map/           ← four repositories with hidden coupling to find
-│   │   └── production-guard/     ← four repositories with real production bugs
+│   │   ├── production-guard/     ← four repositories with real production bugs
+│   │   └── practical-localizer/  ← six repositories with bad localizations
 │   └── README.md                 ← expected findings per fixture
 ├── scripts/validate.sh           ← structure + frontmatter validation, all skills
 └── .github/workflows/validate.yml
@@ -286,6 +395,7 @@ repository, it can run this skill.
 
 - **[Impact Map](skills/impact-map/README.md)** · [SKILL.md](skills/impact-map/SKILL.md)
 - **[Production Guard](skills/production-guard/README.md)** · [SKILL.md](skills/production-guard/SKILL.md)
+- **[Practical Localizer](skills/practical-localizer/README.md)** · [SKILL.md](skills/practical-localizer/SKILL.md)
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 
@@ -326,16 +436,28 @@ Ideas, not commitments.
 | v0.4 | CI integration |
 | v0.5 | PR comment and report generation |
 
-**Both**
+**Practical Localizer**
 
-A third skill, `change-guard`, closing the loop: take an Impact Map and a
+| Version | Focus |
+| --- | --- |
+| v0.2 | Richer framework detection; glossary management; more locale profiles |
+| v0.3 | Screenshot-aware localization, UI layout inspection, length analysis |
+| v0.4 | Human review workflow and translation approval metadata |
+| v0.5 | CI localization quality gate |
+
+Possible companions: `localization-guard`, catching localization regressions in
+CI, and `locale-maintainer`, detecting newly added untranslated strings.
+
+**All three**
+
+A further skill, `change-guard`, closing the loop: take an Impact Map and a
 Production Guard report and verify that the implementation actually covered the
 identified surface and resolved the identified risks.
 
 ## Limitations
 
-Both skills are instruction-driven, not static analyzers. Neither claims
-completeness, and neither can prove it.
+All three skills are instruction-driven, not static analyzers. None claims
+completeness, and none can prove it.
 
 - Results vary with the agent, the repository, and how the request is phrased
 - Dynamic dispatch, reflection, runtime configuration, and generated clients are
@@ -345,6 +467,10 @@ completeness, and neither can prove it.
 - Large monorepos need scoping
 - Impact Map does not run anything; Production Guard runs only what the local
   environment allows, and labels the rest unverified
+- Practical Localizer is not a replacement for a native reviewer. It produces
+  context-aware, evidence-driven localization designed to be more natural than
+  literal translation — not guaranteed native-quality output, and it says where
+  it is unsure
 - An absent finding is not proof of absence
 
 Production Guard improves the evidence available before shipping. It does not

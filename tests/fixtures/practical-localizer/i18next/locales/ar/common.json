@@ -1,0 +1,13 @@
+{
+  "greeting": "مرحبًا، {{name}}",
+  "welcome": "مرحبًا بك في {{appName}}",
+  "item_one": "عنصر واحد",
+  "item_other": "{{count}} عناصر",
+  "member_one": "عضو واحد",
+  "member_other": "{{count}} أعضاء",
+  "lastSeen": "آخر ظهور في {{ date }}",
+  "actions": {
+    "save": "حفظ",
+    "delete": "حذف"
+  }
+}

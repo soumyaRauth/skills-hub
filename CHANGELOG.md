@@ -7,6 +7,43 @@ methodology and documentation.
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-08-23
+
+### Added
+
+- `practical-localizer` skill: a context-aware application localization
+  methodology with three modes — ANALYZE (read-only inventory and plan),
+  LOCALIZE (writes localization resources only), REVIEW (findings with
+  recommendations)
+- Four-way strategy classification per term — translate, transliterate,
+  preserve, adapt — chosen from context, existing project terminology and the
+  target locale's software conventions rather than from a blanket rule
+- Blocking technical validation: placeholder parity across every syntax
+  (`{name}`, `{{name}}`, `%s`, `%1$s`, `:name`, `<0>…</0>`), plural-category
+  coverage per locale, key and structure preservation. Placeholder *order* is
+  deliberately not checked, because verb-final languages move the interpolation
+- Terminology management and translation memory: established project terms win
+  over new synonyms, and conflicts are reported with occurrence counts
+- Explicit prohibition on native-authority claims and blanket language rules;
+  HIGH/MEDIUM/LOW confidence on every non-trivial decision
+- References: localization workflow, translation strategy, terminology, context
+  analysis, pluralization, locale formatting, RTL, UI fit, confidence, review
+  methodology
+- Templates: `glossary.yml`, `locale-profile.yml`, `review-report.md`
+- Five worked language examples: Bengali, Hindi, Japanese, Arabic, and a
+  European three-language pass — each stating what it does not claim
+- Six test fixtures with intentionally bad localizations (`basic-json`,
+  `nextjs`, `react`, `laravel`, `i18next`, `mixed-localization`) and documented
+  expected findings
+
+### Changed
+
+- `scripts/validate.sh` validates a skill's `templates/` directory when one is
+  present
+- Top-level README, `tests/README.md` and `CONTRIBUTING.md` cover three skills;
+  CONTRIBUTING gains a third hard rule against unsupported linguistic claims
+- Documentation site gains a Practical Localizer page
+
 ## [0.2.0] — 2026-08-20
 
 ### Added
@@ -62,6 +99,7 @@ Initial release.
   with documented expected findings
 - `scripts/validate.sh` and a GitHub Actions workflow running it
 
-[Unreleased]: https://github.com/soumyaRauth/skills-hub/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/soumyaRauth/skills-hub/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/soumyaRauth/skills-hub/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/soumyaRauth/skills-hub/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/soumyaRauth/skills-hub/releases/tag/v0.1.0

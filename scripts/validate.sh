@@ -174,6 +174,31 @@ for skill in "${SKILLS[@]}"; do
     fail "missing directory: $dir/examples"
   fi
 
+  # -- templates --
+  # Optional: a skill may ship starting points users copy into their project.
+  if [ -d "$dir/templates" ]; then
+    tpl_count=$(find "$dir/templates" -maxdepth 1 -type f | wc -l | tr -d ' ')
+    if [ "$tpl_count" -gt 0 ]; then
+      pass "$tpl_count template(s)"
+    else
+      fail "$dir/templates/ contains no files"
+    fi
+
+    if python3 -c 'import yaml' >/dev/null 2>&1; then
+      bad_yaml=0
+      for tpl in "$dir"/templates/*.yml "$dir"/templates/*.yaml; do
+        [ -e "$tpl" ] || continue
+        if ! python3 -c 'import sys, yaml; yaml.safe_load(open(sys.argv[1]))' "$tpl" 2>/dev/null; then
+          fail "invalid YAML: $tpl"
+          bad_yaml=$((bad_yaml + 1))
+        fi
+      done
+      [ "$bad_yaml" -eq 0 ] && pass "template YAML parses"
+    else
+      skip "PyYAML unavailable; template YAML not parsed"
+    fi
+  fi
+
   # -- docs --
   if grep -q "npx skills add .* --skill $skill" "$dir/README.md" 2>/dev/null; then
     pass "skill README documents its install command"

@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practical Localizer — Skills Hub</title>
+<meta name="description" content="Context-aware application localization. Turns UI strings into natural target-language product copy instead of literal translation, and validates placeholders, plurals and terminology while it does it.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="impact-map.html">Impact Map</a>
+      <a href="production-guard.html">Production Guard</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/practical-localizer/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; localization</span>
+    <h1>Practical Localizer</h1>
+    <p class="lede">
+      Make your application speak like a local product &mdash; not like a
+      translated document. Every string becomes a localization decision:
+      what it means <em>here</em>, how the target language says it in software,
+      what your project already says, and how confident that answer is.
+    </p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill practical-localizer</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>a correct translation &ne; a natural one</b></p>
+    <p>
+      Traditional translation asks <em>&ldquo;what does this sentence translate
+      to?&rdquo;</em> Practical Localizer asks <em>&ldquo;what would a real user
+      expect this application to say here?&rdquo;</em>
+    </p>
+<pre class="block">English:   Chair
+Literal:   a dictionary-valid, formal/literary word
+Practical: the borrowed word people actually use for the object</pre>
+    <p>
+      Both are &ldquo;the translation&rdquo;. Only one of them sounds like a
+      modern app &mdash; and which one that is differs by language, product and
+      audience. The same reasoning gives the <em>opposite</em> answer in a
+      neighbouring language where an ordinary native word is in everyday use,
+      which is exactly why no blanket rule survives contact with a real product.
+    </p>
+
+    <h3>And the damage is rarely only stylistic</h3>
+<pre class="block">"Hello, {{name}}"  →  "হ্যালো"           the placeholder is gone; nothing fails
+t("remove")        →  "delete forever"  the handler was removeMember()
+one concept        →  three target words, one per translation batch
+{count, plural,…}  →  a single fixed form in a locale that needs six</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Translation vs localization</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Translation</th><th>Localization</th></tr></thead>
+        <tbody>
+          <tr><td class="klass">Unit of work</td><td>the string</td><td>the decision behind the string</td></tr>
+          <tr><td class="klass">Input</td><td>a word list</td><td>the application</td></tr>
+          <tr><td class="klass">&ldquo;Save&rdquo;</td><td>one target word</td><td>one per context, resolved from the call site</td></tr>
+          <tr><td class="klass">Technical terms</td><td>a rule</td><td>a per-term judgement, per language</td></tr>
+          <tr><td class="klass">Plurals</td><td>source shape copied</td><td>the target locale's own categories</td></tr>
+          <tr><td class="klass">Dates, money</td><td>out of scope</td><td>in scope, reported for a formatter fix</td></tr>
+          <tr><td class="klass">Direction</td><td>out of scope</td><td>reported, with the layout work it implies</td></tr>
+          <tr><td class="klass">Uncertainty</td><td>invisible</td><td>an output, with confidence attached</td></tr>
+          <tr><td class="klass">Success</td><td>every string filled</td><td>the product sounds locally written</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="flow mono">
+      source application &nbsp;&rarr;&nbsp; localization architecture &nbsp;&rarr;&nbsp; language usage profile<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; existing terminology &nbsp;&rarr;&nbsp; context extraction &nbsp;&rarr;&nbsp; translation strategy<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>natural localization</b> &nbsp;&rarr;&nbsp; technical validation &nbsp;&rarr;&nbsp; consistency review
+    </p>
+    <p>Every meaningful term gets exactly one strategy, chosen from evidence:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Strategy</th><th>Use when</th></tr></thead>
+        <tbody>
+          <tr><td class="klass">Translate</td><td>The language has a current, ordinary equivalent</td></tr>
+          <tr><td class="klass">Transliterate</td><td>The borrowed source word <em>is</em> the word users say</td></tr>
+          <tr><td class="klass">Preserve</td><td>Identifiers, protocols and brands, where translating destroys meaning</td></tr>
+          <tr><td class="klass">Adapt</td><td>Reword for the same intent, because word-for-word would be unidiomatic</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>Context decides, not the dictionary.</strong> A key, its call
+      sites, its component, its handler and the copy around it change the
+      answer. <code>t("remove")</code> inside <code>removeMember(member)</code>
+      is not the same word as <code>t("remove")</code> in a file manager &mdash;
+      in many languages, and not in English.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Three modes</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Mode</th><th>You ask</th><th>Writes files</th></tr></thead>
+        <tbody>
+          <tr><td class="klass">Analyze</td><td>&ldquo;Analyze this app for Bengali localization.&rdquo;</td><td>No</td></tr>
+          <tr><td class="klass">Localize</td><td>&ldquo;Localize the checkout flow to Bengali.&rdquo;</td><td>Locale resources only</td></tr>
+          <tr><td class="klass">Review</td><td>&ldquo;Review the Bengali localization for naturalness.&rdquo;</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Localize never touches application logic, variable or route names, CSS, or
+      your git history. Hardcoded strings, concatenated sentences and formatter
+      bugs are reported as findings &mdash; fixing them is a source change, and
+      that is your call.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Example output</h2>
+    <p>Abbreviated, from a review of an existing Bengali locale:</p>
+<pre class="block">LOCALIZATION REVIEW
+────────────────────────────────
+Target  Bengali (bn-BD)   Reviewed  742 strings
+High-confidence 18 · Medium 27 · Technical 3
+
+#1  greeting.hello — BLOCKING TECHNICAL ISSUE
+    Source "Hello, {{name}}" → current "হ্যালো"
+    The interpolation was dropped; the name never renders.
+    Confidence: HIGH (mechanical)
+
+#2  team.remove — Context / terminology
+    Current মুছে ফেলুন ("erase") → recommended সরিয়ে দিন
+    Rendered in &lt;TeamMemberRow&gt;, handler removeMember(). The member is
+    taken off the team, not deleted. Bengali distinguishes the two;
+    English does not.
+    Confidence: HIGH — the handler and surrounding UI resolve the meaning
+
+#3  sign in — Terminology inconsistency
+    লগইন (18 occurrences) · প্রবেশ করুন (2 occurrences)
+    Recommend the established project term everywhere. Adding a third,
+    better-sounding synonym would be the worst outcome.</pre>
+    <p>
+      Five worked language examples ship with the skill:
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/practical-localizer/examples/bengali.md">Bengali</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/practical-localizer/examples/hindi.md">Hindi</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/practical-localizer/examples/japanese.md">Japanese</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/practical-localizer/examples/arabic.md">Arabic</a>, and
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/practical-localizer/examples/european-language.md">a European three-language pass</a>.
+      Each one ends by stating what it does <em>not</em> claim.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Technical validation</h2>
+    <p>
+      Language quality is a judgement call. These are not, and they run on
+      everything produced or reviewed.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Check</th><th>Failure is</th></tr></thead>
+        <tbody>
+          <tr><td>Placeholders match the source exactly &mdash; <code>{name}</code>, <code>{{name}}</code>, <code>%s</code>, <code>%1$s</code>, <code>:name</code>, <code>&lt;0&gt;…&lt;/0&gt;</code></td><td class="klass">Blocking</td></tr>
+          <tr><td>Plural categories match what the target locale requires</td><td class="klass">Blocking</td></tr>
+          <tr><td>Keys, nesting and file syntax unchanged</td><td class="klass">Blocking</td></tr>
+          <tr><td>HTML, Markdown and rich-text tags intact</td><td class="klass">Blocking</td></tr>
+          <tr><td>No pluralization faked by string concatenation</td><td class="klass">High</td></tr>
+          <tr><td>Terminology consistent with the project glossary</td><td class="klass">High</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>Placeholder order is deliberately not checked.</strong> Verb-final
+      languages move the interpolation, and that is correct. Only the set of
+      placeholders has to match.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it will not do</h2>
+    <ul class="plain">
+      <li><strong>Claim native authority.</strong> Never &ldquo;native speakers say this&rdquo; &mdash; instead &ldquo;this is the more common software convention&rdquo;, with the evidence named</li>
+      <li><strong>Guess hidden grammar.</strong> When the target needs gender, formality or a counter the source does not carry, it says so and offers the options</li>
+      <li><strong>Encode stereotypes.</strong> Language use varies by region, age, profession, audience and product. Those are factors, never rules</li>
+      <li><strong>Invent numbers.</strong> No fabricated string counts, no claimed validation that did not run, no cited source it did not read</li>
+      <li><strong>Touch your source code.</strong> Only localization resources, only in localize mode</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Localization systems it recognizes</h2>
+    <p>
+      Detected by inspection, not assumption: i18next and react-i18next,
+      react-intl / FormatJS, next-intl, next-i18next, vue-i18n, Laravel
+      <code>lang/</code>, gettext <code>.po</code>, Rails I18n, Flutter
+      <code>.arb</code>, Android <code>strings.xml</code>, Apple
+      <code>.strings</code> and <code>.stringsdict</code>, Java properties
+      &mdash; plus JSON, YAML, XML, PHP and TS/JS catalogs generally.
+    </p>
+    <p>
+      If your project does localization some other way, the skill reads how it
+      works before touching it.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Install</h2>
+
+    <h3>Any Agent Skills-compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill practical-localizer</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Claude Code</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Using it</h3>
+    <ul class="plain">
+      <li>&ldquo;Analyze this app for Bengali localization.&rdquo;</li>
+      <li>&ldquo;Localize the onboarding namespace to Japanese and keep the existing terminology.&rdquo;</li>
+      <li>&ldquo;Review the French locale for naturalness &mdash; I think it reads like a translation.&rdquo;</li>
+      <li>&ldquo;Why does the Arabic build show the wrong plural form for 3 items?&rdquo;</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Limitations</h2>
+    <p>
+      Practical Localizer is instruction-driven, not a translation engine, and
+      it does not claim perfect or native-quality output.
+    </p>
+    <ul class="plain">
+      <li><strong>It is not a replacement for a native reviewer.</strong> For a product where the language is the product, it is a first pass that makes human review cheaper and better targeted</li>
+      <li>Quality varies by language, by how much context the repository carries, and by the agent running it</li>
+      <li>Low-resource languages and specialized domain vocabulary are where it is weakest &mdash; and where its confidence levels matter most</li>
+      <li>It reads the repository; rendering and runtime data are outside what it can observe, so UI fit findings are flagged as potential rather than confirmed</li>
+      <li>Without web access it relies on application context, existing translations and the glossary you supply &mdash; and says so</li>
+      <li>An absent finding is not proof that the localization is correct</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed &middot; <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/practical-localizer/SKILL.md">Read the skill source</a></span>
+    <span><a href="./">&larr; All skills</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "greeting": "Hello, {{name}}",
+  "welcome": "Welcome to {{appName}}",
+  "item_one": "{{count}} item",
+  "item_other": "{{count}} items",
+  "member_one": "{{count}} member",
+  "member_other": "{{count}} members",
+  "lastSeen": "Last seen on {{date}}",
+  "actions": {
+    "save": "Save",
+    "delete": "Delete",
+    "share": "Share"
+  }
+}

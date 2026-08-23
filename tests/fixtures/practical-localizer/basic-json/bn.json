@@ -1,0 +1,21 @@
+{
+  "app.name": "আসবাবপত্র",
+  "nav.home": "হোম",
+  "nav.catalog": "ক্যাটালগ",
+  "catalog.chair": "কেদারা",
+  "catalog.table": "টেবিল",
+  "catalog.sofa": "সোফা",
+  "auth.login": "লগইন",
+  "auth.loginCta": "প্রবেশ করুন",
+  "auth.password": "গুপ্তসংকেত",
+  "auth.signOut": "সাইন আউট",
+  "greeting.hello": "হ্যালো",
+  "cart.itemsAdded": "{count} টি পণ্য আপনার কার্টে যোগ করা হয়েছে",
+  "settings.title": "বিন্যাস",
+  "settings.apiKey": "অ্যাপ্লিকেশন প্রোগ্রামিং ইন্টারফেস চাবি",
+  "actions.save": "সেভ করুন",
+  "actions.delete": "মুছে ফেলুন",
+  "actions.getStarted": "শুরু করা পান",
+  "errors.network": "কিছু একটা ভুল হয়ে গেল। অনুগ্রহ করে আবার চেষ্টা করুন।",
+  "checkout.legacyTotal": "সর্বমোট"
+}

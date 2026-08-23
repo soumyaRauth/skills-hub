@@ -6,7 +6,7 @@ These skills are instruction-driven. It has no engine to unit-test, and it does 
 produce deterministic output — two good reports on the same request will differ
 in wording, ordering, and level of detail.
 
-So this is **not** a pass/fail assertion suite, and neither skill claims to be
+So this is **not** a pass/fail assertion suite, and no skill here claims to be
 "100% accurate". What these fixtures test is whether the instructions produce the
 **desired reasoning behavior**:
 
@@ -21,11 +21,15 @@ Inventing a finding is a worse one.
 
 ## Reasoning vs runtime execution
 
-Both skills draw a line between what was **observed** and what was **reasoned**,
-and the fixtures test that line as much as they test the findings.
+Every skill here draws a line between what was **observed** and what was
+**reasoned**, and the fixtures test that line as much as they test the findings.
 
 Impact Map never executes anything — it is read-only by design, so every finding
 is analysis, carrying a confidence level instead of a result.
+
+Practical Localizer never executes the application either. It is read-only in
+ANALYZE and REVIEW mode, and in LOCALIZE mode writes to localization resources
+and nothing else.
 
 Production Guard may execute checks where the environment allows, and must label
 each one `EXECUTED` or `ANALYZED`. These fixtures are **not runnable**, so a
@@ -55,7 +59,7 @@ non-runnable keeps them small.
 
 ## Scoring a run
 
-Applies to both skills:
+Applies to every skill:
 
 | Check | Failure means |
 | --- | --- |
@@ -64,7 +68,7 @@ Applies to both skills:
 | Nothing classified above its evidence | Severity or confidence discipline is eroding |
 | Nothing invented — no files, consumers, counts, or results | The most serious failure mode |
 | Executed and analyzed are labeled correctly | The evidence contract is broken |
-| No source file was modified | Both skills are non-modifying during analysis |
+| No source file was modified | Analysis is non-modifying in all three skills |
 | Every finding carries evidence | It degraded into a generic checklist |
 
 Impact Map specifically:
@@ -298,6 +302,180 @@ Expected: **🔴 DO NOT SHIP**, risk classified High.
 A strong run notes that all three operations run in one migration, so a failure
 partway leaves the schema in an intermediate state.
 
+---
+
+# Practical Localizer fixtures
+
+These fixtures contain **intentionally bad localizations**: literal
+translations, inconsistent terminology, lost placeholders, broken plural
+structures, over-translated technical terms and missing keys. A run that
+reports the Bengali or Arabic locale looks fine has failed the fixture.
+
+Two failure modes matter as much as missed findings:
+
+- **Modifying files in ANALYZE or REVIEW mode.** Both are read-only. Only
+  LOCALIZE mode writes, and only to localization resources.
+- **Claiming native authority.** "Native speakers say X" is a failure even when
+  X is a good suggestion. The expected form is "this is the more common software
+  convention", with the evidence named.
+
+Target-language wording will vary between runs — that is expected. What is being
+measured is whether the *decisions* are right: the strategy chosen, the context
+resolved, the inconsistency spotted, the placeholder preserved.
+
+### `practical-localizer/basic-json`
+
+Two flat JSON catalogs, `en.json` and `bn.json`. The smallest possible fixture,
+and every category of finding is present in it.
+
+**Request:** *"Review the Bengali localization."*
+
+| Category | Key | Expected finding |
+| --- | --- | --- |
+| 🔴 Placeholder | `greeting.hello` | `{{name}}` dropped entirely — the name never renders |
+| 🔴 Placeholder | `cart.itemsAdded` | `{{count}}` rewritten as `{count}`; the syntax no longer matches the source |
+| Terminology | `auth.login` / `auth.loginCta` | One concept, two target terms |
+| Naturalness | `catalog.chair` | Literary/formal form, while the sibling catalog entries use borrowed forms — internally inconsistent |
+| Naturalness | `auth.password` | Rare coinage where the borrowed form is the common software term |
+| Over-translation | `settings.apiKey` | An identifier expanded into a full descriptive phrase |
+| Should stay source | `app.name` | The brand name was translated into a common noun |
+| Literal | `actions.getStarted` | Word-for-word rendering of an English phrasal verb |
+| Missing | `nav.account` | Absent from the target |
+| Stale | `checkout.legacyTotal` | Present in the target, absent from the source |
+| Mechanism | `cart.itemsAdded` | A counted string with no plural mechanism available in flat JSON |
+
+The chair entry is the signature find, and the *reason* matters: the strongest
+version of the finding cites the sibling keys rather than making a claim about
+the language.
+
+**Should not appear:** any file modification; a claim that one wording is
+universally correct.
+
+---
+
+### `practical-localizer/nextjs`
+
+next-intl with ICU messages, a partial Bengali catalog, and two components that
+share one key.
+
+**Request:** *"Localize the missing Bengali strings for this app."*
+
+| Category | Location | Expected finding |
+| --- | --- | --- |
+| 🔴 Context / key design | `common.remove` | Rendered by `TeamMemberRow` (`removeMember`) *and* `FileRow` (`deleteFilePermanently`). One key, two concepts; the current target says "erase". Needs a key split — not a compromise word |
+| 🔴 ICU structure | `team.seats` | The `{count, plural, …}` wrapper was replaced with a fixed string; the `=0` branch is gone |
+| Missing | `files.*`, `checkout.*`, `common.confirmDelete` | Absent from `bn.json`; these are the strings to add |
+| Source finding | `app/checkout/OrderSummary.tsx` | `"$" + cents / 100` and `format(date, "MM/dd/yyyy")` — currency and date assembled in code |
+| Source finding | `app/checkout/OrderSummary.tsx` | `order.itemCount + " items"` — an English plural built by concatenation, invisible to the catalog |
+| UI fit | `components/SideNav.tsx` | Fixed `w-40` with `truncate whitespace-nowrap` renders `nav.accountSettings` — `POTENTIAL UI FIT ISSUE` |
+
+**Should not appear:** edits to any `.tsx` file. The formatting and
+concatenation problems are reported, not fixed — fixing them is a source change.
+
+---
+
+### `practical-localizer/react`
+
+react-i18next. Context-dependent strings, a shared destructive verb, and a
+plural gap.
+
+**Request:** *"Review the Bengali locale for context and pluralization problems."*
+
+| Category | Key | Expected finding |
+| --- | --- | --- |
+| 🔴 Context | `billing.cancelSubscription` | Translated with the same word as `common.cancel` (dismiss). `SubscriptionPanel` renders both in one dialog, so the destructive button and the dismiss button read identically |
+| 🔴 Plural | `invoice.invoice_other` | Missing; only `_one` exists, so every count other than one falls back |
+| 🔴 Placeholder | `invoice.overdue` | `{{count}}` dropped |
+| Action vs state | `status.complete` | Rendered as a status badge but translated as an imperative ("complete it"), while `actions.complete` is the actual button |
+| Verify | `billing.confirmBody` | `{{ endDate }}` carries whitespace inside the delimiters, unlike the source. Check whether this framework version tolerates it rather than asserting either way |
+| Source finding | `InvoiceList.jsx` | `"$" + amount.toFixed(2)` and `toLocaleDateString("en-US")` |
+| Naturalness | `common.back` | A bare positional word used for a navigation action |
+
+The `cancel` collision is the point of this fixture: both strings are
+individually defensible, and only the call sites reveal the problem.
+
+---
+
+### `practical-localizer/laravel`
+
+Two translation systems in one app — PHP arrays under `lang/bn/` and
+English-keyed JSON in `lang/bn.json` — with conflicting terminology.
+
+**Request:** *"Analyze the Bengali localization of this Laravel app."*
+
+| Category | Location | Expected finding |
+| --- | --- | --- |
+| 🔴 Placeholder | `messages.welcome` | `:name` rewritten as `{name}`; this framework will not substitute it |
+| 🔴 Pluralization | `messages.orders_count` | The `trans_choice` pipe structure and its ranges are gone, replaced by a single form |
+| 🔴 Terminology | `lang/bn.json` vs `lang/bn/messages.php` | Four concepts with two different target terms each — sign out, password, save, remove item |
+| Missing | `messages.cancel` | Absent; falls back to English |
+| Placeholder | `validation.required` | `:attribute` dropped, so the message no longer names the field, inconsistent with the sibling rules |
+| Missing | `validation.attributes` | Not translated, so English field names appear inside Bengali sentences |
+| Context | `messages.remove_item` | The Blade form submits `@method('DELETE')` — this is deletion, and the two systems disagree about which verb it takes |
+| Source finding | `resources/views/orders.blade.php` | `$` and `format('m/d/Y')` hardcoded in the view |
+
+A strong run notices that the same app resolves `__('Log in')` through the JSON
+file and `__('messages.login')` through the PHP file, and treats "which system
+owns this concept" as the finding rather than picking a favourite.
+
+---
+
+### `practical-localizer/i18next`
+
+i18next with namespaces, interpolation and suffixed plurals, targeting a locale
+whose plural rules do not match the source's.
+
+**Request:** *"Are the Arabic translations ready to ship?"*
+
+| Category | Location | Expected finding |
+| --- | --- | --- |
+| 🔴 Plural coverage | `common.item_*`, `common.member_*`, `checkout.itemsInCart_*` | Only `_one` and `_other` exist. This locale's plural rules select more categories than the source has, so most counts render the wrong form |
+| 🔴 Placeholder | `checkout.tax` | `{{rate}}` rewritten as `{rate}` |
+| Missing | `ar/checkout.json` `left_*` | Absent, so the stock label falls back to English under the Add-to-cart button |
+| Missing | `ar/common.json` `actions.share` | Absent |
+| Coverage | `i18n.js` | `ja` is listed in `supportedLngs` with no catalog at all |
+| RTL | whole fixture | Nothing sets document direction anywhere; string translation alone will not make this app render correctly |
+| Verify | `common.lastSeen` | `{{ date }}` whitespace variant — check, do not assume |
+| Style | `common.item_one` | The count placeholder is absent from the `one` form; acceptable if deliberate, but decide it once and apply it across the categories being added |
+| Source finding | `app.js` | `toLocaleDateString("en-US")` and `"$" + total.toFixed(2)` |
+
+The plural-coverage finding is what separates a localization review from a
+translation review. A run that reports "translations look reasonable" has missed
+a defect visible at almost every count.
+
+---
+
+### `practical-localizer/mixed-localization`
+
+The messy fixture. Two translation systems live side by side and are rendered by
+the same components.
+
+**Request:** *"Review the Bengali localization."*
+
+| Category | Expected finding |
+| --- | --- |
+| 🔴 Architecture | `src/i18n/bn.json` and `src/legacy/translations.js` are both live, and `Header`, `TicketList` and `SystemStatus` each render from both |
+| 🔴 Terminology | Six concepts with two target terms each: sign in, sign out, settings, password, delete, server error |
+| 🔴 Placeholder | `tickets.assignedTo` — `{{agent}}` rewritten as `{agent}` |
+| 🔴 Plural | `tickets.openCount` — the count was dropped from the string and re-added in JSX by concatenation |
+| Over-translation | `system.serverError`, `system.cacheCleared`, `system.downloadReport`, `system.apiKey` — technical terms rendered as descriptive native coinages, while the legacy table already uses the borrowed forms for the same concepts |
+| Context | `tickets.removeTag` uses the same verb as permanent deletion, though the handler is `removeTag` |
+| Literal | `tickets.getStarted` |
+| Brand | `brand` — the product name was rendered in the target script. Defensible as a deliberate brand decision; a finding because nothing indicates it was one |
+| Missing | `auth.forgotPassword`, `system.uploadAttachment`, `billing.*` |
+| Not localizable | `Header.jsx` hardcodes "Beta — feedback welcome" and "Help"; `BillingPanel.jsx` hardcodes "seats" |
+| Formatting | `BillingPanel.jsx` — `$`, `toLocaleDateString("en-US")`, `toLocaleString("en-US")` |
+| UI fit | `SystemStatus.jsx` — two buttons with `width: 120`, `nowrap` and `overflow: hidden` render long target labels |
+
+A strong run leads with the architecture finding, because every terminology
+conflict in the list is downstream of it, and recommends consolidating onto one
+system before translating anything further.
+
+**Should not appear:** a third target term introduced for any concept that
+already has two.
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
@@ -305,7 +483,10 @@ partway leaves the schema in an intermediate state.
 2. Put it under `tests/fixtures/<skill>/<name>/`.
 3. For Impact Map, seed at least one piece of coupling that shares **no symbol**
    with the change target. For Production Guard, seed at least one genuine
-   blocker — a fixture where everything passes teaches nothing.
+   blocker — a fixture where everything passes teaches nothing. For Practical
+   Localizer, seed at least one defect that only the *call site* reveals, plus
+   one technical defect (placeholder or plural) that no amount of language
+   knowledge would catch.
 4. Do not explain the bugs or the coupling inside the fixture.
 5. Document the request and expected findings in this file.
 6. Note which findings a naive search or a green test suite would miss — that

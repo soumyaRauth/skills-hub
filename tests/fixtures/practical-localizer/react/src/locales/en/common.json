@@ -1,0 +1,28 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back"
+  },
+  "actions": {
+    "complete": "Complete"
+  },
+  "status": {
+    "complete": "Complete",
+    "pending": "Pending"
+  },
+  "billing": {
+    "planTitle": "Your plan",
+    "cancelSubscription": "Cancel subscription",
+    "keepSubscription": "Keep my plan",
+    "confirmTitle": "Cancel your subscription?",
+    "confirmBody": "You will keep access until {{endDate}}."
+  },
+  "invoice": {
+    "title": "Invoices",
+    "invoice_one": "{{count}} invoice",
+    "invoice_other": "{{count}} invoices",
+    "overdue": "{{count}} of your invoices are overdue"
+  }
+}
