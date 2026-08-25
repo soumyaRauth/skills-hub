@@ -120,6 +120,25 @@ Resist the urge to add scenarios that cannot be checked. A scenario an agent
 cannot detect from the repository produces an `UNVERIFIED` line in every report,
 which is noise, not rigor.
 
+### Add a proof strategy or failure classification
+
+Edits to `skills/proof-driven-dev/references/proof-strategies.md`,
+`failure-analysis.md`, or `risk-model.md`.
+
+A proof strategy earns its place by being *cheaper than the obvious one* or by
+catching something the obvious one cannot. State:
+
+- **The requirement shape** it applies to — what kind of claim it establishes
+- **The mechanism**, concretely: the command, and what its output demonstrates
+- **What it does not prove** — the boundary is the useful part
+- **Why it beats a test**, if it does: a database constraint that makes a
+  requirement unfalsifiable is better evidence than a test asserting the same
+  thing, because it cannot rot
+
+The rule that governs this whole skill: a strategy must produce evidence
+somebody could re-run. "Inspect the code and confirm" is not a proof strategy,
+and adding one that reads like one weakens every status the skill reports.
+
 ### Add a language example or localization reference
 
 New files under `skills/practical-localizer/examples/`, or edits to
@@ -176,6 +195,12 @@ Every fixture needs documented expected findings in `tests/README.md`.
   where everything passes tests nothing. Seed real bugs: a missing per-item
   authorization check, an external call inside a transaction, a non-nullable
   column with no default.
+- **Proof-Driven Development fixtures** must actually **run** — zero
+  dependencies, `node --test`, and a suite that is **green** before the agent
+  starts. The skill is being tested on whether it defines an outcome and proves
+  it; a red suite hands it the answer. Seed the gap somewhere the existing tests
+  do not look: an off-by-one that only appears at a non-multiple count, a shared
+  helper with two callers, an authorization hole no positive case can reach.
 - **Practical Localizer fixtures** need at least one defect that only the *call
   site* reveals — a key whose correct translation depends on the handler around
   it — plus one purely technical defect: a lost placeholder, a corrupted
@@ -207,9 +232,13 @@ Judge on relationships, not wording:
 - Were the expected findings found — especially the indirect ones?
 - Did anything get classified above its evidence?
 - Were any findings invented?
-- Did the agent modify a source file? (All three skills are non-modifying during
-  analysis; Practical Localizer writes only in LOCALIZE mode, and only to
-  localization resources.)
+- Did the agent write outside its remit? Impact Map and Production Guard modify
+  nothing; Practical Localizer writes only in LOCALIZE mode, and only to
+  localization resources; Proof-Driven Development implements, so judge it on
+  whether the diff stays inside the contract it wrote.
+- For Proof-Driven Development: did a contract exist before the code, does every
+  `PASS` name a command that really ran, and did an unverifiable requirement
+  stay unverified?
 - For Practical Localizer: were the placeholder and plural defects caught, was
   the established project terminology preferred over a new synonym, and did the
   report avoid claiming native authority?
@@ -248,6 +277,14 @@ and examples, orphan references, internal links, secret patterns, hardcoded
 paths, and invented quality scores. It runs `skills-ref` when that validator is
 available and falls back to its own checks when it is not. CI runs the same
 script.
+
+It also runs the fixtures that are *meant* to be executed — currently
+`tests/fixtures/proof-driven-dev/` — and fails if any of them is red, since a
+rotted fixture hands the agent under test the answer. That check skips cleanly
+when Node is unavailable. If you add runnable fixtures for another skill, add
+their directory to `RUNNABLE_ROOTS` in the script; do not widen it to every
+`package.json` under `tests/fixtures/`, because the illustrative fixtures declare
+test scripts they were never meant to satisfy.
 
 Adding a new skill requires no change to the validator.
 

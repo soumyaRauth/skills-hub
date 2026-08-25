@@ -1,0 +1,11 @@
+{
+  "name": "order-report-fixture",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Fixture: a report with an N+1 query pattern and a deterministic query counter.",
+  "scripts": {
+    "test": "node --test",
+    "bench": "node bench.js"
+  }
+}

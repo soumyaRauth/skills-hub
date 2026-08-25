@@ -8,11 +8,13 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | Skill | What it does | When |
 | --- | --- | --- |
 | **[impact-map](skills/impact-map/README.md)** | Maps the blast radius of a proposed change — what it affects, why, and how confident the analysis is | *Before* you write the code |
+| **[proof-driven-dev](skills/proof-driven-dev/README.md)** | Turns a request into an outcome contract, implements it, and proves each requirement with evidence — you get VERIFIED / REVIEW / BLOCKED, not an essay | *While* you write it |
 | **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
 | **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
+npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
 ```
@@ -20,8 +22,8 @@ npx skills add soumyaRauth/skills-hub --skill practical-localizer
 They compose, and none requires the others:
 
 ```
-ticket → impact-map → implement → production-guard → ship
-                                                   → practical-localizer → ship in another language
+ticket → impact-map → proof-driven-dev → production-guard → ship
+                                                          → practical-localizer → ship in another language
 ```
 
 ---
@@ -79,7 +81,7 @@ Every significant finding is classified and evidenced:
 | 🟥 **MUST CHANGE** | Strong evidence this location requires modification. |
 | 🟧 **LIKELY AFFECTED** | Strong relationship; needs confirmation. |
 | 🟨 **NEEDS VERIFICATION** | Plausible relationship; check before implementing. |
-| ⚠️ **HIDDEN COUPLING** | Indirect dependency — raw strings, SQL, config, duplicated logic, fixtures, serialization. |
+| ⚠️ **HIDDEN COUPLING** | Indirect dependency — raw strings, SQL, config, duplicated logic, fixtures, serialization, co-change history. |
 | ⬜ **OUT OF SCOPE** | Inspected, not materially related. |
 
 Confidence is tracked separately (High / Medium / Low), and a low-confidence
@@ -121,15 +123,146 @@ backend/jobs/nightly_sync.py
 
 RISK
 
-High — spans four runtimes, requires a data migration, and three critical
-paths are string-coupled with no test coverage. Nothing in CI fails if they
-are missed.
+Risk score: 15 / 18 → High
+
+Breadth             3   backend, frontend, jobs, and reporting all in scope
+Coupling opacity    3   raw SQL, a direct-read job, a duplicated UI comparison
+Test coverage       3   no test asserts report or sync behavior for this status
+Reversibility       2   value rename with a backfill of existing rows
+Consumer reach      3   a partner system reads the value; BI consumers are
+                        suspected and not enumerable from this repository
+Area volatility     1   normal churn, except one stale job
+
+Nothing in CI fails if the string-coupled paths are missed.
 ```
 
-Four full worked examples: [simple](skills/impact-map/examples/simple-change.md) ·
+Findings carry stable ids, so the architecture graph, the risk table, and the
+implementation plan all point back at the same evidence. Say yes to the plan and
+you get a handoff artifact — steps sized to one commit, each naming what it
+resolves, how to verify it, and how to roll it back, with a coverage table
+proving no MUST CHANGE finding was dropped.
+
+Five full worked examples: [simple](skills/impact-map/examples/simple-change.md) ·
 [API](skills/impact-map/examples/api-change.md) ·
 [database](skills/impact-map/examples/database-change.md) ·
-[cross-module](skills/impact-map/examples/cross-module-change.md)
+[cross-module](skills/impact-map/examples/cross-module-change.md) ·
+[implementation plan](skills/impact-map/examples/implementation-plan.md)
+
+---
+
+---
+
+# ProofBuild
+
+**Don't read what the AI did. See whether it actually works.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
+```
+
+## The problem
+
+```
+prompt → code → explanation → you read all of it → you decide whether it works
+```
+
+You ask for password reset. You get working-looking code and a fluent paragraph
+about it. Whether the feature *works* is still your problem, and the only ways
+to find out are reading the diff or shipping it.
+
+The failure is structural, not a matter of the agent trying harder: **"code was
+written" and "the outcome happened" are different claims**, and one is being
+reported as the other.
+
+## The solution
+
+An outcome contract, written *before* the code, and evidence for every
+requirement in it:
+
+```
+intent → outcome contract → proof plan → implementation
+       → verification → failure analysis → repair → re-verification → result
+```
+
+The contract is numbered and observable — someone outside the codebase could
+tell whether each line holds:
+
+```
+objective: "Users can securely reset their password by email"
+risk: high
+  AUTH-001  A user can request a reset for their email          integration
+  AUTH-003  An unknown email returns the same response          security
+  AUTH-005  A token already used once is rejected on reuse      security
+  AUTH-007  After reset, the old password no longer works       integration
+  AUTH-008  Existing email/password login is unchanged          regression
+```
+
+Five of those eight were never in the request. That is where the defects live.
+
+## Example
+
+```
+✓ VERIFIED
+
+Password reset
+
+Requirements   8/8
+Tests          47/47
+Regression     pass
+Changed        6 files
+```
+
+That is the whole response for a change touching six files. When a decision is
+genuinely yours, you get the decision instead of the narrative:
+
+```
+⚠ REVIEW REQUIRED
+
+Bulk upload · 13/14 requirements verified
+
+Decision required:
+A duplicate filename inside one upload batch —
+
+  [overwrite]   [reject the duplicate]   [keep both, suffix the name]
+```
+
+Detail is one question away — *show the contract*, *show evidence*, *explain the
+proof for AUTH-005*, *show failed attempts*. What you never get is a green
+checkmark meaning "I wrote some code and it looked right to me."
+
+## The rule that matters most
+
+When the agent's model of the code and the executed output disagree, the output
+wins:
+
+```
+Reasoning   "the token is invalidated after use — consumeToken() sets used_at"
+Observed    the same token reset the password twice, both returning 200
+
+✗ CONTRADICTION — AUTH-005 is not satisfied
+```
+
+A confident, articulate, wrong claim of success is the most damaging thing an AI
+agent produces. Repair is classified before any code changes and budgeted — three
+attempts, two at high risk, one at critical — so a stubborn failure ends in
+`✗ BLOCKED` with a diagnosis rather than a fourth guess.
+
+Six worked examples: [feature development](skills/proof-driven-dev/examples/feature-development.md) ·
+[bug fix](skills/proof-driven-dev/examples/bug-fix.md) ·
+[refactoring](skills/proof-driven-dev/examples/refactoring.md) ·
+[performance](skills/proof-driven-dev/examples/performance.md) ·
+[security](skills/proof-driven-dev/examples/security.md) ·
+[ambiguous request](skills/proof-driven-dev/examples/ambiguous-request.md)
+
+## Safety
+
+It runs your project's own checks — its framework, its commands, its
+conventions — and does not install a testing stack you did not ask for. It will
+not `git reset --hard`, `git clean -fd`, check out over your uncommitted work,
+force push, commit or push automatically, drop databases, or touch production,
+unless you explicitly ask for that operation.
+
+**[Full documentation →](skills/proof-driven-dev/README.md)**
 
 ---
 
@@ -324,11 +457,13 @@ sentences and formatter bugs are reported, not silently refactored.
 ```bash
 # any Agent Skills-compatible agent
 npx skills add soumyaRauth/skills-hub --skill impact-map
+npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
 ```
@@ -370,6 +505,12 @@ repository, it can run these skills.
 │   │   ├── README.md             ← human documentation
 │   │   ├── references/           ← deeper guidance the agent consults on demand
 │   │   └── examples/             ← four worked impact maps
+│   ├── proof-driven-dev/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← ten proof and verification references
+│   │   ├── examples/             ← six worked proof-driven tasks
+│   │   └── templates/            ← contract, proof plan, report
 │   ├── production-guard/
 │   │   ├── SKILL.md
 │   │   ├── README.md
@@ -384,6 +525,7 @@ repository, it can run these skills.
 ├── tests/
 │   ├── fixtures/
 │   │   ├── impact-map/           ← four repositories with hidden coupling to find
+│   │   ├── proof-driven-dev/     ← six runnable projects, green until you break them
 │   │   ├── production-guard/     ← four repositories with real production bugs
 │   │   └── practical-localizer/  ← six repositories with bad localizations
 │   └── README.md                 ← expected findings per fixture
@@ -394,6 +536,7 @@ repository, it can run these skills.
 ## Documentation
 
 - **[Impact Map](skills/impact-map/README.md)** · [SKILL.md](skills/impact-map/SKILL.md)
+- **[ProofBuild](skills/proof-driven-dev/README.md)** · [SKILL.md](skills/proof-driven-dev/SKILL.md)
 - **[Production Guard](skills/production-guard/README.md)** · [SKILL.md](skills/production-guard/SKILL.md)
 - **[Practical Localizer](skills/practical-localizer/README.md)** · [SKILL.md](skills/practical-localizer/SKILL.md)
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
@@ -421,11 +564,11 @@ Ideas, not commitments.
 
 **Impact Map**
 
-| Version | Focus |
-| --- | --- |
-| v0.2 | Better monorepo awareness; git history, ownership, and changed-file analysis |
-| v0.3 | Architecture graph output, dependency visualization, risk scoring |
-| v0.4 | Tighter implementation-plan handoff |
+| Version | Focus | Status |
+| --- | --- | --- |
+| v0.2 | Better monorepo awareness; git history, ownership, and changed-file analysis | shipped |
+| v0.3 | Architecture graph output, dependency visualization, risk scoring | shipped |
+| v0.4 | Tighter implementation-plan handoff | shipped |
 
 **Production Guard**
 
@@ -448,15 +591,26 @@ Ideas, not commitments.
 Possible companions: `localization-guard`, catching localization regressions in
 CI, and `locale-maintainer`, detecting newly added untranslated strings.
 
-**All three**
+**Proof-Driven Development**
+
+| Version | Focus |
+| --- | --- |
+| v0.2 | Richer evidence formats; sharper risk classification; project-specific proof strategies |
+| v0.3 | Screenshot-aware verification, browser evidence, stored performance baselines |
+| v0.4 | CI integration; detecting when a previously proven requirement regresses |
+| v0.5 | Reusable project-level proof contracts |
+
+**All four**
 
 A further skill, `change-guard`, closing the loop: take an Impact Map and a
 Production Guard report and verify that the implementation actually covered the
-identified surface and resolved the identified risks.
+identified surface and resolved the identified risks. Where ProofBuild proves
+the outcome it defined, `change-guard` would check that outcome against a
+*separately* derived surface — a different question, and a useful cross-check.
 
 ## Limitations
 
-All three skills are instruction-driven, not static analyzers. None claims
+All four skills are instruction-driven, not static analyzers. None claims
 completeness, and none can prove it.
 
 - Results vary with the agent, the repository, and how the request is phrased

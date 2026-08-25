@@ -227,6 +227,34 @@ for skill in "${SKILLS[@]}"; do
   fi
 done
 
+# ------------------------------------------------------- runnable fixtures --
+
+# Most fixtures here are illustrative skeletons that never execute. Proof-Driven
+# Development's are the exception: the agent under test is supposed to run them,
+# so they must be GREEN before it starts — a fixture that has rotted red hands
+# the agent the answer. Add a directory below if another skill ships runnable
+# fixtures; do not widen this to every package.json under tests/fixtures, since
+# the non-runnable ones declare test scripts they were never meant to satisfy.
+
+head_ "Runnable fixtures"
+RUNNABLE_ROOTS="tests/fixtures/proof-driven-dev"
+runnable=$(find $RUNNABLE_ROOTS -name package.json -maxdepth 2 2>/dev/null | sort || true)
+if [ -z "$runnable" ]; then
+  skip "no runnable fixtures found"
+elif ! command -v node >/dev/null 2>&1; then
+  skip "node not installed; runnable fixtures not executed"
+else
+  for manifest in $runnable; do
+    fixture=$(dirname "$manifest")
+    if out=$(cd "$fixture" && node --test 2>&1); then
+      pass "$fixture — $(printf '%s' "$out" | awk '/^# pass/ {print $3" passed"}')"
+    else
+      fail "$fixture must pass before an agent runs against it:"
+      printf '%s\n' "$out" | grep -E '^(not ok|  +error:)' | head -5 | sed 's/^/       /'
+    fi
+  done
+fi
+
 # ------------------------------------------------------------ link checking --
 
 head_ "Internal markdown links"

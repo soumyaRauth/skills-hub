@@ -1,0 +1,67 @@
+# Proof plan — .proofbuild/proof-plan.yml
+#
+# One entry per requirement in contract.yml, written before implementation:
+# what evidence would establish this, and the cheapest mechanism that produces
+# it. Stages escalate only as far as risk and failure require.
+
+proof_plan:
+  # Commands discovered from the repository — never invented, never a framework
+  # the project does not already use.
+  commands:
+    typecheck: "npm run typecheck"
+    lint: "npm run lint"
+    build: "npm run build"
+    test: "npm test"
+    test_file: "npm test -- <path>"
+
+  stages:
+    - stage: 1
+      name: static
+      runs: [typecheck, lint, build]
+      when: always
+    - stage: 2
+      name: targeted
+      runs: ["the checks named per requirement below"]
+      when: always
+    - stage: 3
+      name: integration
+      runs: ["integration, api, database checks"]
+      when: "risk >= medium, or the change crosses a boundary"
+    - stage: 4
+      name: broad
+      runs: ["e2e, browser, full regression suite"]
+      when: "risk >= high, or a cheaper stage surfaced breakage"
+
+  requirements:
+    - id: AREA-001
+      mechanism: integration
+      stage: 3
+      command: "npm test -- tests/area/feature.test.ts -t 'does the thing'"
+      expected: "The observable result stated in the contract"
+      new_test: true              # writing one, or running one that exists
+      blocked_if: "requires a service unavailable in this environment"
+
+    - id: AREA-004
+      mechanism: regression
+      stage: 2
+      command: "npm test -- tests/area/"
+      expected: "Existing suite passes unchanged"
+      new_test: false
+
+    - id: AREA-005
+      mechanism: manual
+      stage: null
+      command: null
+      expected: "Human judgment — no mechanism available"
+      new_test: false
+
+  # Established before implementing, so a red check at the end is attributable.
+  # Never established by modifying the working tree.
+  baseline:
+    command: "npm test -- tests/area/"
+    result: "record the real pre-change result here"
+
+  repair_budget:
+    default: 3        # per requirement
+    high_risk: 2
+    critical_risk: 1

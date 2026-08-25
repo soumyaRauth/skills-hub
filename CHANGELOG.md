@@ -7,6 +7,62 @@ methodology and documentation.
 
 ## [Unreleased]
 
+### Added
+
+- `proof-driven-dev` skill (ProofBuild) v0.1 — **outcome contracts instead of
+  implementation explanations.** A development request becomes a numbered
+  outcome contract *before* any code is written; each requirement carries the
+  proof mechanism that will establish it; verification runs in escalating stages
+  (static → targeted → integration → broad); failures are classified
+  (`IMPLEMENTATION_ERROR`, `TEST_ERROR`, `CONTRACT_ERROR`, `ENVIRONMENT_ERROR`,
+  `EXISTING_REGRESSION`, `UNRELATED_FAILURE`, `UNKNOWN`) before any repair, and
+  repair is budgeted — 3 attempts, 2 at high risk, 1 at critical — so the loop
+  terminates in `✗ BLOCKED` rather than recursing. Evidence is traced per
+  requirement and graded A–D, where D means human judgment and never rounds up
+  to verified. The developer-facing output is one of `✓ VERIFIED`,
+  `⚠ REVIEW REQUIRED`, `✗ BLOCKED`, with detail available on request. Optional
+  `.proofbuild/` artifacts (contract, proof plan, per-requirement evidence,
+  report, history) carry proof across sessions, with secrets redacted by shape.
+  Ten references, six worked examples, three templates, and six runnable
+  zero-dependency fixtures
+- `impact-map` v0.2 — **monorepo awareness, history, and diff-driven analysis.**
+  Phase 2 scopes a workspace by its package graph rather than by directory
+  proximity and reports what it did *not* inspect; a new Phase 5 reads git for
+  co-change coupling, churn, and `CODEOWNERS` routing; Phase 1 accepts a diff,
+  branch, or commit range as the change source and reports the surface a change
+  touches but has not visited. New report sections `REPOSITORY SCOPE` and
+  `HISTORY & OWNERSHIP`; new coupling type: temporal (co-change), capped at
+  Medium confidence because history proves correlation, not causation. New
+  references: `git-signals.md`, `monorepo.md`
+- `impact-map` v0.3 — **architecture graph and scored risk.** Findings carry
+  stable ids (`F1`, `F2`, …); a new `ARCHITECTURE GRAPH` section renders the
+  surface as a mermaid flowchart with one subgraph per real layer, labelled
+  edges, and solid/dashed marking hard versus soft coupling — rendering only
+  findings already in the report. `RISK` becomes a six-factor rubric (breadth,
+  coupling opacity, test coverage, reversibility, consumer reach, area
+  volatility) scored 0–3 each with the observation that set it; unassessable
+  factors are scored `?` and make the total a lower bound. New references:
+  `architecture-graph.md`, `risk-scoring.md`
+- `impact-map` v0.4 — **implementation-plan handoff.** The plan is now a defined
+  artifact executable by a session that never saw the analysis: per-step files,
+  resolved finding ids, dependencies, evidence, verification, and rollback, plus
+  a closing coverage table where every 🟥 maps to exactly one step and 🟨
+  findings become prerequisites. Ordering rules keep every step deployable on
+  its own, and drift is reported rather than silently re-planned. New reference
+  `implementation-plan.md` and a fifth worked example, `implementation-plan.md`
+
+### Changed
+
+- `scripts/validate.sh` executes the fixtures that are meant to run
+  (`tests/fixtures/proof-driven-dev/`) and fails when one is red; it skips the
+  check when Node is unavailable
+- The repository ships four skills; the hub table, install commands, and the
+  composition diagram in the top-level README now route
+  `impact-map → proof-driven-dev → production-guard`
+- Impact Map's workflow is 12 phases (was 11); the four existing examples carry
+  finding ids and scored risk tables, and the cross-module example gains an
+  architecture graph and a history-and-ownership section
+
 ## [0.3.0] — 2026-08-23
 
 ### Added

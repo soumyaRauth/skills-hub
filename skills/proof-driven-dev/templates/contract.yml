@@ -1,0 +1,66 @@
+# Outcome contract — .proofbuild/contract.yml
+#
+# Written BEFORE implementation. The implementation is built to satisfy this;
+# this is not a description of what was built.
+#
+# Copy, replace the AREA prefix, delete what does not apply.
+
+contract:
+  objective: >-
+    One sentence describing the outcome from outside the code — what is true
+    for a user once this is done.
+
+  # low | medium | high | critical  (see references/risk-model.md)
+  risk: medium
+  risk_reason: "Why this level, in one line. When between two levels, take the higher."
+
+  # Ambiguity resolved without asking. Each one names the evidence that made the
+  # default safe, so the developer can correct it in a sentence.
+  assumptions:
+    - "Reset links expire in 1 hour — matches the invite-token TTL in src/auth/invites.ts:22"
+
+  # Anything genuinely undecidable without the developer. Empty is the goal.
+  open_decisions: []
+
+  requirements:
+    # --- new behavior -------------------------------------------------------
+    - id: AREA-001
+      description: "An observable statement someone outside the codebase could check"
+      priority: critical        # critical | high | normal
+      proof:
+        type: integration       # unit | integration | api | e2e | typecheck |
+                                # build | lint | database | runtime | benchmark |
+                                # security | regression | manual
+        note: "What the check must demonstrate — not how it is implemented"
+
+    # --- negative cases: where the defects actually live ---------------------
+    - id: AREA-002
+      description: "The same action, performed by someone who should not be able to"
+      priority: critical
+      proof:
+        type: security
+
+    # --- boundaries ---------------------------------------------------------
+    - id: AREA-003
+      description: "Behavior at empty, one, many, and over the limit"
+      priority: high
+      proof:
+        type: unit
+
+    # --- existing behavior that must survive --------------------------------
+    - id: AREA-004
+      description: "The feature this change sits next to still behaves as before"
+      priority: high
+      proof:
+        type: regression
+        note: "existing tests/<area>/ — run unchanged"
+
+    # --- requirements no available mechanism can settle ---------------------
+    # Mark these up front. Level D at the end is honest; Level D discovered at
+    # the end and reported as a pass is the failure this skill exists to prevent.
+    - id: AREA-005
+      description: "Something requiring a person's judgment"
+      priority: normal
+      proof:
+        type: manual
+        note: "What the person is being asked to judge, and what was verified around it"

@@ -1,0 +1,10 @@
+{
+  "name": "pagination-fixture",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Fixture: a paginated list with a real bug the existing tests do not catch.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

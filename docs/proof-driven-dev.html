@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProofBuild — Skills Hub</title>
+<meta name="description" content="Proof-driven development for AI coding agents. Turns a request into an outcome contract, implements it, proves each requirement with evidence, repairs failures, and returns verified / review required / blocked.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="impact-map.html">Impact Map</a>
+      <a href="production-guard.html">Production Guard</a>
+      <a href="practical-localizer.html">Practical Localizer</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; while you build</span>
+    <h1>ProofBuild</h1>
+    <p class="lede">
+      Don&rsquo;t read what the AI did. See whether it actually works. ProofBuild
+      turns a development request into an outcome contract <em>before</em> any
+      code is written, then proves each requirement with evidence &mdash; so what
+      comes back is <b>verified</b>, <b>review required</b>, or <b>blocked</b>,
+      not an essay about the diff.
+    </p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill proof-driven-dev</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>&ldquo;code was written&rdquo; &ne; &ldquo;the outcome happened&rdquo;</b></p>
+    <p>
+      You ask for password reset. Twenty minutes later you get working-looking
+      code and a fluent paragraph explaining it. Whether the feature actually
+      works is still your problem, and the only ways to find out are reading the
+      diff or shipping it.
+    </p>
+    <p>
+      That is a structural failure, not a matter of the agent trying harder: two
+      different claims are being made, and one is reported as the other.
+    </p>
+
+    <h3>What ProofBuild does instead</h3>
+    <p class="flow mono">
+      intent &nbsp;&rarr;&nbsp; outcome contract &nbsp;&rarr;&nbsp; proof plan &nbsp;&rarr;&nbsp; implementation<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; verification &nbsp;&rarr;&nbsp; failure analysis &nbsp;&rarr;&nbsp; repair &nbsp;&rarr;&nbsp; re-verification<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>&#10003; verified</b> &nbsp;/&nbsp; <b>&#9888; review required</b> &nbsp;/&nbsp; <b>&#10007; blocked</b>
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What you actually see</h2>
+    <p>The entire response for a change touching six files:</p>
+<pre class="block">&#10003; VERIFIED
+
+Password reset
+
+Requirements   8/8
+Tests          47/47
+Regression     pass
+Changed        6 files</pre>
+    <p>When a decision is genuinely yours, you get the decision &mdash; not the narrative:</p>
+<pre class="block">&#9888; REVIEW REQUIRED
+
+Bulk upload &middot; 13/14 requirements verified
+
+Decision required:
+A duplicate filename inside one upload batch —
+
+  [overwrite]   [reject the duplicate]   [keep both, suffix the name]</pre>
+    <p>And when it does not work, you get a diagnosis instead of another attempt:</p>
+<pre class="block">&#10007; BLOCKED
+
+Checkout &middot; 11/12 requirements verified
+
+CHECKOUT-009  Session expires on wall-clock time, not idle time — an active
+              user is signed out mid-checkout.
+Cause         expiry derives from session.createdAt; no activity timestamp
+              exists on the session record.
+Attempts      3 (refresh-on-request, sliding expiry, lastSeenAt column)
+Blocker       lastSeenAt changes a schema shared with the mobile token contract.
+
+Decision required: extend the session record, or scope expiry to web only?</pre>
+    <div class="note">
+      <strong>Detail is one question away.</strong> <em>Show the contract</em>,
+      <em>show evidence</em>, <em>explain the proof for AUTH-005</em>,
+      <em>show failed attempts</em> &mdash; complete answers, on request. What
+      you never get is a green checkmark meaning &ldquo;I wrote some code and it
+      looked right to me.&rdquo;
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The outcome contract</h2>
+    <p>
+      Every meaningful task becomes numbered, individually observable
+      requirements &mdash; written before the implementation, because the
+      implementation is built to satisfy them.
+    </p>
+<pre class="block">objective: "Users can securely reset their password by email"
+risk: high
+requirements:
+  - AUTH-001  A user can request a reset for their email          integration
+  - AUTH-003  An unknown email returns the same response          security
+  - AUTH-004  A token past its expiry is rejected                 security
+  - AUTH-005  A token already used once is rejected on reuse      security
+  - AUTH-007  After reset, the old password no longer works       integration
+  - AUTH-008  Existing email/password login is unchanged          regression</pre>
+    <p>
+      Five of those eight were never in the request. A requirement is
+      <em>observable</em> &mdash; someone outside the codebase could tell whether
+      it holds. &ldquo;Token handling is secure&rdquo; is not a requirement;
+      &ldquo;a reset token is rejected after its first successful use&rdquo; is.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Contradiction detection</h2>
+    <p>
+      The check that separates a system that verifies from one that narrates.
+      When the agent&rsquo;s model of the code and the executed output disagree,
+      the output wins &mdash; every time.
+    </p>
+<pre class="block">Reasoning   "the token is invalidated after use — consumeToken() sets used_at"
+Observed    the same token reset the password twice, both returning 200
+
+&#10007; CONTRADICTION — AUTH-005 is not satisfied</pre>
+    <p>
+      A confident, articulate, wrong claim of success is the most damaging thing
+      an AI agent produces. This is the rule that prevents it.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Not a test generator, not a code reviewer</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Those ask</th><th>ProofBuild asks</th></tr></thead>
+        <tbody>
+          <tr><td>Does this code look correct?</td><td>Did the requested outcome actually happen?</td></tr>
+          <tr><td>Are there tests?</td><td>What does each test <em>prove</em>, and which requirement does it prove it for?</td></tr>
+          <tr><td>Did it pass CI?</td><td>Which requirements could not be verified here, and why?</td></tr>
+          <tr><td>&mdash;</td><td>What did I believe that the output contradicts?</td></tr>
+          <tr><td>&mdash;</td><td>What is left for a human to decide?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Tests are one proof mechanism among several &mdash; chosen after the
+      contract and before the implementation. A suite written afterwards tends to
+      assert what the code does rather than what was wanted.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The repair loop</h2>
+    <p>A failing check is classified before any code changes:</p>
+<pre class="block">IMPLEMENTATION_ERROR   the code does not do what the requirement says
+TEST_ERROR             the check is wrong — and you must show why
+CONTRACT_ERROR         the requirement was wrong; amend it visibly
+ENVIRONMENT_ERROR      missing service or credential — do not touch the code
+EXISTING_REGRESSION    it was already failing; the baseline proves it
+UNRELATED_FAILURE      report it, do not absorb it
+UNKNOWN                never a final state, and never repaired</pre>
+    <p>
+      A missing dependency is not a broken implementation. Misattribution is how
+      an agent starts rewriting working code to satisfy a failure it never
+      understood. Repair is budgeted &mdash; three attempts per requirement, two
+      at high risk, one at critical &mdash; and running out produces
+      <b>&#10007; BLOCKED</b> with a diagnosis, not a fourth attempt. Weakening a
+      test to make it pass is never a repair.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Risk-based depth</h2>
+    <p>Evidence proportional to risk, in both directions.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Risk</th><th>Examples</th><th>Proof floor</th><th>Repairs</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="klass">Low</td>
+            <td>Copy, styling, docs</td>
+            <td>Build, lint, typecheck + the one check that would catch a mistake</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td class="klass">Medium</td>
+            <td>CRUD, API shape, UI state</td>
+            <td>+ a targeted check per requirement, + existing suites for the area</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td class="klass">High</td>
+            <td>Auth, migrations, destructive operations, multi-tenancy</td>
+            <td>+ negative and boundary cases, + regression evidence</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td class="klass">Critical</td>
+            <td>Payments, credentials, irreversible operations</td>
+            <td>+ replay / idempotency, + rollback &mdash; and stop for a human sooner</td>
+            <td>1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A typo does not get a 40-test suite. A payment path does not get a
+      typecheck and a shrug.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Human judgment is a real answer</h2>
+    <p>
+      Some requirements no check can settle. Saying so is what keeps the rest
+      credible &mdash; so subjective requests get decomposed into the part that
+      can be proven and the part that cannot.
+    </p>
+<pre class="block">"Make the settings page feel premium"
+
+  &#10003; Level A   Every control reachable by keyboard
+  &#10003; Level A   Contrast meets WCAG AA            (axe: 0 violations)
+  &#10003; Level A   Layout holds at 320 / 768 / 1440  (screenshots attached)
+  &#10003; Level B   Interaction states for every control
+  &#9888; Level D   Whether it reads as "premium"     &larr; yours</pre>
+    <p>
+      Four levels: <b>A</b> an executed check demonstrates it &middot; <b>B</b>
+      several independent checks support it &middot; <b>C</b> partly unreachable
+      in this environment &middot; <b>D</b> human judgment. A Level C or D
+      requirement means <b>&#9888; review required</b> &mdash; it never rounds up
+      to verified.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Evidence that outlives the conversation</h2>
+    <p>For substantial work, proof is written down:</p>
+<pre class="block">.proofbuild/
+├── contract.yml            objective, risk, assumptions, requirements
+├── proof-plan.yml          the mechanism chosen per requirement
+├── evidence/AUTH-005.json  command, expected, actual, status, level
+├── reports/latest.md       the full result
+└── history/                superseded contracts</pre>
+<pre class="block">{
+  "requirement": "AUTH-005",
+  "command": "npm test -- reset-password.test.ts -t \"rejects reused token\"",
+  "expected": "Second use of a consumed token is rejected",
+  "actual":   "PASS — 1 passed. Response: 400 {\"error\":\"token_invalid\"}",
+  "status":   "PASS",
+  "level":    "A"
+}</pre>
+    <p>
+      Never in evidence: tokens, keys, cookies, connection strings, or real
+      customer data &mdash; redacted by shape, so the record stays meaningful and
+      safe to commit. A later session, another agent, or you in six weeks can
+      read the contract plus the evidence and know exactly what was claimed, what
+      ran, and what was never verified.
+    </p>
+    <p>
+      Six worked examples ship with the skill:
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/examples/feature-development.md">feature development</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/examples/bug-fix.md">bug fix</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/examples/refactoring.md">refactoring</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/examples/performance.md">performance</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/examples/security.md">security</a>, and
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/examples/ambiguous-request.md">an ambiguous request</a>.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Install</h2>
+
+    <h3>Any Agent Skills-compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill proof-driven-dev</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Claude Code</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Using it</h3>
+    <ul class="plain">
+      <li>&ldquo;Use proof-driven development for this task.&rdquo;</li>
+      <li>&ldquo;Implement password reset and prove the acceptance criteria.&rdquo;</li>
+      <li>&ldquo;Fix this bug &mdash; don&rsquo;t mark it complete until the behavior is verified.&rdquo;</li>
+      <li>&ldquo;Refactor this service without changing behavior, and show me the proof.&rdquo;</li>
+      <li>&ldquo;Show the contract.&rdquo; &middot; &ldquo;Show evidence.&rdquo; &middot; &ldquo;Why is this verified?&rdquo;</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Safety</h2>
+    <p>
+      ProofBuild runs your project&rsquo;s own checks &mdash; its test framework,
+      its commands, its conventions. It does not install a testing stack you did
+      not ask for, and it establishes a baseline first so a pre-existing failure
+      is never blamed on the change.
+    </p>
+    <p>
+      It will not <code>git reset --hard</code>, <code>git clean -fd</code>,
+      check out over your uncommitted work, force push, commit or push
+      automatically, drop databases, or touch production &mdash; unless you
+      explicitly ask for that operation.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Pairs with the other skills</h2>
+    <p class="flow mono">
+      ticket &nbsp;&rarr;&nbsp; <b>impact-map</b> &nbsp;&rarr;&nbsp; <b>proof-driven-dev</b> &nbsp;&rarr;&nbsp; <b>production-guard</b> &nbsp;&rarr;&nbsp; ship
+    </p>
+    <p>
+      <a href="impact-map.html">Impact Map</a> maps what a change will touch
+      before it is written. ProofBuild defines and proves the outcome while it is
+      written. <a href="production-guard.html">Production Guard</a> asks whether
+      the result is safe to ship. None requires the others.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Limitations</h2>
+    <p>
+      ProofBuild raises the evidence available before you trust a change. It does
+      not guarantee correctness, and no tool that writes your code can.
+    </p>
+    <ul class="plain">
+      <li>It does not replace your tests &mdash; it orchestrates the verification your project already has around explicit outcomes</li>
+      <li>It cannot verify what the environment cannot run; no database, credential or browser means <code>BLOCKED</code>, not passed</li>
+      <li>It cannot verify taste &mdash; visual quality, API elegance and architectural fit are Level D by construction</li>
+      <li>It is not a security audit; it proves the properties it tested, and that set is always smaller than &ldquo;secure&rdquo;</li>
+      <li>Contract quality bounds everything &mdash; which is why the contract is reviewable before implementation starts</li>
+      <li>It costs more than &ldquo;just write the code&rdquo;. On a typo that is overhead; on a payments change it is the cheapest part of the week</li>
+      <li>Verification systems, testing agents and review agents already exist. The combination here is the contribution, not the category</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed &middot; <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/proof-driven-dev/SKILL.md">Read the skill source</a></span>
+    <span><a href="./">&larr; All skills</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

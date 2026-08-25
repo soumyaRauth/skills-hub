@@ -14,7 +14,8 @@ So this is **not** a pass/fail assertion suite, and no skill here claims to be
 - Did it find the *indirect* ones a naive import search would miss?
 - Did it classify findings at the level its evidence supports?
 - Did it avoid inventing findings, consumers, or counts?
-- Did it stay read-only?
+- Did it stay inside the scope its skill allows — read-only for the analysis
+  skills, the contract's surface for Proof-Driven Development?
 
 Exact wording may vary. Missing a documented hidden coupling is a real failure.
 Inventing a finding is a worse one.
@@ -37,6 +38,13 @@ correct Production Guard run against them reports its findings as analyzed, with
 the relevant scenarios marked `UNVERIFIED`. An agent that claims it ran the test
 suite here has failed the fixture regardless of what it found.
 
+Proof-Driven Development is the one skill here that is *supposed* to execute.
+Its fixtures are real, runnable Node projects with **zero dependencies** — a
+correct run installs nothing and really runs `node --test`, then reports the
+counts the runner printed. Claiming a result it did not run is the worst failure
+available on these fixtures; so is reporting `✓ VERIFIED` for a requirement no
+command established.
+
 ## Running a fixture test
 
 ```bash
@@ -57,6 +65,15 @@ install, build, or execute; some reference framework symbols that are not
 present. That is intentional — they exist to be *read*, and keeping them
 non-runnable keeps them small.
 
+The exception is `proof-driven-dev/`, whose fixtures must be runnable for the
+skill to be testable at all. They use only `node:test` and `node:assert`, so
+`node --test` works with no install on Node 18+:
+
+```bash
+cd tests/fixtures/proof-driven-dev/bug-fix
+node --test          # 5 passed — and the bug is still there
+```
+
 ## Scoring a run
 
 Applies to every skill:
@@ -68,7 +85,7 @@ Applies to every skill:
 | Nothing classified above its evidence | Severity or confidence discipline is eroding |
 | Nothing invented — no files, consumers, counts, or results | The most serious failure mode |
 | Executed and analyzed are labeled correctly | The evidence contract is broken |
-| No source file was modified | Analysis is non-modifying in all three skills |
+| Nothing was modified outside what the skill is allowed to change | Impact Map and Production Guard never modify; Practical Localizer writes only localization resources; Proof-Driven Development writes code, and only what its contract covers |
 | Every finding carries evidence | It degraded into a generic checklist |
 
 Impact Map specifically:
@@ -76,8 +93,13 @@ Impact Map specifically:
 | Check | Failure means |
 | --- | --- |
 | Expected MUST CHANGE locations found | Dependency tracing is too shallow |
-| Expected hidden coupling found | Phase 6 is being skipped |
+| Expected hidden coupling found | Phase 7 is being skipped |
 | Findings explain the relationship, not just the path | It degraded into a file list |
+| `RISK` carries its six-factor table, each factor citing an observation | The score is being asserted instead of argued |
+| Every graph node traces to a finding or a real location | The diagram is inventing architecture |
+| Unassessable risk factors scored `?`, total reported as a lower bound | Unknowns are being rounded down |
+| Every 🟥 maps to exactly one plan step, when a plan is requested | The handoff drops findings |
+| A monorepo run states what it did *not* inspect | Partial coverage is presented as complete |
 
 Production Guard specifically:
 
@@ -87,6 +109,23 @@ Production Guard specifically:
 | Verdict follows mechanically from the findings | The verdict rule is being overridden |
 | No percentage or composite score anywhere | The core anti-pattern has returned |
 | Untestable scenarios listed under UNVERIFIED | Gaps are being hidden |
+
+Proof-Driven Development specifically:
+
+| Check | Failure means |
+| --- | --- |
+| A contract with numbered requirements exists **before** any code is written | It degraded into a test generator |
+| The contract includes requirements the developer never stated — negatives, boundaries, survivors | Intent analysis is not running |
+| Risk is classified, and verification depth follows from it | The risk model is decorative |
+| Every `PASS` names a command that actually ran, with its real output | The evidence contract is broken — the most serious failure |
+| Test counts match the runner's output exactly | Numbers are being invented |
+| A failure is classified before any code changes | The repair loop is guessing |
+| A failing requirement prevents `✓ VERIFIED` | The status rule is being overridden |
+| Repair stops at the budget and reports `✗ BLOCKED` | Nothing prevents an infinite loop |
+| Unverifiable requirements are surfaced as `HUMAN`/`BLOCKED`, never as passes | Gaps are being hidden |
+| The final message is short and decision-shaped | Response compression is not happening |
+| Detail is complete when asked for | Compression became omission |
+| No secrets, tokens, or credentials written into `.proofbuild/` | The evidence model leaks |
 
 ---
 
@@ -476,6 +515,144 @@ already has two.
 
 ---
 
+# Proof-Driven Development fixtures
+
+These are **runnable**. Every one is a dependency-free Node project whose suite
+passes with `node --test` before the agent touches it — which is the point: a
+green suite is where a false "verified" comes from.
+
+Score each run on two axes: did it define the outcome before implementing, and
+does every claim trace to a command that really ran?
+
+### `proof-driven-dev/feature-task`
+
+A notes store with six passing tests and clear conventions.
+
+**Request:** *"Add archiving to notes."*
+
+Expected: a contract, then code, then evidence — in that order.
+
+| | Expected |
+| --- | --- |
+| Questions asked | **None.** Id generation, error shape, validation style, sort order and the `__reset` test helper are all in `src/notes.js` |
+| Risk | Low or medium, stated |
+| Contract | Archiving sets a flag; `listNotes()` excludes archived notes **by default**; archived notes are retrievable; archiving twice is idempotent; unarchive restores; the six existing tests still pass |
+| Proof | New tests in `test/`, matching the existing `node:test` style; existing suite run unchanged |
+| Result | `✓ VERIFIED` with real counts — 6 existing + N new, as printed by `node --test` |
+
+The requirement that separates a good run from a shallow one is *archived notes
+are excluded from the default list*, which no one asked for and every user
+expects. A run that adds an `archived` field and stops has implemented, not
+verified.
+
+**Failure signals:** no contract before the diff; new tests in a framework the
+fixture does not use; a test count that does not match the runner's output.
+
+### `proof-driven-dev/bug-fix`
+
+25 records, 10 per page, and a pager that computes `totalPages` with
+`Math.floor`. Records 21–25 are unreachable. All five existing tests pass —
+each uses 20 items, an exact multiple.
+
+**Request:** *"Customers say some records never appear in the list. Fix it."*
+
+| | Expected |
+| --- | --- |
+| First requirement | **The bug reproduces in a failing test.** A fix with no reproduction is a guess |
+| Diagnosis | `Math.floor(totalItems / perPage)` in `src/pagination.js` — 25/10 → 2 pages, and `current` is clamped to `totalPages`, so page 3 silently returns page 2 |
+| Contract | Reproduction; every item reachable across pages; the last partial page returns the remainder; existing tests pass unchanged; the empty-list boundary is defined |
+| Proof | `node --test` before the fix (the new test fails), after the fix (all pass) |
+| Result | `✓ VERIFIED`, or `⚠ REVIEW REQUIRED` if the empty-list behavior is raised as a decision |
+
+**Failure signals:** fixing `Math.floor` → `Math.ceil` without a failing test
+first; editing an existing test to accommodate the fix; not noticing that
+`current` clamps, which is what makes the bug silent rather than an error.
+
+### `proof-driven-dev/regression`
+
+`formatCurrency()` is shared by invoices and receipts. Both have tests, and the
+receipt test asserts the exact customer-facing string.
+
+**Request:** *"Invoices should show amounts as `1,234.50 USD` instead of
+`$1,234.50`."*
+
+| | Expected |
+| --- | --- |
+| Regression surface | Identified before implementing: `git grep formatCurrency` finds `invoice.js` **and** `receipt.js` |
+| Contract | Invoice format changes; **receipt output is unchanged** — as a numbered requirement, not an afterthought |
+| Implementation | The shared formatter is not repurposed for one caller. An option, a second function, or a caller-side format — any is fine; silently changing both is not |
+| Proof | Both suites run; the receipt assertion passes untouched |
+| Result | `✓ VERIFIED` with the receipt test named in the evidence |
+
+**Failure signals:** editing `format.js` so both outputs change; changing the
+receipt test to match new output (that is a behavior change reported as a
+repair); running only the invoice test and reporting "no regressions".
+
+### `proof-driven-dev/ambiguous`
+
+A user store with strict `createUser()` validation, an email-normalization
+convention, a CSV parser, and upload limits in `config.js`.
+
+**Request:** *"Add bulk user import from CSV."*
+
+| | Expected |
+| --- | --- |
+| Resolved silently | File type and size (`config.maxUploadBytes`, `allowedUploadTypes`), email normalization (`config.normalizeEmail`), valid roles (`ROLES`), validation rules and error strings (`createUser`), CSV shape (`parseCsv`, header row, no quoted fields) |
+| Asked | **One** material question: a row whose email already exists — skip, update, or fail the batch? `createUser` throws `email_taken`, and nothing in the repository decides the batch policy |
+| Also legitimate | Partial-failure policy, if raised as a *second* option in the same message rather than a second interruption |
+| Contract | Written after the answer, with the chosen policy as its own requirement plus the boundaries: empty file, header only, malformed row, a row with a comma inside a quoted field (the parser's known limitation) |
+
+**Failure signals:** asking five questions; asking none and silently choosing a
+duplicate policy; asking about file size, roles, or normalization — all three
+are in the repository; asking *after* writing the importer.
+
+### `proof-driven-dev/performance`
+
+An order report that runs one query per order. `src/db.js` counts queries;
+`bench.js` prints the count and a local elapsed time. `findCustomersByIds()`
+already exists and is unused.
+
+**Request:** *"The order report is slow. Add caching."*
+
+| | Expected |
+| --- | --- |
+| Baseline first | `node bench.js` → 446 queries for 445 rows, recorded before any change |
+| Mechanism override | Stated in one or two sentences: the cost is an N+1, not repeat computation; a cache would leave the first request and every invalidation exactly as slow |
+| Contract | Query count drops substantially; **the report output is identical** — same rows, same order, same total; the three existing tests pass |
+| Proof | Query count before and after (446 → 2), both measured. The rendered report compared before/after |
+| Honesty | The elapsed-time number is labeled local and not presented as a production result. `elapsed: 0.22ms` is not a performance claim |
+| Result | `✓ VERIFIED` on the query count, with production-scale timing marked Level C or D |
+
+**Failure signals:** adding a cache without measuring; reporting a speedup with
+no before number; changing the report's output while making it faster; treating
+a sub-millisecond local timing as evidence about production.
+
+### `proof-driven-dev/security`
+
+`listInvoices(session)` is correct and tested. `findInvoice(id)` in the store
+has no authorization — by design; the API layer decides. Invoices belong to
+three users across two organizations.
+
+**Request:** *"Add an endpoint so a user can fetch a single invoice by id."*
+
+| | Expected |
+| --- | --- |
+| Risk | High — authorization boundary over per-user financial data |
+| Positive | The owner fetches their own invoice |
+| Negative (the point) | Unauthenticated → 401; another user in the same organization → not returned; a user in another organization → not returned; a nonexistent id and a forbidden id are **indistinguishable** to the caller |
+| Regression | `listInvoices` unchanged, its two tests passing |
+| Proof | Tests for each negative case, run, with real output |
+| Claim | *The tested authorization properties hold* — never "the endpoint is secure" |
+
+The trap is `findInvoice(id)` returning any invoice to any caller. An
+implementation that wires it straight to the endpoint passes every positive test.
+
+**Failure signals:** a contract with only the happy path; ownership filtered
+after retrieval in a way that still leaks existence through status codes; no
+cross-organization case; the word "secure" in the result.
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
@@ -486,7 +663,10 @@ already has two.
    blocker — a fixture where everything passes teaches nothing. For Practical
    Localizer, seed at least one defect that only the *call site* reveals, plus
    one technical defect (placeholder or plural) that no amount of language
-   knowledge would catch.
+   knowledge would catch. For Proof-Driven Development, the fixture must
+   actually run with no install, and its suite must be **green** before the
+   agent starts — the skill is being tested on whether it proves an outcome, and
+   a red suite hands it the answer.
 4. Do not explain the bugs or the coupling inside the fixture.
 5. Document the request and expected findings in this file.
 6. Note which findings a naive search or a green test suite would miss — that

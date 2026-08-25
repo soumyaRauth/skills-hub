@@ -1,0 +1,10 @@
+{
+  "name": "user-import-fixture",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Fixture: a bulk-import request where the repository answers every question but one.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

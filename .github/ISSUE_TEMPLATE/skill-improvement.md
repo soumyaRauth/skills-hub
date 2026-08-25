@@ -7,7 +7,7 @@ labels: improvement
 
 ## Which skill
 
-<!-- impact-map | production-guard -->
+<!-- impact-map | proof-driven-dev | production-guard | practical-localizer -->
 
 ## What does the skill do wrong today?
 

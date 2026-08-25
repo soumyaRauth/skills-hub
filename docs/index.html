@@ -15,6 +15,7 @@
     <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
     <nav class="links">
       <a href="impact-map.html">Impact Map</a>
+      <a href="proof-driven-dev.html">ProofBuild</a>
       <a href="production-guard.html">Production Guard</a>
       <a href="practical-localizer.html">Practical Localizer</a>
       <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
@@ -75,6 +76,25 @@
         <span class="more">Read the guide &rarr;</span>
       </a>
 
+      <a class="card" href="proof-driven-dev.html">
+        <h3>ProofBuild</h3>
+        <p>
+          Don&rsquo;t read what the AI did &mdash; see whether it actually works.
+          Turns a request into an <em>outcome contract</em> before any code is
+          written, proves each requirement with evidence, repairs what fails,
+          and answers <strong>verified</strong>, <strong>review required</strong>
+          or <strong>blocked</strong>.
+        </p>
+        <div class="tags">
+          <span class="tag">outcome contracts</span>
+          <span class="tag">verification</span>
+          <span class="tag">evidence</span>
+          <span class="tag">repair loop</span>
+          <span class="tag">while you build</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
       <a class="card" href="production-guard.html">
         <h3>Production Guard</h3>
         <p>
@@ -116,7 +136,7 @@
 
     <p style="margin-top:22px;color:var(--text-muted);font-size:14.5px">
       They compose, and none requires the others:
-      <code>ticket &rarr; impact-map &rarr; implement &rarr; production-guard &rarr; ship</code>
+      <code>ticket &rarr; impact-map &rarr; proof-driven-dev &rarr; production-guard &rarr; ship</code>
       &nbsp;&mdash;&nbsp; then <code>practical-localizer</code> when the product
       goes to another language.
     </p>
@@ -151,6 +171,10 @@
       <button type="button" data-copy>Copy</button>
     </div>
     <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill proof-driven-dev</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill production-guard</code>
       <button type="button" data-copy>Copy</button>
     </div>
@@ -162,6 +186,10 @@
     <h3>Claude Code</h3>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code</code>
       <button type="button" data-copy>Copy</button>
     </div>
     <div class="cmd">

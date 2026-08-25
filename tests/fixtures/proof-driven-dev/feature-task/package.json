@@ -1,0 +1,10 @@
+{
+  "name": "notes-fixture",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Fixture: a small notes store with existing tests. Runs with node --test, no dependencies.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

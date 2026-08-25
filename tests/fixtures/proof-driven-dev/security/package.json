@@ -1,0 +1,10 @@
+{
+  "name": "invoice-access-fixture",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Fixture: an authorization surface where only the negative cases find the defect.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

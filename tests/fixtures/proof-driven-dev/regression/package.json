@@ -1,0 +1,10 @@
+{
+  "name": "billing-format-fixture",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Fixture: one shared formatter used by two features. Changing it for one breaks the other.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

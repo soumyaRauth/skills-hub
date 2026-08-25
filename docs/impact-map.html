@@ -15,6 +15,7 @@
     <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
     <nav class="links">
       <a href="./">All skills</a>
+      <a href="proof-driven-dev.html">ProofBuild</a>
       <a href="production-guard.html">Production Guard</a>
       <a href="practical-localizer.html">Practical Localizer</a>
       <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/SKILL.md">SKILL.md</a>
@@ -92,7 +93,7 @@
           <tr><td class="klass">🟥 Must change</td><td>Strong evidence this location requires modification.</td></tr>
           <tr><td class="klass">🟧 Likely affected</td><td>Strong relationship established; whether it changes needs confirmation.</td></tr>
           <tr><td class="klass">🟨 Needs verification</td><td>Plausible relationship that must be checked before implementing.</td></tr>
-          <tr><td class="klass">⚠️ Hidden coupling</td><td>Indirect dependency — raw strings, SQL, config, duplicated logic, fixtures, serialization.</td></tr>
+          <tr><td class="klass">⚠️ Hidden coupling</td><td>Indirect dependency — raw strings, SQL, config, duplicated logic, fixtures, serialization, co-change history.</td></tr>
           <tr><td class="klass">⬜ Out of scope</td><td>Inspected and found not materially related.</td></tr>
         </tbody>
       </table>
@@ -132,16 +133,136 @@ backend/jobs/nightly_sync.py
 
 RISK
 
-High — spans four runtimes, requires a data migration, and three critical
-paths are string-coupled with no test coverage. Nothing in CI fails if
-they are missed.</pre>
+Risk score: 15 / 18 → High
+
+Breadth             3   backend, frontend, jobs, and reporting all in scope
+Coupling opacity    3   raw SQL, a direct-read job, a duplicated UI comparison
+Test coverage       3   no test asserts report or sync behavior for this status
+Reversibility       2   value rename with a backfill of existing rows
+Consumer reach      3   a partner system reads the value; BI consumers are
+                        suspected and not enumerable from this repository
+Area volatility     1   normal churn, except one stale job
+
+Nothing in CI fails if the string-coupled paths are missed.</pre>
     <p>
-      Four full worked examples ship with the skill:
+      Five full worked examples ship with the skill:
       <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/simple-change.md">simple change</a>,
       <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/api-change.md">API change</a>,
-      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/database-change.md">database change</a>, and
-      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/cross-module-change.md">cross-module change</a>.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/database-change.md">database change</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/cross-module-change.md">cross-module change</a>, and the
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/impact-map/examples/implementation-plan.md">implementation plan</a> that follows it.
     </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Risk is a scored argument</h2>
+    <p>
+      Six factors, each scored 0–3 from what the analysis actually observed, each
+      printed with the observation that set it. The factor table is mandatory —
+      a total without its factors is exactly the invented number this skill
+      forbids. A factor that could not be assessed is scored <code>?</code>, and
+      the total becomes a lower bound rather than being rounded down.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Factor</th><th>What moves it</th></tr></thead>
+        <tbody>
+          <tr><td>Breadth</td><td>Files → layers → packages → separate runtimes</td></tr>
+          <tr><td>Coupling opacity</td><td>Hard edges only, up to duplicated logic on untested critical paths</td></tr>
+          <tr><td>Test coverage</td><td>Whether anything fails if the change is wrong</td></tr>
+          <tr><td>Reversibility</td><td>Code change → additive schema → contract change → lossy migration</td></tr>
+          <tr><td>Consumer reach</td><td>One caller here → cross-team → consumers outside this repository</td></tr>
+          <tr><td>Area volatility</td><td>Churn, half-finished migrations, and whether anyone still owns it</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>Not a quality score.</strong> No percentages, no health metric, and
+      not comparable between repositories. It is the argument for the band,
+      written down so you can disagree with it.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What the code does not say</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>Git history</h3>
+        <p>
+          Files that keep being committed together are coupled whether or not any
+          import says so. A file in most of a concept's commits with no reference
+          between them is <em>temporal coupling</em> — reported at Medium
+          confidence, because history proves correlation, not causation. The same
+          pass reads churn as a risk input and <code>CODEOWNERS</code> as review
+          routing, never as attribution.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Monorepo scope</h3>
+        <p>
+          Scope follows the package graph, not directory proximity: read the
+          workspace config, find the package the change originates in, invert the
+          graph for its dependents. The report states what was in scope, what was
+          not, and why — partial coverage that names its boundary beats partial
+          coverage presented as complete.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Architecture graph</h3>
+        <p>
+          When the surface branches or crosses three or more layers, it is drawn:
+          one subgraph per layer the repository actually has, every edge labelled
+          with its relationship, solid for hard edges and dashed for the quiet
+          ones. It renders findings already in the report — no invented boxes.
+        </p>
+      </div>
+      <div class="card">
+        <h3>A change you already made</h3>
+        <p>
+          Point it at a branch, a PR, or uncommitted work. The change statement
+          comes from what the code now does, the analysis runs on the diff's
+          symbols, and then the already-changed files are subtracted. What remains
+          is the finding: the surface the change touches but never visited.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>From map to plan</h2>
+    <p>
+      The map stops before implementation. Ask for the plan and you get a handoff
+      artifact — executable by an engineer, or by a fresh agent session that never
+      saw the analysis. Still no code.
+    </p>
+<pre class="block">STEP 2 — Rename the enum member and its stored value
+
+  Files:      backend/models/enrollment.py
+              backend/services/enrollment_service.py
+  Resolves:   F1, F2
+  Depends on: Step 1 deployed.
+  Change:     Rename the member and its value; update the typed writer in the
+              same step — the rename breaks it, so they are one commit.
+  Verify:     The existing service test passes against the new member; the type
+              checker reports no remaining references to the old name.
+  Rollback:   Revert. Step 1 left every reader tolerant of both values.
+
+COVERAGE
+  F1 → step 2   F2 → step 2   F3 → step 4   F5 → prerequisite   …
+  Deferred: none      Unmapped: none</pre>
+    <ul class="plain">
+      <li>Every finding id maps to a step — a <em>must change</em> with no step is an invalid plan</li>
+      <li><em>Needs verification</em> findings become prerequisites, resolved before the steps that depend on them</li>
+      <li>Every step leaves the system working, and is sized to one commit</li>
+      <li>Verification is an observation, never “verify it works”</li>
+      <li>If implementation contradicts the map, the rule is to stop and name the finding that changed</li>
+    </ul>
   </div>
 </section>
 
@@ -193,6 +314,8 @@ they are missed.</pre>
           <tr><td>Exhaustive string / SQL / config sweep</td><td>—</td><td>✅</td></tr>
           <tr><td>Events, jobs, schedules, permissions</td><td>as relevant</td><td>✅</td></tr>
           <tr><td>Fixtures, generated code, external boundaries</td><td>as relevant</td><td>✅</td></tr>
+          <tr><td>Co-change history per concept</td><td>high-value only</td><td>✅</td></tr>
+          <tr><td>Transitive dependent packages</td><td>direct only</td><td>✅</td></tr>
         </tbody>
       </table>
     </div>
