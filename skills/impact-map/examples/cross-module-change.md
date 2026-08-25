@@ -28,7 +28,7 @@ fixtures, and documentation.
 ## 🟥 MUST CHANGE
 
 ```
-backend/models/enrollment.py
+F1 · backend/models/enrollment.py
 
   Symbol:         EnrollmentStatus.COMPLETED
   Relationship:   Defines the value being renamed; the source of truth for every
@@ -43,7 +43,7 @@ backend/models/enrollment.py
 ```
 
 ```
-backend/services/enrollment_service.py
+F2 · backend/services/enrollment_service.py
 
   Symbol:         complete_enrollment()
   Relationship:   Sole typed writer of the status.
@@ -55,7 +55,7 @@ backend/services/enrollment_service.py
 ```
 
 ```
-Data migration for enrollments.status
+F3 · Data migration for enrollments.status
 
   Relationship:   Existing rows store the literal `'completed'`.
   Evidence:       The enum persists its value, and the reporting SQL matches on
@@ -69,7 +69,7 @@ Data migration for enrollments.status
 ## 🟧 LIKELY AFFECTED
 
 ```
-backend/api/enrollments.py
+F4 · backend/api/enrollments.py
 
   Relationship:   Serializes status into API responses; consumers receive the
                   literal string.
@@ -84,7 +84,7 @@ backend/api/enrollments.py
 ## 🟨 NEEDS VERIFICATION
 
 ```
-Downstream warehouse / BI consumers
+F5 · Downstream warehouse / BI consumers
 
   Relationship:   Reporting SQL suggests enrollment status is consumed
                   analytically; dashboards outside this repository may filter on
@@ -100,7 +100,7 @@ Downstream warehouse / BI consumers
 ## ⚠️ HIDDEN COUPLING
 
 ```
-backend/reports/completion_report.py
+F6 · backend/reports/completion_report.py
 
   Coupling type:  Raw SQL
   Evidence:       `WHERE status = 'completed'` inside a raw query — never
@@ -113,7 +113,7 @@ backend/reports/completion_report.py
 ```
 
 ```
-backend/jobs/nightly_sync.py
+F7 · backend/jobs/nightly_sync.py
 
   Coupling type:  Raw string + direct data access
   Evidence:       `if row["status"] == "completed":` while querying the table
@@ -127,7 +127,7 @@ backend/jobs/nightly_sync.py
 ```
 
 ```
-frontend/src/components/EnrollmentBadge.jsx
+F8 · frontend/src/components/EnrollmentBadge.jsx
 
   Coupling type:  Raw string + duplicated business logic
   Evidence:       `status === 'completed'` in the badge, plus a second copy of
@@ -140,7 +140,7 @@ frontend/src/components/EnrollmentBadge.jsx
 ```
 
 ```
-Fixtures and seed data
+F9 · Fixtures and seed data
 
   Coupling type:  Fixture
   Evidence:       Test fixtures and the local seed script both write the literal
@@ -149,6 +149,22 @@ Fixtures and seed data
   Confidence:     High
   Action:         Update together with the enum, or tests will keep asserting
                   the old world.
+```
+
+```
+F10 · backend/jobs/reminder_scheduler.py
+
+  Coupling type:  Temporal (co-change)
+  Evidence:       Changed in 8 of the 11 commits that touched
+                  EnrollmentStatus, with no import, string literal, or query
+                  referencing it. Reading it shows it consumes the rows the
+                  nightly sync writes.
+  Relationship:   Suspected downstream of the sync job (F7); the code does not
+                  say so, the history does.
+  Classification: ⚠️ HIDDEN COUPLING
+  Confidence:     Medium
+  Action:         Read it before implementing. History says these two move
+                  together for a reason this analysis has not established.
 ```
 
 ## Dependency paths
@@ -169,6 +185,62 @@ enrollments.status                                (existing rows hold 'completed
 
 The three ⚠️ hops carry no import, no type reference, and no test that fails at
 build time. They are the reason this change is High risk.
+
+## Architecture graph
+
+```mermaid
+flowchart LR
+  subgraph domain["Domain"]
+    F1["EnrollmentStatus<br/>backend/models/enrollment.py"]:::must
+    F2["complete_enrollment()<br/>backend/services/enrollment_service.py"]:::must
+  end
+  subgraph persistence["Persistence"]
+    F3[("enrollments.status")]:::must
+  end
+  subgraph api["API"]
+    F4["GET /api/enrollments<br/>backend/api/enrollments.py"]:::likely
+  end
+  subgraph async["Jobs & reporting"]
+    F6["completion_report.py"]:::hidden
+    F7["nightly_sync.py"]:::hidden
+    F10["reminder_scheduler.py"]:::hidden
+  end
+  subgraph web["Frontend"]
+    F8["EnrollmentBadge.jsx<br/>+ list filter"]:::hidden
+  end
+  F5(["BI / warehouse · outside repo"]):::verify
+  partner(["Partner system · outside repo"]):::verify
+
+  F1 -->|"written by"| F2
+  F2 -->|"persists to"| F3
+  F3 -->|"serialized by"| F4
+  F4 -->|"HTTP"| F8
+  F3 -.->|"raw SQL 'completed'"| F6
+  F3 -.->|"direct read, string compare"| F7
+  F3 -.->|"suspected analytics reads"| F5
+  F7 -.->|"pushes status"| partner
+  F7 -.->|"co-change, 8 of 11 commits"| F10
+
+  classDef must stroke:#b91c1c,stroke-width:2px;
+  classDef likely stroke:#c2410c,stroke-width:2px;
+  classDef verify stroke:#a16207,stroke-width:2px,stroke-dasharray:4 3;
+  classDef hidden stroke:#7c3aed,stroke-width:2px,stroke-dasharray:4 3;
+```
+
+`enrollments.status` (F3) is the convergence point — four of the five consumer
+paths read it, and three of those read it *around* the service that owns the
+rule. Two edges leave the repository and cannot be verified from here.
+
+## History and ownership
+
+- **Co-change:** `completion_report.py` appears in 7 of the 11 commits that
+  touched `EnrollmentStatus`, and `reminder_scheduler.py` in 8 — the second one
+  has no textual reference to the enum at all (F10).
+- **Churn:** `nightly_sync.py` was last touched 14 months ago and has one
+  contributor; it is the least-understood file in the change surface and the
+  one with a partner contract behind it.
+- **Ownership:** `CODEOWNERS` routes `backend/reports/` to the data platform
+  team. Their review is needed for F6 regardless of who writes the change.
 
 ## Database impact
 
@@ -197,9 +269,24 @@ the same question.
 
 ## Risk
 
-**High** — the change spans four runtimes, requires a data migration, has an
-unverified external analytics consumer, and three of its critical paths are
-string-coupled with no test coverage. Nothing in CI fails if those are missed.
+**Risk score: 15 / 18 → High**
+
+```
+Breadth             3   backend, frontend, jobs, and reporting all in scope
+Coupling opacity    3   raw SQL, a direct-read job, a duplicated string
+                        comparison in the UI, and one file coupled only in
+                        history
+Test coverage       3   no test asserts report or sync behavior for this status
+Reversibility       2   value rename with a backfill of existing rows
+Consumer reach      3   the partner system consumes the value through the
+                        sync job, and BI consumers are suspected (F5) but not
+                        enumerable from this repository
+Area volatility     1   normal churn, except the stale sync job noted above
+```
+
+Two floors apply independently of the total: consumer reach is unresolved
+behind an unversioned wire format, and test coverage 3 combined with coupling
+opacity 3 means nothing in CI fails if the quiet paths are missed.
 
 ## Recommended implementation order
 

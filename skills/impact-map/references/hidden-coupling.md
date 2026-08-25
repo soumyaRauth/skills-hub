@@ -32,6 +32,17 @@ Search for the table and column names, plus SQL keywords near them — `SELECT`,
 reports, analytics jobs, and `.sql` files. Views, materialized views, and
 stored procedures count.
 
+## Temporal coupling
+
+Files that git history says keep being committed together, with no import,
+call, or shared symbol between them. This is the only coupling mechanism in this
+document that is invisible in the working tree — it exists only in the log.
+
+Read it as a ratio (a file in most of the target's commits, not two of forty),
+discard lockfiles and formatting sweeps, and cap the finding at Medium
+confidence: history proves correlation, not causation. Commands and reporting
+rules: `git-signals.md`.
+
 ## Direct data access bypassing the domain
 
 Code reaching the table without going through the service or repository that

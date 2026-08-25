@@ -84,6 +84,9 @@ attention and the most careful confidence labeling.
 - Published packages have consumers outside the repository. Say so under
   OPEN QUESTIONS rather than claiming the surface is fully mapped.
 
+Workspace detection, package-graph construction, scoping rules, and where
+cross-package coupling hides: `monorepo.md`.
+
 ## Knowing when to stop
 
 Stop when new searches return only files already classified, or files with no

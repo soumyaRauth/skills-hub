@@ -24,7 +24,7 @@ confirmed from this repository.
 ## 🟥 MUST CHANGE
 
 ```
-app/api/orders/route.ts
+F1 · app/api/orders/route.ts
 
   Symbol:         GET handler response mapping
   Relationship:   Constructs the response object containing `state`.
@@ -35,7 +35,7 @@ app/api/orders/route.ts
 ```
 
 ```
-types/order.ts
+F2 · types/order.ts
 
   Symbol:         OrderResponse
   Relationship:   Shared type describing the API payload; imported by both the
@@ -48,7 +48,7 @@ types/order.ts
 ```
 
 ```
-app/orders/OrderStatusBadge.tsx
+F3 · app/orders/OrderStatusBadge.tsx
 
   Symbol:         OrderStatusBadge({ order })
   Relationship:   Reads `order.state` to choose the badge variant.
@@ -61,7 +61,7 @@ app/orders/OrderStatusBadge.tsx
 ## 🟧 LIKELY AFFECTED
 
 ```
-app/orders/page.tsx
+F4 · app/orders/page.tsx
 
   Symbol:         server component data fetch
   Relationship:   Fetches the route and passes the payload down.
@@ -76,7 +76,7 @@ app/orders/page.tsx
 ## 🟨 NEEDS VERIFICATION
 
 ```
-Unknown external consumers of GET /api/orders
+F5 · Unknown external consumers of GET /api/orders
 
   Relationship:   The route is public and unversioned; consumers outside this
                   repository would break on the rename.
@@ -93,7 +93,7 @@ Unknown external consumers of GET /api/orders
 ## ⚠️ HIDDEN COUPLING
 
 ```
-__tests__/fixtures/orders.json
+F6 · __tests__/fixtures/orders.json
 
   Coupling type:  Fixture
   Relationship:   Mock payload used by component tests, contains `"state"`.
@@ -105,7 +105,7 @@ __tests__/fixtures/orders.json
 ```
 
 ```
-docs/api/orders.md
+F7 · docs/api/orders.md
 
   Coupling type:  Contract documentation
   Relationship:   Documents the response schema with `state`.
@@ -147,9 +147,24 @@ __tests__/fixtures/orders.json
 
 ## Risk
 
-**Medium** — the internal change is small and type-checked, but the response is
-a contract on an unversioned public route with no observed consumer inventory.
-Risk drops to Low if dual-emission is used.
+**Risk score: 8+ / 18 → Medium** (lower bound — one factor unassessed)
+
+```
+Breadth             2   route handler, shared type, components, docs, fixture
+Coupling opacity    1   the type is a hard edge; the fixture and the contract
+                        doc carry the field name as a string
+Test coverage       2   component tests read the fixture; no test asserts the
+                        response shape itself
+Reversibility       2   wire-format change on an unversioned route
+Consumer reach      ?   whether consumers exist outside this repository could
+                        not be determined here
+Area volatility     1   normal churn, no stale files in the surface
+```
+
+The internal change is small and type-checked; the exposure is entirely in the
+unassessed factor. Dual-emission does not make it Low — it takes reversibility
+to 1 and settles consumer reach at 1, giving 8 / 18 — but it removes the
+open-ended factor, which is the point.
 
 ## Recommended implementation order
 

@@ -19,7 +19,7 @@ copy of the rule in the UI, and the tests pinning the current window.
 ## 🟥 MUST CHANGE
 
 ```
-src/services/orderService.ts
+F1 · src/services/orderService.ts
 
   Symbol:         CANCELLATION_WINDOW_MINUTES, canCancel()
   Relationship:   Defines the window constant and the only server-side check
@@ -32,7 +32,7 @@ src/services/orderService.ts
 ```
 
 ```
-tests/orderService.test.ts
+F2 · tests/orderService.test.ts
 
   Symbol:         "rejects cancellation after the window"
   Relationship:   Asserts the current 15-minute boundary directly.
@@ -47,7 +47,7 @@ tests/orderService.test.ts
 ## ⚠️ HIDDEN COUPLING
 
 ```
-web/src/components/OrderActions.tsx
+F3 · web/src/components/OrderActions.tsx
 
   Symbol:         isWithinCancelWindow()
   Relationship:   Reimplements the same rule client-side to decide whether to
@@ -62,7 +62,7 @@ web/src/components/OrderActions.tsx
 ```
 
 ```
-docs/support/order-cancellation.md
+F4 · docs/support/order-cancellation.md
 
   Relationship:   Support runbook tells agents the window is 15 minutes.
   Coupling type:  Documentation
@@ -92,9 +92,22 @@ web OrderActions.tsx  (which also re-implements the rule locally)
 
 ## Risk
 
-**Low** — one constant, one duplicate, no schema or contract change, and the
-server-side rule is authoritative. The only real failure mode is updating the
-service and leaving the UI hiding the Cancel button after 15 minutes.
+**Risk score: 4 / 18 → Low**
+
+```
+Breadth             1   the service rule, its test, one UI copy, one runbook
+Coupling opacity    2   the window is reimplemented in the UI and stated in the
+                        runbook; neither references the constant
+Test coverage       1   the service boundary is tested; the UI copy is not
+Reversibility       0   a constant — revert is a revert
+Consumer reach      0   the only reader of the rule is this app's own UI
+Area volatility     0   steady churn on orderService.ts, one active maintainer
+```
+
+No schema, no contract, and the server-side rule stays authoritative. The only
+real failure mode is updating the service and leaving the UI hiding the Cancel
+button after 15 minutes — which is the duplicated-logic finding, not the
+constant.
 
 ## Recommended implementation order
 

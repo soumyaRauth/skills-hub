@@ -18,7 +18,8 @@ happen next. A list of filenames is not the deliverable.
 1. **Read-only.** During impact analysis do not edit, create, delete, or move
    files; do not write migrations, install packages, run formatters, commit, or
    push. Inspecting files, `git log`/`git blame`, and dependency manifests is
-   fine. Running the project's own test suite is not part of analysis.
+   fine, as is reading an existing `git diff`. Running the project's own test
+   suite is not part of analysis.
 2. **Evidence or nothing.** Every classified finding names the file (and symbol
    or line where useful) plus the observation that supports it. If you did not
    see it in the repository, say so and mark it for verification.
@@ -36,7 +37,7 @@ happen next. A list of filenames is not the deliverable.
 
 ## Workflow
 
-Phases 1–6 run for every analysis. Phases 7–11 run when the change actually
+Phases 1–7 run for every analysis. Phases 8–12 run when the change actually
 touches that layer — skip a phase explicitly rather than inventing content for
 it.
 
@@ -53,6 +54,14 @@ If the request is ambiguous, pick the most reasonable reading, state it under
 `INTERPRETATION`, and continue. Do not stall the analysis on a clarification you
 can flag as an open question.
 
+**When the change already exists** — the user points at uncommitted work, a
+branch, a PR, or a commit range — read the diff and write the change statement
+from what the code now does, not from the branch name. Every symbol, column,
+route, literal, and enum value the diff touches becomes a primary concept for
+Phase 3. Run the analysis on those concepts, then **subtract the files already
+in the diff: what remains is the finding** — the surface this change touches but
+has not visited. Commands and the rest of the recipe: `references/git-signals.md`.
+
 ### Phase 2 — Repository reconnaissance
 
 Learn the actual repository before searching it. Read the manifests
@@ -65,6 +74,16 @@ notifications, authorization, configuration, integrations, generated code, tests
 Never assume `src/`, `app/`, `lib/`, or `controllers/` exist. Look. When the
 repository contradicts framework convention, the repository wins. See
 `references/framework-detection.md`.
+
+**In a monorepo, scope before searching.** Read the workspace config
+(`pnpm-workspace.yaml`, `turbo.json`, `nx.json`, `go.work`, Cargo `[workspace]`,
+Gradle `settings.gradle`, Maven `<modules>`), list the packages and their
+*published* names, find which package the change originates in, and invert the
+graph to get its dependents. Scope by that dependency graph, not by directory
+proximity, and report the scope — including the packages you did not inspect and
+why — under `REPOSITORY SCOPE`. A published package has consumers this
+repository cannot enumerate; say so rather than implying the surface is closed.
+See `references/monorepo.md`.
 
 ### Phase 3 — Find primary concepts
 
@@ -97,7 +116,29 @@ CourseCompletionResource → returned by GET /api/course-completions
 
 Details and search tactics: `references/dependency-analysis.md`.
 
-### Phase 5 — Cross-layer analysis
+### Phase 5 — History and ownership
+
+Git records coupling that no import graph holds: which files engineers actually
+change together, which parts of the surface churn, and who reviews them.
+
+- **Co-change.** For each primary concept, list the commits that touched it and
+  the other files in those commits. A file that appears in most of them with no
+  code reference between the two is temporal coupling — a ⚠️ HIDDEN COUPLING
+  finding at Medium confidence, never higher on history alone.
+- **Churn.** High churn in the change surface means unsettled code: half-done
+  migrations, duplicated logic, stale tests. A file untouched for years carries
+  the opposite risk — nobody currently holds it in their head. Both feed `RISK`;
+  neither is a finding by itself.
+- **Ownership.** `CODEOWNERS` first, contributor counts as a fallback. Report it
+  as routing — which reviewer or team this change needs — never as attribution
+  or as a judgment about anyone's work.
+
+Check that history is usable before trusting it: a shallow clone, a squash-merge
+workflow, a single founding commit, or an untracked rename all produce numbers
+that mislead. When history is unusable, say which condition applies and move on.
+Commands, ratios, and reporting rules: `references/git-signals.md`.
+
+### Phase 6 — Cross-layer analysis
 
 Walk the layers this repository actually has, typically:
 
@@ -110,7 +151,7 @@ tasks, notifications, permissions, reports/exports, integrations. Do not invent
 layers a repository does not have, and do not skip one because the framework
 "usually" handles it.
 
-### Phase 6 — Hidden coupling
+### Phase 7 — Hidden coupling
 
 The highest-value phase, and the one generic code search skips. Look for
 relationships that do not appear as imports:
@@ -126,12 +167,14 @@ relationships that do not appear as imports:
 - **Jobs, workers, schedules** — queue payloads carrying the affected shape.
 - **Serialization** — JSON field names, API resources, DTOs, schemas, contracts.
 - **Tests and fixtures** — factories, fixtures, snapshots, hardcoded states.
+- **Temporal coupling** — files git history says change together, with no
+  reference between them (Phase 5).
 - **Documentation** — API docs or runbooks that go stale on this change.
 
 Everything found here is **indirect evidence** and must be labeled as such.
 Search patterns per category: `references/hidden-coupling.md`.
 
-### Phase 7 — Database impact
+### Phase 8 — Database impact
 
 When persisted data is involved: migrations, schema, models/entities,
 relationships, repositories, raw SQL, indexes, constraints, seeders, factories,
@@ -142,7 +185,7 @@ backward compatibility, migration ordering, and whether a data backfill is
 required. Do not invent requirements — anything needing a human decision goes
 under `OPEN QUESTIONS`.
 
-### Phase 8 — API impact
+### Phase 9 — API impact
 
 Routes, controllers, request validation, response serializers, DTOs/schemas, API
 clients, frontend and mobile consumers, contract tests, documentation. Assess
@@ -150,7 +193,7 @@ request shape, response shape, backward compatibility, validation, authorization
 and versioning. Distinguish a consumer you found in the repository from a
 consumer that may exist outside it.
 
-### Phase 9 — Authorization impact
+### Phase 10 — Authorization impact
 
 If the change touches approval, status transitions, roles, permissions,
 ownership, visibility, or administrative actions, inspect policies, guards,
@@ -160,7 +203,7 @@ authorization, and their tests.
 Changing business logic does not update authorization. A new state usually needs
 a new answer to "who may move a record into it, and who may see it there."
 
-### Phase 10 — Test impact
+### Phase 11 — Test impact
 
 Identify unit, integration, feature, API, component, E2E, and contract tests,
 plus factories, fixtures, and snapshots. For each relevant group state **what
@@ -170,7 +213,7 @@ Missing coverage is a finding:
 
 > No existing test covers the transition `pending → approved`.
 
-### Phase 11 — External boundaries
+### Phase 12 — External boundaries
 
 External APIs, webhooks, message brokers, mobile clients, other frontends,
 third-party integrations, imports/exports, scheduled syncs, reporting systems.
@@ -179,14 +222,17 @@ report it as an open question.
 
 ## Classification
 
-Every significant finding carries exactly one:
+Every significant finding carries a stable id — `F1`, `F2`, … in report order —
+and exactly one classification. The ids are what the architecture graph, the
+risk table, and the implementation plan point at, so they must not be reused or
+renumbered inside a report.
 
 | Category | Meaning |
 | --- | --- |
 | 🟥 **MUST CHANGE** | Strong evidence this location requires modification for the change to work. |
 | 🟧 **LIKELY AFFECTED** | Strong relationship established; whether it changes needs confirmation. |
 | 🟨 **NEEDS VERIFICATION** | Plausible relationship that must be checked before implementation. |
-| ⚠️ **HIDDEN COUPLING** | Indirect dependency via strings, SQL, config, duplicated logic, generated code, conventions, serialization, or fixtures. |
+| ⚠️ **HIDDEN COUPLING** | Indirect dependency via strings, SQL, config, duplicated logic, generated code, conventions, serialization, fixtures, or co-change history. |
 | ⬜ **OUT OF SCOPE** | Inspected and found not materially related. Use sparingly — only where a reader would otherwise expect the file to appear. |
 
 ## Confidence
@@ -199,7 +245,7 @@ Confidence describes the *evidence*, classification describes the *action*. Low
 confidence caps a finding at NEEDS VERIFICATION.
 
 ```
-app/Services/CourseCompletionService.php
+F1 · app/Services/CourseCompletionService.php
 
   Symbol:       CourseCompletionService::complete()
   Relationship: Writes CourseCompletion.status during the completion workflow.
@@ -218,26 +264,58 @@ section with nothing relevant to say:
 ```
 IMPACT MAP
 ────────────────────────────────────────
-REQUEST · INTERPRETATION · CHANGE SURFACE
+REQUEST · INTERPRETATION · REPOSITORY SCOPE · CHANGE SURFACE
 🟥 MUST CHANGE · 🟧 LIKELY AFFECTED · 🟨 NEEDS VERIFICATION · ⚠️ HIDDEN COUPLING
-DEPENDENCY PATHS · DATABASE IMPACT · API IMPACT · AUTHORIZATION IMPACT · TEST IMPACT
+DEPENDENCY PATHS · ARCHITECTURE GRAPH · HISTORY & OWNERSHIP
+DATABASE IMPACT · API IMPACT · AUTHORIZATION IMPACT · TEST IMPACT
 RISK · RECOMMENDED IMPLEMENTATION ORDER · OPEN QUESTIONS
 ```
 
-`RISK` is Low / Medium / High plus the reason — driven by breadth of the change
-surface, amount of hidden coupling, weakness of test coverage, and whether
-external consumers are involved.
+`REPOSITORY SCOPE` appears when the repository is a monorepo or the analysis
+started from a diff; it states what was in scope, what was not, and why.
+`HISTORY & OWNERSHIP` appears when git history was usable, and is omitted with a
+one-line reason when it was not.
+
+### Architecture graph
+
+When the surface branches or crosses three or more layers, draw it — a mermaid
+`flowchart` with one subgraph per layer this repository actually has, nodes
+labeled by finding id, and **every edge labeled with its relationship**. Solid
+edges are hard (import, call, foreign key); dashed edges are soft (string, raw
+SQL, config, convention, co-change) and are where the incidents come from. A
+single linear path needs no graph — emit the chain and move on.
+
+The graph renders findings that are already in the report. Never draw a node
+without a location in the repository or an explicit "outside this repository"
+marker, and never draw a suspected edge as fact. Conventions, an ASCII
+alternative, and collapsing rules: `references/architecture-graph.md`.
+
+### Risk
+
+`RISK` is a scored argument, not a verdict: six factors — breadth, coupling
+opacity, test coverage, reversibility, consumer reach, area volatility — each
+scored 0–3 from what the analysis observed, each printed with the observation
+that set it, summed into a Low / Medium / High band.
+
+Show the factor table. A total without its factors is exactly the invented
+number rule 4 forbids. A factor that could not be assessed is scored `?` and
+makes the total a lower bound — never rounded down to make a change look safe.
+Floors (an irreversible migration, an unreachable external consumer) override
+the total upward, and the band is never lowered below it.
+Rubric: `references/risk-scoring.md`.
 
 ## Normal vs deep mode
 
-**Normal** (default): reconnaissance → primary concepts → direct dependency
-tracing → cross-layer inspection → relevant tests → high-value hidden-coupling
-checks → report.
+**Normal** (default): reconnaissance and scoping → primary concepts → direct
+dependency tracing → history signals on the primary concepts → cross-layer
+inspection → relevant tests → high-value hidden-coupling checks → report.
 
 **Deep** — triggered by "deep analysis", "full impact analysis", "blast radius",
 "thorough", "comprehensive": additionally sweep reverse references, raw strings,
 raw SQL, configuration, generated artifacts, events, jobs, permissions, reports,
-fixtures, external boundaries, and duplicated business logic.
+fixtures, external boundaries, duplicated business logic, co-change history for
+every primary concept, and — in a monorepo — every dependent package rather than
+the direct ones alone.
 
 Deep mode means more *investigation*, not a longer file listing. Every extra
 finding still needs evidence and a classification, and irrelevant files stay out
@@ -253,19 +331,38 @@ Agent: I'll map the impact surface before changing anything.
        Want me to turn this into an implementation plan?
 ```
 
-Only on an explicit yes, convert the map into an ordered plan grounded in the
-findings — each step naming the files it touches and the findings it resolves.
-A typical order:
+Only on an explicit yes, convert the map into a plan. The plan is a **handoff
+artifact**: written so an engineer, or a fresh agent session with no memory of
+the analysis, can execute it without re-reading anything. It still contains no
+code.
 
-1. Database field and migration
-2. Domain model / state representation
-3. Service transition logic
-4. API serialization
-5. Authorization
-6. UI
-7. Jobs, notifications, reports
-8. Tests
-9. Verify the hidden-coupling and needs-verification findings
+Each step carries: the files, the finding ids it **resolves**, what it depends
+on, the change in prose, the one-line evidence from the map, how to **verify**
+it, and how to roll it back.
+
+Three rules make it a handoff rather than a to-do list:
+
+- **Coverage is explicit.** A closing table maps every finding id to its step.
+  Each 🟥 is resolved by exactly one step; a 🟥 with no step is an invalid plan.
+  🟧 is mapped or explicitly deferred with a reason; every ⚠️ gets a step or a
+  recorded decision; every 🟨 becomes a **prerequisite** resolved before the
+  steps that depend on it, never a check buried inside one.
+- **Every step leaves the system working.** Order by dependency and
+  reversibility: prerequisites, then compatibility (dual-read, dual-emit), then
+  the change innermost outward, then data backfills, then the coverage for the
+  quiet paths, then removing the shim. Size each step to one commit.
+- **Verification is an observation**, not "verify it works" — an existing test
+  path, a described assertion, or a command whose output shows the change took
+  effect. A step that cannot be verified says so.
+
+Unresolved decisions stay visible as prerequisites or `Stop if:` conditions,
+never as assumptions baked into a step. If implementation shows the map was
+wrong, stop and say which finding changed instead of re-planning quietly. The
+plan's last line names what to validate afterwards — the hidden-coupling
+findings and the factors that set the risk band.
+
+Full structure and rules: `references/implementation-plan.md`. Worked example:
+`examples/implementation-plan.md`.
 
 Never jump silently from analysis to editing code.
 
@@ -275,6 +372,11 @@ Never jump silently from analysis to editing code.
 - `references/dependency-analysis.md` — upstream/downstream tracing tactics
 - `references/hidden-coupling.md` — indirect-coupling search patterns
 - `references/framework-detection.md` — per-ecosystem reconnaissance cues
+- `references/git-signals.md` — co-change, churn, ownership, diff-driven analysis
+- `references/monorepo.md` — workspace detection, package graph, scoping
+- `references/architecture-graph.md` — graph conventions and honesty rules
+- `references/risk-scoring.md` — the six-factor risk rubric
+- `references/implementation-plan.md` — the plan structure and handoff contract
 
 If `references/company-architecture.md` exists in this skill directory, read it
 during Phase 2 — it carries team-specific conventions that override generic

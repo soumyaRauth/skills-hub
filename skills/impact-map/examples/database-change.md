@@ -25,7 +25,7 @@ fires on completion, plus fixtures and a report query that filter on status.
 ## 🟥 MUST CHANGE
 
 ```
-database/migrations/  (new migration)
+F1 · database/migrations/  (new migration)
 
   Relationship:   `course_completions` has no approval column today.
   Evidence:       2024_01_01_000000_create_course_completions_table.php defines
@@ -38,7 +38,7 @@ database/migrations/  (new migration)
 ```
 
 ```
-app/Models/CourseCompletion.php
+F2 · app/Models/CourseCompletion.php
 
   Symbol:         $fillable, $casts
   Relationship:   Model defines the persisted shape and status casting.
@@ -50,7 +50,7 @@ app/Models/CourseCompletion.php
 ```
 
 ```
-app/Services/CourseCompletionService.php
+F3 · app/Services/CourseCompletionService.php
 
   Symbol:         complete()
   Relationship:   The only writer of completion state found in the repository.
@@ -64,7 +64,7 @@ app/Services/CourseCompletionService.php
 ```
 
 ```
-app/Http/Resources/CourseCompletionResource.php
+F4 · app/Http/Resources/CourseCompletionResource.php
 
   Relationship:   Serializes the model for every API response.
   Evidence:       Returns id, status, completed_at.
@@ -76,7 +76,7 @@ app/Http/Resources/CourseCompletionResource.php
 ## 🟧 LIKELY AFFECTED
 
 ```
-app/Policies/CourseCompletionPolicy.php
+F5 · app/Policies/CourseCompletionPolicy.php
 
   Symbol:         update()
   Relationship:   Governs who may modify a completion; approval is a new
@@ -89,7 +89,7 @@ app/Policies/CourseCompletionPolicy.php
 ```
 
 ```
-app/Jobs/SendCompletionCertificate.php
+F6 · app/Jobs/SendCompletionCertificate.php
 
   Relationship:   Dispatched when a completion is marked complete; a certificate
                   probably should not be issued before approval.
@@ -103,7 +103,7 @@ app/Jobs/SendCompletionCertificate.php
 ## 🟨 NEEDS VERIFICATION
 
 ```
-Existing rows in course_completions
+F7 · Existing rows in course_completions
 
   Relationship:   Every existing completion needs a defensible approval value.
   Evidence:       Table is populated in production per the seeder and factory;
@@ -118,7 +118,7 @@ Existing rows in course_completions
 ## ⚠️ HIDDEN COUPLING
 
 ```
-app/Reports/CompletionReport.php
+F8 · app/Reports/CompletionReport.php
 
   Coupling type:  Raw SQL
   Relationship:   Counts completions with a raw query filtering on status.
@@ -130,7 +130,7 @@ app/Reports/CompletionReport.php
 ```
 
 ```
-database/factories/CourseCompletionFactory.php
+F9 · database/factories/CourseCompletionFactory.php
 
   Coupling type:  Fixture
   Relationship:   Builds completions for every feature test.
@@ -195,9 +195,23 @@ enforcement is the one that matters; the UI check is cosmetic.
 
 ## Risk
 
-**Medium** — the schema change is additive and safe, but the surface spans
-persistence, authorization, async work, and a raw-SQL report, and the historical
-data decision has no reversible default.
+**Risk score: 9 / 18 → Medium**
+
+```
+Breadth             2   persistence, domain, API, authorization, async work,
+                        and reporting
+Coupling opacity    2   a raw-SQL report and a fixture carry the status literal
+Test coverage       2   the transition is covered; the report and the new state
+                        are not
+Reversibility       1   additive column — reversible, but the backfill decision
+                        for historical rows has no default
+Consumer reach      1   API consumers are all in this repository
+Area volatility     1   normal churn across the surface
+```
+
+The schema change itself is additive and safe. The band is set by the breadth
+of the surface and by the historical-data decision, which a migration cannot
+make on its own.
 
 ## Recommended implementation order
 
