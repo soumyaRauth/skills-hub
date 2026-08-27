@@ -1,0 +1,17 @@
+{
+  "name": "fieldops-api",
+  "version": "1.4.2",
+  "private": true,
+  "scripts": {
+    "dev": "node src/index.js",
+    "test": "node --test",
+    "migrate": "prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "bullmq": "^5.8.2",
+    "express": "^4.19.2",
+    "ioredis": "^5.4.1",
+    "stripe": "^15.8.0"
+  }
+}

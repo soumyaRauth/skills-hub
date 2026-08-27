@@ -11,19 +11,23 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[proof-driven-dev](skills/proof-driven-dev/README.md)** | Turns a request into an outcome contract, implements it, and proves each requirement with evidence — you get VERIFIED / REVIEW / BLOCKED, not an essay | *While* you write it |
 | **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
 | **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
+| **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence — competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
 npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
+npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 ```
 
 They compose, and none requires the others:
 
 ```
-ticket → impact-map → proof-driven-dev → production-guard → ship
-                                                          → practical-localizer → ship in another language
+ticket   → impact-map → proof-driven-dev → production-guard → ship
+                                                            → practical-localizer → ship in another language
+
+incident → engineering-investigator → cause → proof-driven-dev → production-guard → ship
 ```
 
 ---
@@ -452,6 +456,84 @@ sentences and formatter bugs are reported, not silently refactored.
 
 ---
 
+# Engineering Investigator
+
+**Don't ask the agent to find an explanation. Make it find out whether the
+explanation is true.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill engineering-investigator
+```
+
+Ask a coding agent why the app is slow and it will read the code, find something
+genuinely suspicious, and tell you about it. That is the problem: *finding an
+explanation* and *establishing a cause* are different activities, and one gets
+delivered as the other. The query may have been there for two years, and the
+affected customer may be on hotel wifi.
+
+```
+complaint → normalize the symptom → scope it by contrast → competing hypotheses,
+each with a kill condition → the experiment that eliminates the most → what
+survived, at its real confidence → verify → four lines
+```
+
+## Example
+
+```
+You:  The portal is unusably slow for one customer. They're threatening to churn.
+
+Agent: Server processing for that account matches every other tenant (p95 210 ms
+       vs 228 ms) and their response sizes are comparable, so the time is not in
+       our processing. Their own network capture shows 6.4 s downloading a
+       1.7 MB response with 173 ms of server time and 310 ms of browser work.
+
+## Result
+
+The application is responding normally for this customer — the time is going
+into transferring data over their connection.
+
+**Cause:** Low throughput on the affected connection (~2 Mbit/s)
+**Confidence:** High
+
+**Why:** Server times match every other tenant, sizes are comparable, and their
+capture shows the time in transfer.
+
+**Action:** Have them test on a different network. Separately, our dashboard
+response is 1.7 MB — worth reducing, because it is what makes a weak connection
+unusable rather than merely slow.
+
+### Client response
+
+"We've looked into the slowness and our systems are responding normally for your
+account… "
+```
+
+Every hypothesis carries a **kill condition**, written before the evidence
+arrives. Experiments are chosen for how many explanations they can eliminate,
+not for how thorough they look. Evidence is typed `FACT` / `INFERENCE` /
+`ASSUMPTION` / `UNKNOWN`, and code inspection never establishes production
+behavior. The leading hypothesis gets attacked before the conclusion is written.
+
+Five worked investigations: [client network](skills/engineering-investigator/examples/client-network.md) ·
+[deployment regression](skills/engineering-investigator/examples/deployment-regression.md) ·
+[third-party dependency](skills/engineering-investigator/examples/third-party-dependency.md) ·
+[insufficient evidence](skills/engineering-investigator/examples/insufficient-evidence.md) ·
+[resuming a case](skills/engineering-investigator/examples/resumed-investigation.md)
+
+## What it will not do
+
+Never invent a log line, a metric, a trace, a tool, or a customer's network
+conditions — unavailable evidence is reported as unavailable. Never report
+correlation with a deploy as a cause without a comparison that establishes it.
+Never blame a customer, a vendor, or the network without a measurement, and never
+blame the application without one either. Read-only by default: production data,
+configuration, infrastructure and deployments are never touched without explicit
+authorization for that specific action.
+
+**[Full documentation →](skills/engineering-investigator/README.md)**
+
+---
+
 ## Installation
 
 ```bash
@@ -460,12 +542,14 @@ npx skills add soumyaRauth/skills-hub --skill impact-map
 npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
+npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code
 ```
 
 Then just ask for what it does — installed skills are matched by description, so
@@ -516,18 +600,24 @@ repository, it can run these skills.
 │   │   ├── README.md
 │   │   ├── references/
 │   │   └── examples/             ← five worked readiness reports
-│   └── practical-localizer/
+│   ├── practical-localizer/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← ten localization references
+│   │   ├── examples/             ← five worked language examples
+│   │   └── templates/            ← glossary, locale profile, review report
+│   └── engineering-investigator/
 │       ├── SKILL.md
 │       ├── README.md
-│       ├── references/           ← ten localization references
-│       ├── examples/             ← five worked language examples
-│       └── templates/            ← glossary, locale profile, review report
+│       ├── references/           ← eleven investigation references
+│       └── examples/             ← five worked investigations
 ├── tests/
 │   ├── fixtures/
 │   │   ├── impact-map/           ← four repositories with hidden coupling to find
 │   │   ├── proof-driven-dev/     ← six runnable projects, green until you break them
 │   │   ├── production-guard/     ← four repositories with real production bugs
-│   │   └── practical-localizer/  ← six repositories with bad localizations
+│   │   ├── practical-localizer/  ← six repositories with bad localizations
+│   │   └── engineering-investigator/  ← five incidents, with the evidence to solve them
 │   └── README.md                 ← expected findings per fixture
 ├── scripts/validate.sh           ← structure + frontmatter validation, all skills
 └── .github/workflows/validate.yml
@@ -539,6 +629,7 @@ repository, it can run these skills.
 - **[ProofBuild](skills/proof-driven-dev/README.md)** · [SKILL.md](skills/proof-driven-dev/SKILL.md)
 - **[Production Guard](skills/production-guard/README.md)** · [SKILL.md](skills/production-guard/SKILL.md)
 - **[Practical Localizer](skills/practical-localizer/README.md)** · [SKILL.md](skills/practical-localizer/SKILL.md)
+- **[Engineering Investigator](skills/engineering-investigator/README.md)** · [SKILL.md](skills/engineering-investigator/SKILL.md)
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 

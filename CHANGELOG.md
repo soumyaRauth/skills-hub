@@ -9,6 +9,29 @@ methodology and documentation.
 
 ### Added
 
+- `engineering-investigator` skill v0.1 — **evidence-driven investigation of
+  vague engineering complaints.** A report is treated as a symptom, not a
+  diagnosis: it is normalized into an investigation statement with typed unknown
+  slots, scoped by contrast (affected vs unaffected, version vs version, region
+  vs region), and turned into three to six competing hypotheses, each carrying a
+  **kill condition written before any evidence is collected**. The next action is
+  chosen by discriminating power over cost rather than by how much code is left
+  to read, and every observation is typed `FACT`, `INFERENCE`, `ASSUMPTION`, or
+  `UNKNOWN` with its provenance. Root cause is graded `CONFIRMED` /
+  `HIGHLY LIKELY` / `LIKELY` / `POSSIBLE` / `UNKNOWN`, where timing correlation
+  with a deploy earns `LIKELY` at best until a reproduction, version comparison,
+  or revert promotes it. The skill can conclude that the application is **not**
+  responsible — but only with our side healthy in the same window, an unaffected
+  comparison, and a measurement of the external factor. Read-only by default:
+  every action is `OBSERVE`, `REPRODUCE`, or `MUTATE`, and mutations require
+  explicit authorization for that specific action. Three investigation depths
+  (QUICK / STANDARD / INCIDENT) and explicit stop conditions keep cost
+  proportional; an optional `.agent-investigation/` workspace carries the ledger
+  across sessions so "continue the investigation" resumes a case instead of
+  restarting it. Output is a one-screen result with a confidence level plus a
+  jargon-free client paragraph. Eleven references, five worked examples, and five
+  test fixtures that ship the evidence — access logs, a worker log, a support
+  ticket, a deploy log — needed to reach the documented conclusions
 - `proof-driven-dev` skill (ProofBuild) v0.1 — **outcome contracts instead of
   implementation explanations.** A development request becomes a numbered
   outcome contract *before* any code is written; each requirement carries the
@@ -56,9 +79,10 @@ methodology and documentation.
 - `scripts/validate.sh` executes the fixtures that are meant to run
   (`tests/fixtures/proof-driven-dev/`) and fails when one is red; it skips the
   check when Node is unavailable
-- The repository ships four skills; the hub table, install commands, and the
+- The repository ships five skills; the hub table, install commands, and the
   composition diagram in the top-level README now route
-  `impact-map → proof-driven-dev → production-guard`
+  `impact-map → proof-driven-dev → production-guard`, with
+  `incident → engineering-investigator → cause` as a second entry point
 - Impact Map's workflow is 12 phases (was 11); the four existing examples carry
   finding ids and scored risk tables, and the cross-module example gains an
   architecture graph and a history-and-ownership section

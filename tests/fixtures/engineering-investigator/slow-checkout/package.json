@@ -1,0 +1,7 @@
+{
+  "name": "storefront-api",
+  "version": "1.9.0",
+  "private": true,
+  "scripts": { "test": "node --test" },
+  "dependencies": { "express": "^4.19.2", "pg": "^8.11.5" }
+}

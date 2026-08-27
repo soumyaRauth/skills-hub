@@ -1,0 +1,160 @@
+2026-08-26T08:00:42Z INFO request method=GET path=/api/products status=200 duration_ms=81 tenant=t_02
+2026-08-26T08:00:42Z INFO request method=POST path=/checkout status=200 duration_ms=3181 items=8 tenant=t_31
+2026-08-26T08:03:17Z INFO request method=GET path=/api/products status=200 duration_ms=100 tenant=t_07
+2026-08-26T08:03:23Z INFO request method=POST path=/checkout status=200 duration_ms=2325 items=6 tenant=t_07
+2026-08-26T08:06:00Z INFO request method=POST path=/checkout status=200 duration_ms=955 items=2 tenant=t_12
+2026-08-26T08:06:39Z INFO request method=GET path=/api/products status=200 duration_ms=68 tenant=t_07
+2026-08-26T08:09:03Z INFO request method=GET path=/api/products status=200 duration_ms=95 tenant=t_02
+2026-08-26T08:09:21Z INFO request method=POST path=/checkout status=200 duration_ms=1645 items=4 tenant=t_02
+2026-08-26T08:12:43Z INFO request method=GET path=/api/products status=200 duration_ms=84 tenant=t_18
+2026-08-26T08:12:43Z INFO request method=POST path=/checkout status=200 duration_ms=557 items=1 tenant=t_44
+2026-08-26T08:15:32Z INFO request method=GET path=/api/products status=200 duration_ms=73 tenant=t_18
+2026-08-26T08:15:52Z INFO request method=POST path=/checkout status=200 duration_ms=528 items=1 tenant=t_12
+2026-08-26T08:18:07Z INFO request method=POST path=/checkout status=200 duration_ms=2493 items=6 tenant=t_12
+2026-08-26T08:18:27Z INFO request method=GET path=/api/products status=200 duration_ms=121 tenant=t_02
+2026-08-26T08:21:35Z INFO request method=POST path=/checkout status=200 duration_ms=1761 items=4 tenant=t_02
+2026-08-26T08:21:44Z INFO request method=GET path=/api/products status=200 duration_ms=115 tenant=t_18
+2026-08-26T08:24:25Z INFO request method=GET path=/api/products status=200 duration_ms=97 tenant=t_07
+2026-08-26T08:24:52Z INFO request method=POST path=/checkout status=200 duration_ms=949 items=2 tenant=t_18
+2026-08-26T08:27:34Z INFO request method=GET path=/api/products status=200 duration_ms=60 tenant=t_12
+2026-08-26T08:27:38Z INFO request method=POST path=/checkout status=200 duration_ms=3285 items=8 tenant=t_07
+2026-08-26T08:30:16Z INFO request method=GET path=/api/products status=200 duration_ms=81 tenant=t_44
+2026-08-26T08:30:50Z INFO request method=POST path=/checkout status=200 duration_ms=537 items=1 tenant=t_12
+2026-08-26T08:33:16Z INFO request method=GET path=/api/products status=200 duration_ms=74 tenant=t_44
+2026-08-26T08:33:19Z INFO request method=POST path=/checkout status=200 duration_ms=2583 items=6 tenant=t_18
+2026-08-26T08:36:32Z INFO request method=POST path=/checkout status=200 duration_ms=1697 items=4 tenant=t_31
+2026-08-26T08:36:51Z INFO request method=GET path=/api/products status=200 duration_ms=107 tenant=t_31
+2026-08-26T08:39:02Z INFO request method=GET path=/api/products status=200 duration_ms=92 tenant=t_18
+2026-08-26T08:39:24Z INFO request method=POST path=/checkout status=200 duration_ms=887 items=2 tenant=t_07
+2026-08-26T08:42:24Z INFO request method=GET path=/api/products status=200 duration_ms=72 tenant=t_31
+2026-08-26T08:42:27Z INFO request method=POST path=/checkout status=200 duration_ms=971 items=2 tenant=t_18
+2026-08-26T08:45:04Z INFO request method=GET path=/api/products status=200 duration_ms=103 tenant=t_44
+2026-08-26T08:45:14Z INFO request method=POST path=/checkout status=200 duration_ms=560 items=1 tenant=t_02
+2026-08-26T08:48:17Z INFO request method=POST path=/checkout status=200 duration_ms=552 items=1 tenant=t_07
+2026-08-26T08:48:22Z INFO request method=GET path=/api/products status=200 duration_ms=97 tenant=t_12
+2026-08-26T08:51:13Z INFO request method=GET path=/api/products status=200 duration_ms=80 tenant=t_44
+2026-08-26T08:51:29Z INFO request method=POST path=/checkout status=200 duration_ms=557 items=1 tenant=t_44
+2026-08-26T08:54:15Z INFO request method=GET path=/api/products status=200 duration_ms=120 tenant=t_02
+2026-08-26T08:54:44Z INFO request method=POST path=/checkout status=200 duration_ms=3285 items=8 tenant=t_07
+2026-08-26T08:57:12Z INFO request method=GET path=/api/products status=200 duration_ms=108 tenant=t_12
+2026-08-26T08:57:23Z INFO request method=POST path=/checkout status=200 duration_ms=3325 items=8 tenant=t_02
+2026-08-26T09:00:00Z INFO request method=POST path=/checkout status=200 duration_ms=961 items=2 tenant=t_44
+2026-08-26T09:00:58Z INFO request method=GET path=/api/products status=200 duration_ms=108 tenant=t_44
+2026-08-26T09:03:32Z INFO request method=GET path=/api/products status=200 duration_ms=61 tenant=t_02
+2026-08-26T09:03:50Z INFO request method=POST path=/checkout status=200 duration_ms=915 items=2 tenant=t_18
+2026-08-26T09:06:09Z INFO request method=GET path=/api/products status=200 duration_ms=60 tenant=t_44
+2026-08-26T09:06:34Z INFO request method=POST path=/checkout status=200 duration_ms=548 items=1 tenant=t_31
+2026-08-26T09:09:07Z INFO request method=POST path=/checkout status=200 duration_ms=1365 items=3 tenant=t_02
+2026-08-26T09:09:50Z INFO request method=GET path=/api/products status=200 duration_ms=92 tenant=t_31
+2026-08-26T09:12:16Z INFO request method=GET path=/api/products status=200 duration_ms=102 tenant=t_07
+2026-08-26T09:12:40Z INFO request method=POST path=/checkout status=200 duration_ms=3293 items=8 tenant=t_44
+2026-08-26T09:15:18Z INFO request method=POST path=/checkout status=200 duration_ms=941 items=2 tenant=t_31
+2026-08-26T09:15:55Z INFO request method=GET path=/api/products status=200 duration_ms=61 tenant=t_44
+2026-08-26T09:18:28Z INFO request method=GET path=/api/products status=200 duration_ms=104 tenant=t_02
+2026-08-26T09:18:40Z INFO request method=POST path=/checkout status=200 duration_ms=1733 items=4 tenant=t_12
+2026-08-26T09:21:16Z INFO request method=POST path=/checkout status=200 duration_ms=1344 items=3 tenant=t_18
+2026-08-26T09:21:43Z INFO request method=GET path=/api/products status=200 duration_ms=59 tenant=t_12
+2026-08-26T09:24:26Z INFO request method=GET path=/api/products status=200 duration_ms=67 tenant=t_02
+2026-08-26T09:24:35Z INFO request method=POST path=/checkout status=200 duration_ms=533 items=1 tenant=t_44
+2026-08-26T09:27:30Z INFO request method=POST path=/checkout status=200 duration_ms=939 items=2 tenant=t_18
+2026-08-26T09:27:35Z INFO request method=GET path=/api/products status=200 duration_ms=95 tenant=t_31
+2026-08-26T09:30:26Z INFO request method=POST path=/checkout status=200 duration_ms=1251 items=3 tenant=t_07
+2026-08-26T09:30:37Z INFO request method=GET path=/api/products status=200 duration_ms=64 tenant=t_07
+2026-08-26T09:33:23Z INFO request method=GET path=/api/products status=200 duration_ms=99 tenant=t_12
+2026-08-26T09:33:35Z INFO request method=POST path=/checkout status=200 duration_ms=959 items=2 tenant=t_44
+2026-08-26T09:36:10Z INFO request method=POST path=/checkout status=200 duration_ms=2541 items=6 tenant=t_18
+2026-08-26T09:36:44Z INFO request method=GET path=/api/products status=200 duration_ms=104 tenant=t_02
+2026-08-26T09:39:57Z INFO request method=POST path=/checkout status=200 duration_ms=527 items=1 tenant=t_18
+2026-08-26T09:39:58Z INFO request method=GET path=/api/products status=200 duration_ms=85 tenant=t_31
+2026-08-26T09:42:45Z INFO request method=GET path=/api/products status=200 duration_ms=81 tenant=t_02
+2026-08-26T09:42:50Z INFO request method=POST path=/checkout status=200 duration_ms=933 items=2 tenant=t_18
+2026-08-26T09:45:43Z INFO request method=GET path=/api/products status=200 duration_ms=93 tenant=t_07
+2026-08-26T09:45:59Z INFO request method=POST path=/checkout status=200 duration_ms=1296 items=3 tenant=t_12
+2026-08-26T09:48:34Z INFO request method=POST path=/checkout status=200 duration_ms=538 items=1 tenant=t_31
+2026-08-26T09:48:44Z INFO request method=GET path=/api/products status=200 duration_ms=102 tenant=t_07
+2026-08-26T09:51:20Z INFO request method=GET path=/api/products status=200 duration_ms=64 tenant=t_12
+2026-08-26T09:51:26Z INFO request method=POST path=/checkout status=200 duration_ms=893 items=2 tenant=t_44
+2026-08-26T09:54:43Z INFO request method=POST path=/checkout status=200 duration_ms=1641 items=4 tenant=t_18
+2026-08-26T09:54:46Z INFO request method=GET path=/api/products status=200 duration_ms=78 tenant=t_44
+2026-08-26T09:57:42Z INFO request method=POST path=/checkout status=200 duration_ms=971 items=2 tenant=t_12
+2026-08-26T09:57:59Z INFO request method=GET path=/api/products status=200 duration_ms=86 tenant=t_44
+2026-08-26T10:00:13Z INFO request method=POST path=/checkout status=200 duration_ms=887 items=2 tenant=t_07
+2026-08-26T10:00:39Z INFO request method=GET path=/api/products status=200 duration_ms=87 tenant=t_07
+2026-08-26T10:03:21Z INFO request method=GET path=/api/products status=200 duration_ms=88 tenant=t_02
+2026-08-26T10:03:42Z INFO request method=POST path=/checkout status=200 duration_ms=891 items=2 tenant=t_31
+2026-08-26T10:06:14Z INFO request method=POST path=/checkout status=200 duration_ms=1629 items=4 tenant=t_18
+2026-08-26T10:06:23Z INFO request method=GET path=/api/products status=200 duration_ms=82 tenant=t_44
+2026-08-26T10:09:14Z INFO request method=GET path=/api/products status=200 duration_ms=92 tenant=t_02
+2026-08-26T10:09:27Z INFO request method=POST path=/checkout status=200 duration_ms=973 items=2 tenant=t_44
+2026-08-26T10:12:24Z INFO request method=GET path=/api/products status=200 duration_ms=97 tenant=t_31
+2026-08-26T10:12:32Z INFO request method=POST path=/checkout status=200 duration_ms=1645 items=4 tenant=t_07
+2026-08-26T10:15:29Z INFO request method=POST path=/checkout status=200 duration_ms=943 items=2 tenant=t_18
+2026-08-26T10:15:53Z INFO request method=GET path=/api/products status=200 duration_ms=108 tenant=t_02
+2026-08-26T10:18:33Z INFO request method=GET path=/api/products status=200 duration_ms=102 tenant=t_07
+2026-08-26T10:18:44Z INFO request method=POST path=/checkout status=200 duration_ms=2529 items=6 tenant=t_07
+2026-08-26T10:21:35Z INFO request method=POST path=/checkout status=200 duration_ms=531 items=1 tenant=t_31
+2026-08-26T10:21:43Z INFO request method=GET path=/api/products status=200 duration_ms=78 tenant=t_44
+2026-08-26T10:24:49Z INFO request method=POST path=/checkout status=200 duration_ms=545 items=1 tenant=t_07
+2026-08-26T10:24:57Z INFO request method=GET path=/api/products status=200 duration_ms=82 tenant=t_12
+2026-08-26T10:27:08Z INFO request method=POST path=/checkout status=200 duration_ms=1275 items=3 tenant=t_07
+2026-08-26T10:27:14Z INFO request method=GET path=/api/products status=200 duration_ms=110 tenant=t_31
+2026-08-26T10:30:27Z INFO request method=GET path=/api/products status=200 duration_ms=110 tenant=t_44
+2026-08-26T10:30:31Z INFO request method=POST path=/checkout status=200 duration_ms=917 items=2 tenant=t_18
+2026-08-26T10:33:38Z INFO request method=GET path=/api/products status=200 duration_ms=77 tenant=t_07
+2026-08-26T10:33:59Z INFO request method=POST path=/checkout status=200 duration_ms=1323 items=3 tenant=t_12
+2026-08-26T10:36:08Z INFO request method=POST path=/checkout status=200 duration_ms=1641 items=4 tenant=t_44
+2026-08-26T10:36:41Z INFO request method=GET path=/api/products status=200 duration_ms=61 tenant=t_12
+2026-08-26T10:39:27Z INFO request method=POST path=/checkout status=200 duration_ms=2481 items=6 tenant=t_31
+2026-08-26T10:39:42Z INFO request method=GET path=/api/products status=200 duration_ms=75 tenant=t_44
+2026-08-26T10:42:25Z INFO request method=GET path=/api/products status=200 duration_ms=111 tenant=t_02
+2026-08-26T10:42:31Z INFO request method=POST path=/checkout status=200 duration_ms=2469 items=6 tenant=t_07
+2026-08-26T10:45:07Z INFO request method=GET path=/api/products status=200 duration_ms=121 tenant=t_44
+2026-08-26T10:45:53Z INFO request method=POST path=/checkout status=200 duration_ms=911 items=2 tenant=t_44
+2026-08-26T10:48:52Z INFO request method=GET path=/api/products status=200 duration_ms=104 tenant=t_44
+2026-08-26T10:48:55Z INFO request method=POST path=/checkout status=200 duration_ms=566 items=1 tenant=t_12
+2026-08-26T10:51:53Z INFO request method=GET path=/api/products status=200 duration_ms=114 tenant=t_02
+2026-08-26T10:51:54Z INFO request method=POST path=/checkout status=200 duration_ms=1269 items=3 tenant=t_44
+2026-08-26T10:54:00Z INFO request method=GET path=/api/products status=200 duration_ms=110 tenant=t_02
+2026-08-26T10:54:19Z INFO request method=POST path=/checkout status=200 duration_ms=560 items=1 tenant=t_18
+2026-08-26T10:57:12Z INFO request method=POST path=/checkout status=200 duration_ms=905 items=2 tenant=t_12
+2026-08-26T10:57:51Z INFO request method=GET path=/api/products status=200 duration_ms=77 tenant=t_02
+2026-08-26T11:00:34Z INFO request method=POST path=/checkout status=200 duration_ms=923 items=2 tenant=t_18
+2026-08-26T11:00:38Z INFO request method=GET path=/api/products status=200 duration_ms=117 tenant=t_18
+2026-08-26T11:03:12Z INFO request method=GET path=/api/products status=200 duration_ms=87 tenant=t_18
+2026-08-26T11:03:31Z INFO request method=POST path=/checkout status=200 duration_ms=1777 items=4 tenant=t_31
+2026-08-26T11:06:08Z INFO request method=POST path=/checkout status=200 duration_ms=566 items=1 tenant=t_07
+2026-08-26T11:06:32Z INFO request method=GET path=/api/products status=200 duration_ms=90 tenant=t_12
+2026-08-26T11:09:22Z INFO request method=POST path=/checkout status=200 duration_ms=1332 items=3 tenant=t_12
+2026-08-26T11:09:53Z INFO request method=GET path=/api/products status=200 duration_ms=83 tenant=t_07
+2026-08-26T11:12:01Z INFO request method=GET path=/api/products status=200 duration_ms=118 tenant=t_02
+2026-08-26T11:12:54Z INFO request method=POST path=/checkout status=200 duration_ms=570 items=1 tenant=t_44
+2026-08-26T11:15:44Z INFO request method=POST path=/checkout status=200 duration_ms=3229 items=8 tenant=t_18
+2026-08-26T11:15:53Z INFO request method=GET path=/api/products status=200 duration_ms=102 tenant=t_07
+2026-08-26T11:18:23Z INFO request method=POST path=/checkout status=200 duration_ms=2553 items=6 tenant=t_18
+2026-08-26T11:18:53Z INFO request method=GET path=/api/products status=200 duration_ms=117 tenant=t_02
+2026-08-26T11:21:14Z INFO request method=POST path=/checkout status=200 duration_ms=1617 items=4 tenant=t_18
+2026-08-26T11:21:27Z INFO request method=GET path=/api/products status=200 duration_ms=64 tenant=t_18
+2026-08-26T11:24:01Z INFO request method=POST path=/checkout status=200 duration_ms=540 items=1 tenant=t_18
+2026-08-26T11:24:43Z INFO request method=GET path=/api/products status=200 duration_ms=102 tenant=t_31
+2026-08-26T11:27:14Z INFO request method=POST path=/checkout status=200 duration_ms=562 items=1 tenant=t_31
+2026-08-26T11:27:59Z INFO request method=GET path=/api/products status=200 duration_ms=110 tenant=t_07
+2026-08-26T11:30:27Z INFO request method=GET path=/api/products status=200 duration_ms=100 tenant=t_31
+2026-08-26T11:30:48Z INFO request method=POST path=/checkout status=200 duration_ms=943 items=2 tenant=t_44
+2026-08-26T11:33:25Z INFO request method=POST path=/checkout status=200 duration_ms=1665 items=4 tenant=t_18
+2026-08-26T11:33:41Z INFO request method=GET path=/api/products status=200 duration_ms=97 tenant=t_44
+2026-08-26T11:36:09Z INFO request method=GET path=/api/products status=200 duration_ms=78 tenant=t_18
+2026-08-26T11:36:59Z INFO request method=POST path=/checkout status=200 duration_ms=568 items=1 tenant=t_44
+2026-08-26T11:39:08Z INFO request method=POST path=/checkout status=200 duration_ms=3349 items=8 tenant=t_12
+2026-08-26T11:39:17Z INFO request method=GET path=/api/products status=200 duration_ms=59 tenant=t_02
+2026-08-26T11:42:30Z INFO request method=POST path=/checkout status=200 duration_ms=899 items=2 tenant=t_07
+2026-08-26T11:42:46Z INFO request method=GET path=/api/products status=200 duration_ms=80 tenant=t_07
+2026-08-26T11:45:38Z INFO request method=POST path=/checkout status=200 duration_ms=1689 items=4 tenant=t_07
+2026-08-26T11:45:48Z INFO request method=GET path=/api/products status=200 duration_ms=114 tenant=t_07
+2026-08-26T11:48:40Z INFO request method=GET path=/api/products status=200 duration_ms=93 tenant=t_31
+2026-08-26T11:48:56Z INFO request method=POST path=/checkout status=200 duration_ms=1653 items=4 tenant=t_31
+2026-08-26T11:51:14Z INFO request method=POST path=/checkout status=200 duration_ms=1621 items=4 tenant=t_44
+2026-08-26T11:51:24Z INFO request method=GET path=/api/products status=200 duration_ms=76 tenant=t_31
+2026-08-26T11:54:42Z INFO request method=POST path=/checkout status=200 duration_ms=953 items=2 tenant=t_07
+2026-08-26T11:54:47Z INFO request method=GET path=/api/products status=200 duration_ms=76 tenant=t_44
+2026-08-26T11:57:06Z INFO request method=POST path=/checkout status=200 duration_ms=1709 items=4 tenant=t_18
+2026-08-26T11:57:47Z INFO request method=GET path=/api/products status=200 duration_ms=96 tenant=t_12
