@@ -1,0 +1,33 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ActivityEvent {
+  id             String   @id @default(cuid())
+  organizationId String
+  type           String
+  createdAt      DateTime @default(now())
+  userId         String?
+  jobId          String?
+}
+
+model Customer {
+  id             String @id @default(cuid())
+  organizationId String
+  name           String
+}
+
+model Invoice {
+  id                    String  @id @default(cuid())
+  organizationId        String
+  totalCents            Int
+  currency              String
+  status                String
+  stripeCustomerId      String
+  stripePaymentIntentId String?
+}

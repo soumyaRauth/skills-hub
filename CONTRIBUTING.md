@@ -163,6 +163,29 @@ Requirements:
   or logographic input concerns, locales with contested script or digit
   conventions, languages where the software ecosystem is young.
 
+### Add an investigation pattern
+
+Edits to `skills/engineering-investigator/references/` — most often
+`experiment-design.md`, `system-boundaries.md`, or `regression-windows.md`.
+
+The best contributions come from real incidents where the obvious explanation
+was wrong. A useful addition states:
+
+- **The symptom pattern** — including its scope and its intermittency, because
+  those are what make a mechanism plausible or not
+- **The cheapest observation that discriminates**, concretely: the command, the
+  log field, or the comparison — and what each outcome eliminates
+- **What it does not establish** — the boundary is the useful part
+- **Why code reading would miss it**, if it would
+
+An experiment earns its place by killing hypotheses per unit of effort. "Check
+the logs carefully" is not an experiment; "compare query count for the endpoint
+across two versions — deterministic, and immune to load noise" is.
+
+Do not add an experiment that mutates production as a first-line step, and do not
+add hypotheses to a stock list: the skill generates them from the symptom and the
+system, and a canned list is what it exists to replace.
+
 ### Add examples
 
 New files under `skills/<skill>/examples/`.
@@ -201,6 +224,11 @@ Every fixture needs documented expected findings in `tests/README.md`.
   it; a red suite hands it the answer. Seed the gap somewhere the existing tests
   do not look: an off-by-one that only appears at a non-multiple count, a shared
   helper with two callers, an authorization hole no positive case can reach.
+- **Engineering Investigator fixtures** must ship the *evidence* an
+  investigation would have — an access log, a worker log, a support ticket, a
+  deploy record — and every expected finding must be computable from those files.
+  Include at least one hypothesis the evidence kills, and at least one thing the
+  fixture cannot settle, so the run has to stop at an honest confidence level.
 - **Practical Localizer fixtures** need at least one defect that only the *call
   site* reveals — a key whose correct translation depends on the handler around
   it — plus one purely technical defect: a lost placeholder, a corrupted
@@ -242,6 +270,11 @@ Judge on relationships, not wording:
 - For Practical Localizer: were the placeholder and plural defects caught, was
   the established project terminology preferred over a new synonym, and did the
   report avoid claiming native authority?
+- For Engineering Investigator: did hypotheses carry kill conditions, did an
+  experiment actually eliminate one, is every observation typed and sourced, and
+  did the conclusion stop at the confidence its evidence supports? Citing a
+  dashboard, trace, or status page the fixture does not contain is the worst
+  failure available.
 - For Production Guard: does the verdict follow mechanically from the findings,
   and did it correctly label everything as analyzed rather than executed? The
   fixtures are not runnable, so a claim that the suite ran is a failure.

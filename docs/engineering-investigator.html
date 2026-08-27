@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engineering Investigator — Skills Hub</title>
+<meta name="description" content="Evidence-driven investigation of vague engineering complaints. Normalizes the symptom, forms competing hypotheses with kill conditions, runs the experiment that eliminates the most, and answers in one screen — including when the application is not at fault.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="impact-map.html">Impact Map</a>
+      <a href="proof-driven-dev.html">ProofBuild</a>
+      <a href="production-guard.html">Production Guard</a>
+      <a href="practical-localizer.html">Practical Localizer</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/engineering-investigator/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; when it is already broken</span>
+    <h1>Engineering Investigator</h1>
+    <p class="lede">
+      Don&rsquo;t ask the agent to find an explanation. Make it find out whether
+      the explanation is <em>true</em>. Give it the vague complaint &mdash;
+      <b>the app is slow</b>, <b>checkout randomly fails</b>, <b>payments started
+      failing this morning</b> &mdash; and it investigates what is actually
+      happening, whether the problem is ours, theirs, or the network, and answers
+      in one screen.
+    </p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill engineering-investigator</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>finding an explanation &ne; establishing a cause</b></p>
+    <p>
+      Ask a capable agent why the app is slow and you get an explanation. That is
+      the problem. It reads the code, finds something genuinely suspicious, and
+      tells you about it:
+    </p>
+    <p class="flow mono">&ldquo;I found an N+1 query in the order service &mdash; that&rsquo;s likely your slowdown.&rdquo;</p>
+    <p>
+      Likely. Nothing was measured, no alternative was tested, the query may have
+      been there for two years, and the affected customer may be on hotel wifi.
+      You now have a plausible story, a code change to review, and no more
+      knowledge about the incident than before.
+    </p>
+
+    <h3>What it does instead</h3>
+    <p class="flow mono">
+      report &nbsp;&rarr;&nbsp; normalize &nbsp;&rarr;&nbsp; scope &nbsp;&rarr;&nbsp; observe &nbsp;&rarr;&nbsp; hypotheses &nbsp;&rarr;&nbsp; evidence<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; discriminating experiment &nbsp;&rarr;&nbsp; eliminate &nbsp;&rarr;&nbsp; root cause<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; verify &nbsp;&rarr;&nbsp; <b>a short answer</b> &nbsp;+&nbsp; <b>a client-ready one</b>
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What you actually see</h2>
+    <p>The whole response, after an investigation across 218,000 logged requests:</p>
+<pre class="block">## Result
+
+The application is responding normally for this customer &mdash; the time is going
+into transferring data over their connection, not into our processing.
+
+Cause        Low network throughput on the affected connection (~2 Mbit/s, where
+             comparable customers complete the same requests in about a second)
+Confidence   High
+
+Why          Server processing for this account matches every other tenant (p95
+             210 ms vs 228 ms), response sizes are comparable, and the customer&rsquo;s
+             own network capture shows 6.4 s downloading a 1.7 MB response with
+             only 310 ms of browser work.
+
+Action       Ask the customer to test the same page on a different network. In
+             parallel, our dashboard response is 1.7 MB &mdash; worth reducing,
+             because it is what makes a weak connection unusable rather than
+             merely slow.
+
+### Client response
+
+&ldquo;We&rsquo;ve looked into the slowness and our systems are responding normally for
+your account &mdash; as quickly as they do for everyone else. What we can see is
+that the data is taking much longer than usual to travel to your computers…&rdquo;</pre>
+    <div class="note">
+      <strong>Deep investigation, short answer.</strong> Behind those lines:
+      seven symptom slots, a scope contrast across every tenant, four hypotheses,
+      one experiment that killed three of them, and a deliberate attempt to kill
+      the survivor. Ask <em>show the evidence</em>, <em>show the hypotheses</em>,
+      <em>what did you rule out?</em> and you get all of it &mdash; on request.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Every hypothesis carries a kill condition</h2>
+    <p>
+      Written when the hypothesis is created, <em>before</em> any evidence
+      arrives. A claim that nothing could disprove is a hunch, and hunches do not
+      enter the ledger.
+    </p>
+<pre class="block">H2  Database regression on the checkout path
+
+Plausible     Checkout p95 rose 6&times; with flat traffic; the endpoint is DB-heavy
+              and Tuesday&rsquo;s deploy touched the cart serializer.
+Kill          DB time flat across the window, OR the slow requests never execute
+              the suspected query, OR the previous version is equally slow on
+              the same input.
+Status        Investigating          Confidence  Medium
+Next          Compare query count for POST /checkout across v1.8 and v1.9</pre>
+    <p>
+      Writing the kill condition first is what stops the investigation from
+      drifting into collecting whatever evidence happens to be convenient. And
+      the uncomfortable hypotheses &mdash; <em>our own last deploy did this</em>,
+      <em>nothing is wrong with the application</em> &mdash; go in the ledger from
+      the start, or the investigation can only ever convict the code.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Experiments, not more reading</h2>
+    <p>
+      When several explanations are live, the next action is not &ldquo;read more
+      code&rdquo;. It is the cheapest safe observation that eliminates the most of
+      them &mdash; and its outcome is predicted per hypothesis <em>before</em> it
+      runs, which is what makes the result an elimination rather than an
+      interpretation.
+    </p>
+<pre class="block">Experiment 2 &mdash; where is the checkout time spent?
+
+Method     Time one affected request end to end: server processing, transfer,
+           render. Same request, unaffected user, as comparison.
+Predicts   H1 backend      &rarr; TTFB high, transfer normal
+           H2 database     &rarr; TTFB high, and DB time dominates the trace
+           H3 payload/net  &rarr; TTFB normal, transfer high
+           H4 rendering    &rarr; TTFB and transfer normal, paint late
+Observed   TTFB 148 ms &middot; transfer 4.8 s &middot; payload 1.9 MB &middot; paint +180 ms
+Eliminates H1, H2, H4 disproven. H3 supported.</pre>
+    <p>
+      Four hypotheses, one observation, three eliminations. An experiment whose
+      every outcome would leave the ledger unchanged is not worth running.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Confidence that means something</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Level</th><th>What it takes</th></tr></thead>
+        <tbody>
+          <tr><td><b>CONFIRMED</b></td><td>Reproduction, a controlled comparison, or a revert demonstrates the causal link</td></tr>
+          <tr><td><b>HIGHLY LIKELY</b></td><td>Independent lines of direct evidence agree, alternatives eliminated, nothing contradicts</td></tr>
+          <tr><td><b>LIKELY</b></td><td>Direct evidence points one way; a plausible alternative remains untested</td></tr>
+          <tr><td><b>POSSIBLE</b></td><td>Consistent with the evidence; nothing excludes the alternatives</td></tr>
+          <tr><td><b>UNKNOWN</b></td><td>Nothing available discriminates</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A suspicious piece of code is <code>POSSIBLE</code>. Timing correlation with
+      a deploy is <code>LIKELY</code> at best &mdash; something always changed near
+      the start of any incident. What promotes it is a revert, a version
+      comparison, or a trace that attributes the time.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>It can conclude that it is not your application</h2>
+    <p>
+      Client networks, devices, browsers, CDNs, regional connectivity, third-party
+      degradation &mdash; all of it is in scope, and the skill is comfortable
+      saying the code is fine. But &ldquo;not our fault&rdquo; is a finding that
+      needs proof like any other. Three things are required:
+    </p>
+    <ul class="plain">
+      <li>Our side healthy <em>in the same window</em> the failures occupy</li>
+      <li>An unaffected comparison &mdash; other users, regions, or requests on the same path</li>
+      <li>The external factor <em>measured</em>: throughput, a provider error code, an edge header</li>
+    </ul>
+    <p>
+      With all three, the answer is <em>&ldquo;our servers responded normally while
+      the affected connection transferred data far more slowly than the others we
+      measured&rdquo;</em>. With only the first, it is <em>&ldquo;we have found no
+      evidence of an application-side problem, but we cannot yet say whether the
+      connection is responsible&rdquo;</em> &mdash; a different sentence, and the
+      skill writes that one instead. What it never writes is
+      &ldquo;it&rsquo;s your internet&rdquo;.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Cost proportional to the question</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Lane</th><th>When</th><th>What it costs</th></tr></thead>
+        <tbody>
+          <tr><td><b>QUICK</b></td><td>One check settles it</td><td>No workspace; a few lines</td></tr>
+          <tr><td><b>STANDARD</b></td><td>Explanations compete</td><td>Two state files, one or two experiments</td></tr>
+          <tr><td><b>INCIDENT</b></td><td>Production, multiple layers, or work that outlives the session</td><td>Full workspace, iterated loop</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      It stops when the cause is established and verified, when two experiments in
+      a row eliminate nothing, or when the remaining question needs access this
+      environment does not have. The last two end in <em>&ldquo;here is what we
+      know and the smallest thing that would settle it&rdquo;</em> &mdash; a
+      result, not a failure.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>A case you can resume</h2>
+    <p>For anything past a quick check, the investigation is persisted:</p>
+<pre class="block">.agent-investigation/
+├── incident.md      report, normalized symptom, scope, capabilities, status
+├── hypotheses.md    the ledger &mdash; kill conditions, evidence, statuses
+├── evidence.md      numbered observations, typed and sourced
+├── experiments.md   question, method, prediction, observation, elimination
+├── timeline.md      only when sequence is itself evidence
+└── conclusion.md    cause, confidence, verification, recommendation</pre>
+    <p>
+      Only the files that carry state get created. Say <b>&ldquo;continue the
+      investigation&rdquo;</b> days later and it reads the case first: disproven
+      hypotheses stay disproven, completed experiments are not re-run, and it
+      picks up the open question &mdash; then tells you what changed
+      <em>this</em> session, not the whole story again.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Install</h2>
+
+    <h3>Any Agent Skills-compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill engineering-investigator</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Claude Code</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Using it</h3>
+    <ul class="plain">
+      <li>&ldquo;Users are reporting that the application is very slow.&rdquo;</li>
+      <li>&ldquo;Checkout is randomly failing for some customers &mdash; investigate.&rdquo;</li>
+      <li>&ldquo;This API returns incorrect data intermittently.&rdquo;</li>
+      <li>&ldquo;It works locally but is extremely slow in production.&rdquo;</li>
+      <li>&ldquo;Continue the investigation.&rdquo;</li>
+      <li>&ldquo;Show the evidence.&rdquo; &middot; &ldquo;What did you rule out?&rdquo; &middot; &ldquo;What did you not check?&rdquo;</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Safety</h2>
+    <p>
+      Read-only by default. Every action is classified <code>OBSERVE</code>,
+      <code>REPRODUCE</code>, or <code>MUTATE</code>, and investigation authority
+      is read authority: production data, configuration, infrastructure,
+      deployments, migrations, and security controls are never touched without
+      explicit authorization for that specific action.
+    </p>
+    <p>
+      When the decisive experiment <em>is</em> a mutation &mdash; reverting a
+      release to see whether the symptom disappears &mdash; it is presented with
+      its blast radius, how to undo it, and what each outcome would prove, and
+      then it stops and asks. Secrets, tokens, and personal data never enter the
+      workspace or the answer.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Pairs with the other skills</h2>
+    <p class="flow mono">
+      incident &nbsp;&rarr;&nbsp; <b>engineering-investigator</b> &nbsp;&rarr;&nbsp; cause &nbsp;&rarr;&nbsp; <b>proof-driven-dev</b> &nbsp;&rarr;&nbsp; <b>production-guard</b> &nbsp;&rarr;&nbsp; ship
+    </p>
+    <p>
+      Engineering Investigator establishes what is actually happening.
+      <a href="impact-map.html">Impact Map</a> maps what a fix would touch,
+      <a href="proof-driven-dev.html">ProofBuild</a> proves the fix does what it
+      claims, and <a href="production-guard.html">Production Guard</a> decides
+      whether it is safe to ship. None requires the others.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Limitations</h2>
+    <ul class="plain">
+      <li>It cannot see what it cannot reach. With no logs, metrics, or traces it establishes candidate mechanisms and the evidence that would discriminate between them &mdash; not a cause, and it says so</li>
+      <li>Confidence above <code>LIKELY</code> usually needs reproduction or a controlled comparison; in a repository-only environment most conclusions honestly stop below that</li>
+      <li>It investigates one symptom at a time &mdash; two unrelated incidents in one report should be split</li>
+      <li>It does not monitor, alert, or page. It answers about a window that has already happened</li>
+      <li>It will not mutate production to find out, which means some questions stay open until a human authorizes the experiment</li>
+      <li>Debugging assistants and incident-response tooling already exist. The contribution here is the method: kill conditions, discriminating experiments, and a conclusion that stops at the confidence its evidence supports</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

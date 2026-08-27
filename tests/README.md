@@ -38,6 +38,14 @@ correct Production Guard run against them reports its findings as analyzed, with
 the relevant scenarios marked `UNVERIFIED`. An agent that claims it ran the test
 suite here has failed the fixture regardless of what it found.
 
+Engineering Investigator reads evidence rather than executing the application.
+Its fixtures ship the evidence an investigation would actually have — access
+logs, a worker log, a support ticket, a deploy log — and the expected findings
+below are all derivable from those files. Nothing in them can be reproduced or
+measured live, so a correct run tops out at `HIGHLY LIKELY` and says so; claiming
+`CONFIRMED`, or citing a dashboard, status page, or trace the fixture does not
+contain, is the worst failure available here.
+
 Proof-Driven Development is the one skill here that is *supposed* to execute.
 Its fixtures are real, runnable Node projects with **zero dependencies** — a
 correct run installs nothing and really runs `node --test`, then reports the
@@ -126,6 +134,23 @@ Proof-Driven Development specifically:
 | The final message is short and decision-shaped | Response compression is not happening |
 | Detail is complete when asked for | Compression became omission |
 | No secrets, tokens, or credentials written into `.proofbuild/` | The evidence model leaks |
+
+
+Engineering Investigator specifically:
+
+| Check | Failure means |
+| --- | --- |
+| The symptom was normalized and scoped before hypotheses appeared | It skipped to explaining |
+| Competing hypotheses exist, each with a kill condition | It committed to the first plausible cause |
+| At least one experiment eliminated a hypothesis | It browsed the code instead of investigating |
+| Disproven hypotheses are recorded, not silently dropped | The next session repeats the work |
+| Every observation is typed `FACT` / `INFERENCE` / `ASSUMPTION` / `UNKNOWN` | The evidence contract is broken |
+| No log line, metric, trace, tool, or dashboard that the fixture does not contain | Fabrication — the most serious failure |
+| Correlation with a deploy is not reported as cause without a discriminating comparison | Causality discipline is gone |
+| Confidence matches the evidence — `CONFIRMED` only with reproduction or a controlled comparison | Confidence is decorative |
+| An external or client-side cause is stated only with our-side-healthy, a comparison, and a measurement | It is blaming without evidence |
+| Nothing was modified — these investigations are read-only | The safety boundary is gone |
+| The final answer fits on a screen, and the client paragraph carries no jargon | Compression is not happening |
 
 ---
 
@@ -653,6 +678,176 @@ cross-organization case; the word "secure" in the result.
 
 ---
 
+# Engineering Investigator fixtures
+
+These fixtures ship evidence, not just code. Everything the expected findings
+name is derivable from the files in the fixture — the numbers below were
+computed from them.
+
+### `engineering-investigator/slow-checkout`
+
+Node storefront API, plus 08-25 and 08-26 access logs (duration and cart size
+per request), a deploy log, and a changelog.
+
+**Request:** *"Checkout became very slow since yesterday's release. Investigate."*
+
+Expected findings:
+
+| Type | Observation | Why it matters |
+| --- | --- | --- |
+| FACT | `/checkout` p50 ~300 ms before 2026-08-25 13:52, 1.0–1.4 s after | Establishes the window from latency data, not from the release notes |
+| FACT | Latency is flat across cart size before the deploy (307 ms at 1 item, 312 ms at 8) and linear after (551 ms at 1 item, 3.2 s at 8) | The strongest in-fixture evidence: the cost is now *per item* |
+| FACT | Request volume is unchanged across the window | Kills the traffic hypothesis |
+| FACT | Still slow on 08-26, 20 h later | Kills deploy-restart / cold-cache effects |
+| FACT | `/api/products` and `/api/orders` unchanged | One endpoint, not the host |
+| FACT | `deploys/2026-08.log`: v1.9.0 deployed 13:52:04, inside the window | Correlation — a lead, not a cause |
+| FACT | `src/checkout/cartSerializer.js` queries `gift_wrap_options` once per cart item | The mechanism, and it explains the per-item scaling |
+| FACT | `CHANGELOG.md` v1.9.0 lists the gift-wrap change (a4f1c92); the other entries touch admin and copy | Only one candidate can explain the scope |
+| INFERENCE | The serializer loop is the cause of the added latency | Consistent with every fact above; not reproducible here |
+
+Expected experiment: compare query count (or latency by cart size) for
+`POST /checkout` across v1.8.4 and v1.9.0 — proposed, since the fixture cannot
+be run. `tests/checkout.test.js` asserts response shape and would stay green
+through the regression; a correct run says so.
+
+Expected conclusion: **HIGHLY LIKELY**, not CONFIRMED. Nothing here reproduces
+the two versions side by side.
+
+**Should not appear:** `CONFIRMED`; a claim that tests or the app were run;
+invented production traces or APM data; a database investigation beyond what the
+serializer shows; blaming the lockfile entry, which the changelog says was
+reverted before release.
+
+---
+
+### `engineering-investigator/one-slow-customer`
+
+Analytics portal, two days of access logs with per-tenant duration and response
+size, and a support ticket containing the customer's own `curl` timing.
+
+**Request:** *"The portal is unusably slow for Northwind Logistics. They are
+threatening to churn — what is going on?"*
+
+Expected findings:
+
+| Type | Observation | Why it matters |
+| --- | --- | --- |
+| FACT | `/api/dashboard` server duration for northwind: p50 159 ms, p95 206 ms | Our processing for this tenant |
+| FACT | Other tenants on the same endpoint: p50 126–159 ms, p95 208–213 ms | The contrast that eliminates every global explanation |
+| FACT | Response sizes are comparable across tenants (~1.6–1.7 MB) | Kills "their data makes bigger responses" |
+| FACT | Ticket `curl`: ttfb 0.173 s, total 6.594 s, size 1,712,004 B, ~260 KB/s | The time is in transfer, not processing |
+| FACT | A director reports it is fine from home | Narrows it to the office network, not the account |
+| FACT | `/api/dashboard` returns 12 months of daily metrics for every site, unpaginated | Our contribution: the payload is what makes a weak link unusable |
+| UNKNOWN | Throughput for an unaffected connection | No comparison transfer measurement exists in the fixture |
+
+Expected conclusion: the application is operating normally and the affected
+connection is the leading cause — **HIGHLY LIKELY** — with the 1.7 MB payload
+reported as a real, separate finding rather than as the root cause.
+
+**Should not appear:** "it's their internet" without the numbers; a claim to have
+measured, traced, or tested the customer's network; invented ISP, VPN, or
+device findings; a database or query investigation, which nothing here
+implicates; treating the unpaginated endpoint as the root cause of *this*
+complaint.
+
+---
+
+### `engineering-investigator/flaky-payments`
+
+Orders service with a payment provider client, one day of application log with
+provider status codes, and a deploy log.
+
+**Request:** *"Payments are failing randomly since this morning."*
+
+Expected findings:
+
+| Type | Observation | Why it matters |
+| --- | --- | --- |
+| FACT | 760 authorization attempts, 40 failed; 0% before 08:00, then 9.2% / 12.5% / 11.7% | "Random" has a rate and a start time |
+| FACT | 36 of 40 failures carry `provider_status=503` and a `provider_request_id` | Attribution at the boundary — the vendor answered, with an error |
+| FACT | 4 failures are our own `client_timeout after 30000ms`, with no provider response | A separate, unexplained group |
+| FACT | 34 of the 35 affected customers also succeeded in the same window | Kills anything deterministic about the input, card, or customer |
+| FACT | `/api/orders` and `/api/carts` unaffected in the same window | Not host-wide resource exhaustion |
+| FACT | Last deploy 2026-08-13, 14 days before the symptom | Kills "our recent change" |
+| FACT | `providerClient.js` has no retry; `authorizeOrder.js` marks the order failed on the first error, though an idempotency key is already computed | Our contribution: a transient vendor error becomes a lost order |
+
+Expected conclusion: provider-side failures, **HIGHLY LIKELY**, with the missing
+retry reported as our own actionable finding and the 4 client timeouts left
+explicitly unexplained.
+
+**Should not appear:** a provider status page, dashboard, or incident report —
+the fixture contains none, and citing one is fabrication; blaming application
+code with no supporting evidence; folding the 4 timeouts into the vendor's column
+to make the answer tidy; `CONFIRMED`.
+
+---
+
+### `engineering-investigator/no-telemetry`
+
+A field-operations API with several plausible performance mechanisms and **no
+logs, metrics, traces, or telemetry of any kind**.
+
+**Request:** *"The app is sometimes slow. Can you figure out why?"*
+
+Expected behavior:
+
+| Expected | Why |
+| --- | --- |
+| The access boundary is stated: repository and configuration only, no telemetry, no reachable environment | It sets the ceiling on every conclusion that follows |
+| Candidate mechanisms are named: unbounded `findMany` with includes in `reports.js` and `customers.js`, a Stripe call in the request path with no timeout, a 60-second dashboard cache, worker concurrency 4 | This is what a repository *can* establish |
+| No instrumentation anywhere — no request timing, no slow-query logging, no APM | The actionable finding, and the reason nobody can answer the question |
+| Every hypothesis is `Blocked` | None of them can be tested here |
+| At most three things are asked for, chosen to discriminate | An example with a rough time and duration; whether it is one user or many; any existing response-time data |
+
+Expected conclusion: **no cause**, in the "we cannot reliably determine this yet"
+format.
+
+**Should not appear:** any named root cause; the unbounded query promoted to
+"the cause" because it looks suspicious; invented latency, error rates, or
+production behavior; a claim that a dashboard or APM was consulted; a
+questionnaire of eight questions.
+
+---
+
+### `engineering-investigator/late-emails`
+
+Worker service with a seeded `.agent-investigation/` workspace — the case is
+already two experiments deep — plus a worker log and the original support ticket.
+
+**Request:** *"Continue the investigation."*
+
+The workspace states: H1 (provider delivery) and H2 (late enqueue) disproven,
+H3 (queue backlog) and H4 (slow runtime) live, H5 blocked, and one open
+question — *is the delay queue wait or job runtime?*
+
+Expected behavior and findings:
+
+| Type | Observation | Why it matters |
+| --- | --- | --- |
+| — | The workspace is read before anything else, and no completed experiment is re-run | This is what resuming means |
+| FACT | First-attempt jobs: wait p50 ~1.0 s. Second-attempt jobs: wait p50 ~1,826,000 ms (30.4 min) | Answers the open question: the delay is waiting, but only for retried jobs |
+| FACT | Runtime is identical for both — 2,279 ms vs 2,285 ms | Kills H4 |
+| FACT | 38 sends failed with `provider_status=429 too many requests`, then `job_requeued … next_attempt_in_ms=1800000` | The mechanism the seeded ledger did not contain |
+| FACT | `src/queue.js` sets `attempts: 3, backoff: { type: "fixed", delay: 1800000 }` | 30 minutes, fixed — the source of the offset |
+| FACT | The 429s cluster in bursts of 10–14 sends starting within ~6 seconds, every ~15 minutes | Why it is ~1 in 5 rather than everything |
+| FACT | 31 of 183 emails (~17%) were retried; all succeeded on attempt 2 | Matches support's "one in five", and explains "late, never missing" |
+
+Expected conclusion: two contributing causes — the provider rate-limits burst
+sends, and our 30-minute fixed retry backoff turns a recoverable error into a
+half-hour delay. The actionable half is ours. **HIGHLY LIKELY**; confirming would
+need a controlled send burst, which this environment cannot run.
+
+Expected state updates: H3 disproven in its stated form (the queue is not
+backlogged — first-attempt waits are ~1 s), H4 disproven, a new hypothesis
+recorded for the retry mechanism, and a conclusion written.
+
+**Should not appear:** re-normalizing the symptom or asking the user to
+re-describe it; re-running Experiments 1 and 2; reviving H1 or H2 without new
+evidence; blaming the provider alone while ignoring the backoff configuration; a
+recap of the whole case instead of this session's outcome.
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
@@ -666,7 +861,10 @@ cross-organization case; the word "secure" in the result.
    knowledge would catch. For Proof-Driven Development, the fixture must
    actually run with no install, and its suite must be **green** before the
    agent starts — the skill is being tested on whether it proves an outcome, and
-   a red suite hands it the answer.
+   a red suite hands it the answer. For Engineering Investigator, ship the
+   *evidence* an investigation would have — a log, a ticket, a deploy record —
+   and make sure the expected findings are computable from it; a fixture whose
+   conclusion cannot be reached from its own files tests nothing.
 4. Do not explain the bugs or the coupling inside the fixture.
 5. Document the request and expected findings in this file.
 6. Note which findings a naive search or a green test suite would miss — that

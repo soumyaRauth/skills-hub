@@ -1,0 +1,700 @@
+2026-08-27T08:00:04Z INFO job_enqueued id=j_00004 name=send-order-email order=ord_207432
+2026-08-27T08:00:04Z INFO job_enqueued id=j_00012 name=send-order-email order=ord_480463
+2026-08-27T08:00:05Z INFO job_started id=j_00004 name=send-order-email worker=w1 wait_ms=890 attempt=1
+2026-08-27T08:00:05Z INFO job_enqueued id=j_00007 name=send-order-email order=ord_648687
+2026-08-27T08:00:05Z INFO job_enqueued id=j_00008 name=send-order-email order=ord_134879
+2026-08-27T08:00:05Z INFO job_started id=j_00012 name=send-order-email worker=w4 wait_ms=1140 attempt=1
+2026-08-27T08:00:06Z INFO job_enqueued id=j_00002 name=send-order-email order=ord_369932
+2026-08-27T08:00:06Z INFO job_enqueued id=j_00006 name=send-order-email order=ord_695138
+2026-08-27T08:00:06Z INFO job_started id=j_00007 name=send-order-email worker=w3 wait_ms=1072 attempt=1
+2026-08-27T08:00:06Z INFO job_started id=j_00008 name=send-order-email worker=w3 wait_ms=1353 attempt=1
+2026-08-27T08:00:07Z INFO job_enqueued id=j_00001 name=send-order-email order=ord_680533
+2026-08-27T08:00:07Z INFO job_started id=j_00002 name=send-order-email worker=w4 wait_ms=1021 attempt=1
+2026-08-27T08:00:07Z INFO job_enqueued id=j_00005 name=send-order-email order=ord_859019
+2026-08-27T08:00:07Z INFO job_started id=j_00006 name=send-order-email worker=w4 wait_ms=855 attempt=1
+2026-08-27T08:00:07Z WARN job_failed id=j_00008 name=send-order-email worker=w3 attempt=1 runtime_ms=529 provider_status=429 error=too many requests
+2026-08-27T08:00:07Z WARN job_requeued id=j_00008 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:00:07Z INFO job_enqueued id=j_00013 name=render-invoice-pdf invoice=inv_59789
+2026-08-27T08:00:08Z INFO job_started id=j_00001 name=send-order-email worker=w4 wait_ms=1204 attempt=1
+2026-08-27T08:00:08Z INFO job_enqueued id=j_00003 name=send-order-email order=ord_142895
+2026-08-27T08:00:08Z INFO job_started id=j_00005 name=send-order-email worker=w1 wait_ms=1455 attempt=1
+2026-08-27T08:00:08Z INFO job_enqueued id=j_00010 name=send-order-email order=ord_898908
+2026-08-27T08:00:08Z WARN job_failed id=j_00002 name=send-order-email worker=w4 attempt=1 runtime_ms=356 provider_status=429 error=too many requests
+2026-08-27T08:00:08Z WARN job_requeued id=j_00002 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:00:08Z INFO job_finished id=j_00004 name=send-order-email worker=w1 attempt=1 runtime_ms=2395 provider_status=202 result=sent
+2026-08-27T08:00:08Z INFO job_finished id=j_00012 name=send-order-email worker=w4 attempt=1 runtime_ms=2360 provider_status=202 result=sent
+2026-08-27T08:00:08Z INFO job_started id=j_00013 name=render-invoice-pdf worker=w2 wait_ms=1097 attempt=1
+2026-08-27T08:00:09Z INFO job_started id=j_00003 name=send-order-email worker=w4 wait_ms=1294 attempt=1
+2026-08-27T08:00:09Z INFO job_enqueued id=j_00009 name=send-order-email order=ord_470621
+2026-08-27T08:00:09Z INFO job_started id=j_00010 name=send-order-email worker=w2 wait_ms=864 attempt=1
+2026-08-27T08:00:09Z INFO job_enqueued id=j_00011 name=send-order-email order=ord_136992
+2026-08-27T08:00:09Z INFO job_finished id=j_00007 name=send-order-email worker=w3 attempt=1 runtime_ms=2183 provider_status=202 result=sent
+2026-08-27T08:00:10Z INFO job_started id=j_00009 name=send-order-email worker=w3 wait_ms=1191 attempt=1
+2026-08-27T08:00:10Z INFO job_started id=j_00011 name=send-order-email worker=w2 wait_ms=961 attempt=1
+2026-08-27T08:00:10Z WARN job_failed id=j_00003 name=send-order-email worker=w4 attempt=1 runtime_ms=296 provider_status=429 error=too many requests
+2026-08-27T08:00:10Z WARN job_requeued id=j_00003 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:00:10Z INFO job_finished id=j_00006 name=send-order-email worker=w4 attempt=1 runtime_ms=2464 provider_status=202 result=sent
+2026-08-27T08:00:11Z INFO job_finished id=j_00001 name=send-order-email worker=w4 attempt=1 runtime_ms=2179 provider_status=202 result=sent
+2026-08-27T08:00:11Z INFO job_finished id=j_00005 name=send-order-email worker=w1 attempt=1 runtime_ms=2445 provider_status=202 result=sent
+2026-08-27T08:00:12Z INFO job_finished id=j_00010 name=send-order-email worker=w2 attempt=1 runtime_ms=2183 provider_status=202 result=sent
+2026-08-27T08:00:13Z INFO job_finished id=j_00009 name=send-order-email worker=w3 attempt=1 runtime_ms=2338 provider_status=202 result=sent
+2026-08-27T08:00:13Z INFO job_finished id=j_00011 name=send-order-email worker=w2 attempt=1 runtime_ms=2315 provider_status=202 result=sent
+2026-08-27T08:00:14Z INFO job_finished id=j_00013 name=render-invoice-pdf worker=w2 attempt=1 runtime_ms=8371 result=ok
+2026-08-27T08:01:23Z INFO job_enqueued id=j_00014 name=send-order-email order=ord_115928
+2026-08-27T08:01:24Z INFO job_started id=j_00014 name=send-order-email worker=w2 wait_ms=1180 attempt=1
+2026-08-27T08:01:27Z INFO job_finished id=j_00014 name=send-order-email worker=w2 attempt=1 runtime_ms=2371 provider_status=202 result=sent
+2026-08-27T08:03:12Z INFO job_enqueued id=j_00015 name=send-order-email order=ord_636068
+2026-08-27T08:03:13Z INFO job_started id=j_00015 name=send-order-email worker=w4 wait_ms=1421 attempt=1
+2026-08-27T08:03:16Z INFO job_finished id=j_00015 name=send-order-email worker=w4 attempt=1 runtime_ms=2460 provider_status=202 result=sent
+2026-08-27T08:05:24Z INFO job_enqueued id=j_00016 name=send-order-email order=ord_737314
+2026-08-27T08:05:25Z INFO job_started id=j_00016 name=send-order-email worker=w3 wait_ms=1279 attempt=1
+2026-08-27T08:05:28Z INFO job_finished id=j_00016 name=send-order-email worker=w3 attempt=1 runtime_ms=2361 provider_status=202 result=sent
+2026-08-27T08:07:40Z INFO job_enqueued id=j_00017 name=send-order-email order=ord_969824
+2026-08-27T08:07:41Z INFO job_started id=j_00017 name=send-order-email worker=w1 wait_ms=1210 attempt=1
+2026-08-27T08:07:44Z INFO job_finished id=j_00017 name=send-order-email worker=w1 attempt=1 runtime_ms=2174 provider_status=202 result=sent
+2026-08-27T08:09:35Z INFO job_enqueued id=j_00018 name=send-order-email order=ord_825393
+2026-08-27T08:09:36Z INFO job_started id=j_00018 name=send-order-email worker=w2 wait_ms=800 attempt=1
+2026-08-27T08:09:39Z INFO job_finished id=j_00018 name=send-order-email worker=w2 attempt=1 runtime_ms=2290 provider_status=202 result=sent
+2026-08-27T08:09:58Z INFO job_enqueued id=j_00019 name=render-invoice-pdf invoice=inv_26761
+2026-08-27T08:09:59Z INFO job_started id=j_00019 name=render-invoice-pdf worker=w2 wait_ms=700 attempt=1
+2026-08-27T08:10:04Z INFO job_finished id=j_00019 name=render-invoice-pdf worker=w2 attempt=1 runtime_ms=8466 result=ok
+2026-08-27T08:11:45Z INFO job_enqueued id=j_00020 name=send-order-email order=ord_213335
+2026-08-27T08:11:46Z INFO job_started id=j_00020 name=send-order-email worker=w3 wait_ms=1074 attempt=1
+2026-08-27T08:11:49Z INFO job_finished id=j_00020 name=send-order-email worker=w3 attempt=1 runtime_ms=2050 provider_status=202 result=sent
+2026-08-27T08:13:28Z INFO job_enqueued id=j_00021 name=send-order-email order=ord_487185
+2026-08-27T08:13:29Z INFO job_started id=j_00021 name=send-order-email worker=w1 wait_ms=890 attempt=1
+2026-08-27T08:13:32Z INFO job_finished id=j_00021 name=send-order-email worker=w1 attempt=1 runtime_ms=2071 provider_status=202 result=sent
+2026-08-27T08:15:32Z INFO job_enqueued id=j_00024 name=send-order-email order=ord_283629
+2026-08-27T08:15:32Z INFO job_enqueued id=j_00027 name=send-order-email order=ord_123293
+2026-08-27T08:15:32Z INFO job_enqueued id=j_00028 name=send-order-email order=ord_674468
+2026-08-27T08:15:33Z INFO job_started id=j_00024 name=send-order-email worker=w2 wait_ms=1176 attempt=1
+2026-08-27T08:15:33Z INFO job_enqueued id=j_00026 name=send-order-email order=ord_846840
+2026-08-27T08:15:33Z INFO job_started id=j_00027 name=send-order-email worker=w1 wait_ms=929 attempt=1
+2026-08-27T08:15:33Z INFO job_started id=j_00028 name=send-order-email worker=w3 wait_ms=864 attempt=1
+2026-08-27T08:15:34Z INFO job_enqueued id=j_00025 name=send-order-email order=ord_766396
+2026-08-27T08:15:34Z INFO job_started id=j_00026 name=send-order-email worker=w1 wait_ms=1007 attempt=1
+2026-08-27T08:15:35Z INFO job_enqueued id=j_00022 name=send-order-email order=ord_310919
+2026-08-27T08:15:35Z INFO job_enqueued id=j_00023 name=send-order-email order=ord_690983
+2026-08-27T08:15:35Z INFO job_started id=j_00025 name=send-order-email worker=w1 wait_ms=1256 attempt=1
+2026-08-27T08:15:36Z INFO job_started id=j_00022 name=send-order-email worker=w4 wait_ms=1160 attempt=1
+2026-08-27T08:15:36Z INFO job_started id=j_00023 name=send-order-email worker=w1 wait_ms=1331 attempt=1
+2026-08-27T08:15:36Z INFO job_enqueued id=j_00029 name=send-order-email order=ord_869671
+2026-08-27T08:15:36Z INFO job_enqueued id=j_00030 name=send-order-email order=ord_899463
+2026-08-27T08:15:36Z INFO job_enqueued id=j_00031 name=send-order-email order=ord_184623
+2026-08-27T08:15:36Z INFO job_enqueued id=j_00032 name=send-order-email order=ord_154717
+2026-08-27T08:15:36Z INFO job_finished id=j_00024 name=send-order-email worker=w2 attempt=1 runtime_ms=2082 provider_status=202 result=sent
+2026-08-27T08:15:36Z INFO job_finished id=j_00027 name=send-order-email worker=w1 attempt=1 runtime_ms=2059 provider_status=202 result=sent
+2026-08-27T08:15:36Z INFO job_finished id=j_00028 name=send-order-email worker=w3 attempt=1 runtime_ms=2338 provider_status=202 result=sent
+2026-08-27T08:15:37Z INFO job_started id=j_00029 name=send-order-email worker=w2 wait_ms=1183 attempt=1
+2026-08-27T08:15:37Z INFO job_started id=j_00030 name=send-order-email worker=w3 wait_ms=1253 attempt=1
+2026-08-27T08:15:37Z INFO job_started id=j_00031 name=send-order-email worker=w4 wait_ms=970 attempt=1
+2026-08-27T08:15:37Z INFO job_started id=j_00032 name=send-order-email worker=w1 wait_ms=1043 attempt=1
+2026-08-27T08:15:37Z WARN job_failed id=j_00022 name=send-order-email worker=w4 attempt=1 runtime_ms=395 provider_status=429 error=too many requests
+2026-08-27T08:15:37Z WARN job_requeued id=j_00022 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:15:37Z INFO job_finished id=j_00026 name=send-order-email worker=w1 attempt=1 runtime_ms=2384 provider_status=202 result=sent
+2026-08-27T08:15:38Z INFO job_finished id=j_00025 name=send-order-email worker=w1 attempt=1 runtime_ms=2109 provider_status=202 result=sent
+2026-08-27T08:15:39Z INFO job_finished id=j_00023 name=send-order-email worker=w1 attempt=1 runtime_ms=2300 provider_status=202 result=sent
+2026-08-27T08:15:40Z INFO job_finished id=j_00029 name=send-order-email worker=w2 attempt=1 runtime_ms=2083 provider_status=202 result=sent
+2026-08-27T08:15:40Z INFO job_finished id=j_00030 name=send-order-email worker=w3 attempt=1 runtime_ms=2197 provider_status=202 result=sent
+2026-08-27T08:15:40Z INFO job_finished id=j_00031 name=send-order-email worker=w4 attempt=1 runtime_ms=2300 provider_status=202 result=sent
+2026-08-27T08:15:40Z INFO job_finished id=j_00032 name=send-order-email worker=w1 attempt=1 runtime_ms=2436 provider_status=202 result=sent
+2026-08-27T08:17:32Z INFO job_enqueued id=j_00033 name=send-order-email order=ord_275025
+2026-08-27T08:17:33Z INFO job_started id=j_00033 name=send-order-email worker=w4 wait_ms=643 attempt=1
+2026-08-27T08:17:36Z INFO job_finished id=j_00033 name=send-order-email worker=w4 attempt=1 runtime_ms=2350 provider_status=202 result=sent
+2026-08-27T08:18:42Z INFO job_enqueued id=j_00034 name=render-invoice-pdf invoice=inv_70362
+2026-08-27T08:18:43Z INFO job_started id=j_00034 name=render-invoice-pdf worker=w4 wait_ms=883 attempt=1
+2026-08-27T08:18:52Z INFO job_finished id=j_00034 name=render-invoice-pdf worker=w4 attempt=1 runtime_ms=8263 result=ok
+2026-08-27T08:19:18Z INFO job_enqueued id=j_00035 name=send-order-email order=ord_298480
+2026-08-27T08:19:19Z INFO job_started id=j_00035 name=send-order-email worker=w3 wait_ms=661 attempt=1
+2026-08-27T08:19:22Z INFO job_finished id=j_00035 name=send-order-email worker=w3 attempt=1 runtime_ms=2445 provider_status=202 result=sent
+2026-08-27T08:21:49Z INFO job_enqueued id=j_00036 name=send-order-email order=ord_502342
+2026-08-27T08:21:50Z INFO job_started id=j_00036 name=send-order-email worker=w1 wait_ms=1359 attempt=1
+2026-08-27T08:21:53Z INFO job_finished id=j_00036 name=send-order-email worker=w1 attempt=1 runtime_ms=2452 provider_status=202 result=sent
+2026-08-27T08:23:51Z INFO job_enqueued id=j_00037 name=send-order-email order=ord_728010
+2026-08-27T08:23:52Z INFO job_started id=j_00037 name=send-order-email worker=w4 wait_ms=1170 attempt=1
+2026-08-27T08:23:55Z INFO job_finished id=j_00037 name=send-order-email worker=w4 attempt=1 runtime_ms=2431 provider_status=202 result=sent
+2026-08-27T08:25:46Z INFO job_enqueued id=j_00038 name=send-order-email order=ord_532113
+2026-08-27T08:25:47Z INFO job_started id=j_00038 name=send-order-email worker=w2 wait_ms=1369 attempt=1
+2026-08-27T08:25:50Z INFO job_finished id=j_00038 name=send-order-email worker=w2 attempt=1 runtime_ms=2373 provider_status=202 result=sent
+2026-08-27T08:27:22Z INFO job_enqueued id=j_00039 name=send-order-email order=ord_948427
+2026-08-27T08:27:23Z INFO job_started id=j_00039 name=send-order-email worker=w3 wait_ms=1034 attempt=1
+2026-08-27T08:27:26Z INFO job_finished id=j_00039 name=send-order-email worker=w3 attempt=1 runtime_ms=2220 provider_status=202 result=sent
+2026-08-27T08:27:34Z INFO job_enqueued id=j_00040 name=render-invoice-pdf invoice=inv_24260
+2026-08-27T08:27:35Z INFO job_started id=j_00040 name=render-invoice-pdf worker=w3 wait_ms=695 attempt=1
+2026-08-27T08:27:43Z INFO job_finished id=j_00040 name=render-invoice-pdf worker=w3 attempt=1 runtime_ms=7290 result=ok
+2026-08-27T08:29:14Z INFO job_enqueued id=j_00041 name=send-order-email order=ord_711145
+2026-08-27T08:29:15Z INFO job_started id=j_00041 name=send-order-email worker=w1 wait_ms=1021 attempt=1
+2026-08-27T08:29:18Z INFO job_finished id=j_00041 name=send-order-email worker=w1 attempt=1 runtime_ms=2374 provider_status=202 result=sent
+2026-08-27T08:30:09Z INFO job_started id=j_00008 name=send-order-email worker=w3 wait_ms=1803542 attempt=2
+2026-08-27T08:30:12Z INFO job_finished id=j_00008 name=send-order-email worker=w3 attempt=2 runtime_ms=2433 provider_status=202 result=sent
+2026-08-27T08:30:16Z INFO job_enqueued id=j_00048 name=send-order-email order=ord_277993
+2026-08-27T08:30:17Z INFO job_enqueued id=j_00042 name=send-order-email order=ord_403799
+2026-08-27T08:30:17Z INFO job_started id=j_00048 name=send-order-email worker=w4 wait_ms=964 attempt=1
+2026-08-27T08:30:18Z INFO job_started id=j_00042 name=send-order-email worker=w2 wait_ms=1096 attempt=1
+2026-08-27T08:30:18Z INFO job_enqueued id=j_00047 name=send-order-email order=ord_408241
+2026-08-27T08:30:18Z WARN job_failed id=j_00048 name=send-order-email worker=w4 attempt=1 runtime_ms=473 provider_status=429 error=too many requests
+2026-08-27T08:30:18Z WARN job_requeued id=j_00048 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:19Z INFO job_enqueued id=j_00044 name=send-order-email order=ord_432872
+2026-08-27T08:30:19Z INFO job_enqueued id=j_00046 name=send-order-email order=ord_579621
+2026-08-27T08:30:19Z INFO job_started id=j_00047 name=send-order-email worker=w1 wait_ms=930 attempt=1
+2026-08-27T08:30:19Z INFO job_enqueued id=j_00049 name=send-order-email order=ord_546690
+2026-08-27T08:30:19Z WARN job_failed id=j_00042 name=send-order-email worker=w2 attempt=1 runtime_ms=553 provider_status=429 error=too many requests
+2026-08-27T08:30:19Z WARN job_requeued id=j_00042 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:20Z INFO job_started id=j_00044 name=send-order-email worker=w1 wait_ms=779 attempt=1
+2026-08-27T08:30:20Z INFO job_enqueued id=j_00045 name=send-order-email order=ord_603001
+2026-08-27T08:30:20Z INFO job_started id=j_00046 name=send-order-email worker=w4 wait_ms=1248 attempt=1
+2026-08-27T08:30:20Z INFO job_started id=j_00049 name=send-order-email worker=w2 wait_ms=1135 attempt=1
+2026-08-27T08:30:20Z INFO job_enqueued id=j_00050 name=send-order-email order=ord_638166
+2026-08-27T08:30:20Z INFO job_enqueued id=j_00051 name=send-order-email order=ord_124187
+2026-08-27T08:30:20Z INFO job_enqueued id=j_00052 name=send-order-email order=ord_717928
+2026-08-27T08:30:20Z INFO job_enqueued id=j_00053 name=send-order-email order=ord_288219
+2026-08-27T08:30:21Z INFO job_enqueued id=j_00043 name=send-order-email order=ord_960853
+2026-08-27T08:30:21Z INFO job_started id=j_00045 name=send-order-email worker=w1 wait_ms=648 attempt=1
+2026-08-27T08:30:21Z INFO job_started id=j_00050 name=send-order-email worker=w3 wait_ms=940 attempt=1
+2026-08-27T08:30:21Z INFO job_started id=j_00051 name=send-order-email worker=w4 wait_ms=1496 attempt=1
+2026-08-27T08:30:21Z INFO job_started id=j_00052 name=send-order-email worker=w4 wait_ms=1251 attempt=1
+2026-08-27T08:30:21Z INFO job_started id=j_00053 name=send-order-email worker=w4 wait_ms=1454 attempt=1
+2026-08-27T08:30:21Z WARN job_failed id=j_00044 name=send-order-email worker=w1 attempt=1 runtime_ms=354 provider_status=429 error=too many requests
+2026-08-27T08:30:21Z WARN job_requeued id=j_00044 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:21Z WARN job_failed id=j_00046 name=send-order-email worker=w4 attempt=1 runtime_ms=311 provider_status=429 error=too many requests
+2026-08-27T08:30:21Z WARN job_requeued id=j_00046 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:21Z WARN job_failed id=j_00049 name=send-order-email worker=w2 attempt=1 runtime_ms=302 provider_status=429 error=too many requests
+2026-08-27T08:30:21Z WARN job_requeued id=j_00049 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:22Z INFO job_started id=j_00043 name=send-order-email worker=w3 wait_ms=1075 attempt=1
+2026-08-27T08:30:22Z WARN job_failed id=j_00045 name=send-order-email worker=w1 attempt=1 runtime_ms=546 provider_status=429 error=too many requests
+2026-08-27T08:30:22Z WARN job_requeued id=j_00045 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:22Z INFO job_finished id=j_00047 name=send-order-email worker=w1 attempt=1 runtime_ms=2050 provider_status=202 result=sent
+2026-08-27T08:30:22Z WARN job_failed id=j_00050 name=send-order-email worker=w3 attempt=1 runtime_ms=284 provider_status=429 error=too many requests
+2026-08-27T08:30:22Z WARN job_requeued id=j_00050 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:22Z WARN job_failed id=j_00051 name=send-order-email worker=w4 attempt=1 runtime_ms=521 provider_status=429 error=too many requests
+2026-08-27T08:30:22Z WARN job_requeued id=j_00051 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:30:24Z INFO job_finished id=j_00052 name=send-order-email worker=w4 attempt=1 runtime_ms=2139 provider_status=202 result=sent
+2026-08-27T08:30:24Z INFO job_finished id=j_00053 name=send-order-email worker=w4 attempt=1 runtime_ms=2305 provider_status=202 result=sent
+2026-08-27T08:30:25Z INFO job_finished id=j_00043 name=send-order-email worker=w3 attempt=1 runtime_ms=2298 provider_status=202 result=sent
+2026-08-27T08:30:29Z INFO job_started id=j_00002 name=send-order-email worker=w4 wait_ms=1822549 attempt=2
+2026-08-27T08:30:32Z INFO job_finished id=j_00002 name=send-order-email worker=w4 attempt=2 runtime_ms=2355 provider_status=202 result=sent
+2026-08-27T08:30:36Z INFO job_started id=j_00003 name=send-order-email worker=w1 wait_ms=1827504 attempt=2
+2026-08-27T08:30:39Z INFO job_finished id=j_00003 name=send-order-email worker=w1 attempt=2 runtime_ms=2318 provider_status=202 result=sent
+2026-08-27T08:31:22Z INFO job_enqueued id=j_00054 name=send-order-email order=ord_516407
+2026-08-27T08:31:23Z INFO job_started id=j_00054 name=send-order-email worker=w1 wait_ms=755 attempt=1
+2026-08-27T08:31:26Z INFO job_finished id=j_00054 name=send-order-email worker=w1 attempt=1 runtime_ms=2414 provider_status=202 result=sent
+2026-08-27T08:33:24Z INFO job_enqueued id=j_00055 name=send-order-email order=ord_364761
+2026-08-27T08:33:25Z INFO job_started id=j_00055 name=send-order-email worker=w4 wait_ms=1429 attempt=1
+2026-08-27T08:33:28Z INFO job_finished id=j_00055 name=send-order-email worker=w4 attempt=1 runtime_ms=2097 provider_status=202 result=sent
+2026-08-27T08:35:13Z INFO job_enqueued id=j_00056 name=send-order-email order=ord_755049
+2026-08-27T08:35:14Z INFO job_started id=j_00056 name=send-order-email worker=w1 wait_ms=1235 attempt=1
+2026-08-27T08:35:17Z INFO job_finished id=j_00056 name=send-order-email worker=w1 attempt=1 runtime_ms=2164 provider_status=202 result=sent
+2026-08-27T08:36:41Z INFO job_enqueued id=j_00057 name=render-invoice-pdf invoice=inv_76558
+2026-08-27T08:36:42Z INFO job_started id=j_00057 name=render-invoice-pdf worker=w2 wait_ms=863 attempt=1
+2026-08-27T08:36:51Z INFO job_finished id=j_00057 name=render-invoice-pdf worker=w2 attempt=1 runtime_ms=6311 result=ok
+2026-08-27T08:37:51Z INFO job_enqueued id=j_00058 name=send-order-email order=ord_219263
+2026-08-27T08:37:52Z INFO job_started id=j_00058 name=send-order-email worker=w1 wait_ms=913 attempt=1
+2026-08-27T08:37:55Z INFO job_finished id=j_00058 name=send-order-email worker=w1 attempt=1 runtime_ms=2418 provider_status=202 result=sent
+2026-08-27T08:39:38Z INFO job_enqueued id=j_00059 name=send-order-email order=ord_524008
+2026-08-27T08:39:39Z INFO job_started id=j_00059 name=send-order-email worker=w4 wait_ms=627 attempt=1
+2026-08-27T08:39:42Z INFO job_finished id=j_00059 name=send-order-email worker=w4 attempt=1 runtime_ms=2351 provider_status=202 result=sent
+2026-08-27T08:41:45Z INFO job_enqueued id=j_00060 name=send-order-email order=ord_755693
+2026-08-27T08:41:46Z INFO job_started id=j_00060 name=send-order-email worker=w3 wait_ms=1440 attempt=1
+2026-08-27T08:41:49Z INFO job_finished id=j_00060 name=send-order-email worker=w3 attempt=1 runtime_ms=2453 provider_status=202 result=sent
+2026-08-27T08:43:23Z INFO job_enqueued id=j_00061 name=send-order-email order=ord_264705
+2026-08-27T08:43:24Z INFO job_started id=j_00061 name=send-order-email worker=w1 wait_ms=864 attempt=1
+2026-08-27T08:43:27Z INFO job_finished id=j_00061 name=send-order-email worker=w1 attempt=1 runtime_ms=2143 provider_status=202 result=sent
+2026-08-27T08:45:32Z INFO job_enqueued id=j_00063 name=send-order-email order=ord_232068
+2026-08-27T08:45:32Z INFO job_enqueued id=j_00064 name=send-order-email order=ord_534809
+2026-08-27T08:45:32Z INFO job_enqueued id=j_00066 name=send-order-email order=ord_772581
+2026-08-27T08:45:32Z INFO job_enqueued id=j_00067 name=send-order-email order=ord_311626
+2026-08-27T08:45:32Z INFO job_enqueued id=j_00068 name=send-order-email order=ord_974214
+2026-08-27T08:45:33Z INFO job_enqueued id=j_00062 name=send-order-email order=ord_853697
+2026-08-27T08:45:33Z INFO job_started id=j_00063 name=send-order-email worker=w4 wait_ms=976 attempt=1
+2026-08-27T08:45:33Z INFO job_started id=j_00064 name=send-order-email worker=w3 wait_ms=1182 attempt=1
+2026-08-27T08:45:33Z INFO job_started id=j_00066 name=send-order-email worker=w3 wait_ms=724 attempt=1
+2026-08-27T08:45:33Z INFO job_started id=j_00067 name=send-order-email worker=w2 wait_ms=958 attempt=1
+2026-08-27T08:45:33Z INFO job_started id=j_00068 name=send-order-email worker=w3 wait_ms=1407 attempt=1
+2026-08-27T08:45:34Z INFO job_started id=j_00062 name=send-order-email worker=w2 wait_ms=699 attempt=1
+2026-08-27T08:45:34Z WARN job_failed id=j_00067 name=send-order-email worker=w2 attempt=1 runtime_ms=411 provider_status=429 error=too many requests
+2026-08-27T08:45:34Z WARN job_requeued id=j_00067 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:45:35Z INFO job_enqueued id=j_00072 name=send-order-email order=ord_557221
+2026-08-27T08:45:36Z INFO job_enqueued id=j_00070 name=send-order-email order=ord_700392
+2026-08-27T08:45:36Z INFO job_enqueued id=j_00071 name=send-order-email order=ord_644714
+2026-08-27T08:45:36Z INFO job_started id=j_00072 name=send-order-email worker=w4 wait_ms=1365 attempt=1
+2026-08-27T08:45:36Z INFO job_finished id=j_00063 name=send-order-email worker=w4 attempt=1 runtime_ms=2075 provider_status=202 result=sent
+2026-08-27T08:45:36Z INFO job_finished id=j_00064 name=send-order-email worker=w3 attempt=1 runtime_ms=2269 provider_status=202 result=sent
+2026-08-27T08:45:36Z INFO job_finished id=j_00066 name=send-order-email worker=w3 attempt=1 runtime_ms=2113 provider_status=202 result=sent
+2026-08-27T08:45:36Z INFO job_finished id=j_00068 name=send-order-email worker=w3 attempt=1 runtime_ms=2080 provider_status=202 result=sent
+2026-08-27T08:45:37Z INFO job_enqueued id=j_00065 name=send-order-email order=ord_330209
+2026-08-27T08:45:37Z INFO job_enqueued id=j_00069 name=send-order-email order=ord_795619
+2026-08-27T08:45:37Z INFO job_started id=j_00070 name=send-order-email worker=w3 wait_ms=1436 attempt=1
+2026-08-27T08:45:37Z INFO job_started id=j_00071 name=send-order-email worker=w4 wait_ms=1273 attempt=1
+2026-08-27T08:45:37Z INFO job_finished id=j_00062 name=send-order-email worker=w2 attempt=1 runtime_ms=2149 provider_status=202 result=sent
+2026-08-27T08:45:37Z WARN job_failed id=j_00072 name=send-order-email worker=w4 attempt=1 runtime_ms=357 provider_status=429 error=too many requests
+2026-08-27T08:45:37Z WARN job_requeued id=j_00072 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:45:38Z INFO job_started id=j_00065 name=send-order-email worker=w3 wait_ms=1407 attempt=1
+2026-08-27T08:45:38Z INFO job_started id=j_00069 name=send-order-email worker=w4 wait_ms=1138 attempt=1
+2026-08-27T08:45:39Z WARN job_failed id=j_00069 name=send-order-email worker=w4 attempt=1 runtime_ms=335 provider_status=429 error=too many requests
+2026-08-27T08:45:39Z WARN job_requeued id=j_00069 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T08:45:40Z INFO job_finished id=j_00070 name=send-order-email worker=w3 attempt=1 runtime_ms=2315 provider_status=202 result=sent
+2026-08-27T08:45:40Z INFO job_finished id=j_00071 name=send-order-email worker=w4 attempt=1 runtime_ms=2314 provider_status=202 result=sent
+2026-08-27T08:45:40Z INFO job_enqueued id=j_00073 name=render-invoice-pdf invoice=inv_80768
+2026-08-27T08:45:41Z INFO job_finished id=j_00065 name=send-order-email worker=w3 attempt=1 runtime_ms=2274 provider_status=202 result=sent
+2026-08-27T08:45:41Z INFO job_started id=j_00073 name=render-invoice-pdf worker=w1 wait_ms=1105 attempt=1
+2026-08-27T08:45:47Z INFO job_finished id=j_00073 name=render-invoice-pdf worker=w1 attempt=1 runtime_ms=4963 result=ok
+2026-08-27T08:46:13Z INFO job_started id=j_00022 name=send-order-email worker=w3 wait_ms=1837174 attempt=2
+2026-08-27T08:46:16Z INFO job_finished id=j_00022 name=send-order-email worker=w3 attempt=2 runtime_ms=2074 provider_status=202 result=sent
+2026-08-27T08:47:47Z INFO job_enqueued id=j_00074 name=send-order-email order=ord_146362
+2026-08-27T08:47:48Z INFO job_started id=j_00074 name=send-order-email worker=w1 wait_ms=882 attempt=1
+2026-08-27T08:47:51Z INFO job_finished id=j_00074 name=send-order-email worker=w1 attempt=1 runtime_ms=2226 provider_status=202 result=sent
+2026-08-27T08:49:41Z INFO job_enqueued id=j_00075 name=send-order-email order=ord_487317
+2026-08-27T08:49:42Z INFO job_started id=j_00075 name=send-order-email worker=w3 wait_ms=756 attempt=1
+2026-08-27T08:49:45Z INFO job_finished id=j_00075 name=send-order-email worker=w3 attempt=1 runtime_ms=2153 provider_status=202 result=sent
+2026-08-27T08:51:40Z INFO job_enqueued id=j_00076 name=send-order-email order=ord_935133
+2026-08-27T08:51:41Z INFO job_started id=j_00076 name=send-order-email worker=w3 wait_ms=1237 attempt=1
+2026-08-27T08:51:44Z INFO job_finished id=j_00076 name=send-order-email worker=w3 attempt=1 runtime_ms=2392 provider_status=202 result=sent
+2026-08-27T08:53:29Z INFO job_enqueued id=j_00077 name=send-order-email order=ord_543157
+2026-08-27T08:53:30Z INFO job_started id=j_00077 name=send-order-email worker=w4 wait_ms=975 attempt=1
+2026-08-27T08:53:33Z INFO job_finished id=j_00077 name=send-order-email worker=w4 attempt=1 runtime_ms=2437 provider_status=202 result=sent
+2026-08-27T08:54:16Z INFO job_enqueued id=j_00078 name=render-invoice-pdf invoice=inv_84048
+2026-08-27T08:54:17Z INFO job_started id=j_00078 name=render-invoice-pdf worker=w1 wait_ms=1339 attempt=1
+2026-08-27T08:54:26Z INFO job_finished id=j_00078 name=render-invoice-pdf worker=w1 attempt=1 runtime_ms=7820 result=ok
+2026-08-27T08:55:22Z INFO job_enqueued id=j_00079 name=send-order-email order=ord_525228
+2026-08-27T08:55:23Z INFO job_started id=j_00079 name=send-order-email worker=w1 wait_ms=644 attempt=1
+2026-08-27T08:55:26Z INFO job_finished id=j_00079 name=send-order-email worker=w1 attempt=1 runtime_ms=2251 provider_status=202 result=sent
+2026-08-27T08:57:37Z INFO job_enqueued id=j_00080 name=send-order-email order=ord_645470
+2026-08-27T08:57:38Z INFO job_started id=j_00080 name=send-order-email worker=w1 wait_ms=973 attempt=1
+2026-08-27T08:57:41Z INFO job_finished id=j_00080 name=send-order-email worker=w1 attempt=1 runtime_ms=2419 provider_status=202 result=sent
+2026-08-27T08:59:50Z INFO job_enqueued id=j_00081 name=send-order-email order=ord_562642
+2026-08-27T08:59:51Z INFO job_started id=j_00081 name=send-order-email worker=w1 wait_ms=687 attempt=1
+2026-08-27T08:59:54Z INFO job_finished id=j_00081 name=send-order-email worker=w1 attempt=1 runtime_ms=2292 provider_status=202 result=sent
+2026-08-27T09:00:04Z INFO job_enqueued id=j_00084 name=send-order-email order=ord_219733
+2026-08-27T09:00:04Z INFO job_enqueued id=j_00089 name=send-order-email order=ord_426077
+2026-08-27T09:00:05Z INFO job_enqueued id=j_00082 name=send-order-email order=ord_314671
+2026-08-27T09:00:05Z INFO job_started id=j_00084 name=send-order-email worker=w1 wait_ms=877 attempt=1
+2026-08-27T09:00:05Z INFO job_enqueued id=j_00086 name=send-order-email order=ord_448571
+2026-08-27T09:00:05Z INFO job_started id=j_00089 name=send-order-email worker=w1 wait_ms=1243 attempt=1
+2026-08-27T09:00:05Z INFO job_enqueued id=j_00090 name=send-order-email order=ord_962915
+2026-08-27T09:00:06Z INFO job_started id=j_00082 name=send-order-email worker=w2 wait_ms=1052 attempt=1
+2026-08-27T09:00:06Z INFO job_started id=j_00086 name=send-order-email worker=w4 wait_ms=659 attempt=1
+2026-08-27T09:00:06Z INFO job_started id=j_00090 name=send-order-email worker=w1 wait_ms=655 attempt=1
+2026-08-27T09:00:06Z WARN job_failed id=j_00084 name=send-order-email worker=w1 attempt=1 runtime_ms=466 provider_status=429 error=too many requests
+2026-08-27T09:00:06Z WARN job_requeued id=j_00084 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:06Z WARN job_failed id=j_00089 name=send-order-email worker=w1 attempt=1 runtime_ms=391 provider_status=429 error=too many requests
+2026-08-27T09:00:06Z WARN job_requeued id=j_00089 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:07Z INFO job_enqueued id=j_00083 name=send-order-email order=ord_931854
+2026-08-27T09:00:07Z INFO job_enqueued id=j_00092 name=send-order-email order=ord_300245
+2026-08-27T09:00:07Z WARN job_failed id=j_00082 name=send-order-email worker=w2 attempt=1 runtime_ms=273 provider_status=429 error=too many requests
+2026-08-27T09:00:07Z WARN job_requeued id=j_00082 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:07Z WARN job_failed id=j_00090 name=send-order-email worker=w1 attempt=1 runtime_ms=586 provider_status=429 error=too many requests
+2026-08-27T09:00:07Z WARN job_requeued id=j_00090 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:08Z INFO job_started id=j_00083 name=send-order-email worker=w2 wait_ms=923 attempt=1
+2026-08-27T09:00:08Z INFO job_enqueued id=j_00085 name=send-order-email order=ord_323345
+2026-08-27T09:00:08Z INFO job_enqueued id=j_00088 name=send-order-email order=ord_461470
+2026-08-27T09:00:08Z INFO job_enqueued id=j_00091 name=send-order-email order=ord_716711
+2026-08-27T09:00:08Z INFO job_started id=j_00092 name=send-order-email worker=w1 wait_ms=903 attempt=1
+2026-08-27T09:00:09Z INFO job_started id=j_00085 name=send-order-email worker=w3 wait_ms=1102 attempt=1
+2026-08-27T09:00:09Z INFO job_enqueued id=j_00087 name=send-order-email order=ord_777871
+2026-08-27T09:00:09Z INFO job_started id=j_00088 name=send-order-email worker=w1 wait_ms=731 attempt=1
+2026-08-27T09:00:09Z INFO job_started id=j_00091 name=send-order-email worker=w1 wait_ms=1012 attempt=1
+2026-08-27T09:00:09Z INFO job_enqueued id=j_00093 name=send-order-email order=ord_766704
+2026-08-27T09:00:09Z INFO job_finished id=j_00086 name=send-order-email worker=w4 attempt=1 runtime_ms=2179 provider_status=202 result=sent
+2026-08-27T09:00:09Z WARN job_failed id=j_00092 name=send-order-email worker=w1 attempt=1 runtime_ms=354 provider_status=429 error=too many requests
+2026-08-27T09:00:09Z WARN job_requeued id=j_00092 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:10Z INFO job_started id=j_00087 name=send-order-email worker=w4 wait_ms=953 attempt=1
+2026-08-27T09:00:10Z INFO job_started id=j_00093 name=send-order-email worker=w4 wait_ms=1142 attempt=1
+2026-08-27T09:00:10Z WARN job_failed id=j_00085 name=send-order-email worker=w3 attempt=1 runtime_ms=608 provider_status=429 error=too many requests
+2026-08-27T09:00:10Z WARN job_requeued id=j_00085 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:10Z WARN job_failed id=j_00088 name=send-order-email worker=w1 attempt=1 runtime_ms=290 provider_status=429 error=too many requests
+2026-08-27T09:00:10Z WARN job_requeued id=j_00088 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:11Z INFO job_finished id=j_00083 name=send-order-email worker=w2 attempt=1 runtime_ms=2209 provider_status=202 result=sent
+2026-08-27T09:00:11Z WARN job_failed id=j_00093 name=send-order-email worker=w4 attempt=1 runtime_ms=458 provider_status=429 error=too many requests
+2026-08-27T09:00:11Z WARN job_requeued id=j_00093 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:00:12Z INFO job_finished id=j_00091 name=send-order-email worker=w1 attempt=1 runtime_ms=2147 provider_status=202 result=sent
+2026-08-27T09:00:13Z INFO job_finished id=j_00087 name=send-order-email worker=w4 attempt=1 runtime_ms=2265 provider_status=202 result=sent
+2026-08-27T09:00:25Z INFO job_started id=j_00046 name=send-order-email worker=w4 wait_ms=1805368 attempt=2
+2026-08-27T09:00:28Z INFO job_finished id=j_00046 name=send-order-email worker=w4 attempt=2 runtime_ms=2377 provider_status=202 result=sent
+2026-08-27T09:00:28Z INFO job_started id=j_00051 name=send-order-email worker=w2 wait_ms=1807225 attempt=2
+2026-08-27T09:00:30Z INFO job_started id=j_00042 name=send-order-email worker=w4 wait_ms=1812692 attempt=2
+2026-08-27T09:00:31Z INFO job_finished id=j_00051 name=send-order-email worker=w2 attempt=2 runtime_ms=2315 provider_status=202 result=sent
+2026-08-27T09:00:33Z INFO job_finished id=j_00042 name=send-order-email worker=w4 attempt=2 runtime_ms=2425 provider_status=202 result=sent
+2026-08-27T09:00:47Z INFO job_started id=j_00045 name=send-order-email worker=w4 wait_ms=1826651 attempt=2
+2026-08-27T09:00:48Z INFO job_started id=j_00050 name=send-order-email worker=w2 wait_ms=1827172 attempt=2
+2026-08-27T09:00:50Z INFO job_started id=j_00044 name=send-order-email worker=w2 wait_ms=1830257 attempt=2
+2026-08-27T09:00:50Z INFO job_finished id=j_00045 name=send-order-email worker=w4 attempt=2 runtime_ms=2378 provider_status=202 result=sent
+2026-08-27T09:00:51Z INFO job_finished id=j_00050 name=send-order-email worker=w2 attempt=2 runtime_ms=2058 provider_status=202 result=sent
+2026-08-27T09:00:53Z INFO job_finished id=j_00044 name=send-order-email worker=w2 attempt=2 runtime_ms=2445 provider_status=202 result=sent
+2026-08-27T09:00:53Z INFO job_started id=j_00049 name=send-order-email worker=w2 wait_ms=1833848 attempt=2
+2026-08-27T09:00:56Z INFO job_finished id=j_00049 name=send-order-email worker=w2 attempt=2 runtime_ms=2350 provider_status=202 result=sent
+2026-08-27T09:00:58Z INFO job_started id=j_00048 name=send-order-email worker=w2 wait_ms=1841176 attempt=2
+2026-08-27T09:01:01Z INFO job_finished id=j_00048 name=send-order-email worker=w2 attempt=2 runtime_ms=2070 provider_status=202 result=sent
+2026-08-27T09:01:27Z INFO job_enqueued id=j_00094 name=send-order-email order=ord_995755
+2026-08-27T09:01:28Z INFO job_started id=j_00094 name=send-order-email worker=w3 wait_ms=1203 attempt=1
+2026-08-27T09:01:31Z INFO job_finished id=j_00094 name=send-order-email worker=w3 attempt=1 runtime_ms=2358 provider_status=202 result=sent
+2026-08-27T09:03:50Z INFO job_enqueued id=j_00095 name=send-order-email order=ord_742217
+2026-08-27T09:03:51Z INFO job_started id=j_00095 name=send-order-email worker=w1 wait_ms=791 attempt=1
+2026-08-27T09:03:51Z INFO job_enqueued id=j_00096 name=render-invoice-pdf invoice=inv_40307
+2026-08-27T09:03:52Z INFO job_started id=j_00096 name=render-invoice-pdf worker=w2 wait_ms=720 attempt=1
+2026-08-27T09:03:54Z INFO job_finished id=j_00095 name=send-order-email worker=w1 attempt=1 runtime_ms=2450 provider_status=202 result=sent
+2026-08-27T09:03:57Z INFO job_finished id=j_00096 name=render-invoice-pdf worker=w2 attempt=1 runtime_ms=6135 result=ok
+2026-08-27T09:05:45Z INFO job_enqueued id=j_00097 name=send-order-email order=ord_582999
+2026-08-27T09:05:46Z INFO job_started id=j_00097 name=send-order-email worker=w3 wait_ms=1039 attempt=1
+2026-08-27T09:05:49Z INFO job_finished id=j_00097 name=send-order-email worker=w3 attempt=1 runtime_ms=2435 provider_status=202 result=sent
+2026-08-27T09:07:43Z INFO job_enqueued id=j_00098 name=send-order-email order=ord_113414
+2026-08-27T09:07:44Z INFO job_started id=j_00098 name=send-order-email worker=w4 wait_ms=1447 attempt=1
+2026-08-27T09:07:47Z INFO job_finished id=j_00098 name=send-order-email worker=w4 attempt=1 runtime_ms=2453 provider_status=202 result=sent
+2026-08-27T09:09:44Z INFO job_enqueued id=j_00099 name=send-order-email order=ord_460167
+2026-08-27T09:09:45Z INFO job_started id=j_00099 name=send-order-email worker=w3 wait_ms=1189 attempt=1
+2026-08-27T09:09:48Z INFO job_finished id=j_00099 name=send-order-email worker=w3 attempt=1 runtime_ms=2204 provider_status=202 result=sent
+2026-08-27T09:11:37Z INFO job_enqueued id=j_00100 name=send-order-email order=ord_137283
+2026-08-27T09:11:38Z INFO job_started id=j_00100 name=send-order-email worker=w3 wait_ms=765 attempt=1
+2026-08-27T09:11:41Z INFO job_finished id=j_00100 name=send-order-email worker=w3 attempt=1 runtime_ms=2289 provider_status=202 result=sent
+2026-08-27T09:12:06Z INFO job_enqueued id=j_00101 name=render-invoice-pdf invoice=inv_87701
+2026-08-27T09:12:07Z INFO job_started id=j_00101 name=render-invoice-pdf worker=w1 wait_ms=634 attempt=1
+2026-08-27T09:12:13Z INFO job_finished id=j_00101 name=render-invoice-pdf worker=w1 attempt=1 runtime_ms=6586 result=ok
+2026-08-27T09:13:40Z INFO job_enqueued id=j_00102 name=send-order-email order=ord_101149
+2026-08-27T09:13:41Z INFO job_started id=j_00102 name=send-order-email worker=w3 wait_ms=979 attempt=1
+2026-08-27T09:13:44Z INFO job_finished id=j_00102 name=send-order-email worker=w3 attempt=1 runtime_ms=2131 provider_status=202 result=sent
+2026-08-27T09:15:27Z INFO job_enqueued id=j_00106 name=send-order-email order=ord_751626
+2026-08-27T09:15:28Z INFO job_enqueued id=j_00104 name=send-order-email order=ord_368598
+2026-08-27T09:15:28Z INFO job_started id=j_00106 name=send-order-email worker=w2 wait_ms=908 attempt=1
+2026-08-27T09:15:28Z INFO job_enqueued id=j_00109 name=send-order-email order=ord_216936
+2026-08-27T09:15:29Z INFO job_enqueued id=j_00103 name=send-order-email order=ord_852035
+2026-08-27T09:15:29Z INFO job_started id=j_00104 name=send-order-email worker=w3 wait_ms=1038 attempt=1
+2026-08-27T09:15:29Z INFO job_started id=j_00109 name=send-order-email worker=w2 wait_ms=801 attempt=1
+2026-08-27T09:15:29Z WARN job_failed id=j_00106 name=send-order-email worker=w2 attempt=1 runtime_ms=582 provider_status=429 error=too many requests
+2026-08-27T09:15:29Z WARN job_requeued id=j_00106 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:15:30Z INFO job_started id=j_00103 name=send-order-email worker=w3 wait_ms=771 attempt=1
+2026-08-27T09:15:30Z INFO job_enqueued id=j_00108 name=send-order-email order=ord_457489
+2026-08-27T09:15:30Z INFO job_enqueued id=j_00110 name=send-order-email order=ord_338553
+2026-08-27T09:15:30Z WARN job_failed id=j_00104 name=send-order-email worker=w3 attempt=1 runtime_ms=551 provider_status=429 error=too many requests
+2026-08-27T09:15:30Z WARN job_requeued id=j_00104 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:15:30Z WARN job_failed id=j_00109 name=send-order-email worker=w2 attempt=1 runtime_ms=310 provider_status=429 error=too many requests
+2026-08-27T09:15:30Z WARN job_requeued id=j_00109 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:15:31Z INFO job_enqueued id=j_00105 name=send-order-email order=ord_216955
+2026-08-27T09:15:31Z INFO job_enqueued id=j_00107 name=send-order-email order=ord_357631
+2026-08-27T09:15:31Z INFO job_started id=j_00108 name=send-order-email worker=w2 wait_ms=1160 attempt=1
+2026-08-27T09:15:31Z INFO job_started id=j_00110 name=send-order-email worker=w3 wait_ms=1274 attempt=1
+2026-08-27T09:15:31Z INFO job_enqueued id=j_00111 name=send-order-email order=ord_668144
+2026-08-27T09:15:31Z INFO job_enqueued id=j_00112 name=send-order-email order=ord_361276
+2026-08-27T09:15:32Z INFO job_started id=j_00105 name=send-order-email worker=w2 wait_ms=1305 attempt=1
+2026-08-27T09:15:32Z INFO job_started id=j_00107 name=send-order-email worker=w4 wait_ms=1332 attempt=1
+2026-08-27T09:15:32Z INFO job_started id=j_00111 name=send-order-email worker=w2 wait_ms=1429 attempt=1
+2026-08-27T09:15:32Z INFO job_started id=j_00112 name=send-order-email worker=w1 wait_ms=994 attempt=1
+2026-08-27T09:15:33Z INFO job_finished id=j_00103 name=send-order-email worker=w3 attempt=1 runtime_ms=2436 provider_status=202 result=sent
+2026-08-27T09:15:33Z WARN job_failed id=j_00112 name=send-order-email worker=w1 attempt=1 runtime_ms=439 provider_status=429 error=too many requests
+2026-08-27T09:15:33Z WARN job_requeued id=j_00112 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:15:34Z INFO job_finished id=j_00108 name=send-order-email worker=w2 attempt=1 runtime_ms=2088 provider_status=202 result=sent
+2026-08-27T09:15:34Z INFO job_finished id=j_00110 name=send-order-email worker=w3 attempt=1 runtime_ms=2346 provider_status=202 result=sent
+2026-08-27T09:15:35Z INFO job_finished id=j_00105 name=send-order-email worker=w2 attempt=1 runtime_ms=2148 provider_status=202 result=sent
+2026-08-27T09:15:35Z INFO job_finished id=j_00107 name=send-order-email worker=w4 attempt=1 runtime_ms=2330 provider_status=202 result=sent
+2026-08-27T09:15:35Z INFO job_finished id=j_00111 name=send-order-email worker=w2 attempt=1 runtime_ms=2156 provider_status=202 result=sent
+2026-08-27T09:15:49Z INFO job_started id=j_00072 name=send-order-email worker=w3 wait_ms=1813666 attempt=2
+2026-08-27T09:15:52Z INFO job_finished id=j_00072 name=send-order-email worker=w3 attempt=2 runtime_ms=2233 provider_status=202 result=sent
+2026-08-27T09:16:01Z INFO job_started id=j_00067 name=send-order-email worker=w4 wait_ms=1828481 attempt=2
+2026-08-27T09:16:04Z INFO job_finished id=j_00067 name=send-order-email worker=w4 attempt=2 runtime_ms=2382 provider_status=202 result=sent
+2026-08-27T09:16:05Z INFO job_started id=j_00069 name=send-order-email worker=w2 wait_ms=1827397 attempt=2
+2026-08-27T09:16:08Z INFO job_finished id=j_00069 name=send-order-email worker=w2 attempt=2 runtime_ms=2178 provider_status=202 result=sent
+2026-08-27T09:17:48Z INFO job_enqueued id=j_00113 name=send-order-email order=ord_697342
+2026-08-27T09:17:49Z INFO job_started id=j_00113 name=send-order-email worker=w1 wait_ms=1397 attempt=1
+2026-08-27T09:17:52Z INFO job_finished id=j_00113 name=send-order-email worker=w1 attempt=1 runtime_ms=2366 provider_status=202 result=sent
+2026-08-27T09:19:32Z INFO job_enqueued id=j_00114 name=send-order-email order=ord_910327
+2026-08-27T09:19:33Z INFO job_started id=j_00114 name=send-order-email worker=w3 wait_ms=1392 attempt=1
+2026-08-27T09:19:36Z INFO job_finished id=j_00114 name=send-order-email worker=w3 attempt=1 runtime_ms=2108 provider_status=202 result=sent
+2026-08-27T09:21:18Z INFO job_enqueued id=j_00116 name=render-invoice-pdf invoice=inv_14963
+2026-08-27T09:21:19Z INFO job_started id=j_00116 name=render-invoice-pdf worker=w2 wait_ms=1383 attempt=1
+2026-08-27T09:21:25Z INFO job_finished id=j_00116 name=render-invoice-pdf worker=w2 attempt=1 runtime_ms=5578 result=ok
+2026-08-27T09:21:42Z INFO job_enqueued id=j_00115 name=send-order-email order=ord_373083
+2026-08-27T09:21:43Z INFO job_started id=j_00115 name=send-order-email worker=w3 wait_ms=900 attempt=1
+2026-08-27T09:21:46Z INFO job_finished id=j_00115 name=send-order-email worker=w3 attempt=1 runtime_ms=2098 provider_status=202 result=sent
+2026-08-27T09:23:46Z INFO job_enqueued id=j_00117 name=send-order-email order=ord_181203
+2026-08-27T09:23:47Z INFO job_started id=j_00117 name=send-order-email worker=w4 wait_ms=1284 attempt=1
+2026-08-27T09:23:50Z INFO job_finished id=j_00117 name=send-order-email worker=w4 attempt=1 runtime_ms=2061 provider_status=202 result=sent
+2026-08-27T09:25:12Z INFO job_enqueued id=j_00118 name=send-order-email order=ord_539685
+2026-08-27T09:25:13Z INFO job_started id=j_00118 name=send-order-email worker=w3 wait_ms=845 attempt=1
+2026-08-27T09:25:16Z INFO job_finished id=j_00118 name=send-order-email worker=w3 attempt=1 runtime_ms=2261 provider_status=202 result=sent
+2026-08-27T09:27:11Z INFO job_enqueued id=j_00119 name=send-order-email order=ord_773523
+2026-08-27T09:27:12Z INFO job_started id=j_00119 name=send-order-email worker=w2 wait_ms=1181 attempt=1
+2026-08-27T09:27:15Z INFO job_finished id=j_00119 name=send-order-email worker=w2 attempt=1 runtime_ms=2095 provider_status=202 result=sent
+2026-08-27T09:29:35Z INFO job_enqueued id=j_00120 name=send-order-email order=ord_430682
+2026-08-27T09:29:36Z INFO job_started id=j_00120 name=send-order-email worker=w3 wait_ms=741 attempt=1
+2026-08-27T09:29:39Z INFO job_finished id=j_00120 name=send-order-email worker=w3 attempt=1 runtime_ms=2096 provider_status=202 result=sent
+2026-08-27T09:30:07Z INFO job_started id=j_00089 name=send-order-email worker=w3 wait_ms=1802264 attempt=2
+2026-08-27T09:30:10Z INFO job_finished id=j_00089 name=send-order-email worker=w3 attempt=2 runtime_ms=2173 provider_status=202 result=sent
+2026-08-27T09:30:14Z INFO job_started id=j_00092 name=send-order-email worker=w3 wait_ms=1806137 attempt=2
+2026-08-27T09:30:17Z INFO job_finished id=j_00092 name=send-order-email worker=w3 attempt=2 runtime_ms=2160 provider_status=202 result=sent
+2026-08-27T09:30:18Z INFO job_enqueued id=j_00133 name=render-invoice-pdf invoice=inv_93810
+2026-08-27T09:30:19Z INFO job_started id=j_00133 name=render-invoice-pdf worker=w1 wait_ms=1312 attempt=1
+2026-08-27T09:30:26Z INFO job_finished id=j_00133 name=render-invoice-pdf worker=w1 attempt=1 runtime_ms=6015 result=ok
+2026-08-27T09:30:26Z INFO job_started id=j_00082 name=send-order-email worker=w3 wait_ms=1820389 attempt=2
+2026-08-27T09:30:29Z INFO job_enqueued id=j_00122 name=send-order-email order=ord_661846
+2026-08-27T09:30:29Z INFO job_finished id=j_00082 name=send-order-email worker=w3 attempt=2 runtime_ms=2405 provider_status=202 result=sent
+2026-08-27T09:30:30Z INFO job_enqueued id=j_00121 name=send-order-email order=ord_906907
+2026-08-27T09:30:30Z INFO job_started id=j_00122 name=send-order-email worker=w3 wait_ms=1398 attempt=1
+2026-08-27T09:30:30Z INFO job_enqueued id=j_00124 name=send-order-email order=ord_162248
+2026-08-27T09:30:30Z INFO job_enqueued id=j_00132 name=send-order-email order=ord_890265
+2026-08-27T09:30:31Z INFO job_started id=j_00121 name=send-order-email worker=w1 wait_ms=1288 attempt=1
+2026-08-27T09:30:31Z INFO job_started id=j_00124 name=send-order-email worker=w3 wait_ms=935 attempt=1
+2026-08-27T09:30:31Z INFO job_started id=j_00132 name=send-order-email worker=w1 wait_ms=650 attempt=1
+2026-08-27T09:30:31Z INFO job_started id=j_00085 name=send-order-email worker=w4 wait_ms=1822177 attempt=2
+2026-08-27T09:30:32Z INFO job_enqueued id=j_00127 name=send-order-email order=ord_628551
+2026-08-27T09:30:32Z INFO job_enqueued id=j_00129 name=send-order-email order=ord_641347
+2026-08-27T09:30:33Z INFO job_enqueued id=j_00123 name=send-order-email order=ord_822418
+2026-08-27T09:30:33Z INFO job_enqueued id=j_00126 name=send-order-email order=ord_162248
+2026-08-27T09:30:33Z INFO job_started id=j_00127 name=send-order-email worker=w2 wait_ms=1145 attempt=1
+2026-08-27T09:30:33Z INFO job_enqueued id=j_00128 name=send-order-email order=ord_608918
+2026-08-27T09:30:33Z INFO job_started id=j_00129 name=send-order-email worker=w2 wait_ms=1244 attempt=1
+2026-08-27T09:30:33Z INFO job_finished id=j_00122 name=send-order-email worker=w3 attempt=1 runtime_ms=2466 provider_status=202 result=sent
+2026-08-27T09:30:34Z INFO job_started id=j_00123 name=send-order-email worker=w4 wait_ms=1434 attempt=1
+2026-08-27T09:30:34Z INFO job_enqueued id=j_00125 name=send-order-email order=ord_872385
+2026-08-27T09:30:34Z INFO job_started id=j_00126 name=send-order-email worker=w1 wait_ms=882 attempt=1
+2026-08-27T09:30:34Z INFO job_started id=j_00128 name=send-order-email worker=w3 wait_ms=946 attempt=1
+2026-08-27T09:30:34Z INFO job_enqueued id=j_00130 name=send-order-email order=ord_993378
+2026-08-27T09:30:34Z INFO job_enqueued id=j_00131 name=send-order-email order=ord_319917
+2026-08-27T09:30:34Z INFO job_finished id=j_00121 name=send-order-email worker=w1 attempt=1 runtime_ms=2310 provider_status=202 result=sent
+2026-08-27T09:30:34Z INFO job_finished id=j_00124 name=send-order-email worker=w3 attempt=1 runtime_ms=2151 provider_status=202 result=sent
+2026-08-27T09:30:34Z INFO job_finished id=j_00132 name=send-order-email worker=w1 attempt=1 runtime_ms=2280 provider_status=202 result=sent
+2026-08-27T09:30:34Z INFO job_finished id=j_00085 name=send-order-email worker=w4 attempt=2 runtime_ms=2180 provider_status=202 result=sent
+2026-08-27T09:30:34Z INFO job_started id=j_00088 name=send-order-email worker=w4 wait_ms=1825431 attempt=2
+2026-08-27T09:30:35Z INFO job_started id=j_00125 name=send-order-email worker=w4 wait_ms=891 attempt=1
+2026-08-27T09:30:35Z INFO job_started id=j_00130 name=send-order-email worker=w3 wait_ms=1204 attempt=1
+2026-08-27T09:30:35Z INFO job_started id=j_00131 name=send-order-email worker=w2 wait_ms=813 attempt=1
+2026-08-27T09:30:35Z INFO job_started id=j_00084 name=send-order-email worker=w2 wait_ms=1830816 attempt=2
+2026-08-27T09:30:36Z INFO job_finished id=j_00127 name=send-order-email worker=w2 attempt=1 runtime_ms=2222 provider_status=202 result=sent
+2026-08-27T09:30:36Z INFO job_finished id=j_00129 name=send-order-email worker=w2 attempt=1 runtime_ms=2217 provider_status=202 result=sent
+2026-08-27T09:30:36Z WARN job_failed id=j_00130 name=send-order-email worker=w3 attempt=1 runtime_ms=320 provider_status=429 error=too many requests
+2026-08-27T09:30:36Z WARN job_requeued id=j_00130 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:30:36Z WARN job_failed id=j_00131 name=send-order-email worker=w2 attempt=1 runtime_ms=440 provider_status=429 error=too many requests
+2026-08-27T09:30:36Z WARN job_requeued id=j_00131 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:30:37Z INFO job_finished id=j_00123 name=send-order-email worker=w4 attempt=1 runtime_ms=2426 provider_status=202 result=sent
+2026-08-27T09:30:37Z INFO job_finished id=j_00126 name=send-order-email worker=w1 attempt=1 runtime_ms=2372 provider_status=202 result=sent
+2026-08-27T09:30:37Z INFO job_finished id=j_00128 name=send-order-email worker=w3 attempt=1 runtime_ms=2432 provider_status=202 result=sent
+2026-08-27T09:30:37Z INFO job_finished id=j_00088 name=send-order-email worker=w4 attempt=2 runtime_ms=2285 provider_status=202 result=sent
+2026-08-27T09:30:37Z INFO job_started id=j_00093 name=send-order-email worker=w4 wait_ms=1827125 attempt=2
+2026-08-27T09:30:38Z INFO job_finished id=j_00125 name=send-order-email worker=w4 attempt=1 runtime_ms=2353 provider_status=202 result=sent
+2026-08-27T09:30:38Z INFO job_finished id=j_00084 name=send-order-email worker=w2 attempt=2 runtime_ms=2464 provider_status=202 result=sent
+2026-08-27T09:30:40Z INFO job_finished id=j_00093 name=send-order-email worker=w4 attempt=2 runtime_ms=2232 provider_status=202 result=sent
+2026-08-27T09:30:43Z INFO job_started id=j_00090 name=send-order-email worker=w2 wait_ms=1837471 attempt=2
+2026-08-27T09:30:46Z INFO job_finished id=j_00090 name=send-order-email worker=w2 attempt=2 runtime_ms=2167 provider_status=202 result=sent
+2026-08-27T09:31:09Z INFO job_enqueued id=j_00134 name=send-order-email order=ord_387144
+2026-08-27T09:31:10Z INFO job_started id=j_00134 name=send-order-email worker=w4 wait_ms=1395 attempt=1
+2026-08-27T09:31:13Z INFO job_finished id=j_00134 name=send-order-email worker=w4 attempt=1 runtime_ms=2321 provider_status=202 result=sent
+2026-08-27T09:33:43Z INFO job_enqueued id=j_00135 name=send-order-email order=ord_155475
+2026-08-27T09:33:44Z INFO job_started id=j_00135 name=send-order-email worker=w1 wait_ms=1358 attempt=1
+2026-08-27T09:33:47Z INFO job_finished id=j_00135 name=send-order-email worker=w1 attempt=1 runtime_ms=2116 provider_status=202 result=sent
+2026-08-27T09:35:33Z INFO job_enqueued id=j_00136 name=send-order-email order=ord_359919
+2026-08-27T09:35:34Z INFO job_started id=j_00136 name=send-order-email worker=w1 wait_ms=1031 attempt=1
+2026-08-27T09:35:37Z INFO job_finished id=j_00136 name=send-order-email worker=w1 attempt=1 runtime_ms=2394 provider_status=202 result=sent
+2026-08-27T09:37:50Z INFO job_enqueued id=j_00137 name=send-order-email order=ord_204559
+2026-08-27T09:37:51Z INFO job_started id=j_00137 name=send-order-email worker=w1 wait_ms=1177 attempt=1
+2026-08-27T09:37:54Z INFO job_finished id=j_00137 name=send-order-email worker=w1 attempt=1 runtime_ms=2279 provider_status=202 result=sent
+2026-08-27T09:39:15Z INFO job_enqueued id=j_00139 name=render-invoice-pdf invoice=inv_98010
+2026-08-27T09:39:16Z INFO job_started id=j_00139 name=render-invoice-pdf worker=w3 wait_ms=926 attempt=1
+2026-08-27T09:39:21Z INFO job_finished id=j_00139 name=render-invoice-pdf worker=w3 attempt=1 runtime_ms=8365 result=ok
+2026-08-27T09:39:49Z INFO job_enqueued id=j_00138 name=send-order-email order=ord_269081
+2026-08-27T09:39:50Z INFO job_started id=j_00138 name=send-order-email worker=w2 wait_ms=1426 attempt=1
+2026-08-27T09:39:53Z INFO job_finished id=j_00138 name=send-order-email worker=w2 attempt=1 runtime_ms=2437 provider_status=202 result=sent
+2026-08-27T09:41:40Z INFO job_enqueued id=j_00140 name=send-order-email order=ord_582113
+2026-08-27T09:41:41Z INFO job_started id=j_00140 name=send-order-email worker=w3 wait_ms=965 attempt=1
+2026-08-27T09:41:44Z INFO job_finished id=j_00140 name=send-order-email worker=w3 attempt=1 runtime_ms=2318 provider_status=202 result=sent
+2026-08-27T09:43:22Z INFO job_enqueued id=j_00141 name=send-order-email order=ord_922612
+2026-08-27T09:43:23Z INFO job_started id=j_00141 name=send-order-email worker=w2 wait_ms=653 attempt=1
+2026-08-27T09:43:26Z INFO job_finished id=j_00141 name=send-order-email worker=w2 attempt=1 runtime_ms=2450 provider_status=202 result=sent
+2026-08-27T09:45:28Z INFO job_enqueued id=j_00147 name=send-order-email order=ord_994353
+2026-08-27T09:45:28Z INFO job_enqueued id=j_00149 name=send-order-email order=ord_941472
+2026-08-27T09:45:28Z INFO job_enqueued id=j_00150 name=send-order-email order=ord_571478
+2026-08-27T09:45:29Z INFO job_enqueued id=j_00145 name=send-order-email order=ord_391493
+2026-08-27T09:45:29Z INFO job_started id=j_00147 name=send-order-email worker=w2 wait_ms=1238 attempt=1
+2026-08-27T09:45:29Z INFO job_started id=j_00149 name=send-order-email worker=w3 wait_ms=809 attempt=1
+2026-08-27T09:45:29Z INFO job_started id=j_00150 name=send-order-email worker=w3 wait_ms=721 attempt=1
+2026-08-27T09:45:30Z INFO job_started id=j_00145 name=send-order-email worker=w3 wait_ms=762 attempt=1
+2026-08-27T09:45:30Z INFO job_enqueued id=j_00151 name=send-order-email order=ord_304846
+2026-08-27T09:45:30Z WARN job_failed id=j_00149 name=send-order-email worker=w3 attempt=1 runtime_ms=246 provider_status=429 error=too many requests
+2026-08-27T09:45:30Z WARN job_requeued id=j_00149 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:45:31Z INFO job_started id=j_00151 name=send-order-email worker=w4 wait_ms=1258 attempt=1
+2026-08-27T09:45:32Z INFO job_finished id=j_00147 name=send-order-email worker=w2 attempt=1 runtime_ms=2270 provider_status=202 result=sent
+2026-08-27T09:45:32Z INFO job_finished id=j_00150 name=send-order-email worker=w3 attempt=1 runtime_ms=2255 provider_status=202 result=sent
+2026-08-27T09:45:32Z INFO job_started id=j_00106 name=send-order-email worker=w4 wait_ms=1804771 attempt=2
+2026-08-27T09:45:33Z INFO job_enqueued id=j_00142 name=send-order-email order=ord_848930
+2026-08-27T09:45:33Z INFO job_enqueued id=j_00143 name=send-order-email order=ord_674229
+2026-08-27T09:45:33Z INFO job_enqueued id=j_00144 name=send-order-email order=ord_198652
+2026-08-27T09:45:33Z INFO job_enqueued id=j_00146 name=send-order-email order=ord_272624
+2026-08-27T09:45:33Z INFO job_enqueued id=j_00148 name=send-order-email order=ord_949552
+2026-08-27T09:45:33Z INFO job_enqueued id=j_00152 name=send-order-email order=ord_250990
+2026-08-27T09:45:33Z INFO job_finished id=j_00145 name=send-order-email worker=w3 attempt=1 runtime_ms=2208 provider_status=202 result=sent
+2026-08-27T09:45:34Z INFO job_started id=j_00142 name=send-order-email worker=w1 wait_ms=951 attempt=1
+2026-08-27T09:45:34Z INFO job_started id=j_00143 name=send-order-email worker=w2 wait_ms=951 attempt=1
+2026-08-27T09:45:34Z INFO job_started id=j_00144 name=send-order-email worker=w3 wait_ms=1150 attempt=1
+2026-08-27T09:45:34Z INFO job_started id=j_00146 name=send-order-email worker=w1 wait_ms=808 attempt=1
+2026-08-27T09:45:34Z INFO job_started id=j_00148 name=send-order-email worker=w1 wait_ms=912 attempt=1
+2026-08-27T09:45:34Z INFO job_started id=j_00152 name=send-order-email worker=w2 wait_ms=869 attempt=1
+2026-08-27T09:45:34Z INFO job_finished id=j_00151 name=send-order-email worker=w4 attempt=1 runtime_ms=2452 provider_status=202 result=sent
+2026-08-27T09:45:35Z WARN job_failed id=j_00148 name=send-order-email worker=w1 attempt=1 runtime_ms=597 provider_status=429 error=too many requests
+2026-08-27T09:45:35Z WARN job_requeued id=j_00148 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T09:45:35Z INFO job_finished id=j_00106 name=send-order-email worker=w4 attempt=2 runtime_ms=2203 provider_status=202 result=sent
+2026-08-27T09:45:37Z INFO job_finished id=j_00142 name=send-order-email worker=w1 attempt=1 runtime_ms=2173 provider_status=202 result=sent
+2026-08-27T09:45:37Z INFO job_finished id=j_00143 name=send-order-email worker=w2 attempt=1 runtime_ms=2181 provider_status=202 result=sent
+2026-08-27T09:45:37Z INFO job_finished id=j_00144 name=send-order-email worker=w3 attempt=1 runtime_ms=2282 provider_status=202 result=sent
+2026-08-27T09:45:37Z INFO job_finished id=j_00146 name=send-order-email worker=w1 attempt=1 runtime_ms=2431 provider_status=202 result=sent
+2026-08-27T09:45:37Z INFO job_finished id=j_00152 name=send-order-email worker=w2 attempt=1 runtime_ms=2141 provider_status=202 result=sent
+2026-08-27T09:45:40Z INFO job_started id=j_00104 name=send-order-email worker=w1 wait_ms=1811320 attempt=2
+2026-08-27T09:45:40Z INFO job_started id=j_00112 name=send-order-email worker=w3 wait_ms=1808740 attempt=2
+2026-08-27T09:45:43Z INFO job_finished id=j_00104 name=send-order-email worker=w1 attempt=2 runtime_ms=2211 provider_status=202 result=sent
+2026-08-27T09:45:43Z INFO job_finished id=j_00112 name=send-order-email worker=w3 attempt=2 runtime_ms=2097 provider_status=202 result=sent
+2026-08-27T09:46:02Z INFO job_started id=j_00109 name=send-order-email worker=w2 wait_ms=1833144 attempt=2
+2026-08-27T09:46:05Z INFO job_finished id=j_00109 name=send-order-email worker=w2 attempt=2 runtime_ms=2337 provider_status=202 result=sent
+2026-08-27T09:47:39Z INFO job_enqueued id=j_00153 name=send-order-email order=ord_347401
+2026-08-27T09:47:40Z INFO job_started id=j_00153 name=send-order-email worker=w3 wait_ms=1473 attempt=1
+2026-08-27T09:47:43Z INFO job_finished id=j_00153 name=send-order-email worker=w3 attempt=1 runtime_ms=2283 provider_status=202 result=sent
+2026-08-27T09:48:11Z INFO job_enqueued id=j_00154 name=render-invoice-pdf invoice=inv_70313
+2026-08-27T09:48:12Z INFO job_started id=j_00154 name=render-invoice-pdf worker=w3 wait_ms=896 attempt=1
+2026-08-27T09:48:18Z INFO job_finished id=j_00154 name=render-invoice-pdf worker=w3 attempt=1 runtime_ms=4224 result=ok
+2026-08-27T09:49:20Z INFO job_enqueued id=j_00155 name=send-order-email order=ord_791317
+2026-08-27T09:49:21Z INFO job_started id=j_00155 name=send-order-email worker=w1 wait_ms=1245 attempt=1
+2026-08-27T09:49:24Z INFO job_finished id=j_00155 name=send-order-email worker=w1 attempt=1 runtime_ms=2356 provider_status=202 result=sent
+2026-08-27T09:51:52Z INFO job_enqueued id=j_00156 name=send-order-email order=ord_545630
+2026-08-27T09:51:53Z INFO job_started id=j_00156 name=send-order-email worker=w2 wait_ms=1007 attempt=1
+2026-08-27T09:51:56Z INFO job_finished id=j_00156 name=send-order-email worker=w2 attempt=1 runtime_ms=2246 provider_status=202 result=sent
+2026-08-27T09:53:30Z INFO job_enqueued id=j_00157 name=send-order-email order=ord_687449
+2026-08-27T09:53:31Z INFO job_started id=j_00157 name=send-order-email worker=w4 wait_ms=1328 attempt=1
+2026-08-27T09:53:34Z INFO job_finished id=j_00157 name=send-order-email worker=w4 attempt=1 runtime_ms=2277 provider_status=202 result=sent
+2026-08-27T09:55:19Z INFO job_enqueued id=j_00158 name=send-order-email order=ord_520086
+2026-08-27T09:55:20Z INFO job_started id=j_00158 name=send-order-email worker=w3 wait_ms=963 attempt=1
+2026-08-27T09:55:23Z INFO job_finished id=j_00158 name=send-order-email worker=w3 attempt=1 runtime_ms=2113 provider_status=202 result=sent
+2026-08-27T09:57:00Z INFO job_enqueued id=j_00160 name=render-invoice-pdf invoice=inv_81044
+2026-08-27T09:57:01Z INFO job_started id=j_00160 name=render-invoice-pdf worker=w3 wait_ms=625 attempt=1
+2026-08-27T09:57:07Z INFO job_finished id=j_00160 name=render-invoice-pdf worker=w3 attempt=1 runtime_ms=7049 result=ok
+2026-08-27T09:57:31Z INFO job_enqueued id=j_00159 name=send-order-email order=ord_194138
+2026-08-27T09:57:32Z INFO job_started id=j_00159 name=send-order-email worker=w4 wait_ms=875 attempt=1
+2026-08-27T09:57:35Z INFO job_finished id=j_00159 name=send-order-email worker=w4 attempt=1 runtime_ms=2170 provider_status=202 result=sent
+2026-08-27T09:59:25Z INFO job_enqueued id=j_00161 name=send-order-email order=ord_365915
+2026-08-27T09:59:26Z INFO job_started id=j_00161 name=send-order-email worker=w1 wait_ms=1314 attempt=1
+2026-08-27T09:59:29Z INFO job_finished id=j_00161 name=send-order-email worker=w1 attempt=1 runtime_ms=2075 provider_status=202 result=sent
+2026-08-27T10:00:11Z INFO job_enqueued id=j_00165 name=send-order-email order=ord_964558
+2026-08-27T10:00:11Z INFO job_enqueued id=j_00171 name=send-order-email order=ord_399572
+2026-08-27T10:00:12Z INFO job_started id=j_00165 name=send-order-email worker=w3 wait_ms=1118 attempt=1
+2026-08-27T10:00:12Z INFO job_enqueued id=j_00166 name=send-order-email order=ord_796792
+2026-08-27T10:00:12Z INFO job_started id=j_00171 name=send-order-email worker=w3 wait_ms=774 attempt=1
+2026-08-27T10:00:13Z INFO job_started id=j_00166 name=send-order-email worker=w1 wait_ms=1160 attempt=1
+2026-08-27T10:00:13Z INFO job_enqueued id=j_00167 name=send-order-email order=ord_293547
+2026-08-27T10:00:13Z INFO job_enqueued id=j_00169 name=send-order-email order=ord_896806
+2026-08-27T10:00:13Z INFO job_enqueued id=j_00170 name=send-order-email order=ord_260677
+2026-08-27T10:00:13Z WARN job_failed id=j_00165 name=send-order-email worker=w3 attempt=1 runtime_ms=294 provider_status=429 error=too many requests
+2026-08-27T10:00:13Z WARN job_requeued id=j_00165 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T10:00:13Z WARN job_failed id=j_00171 name=send-order-email worker=w3 attempt=1 runtime_ms=408 provider_status=429 error=too many requests
+2026-08-27T10:00:13Z WARN job_requeued id=j_00171 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T10:00:14Z INFO job_started id=j_00167 name=send-order-email worker=w4 wait_ms=907 attempt=1
+2026-08-27T10:00:14Z INFO job_started id=j_00169 name=send-order-email worker=w2 wait_ms=785 attempt=1
+2026-08-27T10:00:14Z INFO job_started id=j_00170 name=send-order-email worker=w3 wait_ms=1113 attempt=1
+2026-08-27T10:00:14Z INFO job_enqueued id=j_00172 name=send-order-email order=ord_807220
+2026-08-27T10:00:15Z INFO job_enqueued id=j_00162 name=send-order-email order=ord_469711
+2026-08-27T10:00:15Z INFO job_enqueued id=j_00164 name=send-order-email order=ord_485883
+2026-08-27T10:00:15Z INFO job_started id=j_00172 name=send-order-email worker=w2 wait_ms=847 attempt=1
+2026-08-27T10:00:15Z WARN job_failed id=j_00167 name=send-order-email worker=w4 attempt=1 runtime_ms=495 provider_status=429 error=too many requests
+2026-08-27T10:00:15Z WARN job_requeued id=j_00167 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T10:00:16Z INFO job_started id=j_00162 name=send-order-email worker=w3 wait_ms=705 attempt=1
+2026-08-27T10:00:16Z INFO job_enqueued id=j_00163 name=send-order-email order=ord_623430
+2026-08-27T10:00:16Z INFO job_started id=j_00164 name=send-order-email worker=w2 wait_ms=1452 attempt=1
+2026-08-27T10:00:16Z INFO job_enqueued id=j_00168 name=send-order-email order=ord_720476
+2026-08-27T10:00:16Z INFO job_finished id=j_00166 name=send-order-email worker=w1 attempt=1 runtime_ms=2156 provider_status=202 result=sent
+2026-08-27T10:00:17Z INFO job_started id=j_00163 name=send-order-email worker=w3 wait_ms=907 attempt=1
+2026-08-27T10:00:17Z INFO job_started id=j_00168 name=send-order-email worker=w2 wait_ms=1160 attempt=1
+2026-08-27T10:00:17Z WARN job_failed id=j_00164 name=send-order-email worker=w2 attempt=1 runtime_ms=478 provider_status=429 error=too many requests
+2026-08-27T10:00:17Z WARN job_requeued id=j_00164 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T10:00:17Z INFO job_finished id=j_00169 name=send-order-email worker=w2 attempt=1 runtime_ms=2234 provider_status=202 result=sent
+2026-08-27T10:00:17Z INFO job_finished id=j_00170 name=send-order-email worker=w3 attempt=1 runtime_ms=2099 provider_status=202 result=sent
+2026-08-27T10:00:18Z WARN job_failed id=j_00163 name=send-order-email worker=w3 attempt=1 runtime_ms=388 provider_status=429 error=too many requests
+2026-08-27T10:00:18Z WARN job_requeued id=j_00163 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T10:00:18Z WARN job_failed id=j_00168 name=send-order-email worker=w2 attempt=1 runtime_ms=370 provider_status=429 error=too many requests
+2026-08-27T10:00:18Z WARN job_requeued id=j_00168 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T10:00:18Z INFO job_finished id=j_00172 name=send-order-email worker=w2 attempt=1 runtime_ms=2168 provider_status=202 result=sent
+2026-08-27T10:00:19Z INFO job_finished id=j_00162 name=send-order-email worker=w3 attempt=1 runtime_ms=2454 provider_status=202 result=sent
+2026-08-27T10:01:05Z INFO job_started id=j_00131 name=send-order-email worker=w2 wait_ms=1830124 attempt=2
+2026-08-27T10:01:07Z INFO job_started id=j_00130 name=send-order-email worker=w2 wait_ms=1832890 attempt=2
+2026-08-27T10:01:08Z INFO job_finished id=j_00131 name=send-order-email worker=w2 attempt=2 runtime_ms=2341 provider_status=202 result=sent
+2026-08-27T10:01:10Z INFO job_finished id=j_00130 name=send-order-email worker=w2 attempt=2 runtime_ms=2067 provider_status=202 result=sent
+2026-08-27T10:01:41Z INFO job_enqueued id=j_00173 name=send-order-email order=ord_357893
+2026-08-27T10:01:42Z INFO job_started id=j_00173 name=send-order-email worker=w4 wait_ms=1184 attempt=1
+2026-08-27T10:01:45Z INFO job_finished id=j_00173 name=send-order-email worker=w4 attempt=1 runtime_ms=2407 provider_status=202 result=sent
+2026-08-27T10:03:25Z INFO job_enqueued id=j_00174 name=send-order-email order=ord_985185
+2026-08-27T10:03:26Z INFO job_started id=j_00174 name=send-order-email worker=w2 wait_ms=870 attempt=1
+2026-08-27T10:03:29Z INFO job_finished id=j_00174 name=send-order-email worker=w2 attempt=1 runtime_ms=2300 provider_status=202 result=sent
+2026-08-27T10:05:25Z INFO job_enqueued id=j_00175 name=send-order-email order=ord_295492
+2026-08-27T10:05:26Z INFO job_started id=j_00175 name=send-order-email worker=w4 wait_ms=1229 attempt=1
+2026-08-27T10:05:29Z INFO job_finished id=j_00175 name=send-order-email worker=w4 attempt=1 runtime_ms=2364 provider_status=202 result=sent
+2026-08-27T10:06:02Z INFO job_enqueued id=j_00176 name=render-invoice-pdf invoice=inv_71096
+2026-08-27T10:06:03Z INFO job_started id=j_00176 name=render-invoice-pdf worker=w4 wait_ms=837 attempt=1
+2026-08-27T10:06:10Z INFO job_finished id=j_00176 name=render-invoice-pdf worker=w4 attempt=1 runtime_ms=3948 result=ok
+2026-08-27T10:07:46Z INFO job_enqueued id=j_00177 name=send-order-email order=ord_637552
+2026-08-27T10:07:47Z INFO job_started id=j_00177 name=send-order-email worker=w1 wait_ms=1122 attempt=1
+2026-08-27T10:07:50Z INFO job_finished id=j_00177 name=send-order-email worker=w1 attempt=1 runtime_ms=2149 provider_status=202 result=sent
+2026-08-27T10:09:12Z INFO job_enqueued id=j_00178 name=send-order-email order=ord_351216
+2026-08-27T10:09:13Z INFO job_started id=j_00178 name=send-order-email worker=w4 wait_ms=1152 attempt=1
+2026-08-27T10:09:16Z INFO job_finished id=j_00178 name=send-order-email worker=w4 attempt=1 runtime_ms=2056 provider_status=202 result=sent
+2026-08-27T10:11:33Z INFO job_enqueued id=j_00179 name=send-order-email order=ord_429506
+2026-08-27T10:11:34Z INFO job_started id=j_00179 name=send-order-email worker=w3 wait_ms=1245 attempt=1
+2026-08-27T10:11:37Z INFO job_finished id=j_00179 name=send-order-email worker=w3 attempt=1 runtime_ms=2408 provider_status=202 result=sent
+2026-08-27T10:13:56Z INFO job_enqueued id=j_00180 name=send-order-email order=ord_493769
+2026-08-27T10:13:57Z INFO job_started id=j_00180 name=send-order-email worker=w2 wait_ms=1310 attempt=1
+2026-08-27T10:14:00Z INFO job_finished id=j_00180 name=send-order-email worker=w2 attempt=1 runtime_ms=2077 provider_status=202 result=sent
+2026-08-27T10:15:31Z INFO job_enqueued id=j_00190 name=send-order-email order=ord_240885
+2026-08-27T10:15:31Z INFO job_enqueued id=j_00191 name=send-order-email order=ord_252171
+2026-08-27T10:15:32Z INFO job_enqueued id=j_00186 name=send-order-email order=ord_155360
+2026-08-27T10:15:32Z INFO job_started id=j_00190 name=send-order-email worker=w3 wait_ms=1500 attempt=1
+2026-08-27T10:15:32Z INFO job_started id=j_00191 name=send-order-email worker=w2 wait_ms=1019 attempt=1
+2026-08-27T10:15:33Z INFO job_started id=j_00186 name=send-order-email worker=w2 wait_ms=674 attempt=1
+2026-08-27T10:15:33Z INFO job_enqueued id=j_00188 name=send-order-email order=ord_743230
+2026-08-27T10:15:33Z INFO job_enqueued id=j_00192 name=render-invoice-pdf invoice=inv_29733
+2026-08-27T10:15:34Z INFO job_enqueued id=j_00182 name=send-order-email order=ord_670208
+2026-08-27T10:15:34Z INFO job_enqueued id=j_00183 name=send-order-email order=ord_474576
+2026-08-27T10:15:34Z INFO job_started id=j_00188 name=send-order-email worker=w3 wait_ms=856 attempt=1
+2026-08-27T10:15:34Z INFO job_started id=j_00192 name=render-invoice-pdf worker=w4 wait_ms=972 attempt=1
+2026-08-27T10:15:35Z INFO job_enqueued id=j_00181 name=send-order-email order=ord_562461
+2026-08-27T10:15:35Z INFO job_started id=j_00182 name=send-order-email worker=w4 wait_ms=763 attempt=1
+2026-08-27T10:15:35Z INFO job_started id=j_00183 name=send-order-email worker=w1 wait_ms=1333 attempt=1
+2026-08-27T10:15:35Z INFO job_enqueued id=j_00184 name=send-order-email order=ord_456159
+2026-08-27T10:15:35Z INFO job_enqueued id=j_00185 name=send-order-email order=ord_479437
+2026-08-27T10:15:35Z INFO job_enqueued id=j_00187 name=send-order-email order=ord_374443
+2026-08-27T10:15:35Z INFO job_enqueued id=j_00189 name=send-order-email order=ord_706929
+2026-08-27T10:15:35Z INFO job_finished id=j_00190 name=send-order-email worker=w3 attempt=1 runtime_ms=2192 provider_status=202 result=sent
+2026-08-27T10:15:35Z INFO job_finished id=j_00191 name=send-order-email worker=w2 attempt=1 runtime_ms=2288 provider_status=202 result=sent
+2026-08-27T10:15:36Z INFO job_started id=j_00181 name=send-order-email worker=w4 wait_ms=1486 attempt=1
+2026-08-27T10:15:36Z INFO job_started id=j_00184 name=send-order-email worker=w1 wait_ms=1403 attempt=1
+2026-08-27T10:15:36Z INFO job_started id=j_00185 name=send-order-email worker=w4 wait_ms=888 attempt=1
+2026-08-27T10:15:36Z INFO job_started id=j_00187 name=send-order-email worker=w3 wait_ms=800 attempt=1
+2026-08-27T10:15:36Z INFO job_started id=j_00189 name=send-order-email worker=w2 wait_ms=861 attempt=1
+2026-08-27T10:15:36Z INFO job_finished id=j_00186 name=send-order-email worker=w2 attempt=1 runtime_ms=2282 provider_status=202 result=sent
+2026-08-27T10:15:37Z INFO job_finished id=j_00188 name=send-order-email worker=w3 attempt=1 runtime_ms=2098 provider_status=202 result=sent
+2026-08-27T10:15:37Z WARN job_failed id=j_00189 name=send-order-email worker=w2 attempt=1 runtime_ms=371 provider_status=429 error=too many requests
+2026-08-27T10:15:37Z WARN job_requeued id=j_00189 name=send-order-email attempt=1 next_attempt_in_ms=1800000
+2026-08-27T10:15:38Z INFO job_finished id=j_00182 name=send-order-email worker=w4 attempt=1 runtime_ms=2188 provider_status=202 result=sent
+2026-08-27T10:15:38Z INFO job_finished id=j_00183 name=send-order-email worker=w1 attempt=1 runtime_ms=2369 provider_status=202 result=sent
+2026-08-27T10:15:39Z INFO job_finished id=j_00181 name=send-order-email worker=w4 attempt=1 runtime_ms=2443 provider_status=202 result=sent
+2026-08-27T10:15:39Z INFO job_finished id=j_00184 name=send-order-email worker=w1 attempt=1 runtime_ms=2128 provider_status=202 result=sent
+2026-08-27T10:15:39Z INFO job_finished id=j_00185 name=send-order-email worker=w4 attempt=1 runtime_ms=2173 provider_status=202 result=sent
+2026-08-27T10:15:39Z INFO job_finished id=j_00187 name=send-order-email worker=w3 attempt=1 runtime_ms=2427 provider_status=202 result=sent
+2026-08-27T10:15:39Z INFO job_finished id=j_00192 name=render-invoice-pdf worker=w4 attempt=1 runtime_ms=5503 result=ok
+2026-08-27T10:15:53Z INFO job_started id=j_00149 name=send-order-email worker=w1 wait_ms=1824200 attempt=2
+2026-08-27T10:15:56Z INFO job_finished id=j_00149 name=send-order-email worker=w1 attempt=2 runtime_ms=2077 provider_status=202 result=sent
+2026-08-27T10:16:06Z INFO job_started id=j_00148 name=send-order-email worker=w4 wait_ms=1832310 attempt=2
+2026-08-27T10:16:09Z INFO job_finished id=j_00148 name=send-order-email worker=w4 attempt=2 runtime_ms=2386 provider_status=202 result=sent
+2026-08-27T10:17:51Z INFO job_enqueued id=j_00193 name=send-order-email order=ord_265490
+2026-08-27T10:17:52Z INFO job_started id=j_00193 name=send-order-email worker=w3 wait_ms=679 attempt=1
+2026-08-27T10:17:55Z INFO job_finished id=j_00193 name=send-order-email worker=w3 attempt=1 runtime_ms=2335 provider_status=202 result=sent
+2026-08-27T10:19:42Z INFO job_enqueued id=j_00194 name=send-order-email order=ord_604913
+2026-08-27T10:19:43Z INFO job_started id=j_00194 name=send-order-email worker=w4 wait_ms=1057 attempt=1
+2026-08-27T10:19:46Z INFO job_finished id=j_00194 name=send-order-email worker=w4 attempt=1 runtime_ms=2079 provider_status=202 result=sent
+2026-08-27T10:21:30Z INFO job_enqueued id=j_00195 name=send-order-email order=ord_704020
+2026-08-27T10:21:31Z INFO job_started id=j_00195 name=send-order-email worker=w3 wait_ms=1142 attempt=1
+2026-08-27T10:21:34Z INFO job_finished id=j_00195 name=send-order-email worker=w3 attempt=1 runtime_ms=2162 provider_status=202 result=sent
+2026-08-27T10:23:33Z INFO job_enqueued id=j_00196 name=send-order-email order=ord_771081
+2026-08-27T10:23:34Z INFO job_started id=j_00196 name=send-order-email worker=w2 wait_ms=795 attempt=1
+2026-08-27T10:23:37Z INFO job_finished id=j_00196 name=send-order-email worker=w2 attempt=1 runtime_ms=2151 provider_status=202 result=sent
+2026-08-27T10:24:00Z INFO job_enqueued id=j_00197 name=render-invoice-pdf invoice=inv_81883
+2026-08-27T10:24:01Z INFO job_started id=j_00197 name=render-invoice-pdf worker=w2 wait_ms=1058 attempt=1
+2026-08-27T10:24:06Z INFO job_finished id=j_00197 name=render-invoice-pdf worker=w2 attempt=1 runtime_ms=6188 result=ok
+2026-08-27T10:25:46Z INFO job_enqueued id=j_00198 name=send-order-email order=ord_786481
+2026-08-27T10:25:47Z INFO job_started id=j_00198 name=send-order-email worker=w4 wait_ms=1187 attempt=1
+2026-08-27T10:25:50Z INFO job_finished id=j_00198 name=send-order-email worker=w4 attempt=1 runtime_ms=2273 provider_status=202 result=sent
+2026-08-27T10:27:28Z INFO job_enqueued id=j_00199 name=send-order-email order=ord_549018
+2026-08-27T10:27:29Z INFO job_started id=j_00199 name=send-order-email worker=w4 wait_ms=653 attempt=1
+2026-08-27T10:27:32Z INFO job_finished id=j_00199 name=send-order-email worker=w4 attempt=1 runtime_ms=2335 provider_status=202 result=sent
+2026-08-27T10:29:22Z INFO job_enqueued id=j_00200 name=send-order-email order=ord_823356
+2026-08-27T10:29:23Z INFO job_started id=j_00200 name=send-order-email worker=w1 wait_ms=832 attempt=1
+2026-08-27T10:29:26Z INFO job_finished id=j_00200 name=send-order-email worker=w1 attempt=1 runtime_ms=2296 provider_status=202 result=sent
