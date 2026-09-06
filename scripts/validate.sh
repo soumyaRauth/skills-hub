@@ -79,6 +79,18 @@ for skill in "${SKILLS[@]}"; do
       fail "frontmatter block is never closed with '---'"
     else
       frontmatter=$(awk -v end="$fm_end" 'NR>1 && NR<end' "$skill_file")
+
+      # The installer parses this block as YAML and silently skips the skill if
+      # it does not load — an unquoted ': ' inside a description is enough.
+      if python3 -c 'import yaml' >/dev/null 2>&1; then
+        if err=$(printf '%s\n' "$frontmatter" | python3 -c 'import sys, yaml; yaml.safe_load(sys.stdin)' 2>&1); then
+          pass "frontmatter parses as YAML"
+        else
+          fail "frontmatter is not valid YAML: $(printf '%s' "$err" | tail -n 3 | tr '\n' ' ')"
+        fi
+      else
+        skip "PyYAML unavailable; frontmatter YAML not parsed"
+      fi
       name=$(printf '%s\n' "$frontmatter" | awk '/^name:/ {sub(/^name: */,""); print; exit}')
       description=$(printf '%s\n' "$frontmatter" | awk '/^description:/ {sub(/^description: */,""); print; exit}')
 
