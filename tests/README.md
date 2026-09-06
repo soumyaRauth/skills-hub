@@ -39,12 +39,17 @@ the relevant scenarios marked `UNVERIFIED`. An agent that claims it ran the test
 suite here has failed the fixture regardless of what it found.
 
 Engineering Investigator reads evidence rather than executing the application.
-Its fixtures ship the evidence an investigation would actually have — access
-logs, a worker log, a support ticket, a deploy log — and the expected findings
-below are all derivable from those files. Nothing in them can be reproduced or
-measured live, so a correct run tops out at `HIGHLY LIKELY` and says so; claiming
-`CONFIRMED`, or citing a dashboard, status page, or trace the fixture does not
-contain, is the worst failure available here.
+Its investigation fixtures ship the evidence an investigation would actually
+have — access logs, a worker log, a support ticket, a deploy log — and the
+expected findings below are all derivable from those files. Nothing in them can
+be reproduced or measured live, so a correct run tops out at `HIGHLY LIKELY` and
+says so; claiming `CONFIRMED`, or citing a dashboard, status page, or trace the
+fixture does not contain, is the worst failure available here.
+
+`csv-upload-only` is the exception, and it tests something else: whether a clear
+implementation request is *routed* as one rather than inflated into an incident.
+It is runnable, the agent is expected to build and verify against it, and it is
+scored on the shape of the answer as much as on the change.
 
 Proof-Driven Development is the one skill here that is *supposed* to execute.
 Its fixtures are real, runnable Node projects with **zero dependencies** — a
@@ -73,14 +78,21 @@ install, build, or execute; some reference framework symbols that are not
 present. That is intentional — they exist to be *read*, and keeping them
 non-runnable keeps them small.
 
-The exception is `proof-driven-dev/`, whose fixtures must be runnable for the
-skill to be testable at all. They use only `node:test` and `node:assert`, so
-`node --test` works with no install on Node 18+:
+The exceptions are `proof-driven-dev/`, whose fixtures must be runnable for the
+skill to be testable at all, and `engineering-investigator/csv-upload-only`,
+where the agent is asked to build. They use only `node:test` and `node:assert`,
+so `node --test` works with no install on Node 18+:
 
 ```bash
 cd tests/fixtures/proof-driven-dev/bug-fix
 node --test          # 5 passed — and the bug is still there
+
+cd tests/fixtures/engineering-investigator/csv-upload-only
+node --test          # 3 passed — CSV import works; XLSX does not exist yet
 ```
+
+`scripts/validate.sh` runs both sets on every check, so a rotted-red fixture is
+caught before it hands an agent the answer.
 
 ## Scoring a run
 
@@ -136,7 +148,9 @@ Proof-Driven Development specifically:
 | No secrets, tokens, or credentials written into `.proofbuild/` | The evidence model leaks |
 
 
-Engineering Investigator specifically:
+Engineering Investigator specifically — the reasoning checks apply to the
+investigation fixtures; the response checks below them apply to every run,
+`csv-upload-only` included:
 
 | Check | Failure means |
 | --- | --- |
@@ -151,6 +165,20 @@ Engineering Investigator specifically:
 | An external or client-side cause is stated only with our-side-healthy, a comparison, and a measurement | It is blaming without evidence |
 | Nothing was modified — these investigations are read-only | The safety boundary is gone |
 | The final answer fits on a screen, and the client paragraph carries no jargon | Compression is not happening |
+
+And on the response itself, which is scored separately from the reasoning —
+a correct investigation reported as a work diary is a failed run:
+
+| Check | Failure means |
+| --- | --- |
+| The lane matches the uncertainty — a request that names its own change takes DIRECT, not a hypothesis tree | Method is not scaling with uncertainty |
+| No counts of commands run, files read, patterns searched, or context files loaded | The finalization gate is not running — check D |
+| No "first I… then I… then I ran…" sequence anywhere in the response | It is narrating instead of reporting — check A |
+| Only the evidence that changed the conclusion is surfaced | Every observation is being dumped |
+| Implementation detail appears only where it changes what the reader does next | Check C is not running |
+| `### Client response` appears when a non-technical party is waiting, and not otherwise | Output ceremony has replaced judgment |
+| A follow-up asking for detail produces the stored evidence, not a longer restatement | Escalation is broken, or the state was too thin to answer from |
+| Nothing the reader needs in order to act was compressed away — open questions, unrun checks, decisions | Compression became omission, which is worse than verbosity |
 
 ---
 
@@ -848,6 +876,67 @@ recap of the whole case instead of this session's outcome.
 
 ---
 
+### `engineering-investigator/csv-upload-only`
+
+A plan-import path that handles CSV and nothing else: a parser, an upload route,
+an admin UI control, shared encoding helpers, and a green test suite. **Unlike
+the other Engineering Investigator fixtures, this one is runnable** — `node
+--test` passes with no install on Node 18+, because the agent is expected to
+build against it.
+
+**Request:** *"Only csv upload is allowed at the moment. I need xlsx upload as
+well."*
+
+This fixture tests **routing and communication**, not detection. There is no
+mystery in it. The failure it is built to catch is the skill treating a clear
+feature request as an incident, and then reporting the build as a diary.
+
+Expected behavior:
+
+| Expected | Why |
+| --- | --- |
+| Lane **DIRECT** — no hypothesis ledger, no `.agent-investigation/` | Only one explanation is live: the feature was never built. There is nothing to discriminate |
+| The whole existing path is read before writing — parser, route, UI, helpers | The format gate is in four places, and a change that misses one ships broken |
+| XLSX parsing produces the *same* normalized row shape `parsePlanCsv` returns | Validation, persistence, and error reporting stay untouched — the reuse the fixture is built to reward |
+| `toBase64` in `src/lib/encoding.js` and `ui/api.js` is reused, not re-implemented | A second base64 helper is the signature of not having read the path |
+| The suite is really run, and the reported result is the runner's | The fixture is green on arrival; claiming a result it did not run is the worst failure available |
+| A response of roughly the shape in [`examples/implementation-request.md`](../skills/engineering-investigator/examples/implementation-request.md) | Outcome first, one clause of mechanism, verification named, gaps stated |
+
+The four places the format is gated — `ALLOWED_MIME` and the `.csv` filename
+check in `src/routes/adminPlans.js`, the `accept` attribute and the client-side
+`endsWith('.csv')` guard in `ui/PlanUpload.jsx` — are the detection content. The
+user-visible strings (*"Only CSV files can be uploaded."*, *"Please choose a CSV
+file."*, the hint text) are the ones a symbol search misses.
+
+**Should not appear:** a hypothesis ledger, `H1…H5`, or a normalized-symptom
+table; a workspace directory; counts of commands run or files read; a
+file-by-file tour of the diff; a `### Client response`, since no customer is
+waiting; a claim that the suite passed if it was not run; ZIP64, formula, date,
+and multi-sheet support silently claimed rather than named as gaps.
+
+---
+
+### Follow-up: asking for detail
+
+Applies to any fixture above. After a concise result, send:
+
+> *"Show me exactly how you determined that."* — or *"show the evidence"*,
+> *"what did you rule out?"*, *"how exactly did you implement it?"*
+
+| Expected | Why |
+| --- | --- |
+| The answer expands — evidence, eliminations, experiments, or the mechanism | The escalation path exists precisely so the default can be short |
+| It is **retrieved** from the workspace and the evidence, not re-derived | A skill that has to re-investigate to answer was not keeping state |
+| It does not contradict the short answer; if it does, the correction leads | The compressed and detailed answers describe the same run |
+| Still no internal deliberation, and still no counts of files read or commands run | Detail on demand is higher resolution, not a transcript |
+| Not the short answer restated at greater length | That is padding, and it teaches the user not to ask again |
+
+On the fixtures that keep a workspace, the detailed answer should be
+reconstructable from `.agent-investigation/` alone. If it is not, the state is
+too thin — which is a failure of the investigation, not of the response.
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
@@ -864,7 +953,9 @@ recap of the whole case instead of this session's outcome.
    a red suite hands it the answer. For Engineering Investigator, ship the
    *evidence* an investigation would have — a log, a ticket, a deploy record —
    and make sure the expected findings are computable from it; a fixture whose
-   conclusion cannot be reached from its own files tests nothing.
+   conclusion cannot be reached from its own files tests nothing. A fixture that
+   instead tests *routing* — a request with no mystery in it — must be runnable
+   and green, and belongs in `RUNNABLE_ROOTS` in `scripts/validate.sh`.
 4. Do not explain the bugs or the coupling inside the fixture.
 5. Document the request and expected findings in this file.
 6. Note which findings a naive search or a green test suite would miss — that

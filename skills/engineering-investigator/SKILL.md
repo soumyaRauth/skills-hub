@@ -1,6 +1,6 @@
 ---
 name: engineering-investigator
-description: Investigate vague engineering complaints — slowness, intermittent failures, wrong data, production incidents, works-locally-but-fails-in-production — by evidence instead of guesswork. Normalizes the symptom, establishes scope, forms competing hypotheses with explicit kill conditions, runs the smallest experiment that discriminates between them, eliminates what the evidence kills, and determines whether the application, a dependency, the infrastructure, or the client's own network is responsible. Returns a short evidence-backed conclusion with a confidence level, plus a client-ready explanation — not a debugging transcript. Use when a report describes a symptom whose cause or scope is unclear ("the app is slow", "checkout randomly fails", "payments started failing yesterday", "this API sometimes returns wrong data"), when a regression must be tied to a deployment, or to resume an investigation already in progress. Not for ordinary coding tasks or bugs whose cause is already known.
+description: Investigate vague engineering complaints — slowness, intermittent failures, wrong data, production incidents, works-locally-but-fails-in-production — by evidence instead of guesswork. Normalizes the symptom, establishes scope, forms competing hypotheses with explicit kill conditions, runs the smallest experiment that discriminates between them, eliminates what the evidence kills, and determines whether the application, a dependency, the infrastructure, or the client's own network is responsible. Returns a short evidence-backed conclusion with a confidence level, plus a client-ready explanation — not a debugging transcript. Use when a report describes a symptom whose cause or scope is unclear ("the app is slow", "checkout randomly fails", "payments started failing yesterday"), when a regression must be tied to a deployment, or to resume an investigation already in progress. Depth scales with uncertainty: a request that names its own change is done directly, not turned into an investigation.
 ---
 
 # Engineering Investigator
@@ -19,9 +19,13 @@ Probably. Nothing was measured, no alternative was tested, and the affected user
 may be on hotel wifi.
 
 ```
-REPORT → NORMALIZE → SCOPE → OBSERVE → HYPOTHESES → EVIDENCE
-       → DISCRIMINATING EXPERIMENT → ELIMINATE → ROOT CAUSE → VERIFY → COMMUNICATE
+REPORT → ROUTE → NORMALIZE → SCOPE → OBSERVE → HYPOTHESES → EVIDENCE
+       → DISCRIMINATING EXPERIMENT → ELIMINATE → ROOT CAUSE → VERIFY
+       → FINALIZE → ANSWER
 ```
+
+**ROUTE** decides how much of the middle runs at all. **FINALIZE** is a gate,
+not a formatting step: nothing reaches the user that has not passed it.
 
 The investigation may be deep. **The answer is short.**
 
@@ -51,8 +55,20 @@ The investigation may be deep. **The answer is short.**
 9. **Read-only by default.** Observe, reproduce, propose, verify. Nothing that
    mutates production data, configuration, infrastructure, or deployments
    happens without explicit authorization for that specific action.
-10. **Deep investigation ≠ long answer.** The final response fits on a screen.
-    The workspace holds the detail; the user reads a conclusion.
+10. **Deep investigation ≠ long answer.** Depth is bought in the workspace, not
+    in the response. The answer fits on a screen and passes the finalization
+    gate (Phase 9) before it is sent.
+11. **Never report your own activity.** No command counts, file-read counts, or
+    tool-call counts; no "searched for / read / listed / ran"; no "first I…,
+    then I…"; no running commentary between actions. The user asked what is
+    true, not what you did. This holds *during* the work as well as at the end.
+    A *decision* is different and worth one line — "escalating to STANDARD, the
+    CSV path itself is broken" changes what happens next; a list of what you
+    touched does not.
+12. **Method scales with uncertainty.** Hypotheses exist to discriminate between
+    competing explanations. When only one explanation is live — the request
+    names the change, or a stack trace names the line — a ledger is ceremony.
+    Route first (below).
 
 ## Evidence discipline
 
@@ -80,20 +96,34 @@ only when the observation could have shown presence: "no 5xx in the log for that
 window" is evidence; "I didn't see anything" is not.
 See `references/evidence-model.md`.
 
-## Depth: decide it, don't default to it
+## Route first: method scales with uncertainty
 
-Investigation cost must match the question. Pick a lane, and say which one when
-it is not obvious:
+Before anything else, answer one question about the request:
+
+> **How many explanations are actually live?**
+
+Investigation exists to discriminate between competing explanations. Where none
+compete, there is nothing to discriminate, and the hypothesis machinery is
+ceremony charged to the user's time.
 
 | Lane | When | What it costs |
 | --- | --- | --- |
-| **QUICK** | One check settles it — a stack trace names the line, a failing test reproduces on the first run, the symptom is already scoped | No workspace. Investigate, verify, answer in a few lines. |
+| **DIRECT** | The request names the change, not a mystery — *"only CSV upload is allowed, I need XLSX too"*, *"add a rate limit to this endpoint"*, a defect whose stack trace names the line | No hypotheses, no workspace. Understand the requirement, read the path that exists, make the change, verify it, report the outcome. |
+| **QUICK** | One check settles it — a failing test reproduces on the first run, the symptom is already scoped | No workspace. Investigate, verify, answer in a few lines. |
 | **STANDARD** | Two or more explanations survive first contact with the evidence | Inline ledger, or `incident.md` + `evidence.md`. One or two experiment rounds. |
 | **INCIDENT** | Production impact, multiple layers or systems in play, intermittency, an external party involved, or work that will outlive one session | Full workspace. Iterate the loop until a stop condition fires. |
 
+DIRECT still runs everything that carries the discipline: Phase 0 (what can you
+actually see), reading the real code path rather than the assumed one, Phase 8
+verification, and the Phase 9 gate. It skips Phases 1–7, because there is
+nothing to normalize and nothing competing to eliminate. If the change turns out
+to rest on a mystery — the existing path is itself broken, the requirement
+contradicts the data model — escalate to STANDARD and say so in one line.
+
 Escalate when the evidence demands it; do not start at INCIDENT because the
-report sounded dramatic. Downgrade freely — a report that resolves on the first
-experiment ends there.
+report sounded dramatic, and never manufacture `H1…H5` for a request that
+arrived with its own answer. Downgrade freely — a report that resolves on the
+first experiment ends there.
 
 **Stop conditions.** Stop investigating when: the root cause is CONFIRMED or
 HIGHLY LIKELY and verified; or two consecutive experiments fail to eliminate any
@@ -259,9 +289,38 @@ Never report a fix as working without a check that ran. If verification is
 impossible here, say which check would establish it and leave the conclusion at
 its honest level. See `references/experiment-design.md`.
 
-## Phase 9 — Answer briefly, twice
+## Phase 9 — Finalize: the gate every answer passes
 
-Two audiences, both short.
+Finalization is a stage, not formatting. The work is done; now decide what the
+user actually receives. Answer four questions, in order — then a fifth, which
+decides how much technical detail survives:
+
+| | |
+| --- | --- |
+| **What was established?** | One sentence. If it needs three, it is not settled — say that instead. |
+| **What evidence materially supports it?** | The one or two observations that *changed* the conclusion. Ask: which evidence, if removed, would change the answer? The rest stays in the workspace. |
+| **How confident are we?** | High / Medium / Low, translated from Phase 7. |
+| **What should happen next?** | One action, and who takes it. |
+| *…and:* **does this reader need implementation detail?** | Usually no. Include it only where it changes what they do next. |
+
+Then run the compression check over the draft. Each failure is rewritten, not
+argued with:
+
+```
+A  Am I reporting the conclusion, or narrating the investigation?  → compress
+B  Does every sentence answer what / why / how sure / what next?   → cut the rest
+C  Implementation detail nobody asked for?                         → summarize or drop
+D  Tool activity — counts, commands, files read, files loaded?     → delete
+E  Internal reasoning or deliberation?                             → keep the evidence, drop the thinking
+F  Does it fit on one screen?                                      → it usually must
+```
+
+F is a target, not a character limit. An answer that must run longer to stay
+complete — a decision the user has to make, a check that could not be run, a
+second contributing cause — runs longer. **Compression never removes something
+the user needs in order to act.**
+
+### The shape
 
 ```markdown
 ## Result
@@ -274,19 +333,19 @@ Two audiences, both short.
 **Why:** [one or two sentences of the evidence that decided it]
 
 **Action:** [what should happen next]
-
-### Client response
-
-[Two or three plain sentences, sendable as written. No jargon.]
 ```
 
-The confidence word comes from Phase 7, translated for the reader:
-`CONFIRMED` and `HIGHLY LIKELY` → **High** · `LIKELY` → **Medium** ·
-`POSSIBLE` → **Low** · `UNKNOWN` → no cause line at all, use the format below.
-Say the stronger word in the body when it earns it — "reproduced on both
-versions" is worth more to an engineer than the label.
+The confidence word comes from Phase 7: `CONFIRMED` and `HIGHLY LIKELY` →
+**High** · `LIKELY` → **Medium** · `POSSIBLE` → **Low** · `UNKNOWN` → no cause
+line at all, use the form below. Say the stronger word in the body when it earns
+it — "reproduced on both versions" is worth more to an engineer than the label.
 
-When nothing is established yet:
+Adapt the shape to the lane. A DIRECT result leads with what now works and what
+it was verified against; `Cause` shrinks to a clause about what was missing, or
+drops entirely. Never leave a section standing with nothing in it, and never pad
+one to make the work look larger.
+
+When nothing is established:
 
 ```markdown
 ## Result
@@ -298,11 +357,40 @@ We cannot reliably determine the cause yet.
 **Next step:** …
 ```
 
-Include the client response when a client, user, or non-technical stakeholder is
-waiting on an answer; skip it when the audience is only engineers. Never include
-the investigation transcript, the full hypothesis ledger, or the commands you
-ran — those are available on request ("show the evidence", "show the ledger").
-Translate every technical term. See `references/communication.md`.
+### Audience
+
+Read the audience from the request, and add a section only when someone is
+actually waiting on it:
+
+| The request | What it gets |
+| --- | --- |
+| An engineer asking for a change, or for a cause | The result in concise technical language. No client paragraph. |
+| A customer complaint, support escalation, or a stakeholder waiting | The result **plus** `### Client response` — two or three plain sentences, sendable as written |
+| *"How exactly did you implement it?"* | The mechanism, at the depth asked for |
+| *"Write it up"* / *"I need a report"* | A report |
+
+`### Client response` is not ceremony every invocation earns. *"Why is this API
+returning 500?"* does not need one; *"the customer says the app is slow"* does;
+*"add XLSX upload"* does not, unless a customer is waiting on the answer. When in
+doubt, leave it out — it is one question away.
+
+### Detail on demand
+
+The compression is only honest because the detail is retrievable. Answer these
+fully, reading from the workspace and the evidence rather than re-deriving:
+
+```
+show the evidence        show the hypotheses      what did you rule out?
+how do you know?         what would change this?  show the experiments
+what did you not check?  how exactly did you implement it?
+```
+
+An expanded answer is the same case at higher resolution — evidence,
+eliminations, mechanism, code. It is never a replay of internal deliberation,
+and never a restatement of the short answer at greater length. Never include the
+transcript, the ledger, or the commands you ran unless they were asked for.
+Translate every technical term for a non-technical reader. See
+`references/communication.md`.
 
 ## Workspace and resume
 
@@ -344,12 +432,20 @@ into the workspace or the answer — redact.
 When the decisive experiment is a mutation, describe it, state its blast radius
 and how to undo it, and ask. See `references/production-safety.md`.
 
-## Fixing
+## Fixing and building
 
-Investigate first; fix only when the investigation established an application
-cause **and** the user asked for a fix. Then: smallest change that addresses the
-cause, a test that fails without it, the project's own checks, and the original
-symptom re-checked. Report what changed in a few lines.
+On the investigation lanes, fix only when the investigation established an
+application cause **and** the user asked for a fix. On DIRECT, the change *is*
+the request. Either way the discipline is identical: read the path that already
+exists before writing a new one, reuse what is there, make the smallest change
+that addresses the cause, add a check that fails without it, run the project's
+own checks, and re-check the original symptom.
+
+Report the **outcome**, not the construction: what now works, what it was
+verified against, and what it does not cover — in a few lines. Design decisions,
+the file-by-file tour, and the reasoning behind each belong to
+`how exactly did you implement it?`, not to the default answer. A check that did
+not run is never reported as passing.
 
 Sometimes the correct outcome is **no code change** — because the cause is a
 client's network, a vendor's outage, or a configuration value. Say so plainly.
@@ -357,7 +453,8 @@ client's network, a vendor's outage, or a configuration value. Say so plainly.
 ## What this skill is not
 
 - **Not a debugger.** A known bug with a stack trace needs fixing, not
-  investigating. This is for when the cause or the scope is unclear.
+  investigating. This is for when the cause or the scope is unclear — invoked
+  anyway, it takes the DIRECT lane rather than inventing an investigation.
 - **Not an incident-response runbook.** It does not page anyone, mutate
   infrastructure, or manage a status page.
 - **Not a code reviewer.** It reads the code the evidence points at, not the
@@ -372,4 +469,6 @@ not · `examples/deployment-regression.md` — correlation with a deploy promote
 cause by a revert · `examples/third-party-dependency.md` — failures that
 correlate with a provider's errors · `examples/insufficient-evidence.md` — no
 telemetry, no invented cause, three things asked for ·
-`examples/resumed-investigation.md` — a second session continuing a case.
+`examples/resumed-investigation.md` — a second session continuing a case ·
+`examples/implementation-request.md` — a clear feature request taking the DIRECT
+lane, and the diary it must not produce.

@@ -229,15 +229,17 @@ done
 
 # ------------------------------------------------------- runnable fixtures --
 
-# Most fixtures here are illustrative skeletons that never execute. Proof-Driven
-# Development's are the exception: the agent under test is supposed to run them,
-# so they must be GREEN before it starts — a fixture that has rotted red hands
-# the agent the answer. Add a directory below if another skill ships runnable
-# fixtures; do not widen this to every package.json under tests/fixtures, since
-# the non-runnable ones declare test scripts they were never meant to satisfy.
+# Most fixtures here are illustrative skeletons that never execute. Two sets are
+# the exception: Proof-Driven Development's, and Engineering Investigator's
+# csv-upload-only, where the agent under test is supposed to build against a
+# working suite. They must be GREEN before it starts — a fixture that has rotted
+# red hands the agent the answer. Add a directory below if another skill ships
+# runnable fixtures; do not widen this to every package.json under
+# tests/fixtures, since the non-runnable ones declare test scripts they were
+# never meant to satisfy.
 
 head_ "Runnable fixtures"
-RUNNABLE_ROOTS="tests/fixtures/proof-driven-dev"
+RUNNABLE_ROOTS="tests/fixtures/proof-driven-dev tests/fixtures/engineering-investigator/csv-upload-only"
 runnable=$(find $RUNNABLE_ROOTS -name package.json -maxdepth 2 2>/dev/null | sort || true)
 if [ -z "$runnable" ]; then
   skip "no runnable fixtures found"
