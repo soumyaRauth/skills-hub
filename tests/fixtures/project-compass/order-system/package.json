@@ -1,0 +1,7 @@
+{
+  "name": "orders-service",
+  "version": "1.6.0",
+  "private": true,
+  "description": "Order capture, payment and fulfilment",
+  "main": "src/index.js"
+}

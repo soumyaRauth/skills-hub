@@ -186,6 +186,47 @@ Do not add an experiment that mutates production as a first-line step, and do no
 add hypotheses to a stock list: the skill generates them from the symptom and the
 system, and a canned list is what it exists to replace.
 
+### Add a blind-spot detector
+
+Edits to `skills/project-compass/references/blind-spots.md`, or to
+`drift-detection.md` when the pattern is about direction rather than a missing
+model.
+
+**Do not add a detector because it sounds clever.** Every detector costs the
+user attention on every project it fires against, including the ones where it is
+wrong. The bar is not "this is a real problem in software" — it is "this problem
+is *detectable from evidence*, and naming it saves work".
+
+A detector earns its place when it states:
+
+- **The evidence it requires**, concretely — how many instances, in what kind of
+  location, and what makes them independent rather than one decision touched
+  three times
+- **What the ordinary explanation is**, and how to rule it out. Most candidate
+  patterns are focused work seen from the outside
+- **The consequence**, in terms of work already asked for. If the only
+  consequence you can name is "maintainability", the detector is not ready
+- **What closes it**, and it must be smaller than the work it prevents. If the
+  answer is a refactor, this is not a blind spot, it is a preference
+- **Where it must not fire** — the case that looks identical and is fine
+
+Also welcome, and rarer: a **suppression** rule. If you have a case where the
+skill would speak and should not, that is worth more than a new detector.
+
+### Add a longitudinal scenario
+
+New sections in `tests/longitudinal/project-compass.md`, usually with a fixture
+under `tests/fixtures/project-compass/`.
+
+Project Compass cannot be tested with a single prompt — its claim is that the
+fifth request is handled differently from the first. A scenario states the
+requests in order, the step where the intervention should land, and what
+counts as failure at every *earlier* step. Silence in steps 1 and 2 is part of
+the expected result, not the absence of one.
+
+At least one scenario per pattern family must be a project where the correct
+output is nothing at all.
+
 ### Add examples
 
 New files under `skills/<skill>/examples/`.
@@ -235,6 +276,14 @@ Every fixture needs documented expected findings in `tests/README.md`.
   interpolation syntax, or a plural structure flattened into a single form. Seed
   the target strings deliberately, and document in `tests/README.md` why each
   one is wrong.
+- **Project Compass fixtures** need the pattern seeded across at least three
+  independent locations, plus a dated record of it arriving — a changelog, or a
+  `.project-compass/` holding trajectory entries and recorded decisions. Those
+  seeded state files must contain **evidence, never conclusions**: dated entries
+  and locations, never the blind spot the run is supposed to find. And the suite
+  needs at least one *healthy* project, where the expected output for an
+  ordinary request is nothing at all — the skill's hardest behavior is silence,
+  and a fixture set that only rewards findings will train it out.
 
 Do not explain the seeded problem inside the fixture — that hands the agent the
 answer.
@@ -292,6 +341,7 @@ valuable kind.
 | Copy-into-your-project starting points | `skills/<skill>/templates/` |
 | Fake repositories that exercise reasoning | `tests/fixtures/<skill>/` |
 | Expected findings per fixture | `tests/README.md` |
+| Multi-step scenarios that only show up across sessions | `tests/longitudinal/` |
 | Usage, installation, limitations | `skills/<skill>/README.md` |
 | Repository pitch and catalog page | top-level `README.md` |
 

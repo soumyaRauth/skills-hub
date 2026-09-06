@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Compass — Skills Hub</title>
+<meta name="description" content="Persistent project intelligence for coding agents. Builds an evidence-based model of what a project is and where it is heading, notices when the requests stop adding up — and stays silent the rest of the time.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="impact-map.html">Impact Map</a>
+      <a href="proof-driven-dev.html">ProofBuild</a>
+      <a href="production-guard.html">Production Guard</a>
+      <a href="practical-localizer.html">Practical Localizer</a>
+      <a href="engineering-investigator.html">Investigator</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/project-compass/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; across everything, quietly</span>
+    <h1>Project Compass</h1>
+    <p class="lede">
+      Your agent knows how to build things. This helps it understand
+      <em>where the project is going</em> &mdash; and notice, from evidence, when
+      the requests have stopped adding up. Then, almost always, it says nothing
+      and does the work.
+    </p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill project-compass</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>activity &ne; progress</b></p>
+    <p>
+      Coding agents execute well. Ask for search, a refactor, another permission
+      check, a dashboard &mdash; you get all of them, competently, one after
+      another. That is the whole problem: execution never asks whether the
+      sequence adds up.
+    </p>
+    <p>
+      Nine permission exceptions, each reasonable, are an authorization system
+      nobody designed. Four fixes for four kinds of duplicate are one missing
+      idea about identity. Five performance changes with no measurement anywhere
+      are five guesses with deployments attached. A project can accumulate a year
+      of good commits and be further from working than it was in month three.
+    </p>
+    <p>
+      The person making the requests cannot see this. They see one request.
+    </p>
+
+    <h3>What it does instead</h3>
+    <p class="flow mono">
+      request &nbsp;&rarr;&nbsp; project state &nbsp;&rarr;&nbsp; trajectory &nbsp;&rarr;&nbsp; unresolved decisions<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; has this happened three times? &nbsp;&rarr;&nbsp; is it worth interrupting for?<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>almost always no</b> &nbsp;&rarr;&nbsp; implementation
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The moment it is built for</h2>
+<pre class="block">You:    Add CSV export to the members table.
+
+Agent:  Export added &mdash; all visible columns, respecting the current filter and
+        sort, streamed so large orgs don&rsquo;t time out.
+
+        One thing I&rsquo;d flag. That&rsquo;s six controls on this table since August:
+        search, filters, sorting, saved views, bulk actions, now export. Each
+        made sense on its own, but they&rsquo;re pointing at a workflow nobody has
+        written down &mdash; and it&rsquo;s already showing: saved views track role,
+        status and joined date, bulk actions work on role and active, and
+        export just took everything.
+
+        Before the seventh, one sentence would settle it: who opens this
+        screen, and what are they trying to finish? If it&rsquo;s &ldquo;support checks
+        whether someone still has access&rdquo;, the table needs three columns and a
+        search box and half of what&rsquo;s there is in the way. If it&rsquo;s &ldquo;an admin
+        does quarterly access reviews&rdquo;, export is the main event and should
+        probably be scheduled rather than clicked.</pre>
+    <div class="note">
+      <strong>Nothing was refused.</strong> The export was built and tested. The
+      observation is checkable in thirty seconds &mdash; six controls, five dates,
+      three inconsistent column sets &mdash; and the missing thing is one sentence
+      from a human, not a refactor.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The harder half: knowing when to shut up</h2>
+    <p>
+      An agent that comments on project direction four times a week gets
+      uninstalled in week two, and the one real observation it would have made in
+      week nine never arrives. So intervention is gated, not judged.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Gate</th><th>Test</th></tr></thead>
+        <tbody>
+          <tr><td><b>Recurrence</b></td><td>Three or more independent instances, each with a location you can name</td></tr>
+          <tr><td><b>Convergence</b></td><td>They share a <em>cause</em>, not a topic &mdash; could one decision have prevented all three?</td></tr>
+          <tr><td><b>Consequence</b></td><td>What breaks next, in terms of work already asked for. <em>&ldquo;This could get messy&rdquo;</em> fails</td></tr>
+          <tr><td><b>Actionability</b></td><td>A step smaller than the work it prevents. <em>&ldquo;Consider defining an authorization model&rdquo;</em> is not a step</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Three out of four is a note in the project state, not a sentence to you. On
+      top of that: one interruption per session, maximum &mdash; and a dismissed
+      observation is closed <em>permanently</em>. Say &ldquo;that&rsquo;s
+      intentional&rdquo; and it is recorded as a decision with your reason, and
+      never raised again, in any wording. That single rule is what makes the
+      skill survivable past month two.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it remembers</h2>
+<pre class="block">.project-compass/
+  project.md          what this is, who it serves &mdash; labeled, dated
+  trajectory.md       dated entries: what changed, and which pattern it fed
+  decisions.md        settled questions, including &ldquo;we discussed this, proceed&rdquo;
+  open-questions.md   unresolved decisions affecting implementation
+  blind-spots.md      patterns that cleared the bar, and what closes them</pre>
+    <p>
+      This is the difference between the skill and asking an agent <em>&ldquo;what
+      am I missing?&rdquo;</em> &mdash; that question gets a fresh guess from
+      nothing, every time. Renames, formatting and dependency bumps are never
+      recorded; a trajectory that logs everything is a diary, and nobody finds a
+      pattern in a diary. The repository always outranks the state, and recorded
+      claims are re-verified before anything is built on them.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Everything is labeled</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Label</th><th>Means</th></tr></thead>
+        <tbody>
+          <tr><td><b>OBSERVED</b></td><td>Read directly &mdash; with the location</td></tr>
+          <tr><td><b>INFERRED</b></td><td>Concluded, with High or Low confidence, and what would overturn it</td></tr>
+          <tr><td><b>ASSUMED</b></td><td>Believed to make progress, unverified &mdash; and what breaks if it is wrong</td></tr>
+          <tr><td><b>UNKNOWN</b></td><td>Established as not known, and what would settle it</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      It will not invent your project&rsquo;s purpose, users, market, deadlines,
+      metrics, or history. When the objective is undocumented,
+      <em>&ldquo;there is no documented objective&rdquo;</em> is the finding &mdash;
+      usually a useful one &mdash; and recommendations say which parts of them
+      that limits.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it notices</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>What recurs</th><th>What is usually missing</th></tr></thead>
+        <tbody>
+          <tr><td>Permission exceptions, role special-cases, bypasses</td><td>An authorization model</td></tr>
+          <tr><td>Boolean status flags, &ldquo;can this still be edited?&rdquo;</td><td>A lifecycle: states, transitions, who may cause them</td></tr>
+          <tr><td>Fixes for four shapes of the same duplicate</td><td>Idempotency, and what makes an operation <em>the same</em> one</td></tr>
+          <tr><td>Timeout raised, retry, queue, cache, Redis</td><td>A measurement &mdash; what is slow, and what target matters</td></tr>
+          <tr><td>Search, filter, sort, saved views, bulk actions, export</td><td>The workflow those controls serve</td></tr>
+          <tr><td>Notification rules added per feature</td><td>Event semantics</td></tr>
+          <tr><td>&ldquo;What counts as active?&rdquo; asked in three features</td><td>A business rule nobody wrote down</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Each detector requires specific evidence before it fires, and every one of
+      them is a hypothesis until it has been checked against the code.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Answers it is willing to give</h2>
+<pre class="block">Keep going &mdash; this is the thing. (The most common non-silent answer.)
+Ship it and watch. Four passes on a working screen is guessing.
+Measure it first. There is no performance problem here yet, only a suspicion.
+This is a product decision, not a technical one &mdash; one sentence unblocks
+    three features.
+Delete it. Nothing uses it and it is charging rent.
+Write down the rule. It currently lives in four conditionals that disagree.</pre>
+    <p>
+      And, rarely and with the evidence attached: <em>I can build this, but I
+      don&rsquo;t think it&rsquo;s what the project needs right now</em> &mdash;
+      always ending with the offer to build it anyway, because you have context
+      the repository does not.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      Project Compass asks whether the ticket should have been written.
+      <a href="impact-map.html">Impact Map</a> maps what the change would touch,
+      <a href="proof-driven-dev.html">ProofBuild</a> proves it does what it
+      claims, <a href="production-guard.html">Production Guard</a> decides whether
+      it is safe to ship, and
+      <a href="engineering-investigator.html">Engineering Investigator</a>
+      establishes what happened when it breaks. None requires the others.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Limitations</h2>
+    <ul class="plain">
+      <li>It sees the repository and the conversation. Your users, your market, what a stakeholder promised &mdash; invisible, and it says so rather than guessing</li>
+      <li>Value compounds with use. A first session can reconstruct a project model; a trajectory takes weeks to become one</li>
+      <li>Inherited history helps &mdash; on a repository that arrives with a pattern already in it, git history counts as evidence from the first session</li>
+      <li>Pattern detection is judgment, not analysis. It will sometimes read focused work as a pattern; the four gates make that rare, and being overruled costs one sentence</li>
+      <li>It cannot tell you whether your idea is good. It can tell you that nothing in the repository connects it to anything else</li>
+      <li>Work done outside the agent is invisible unless it left a commit</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>
