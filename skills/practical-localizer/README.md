@@ -210,10 +210,12 @@ still be written — flagged — but it is never presented as settled.
 ## Installation
 
 ```bash
-# any Agent Skills-compatible agent
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
+```
 
-# Claude Code specifically
+For Claude Code specifically:
+
+```bash
 npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
 ```
 

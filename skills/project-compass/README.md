@@ -115,10 +115,12 @@ is what makes the skill survivable past month two.
 ## Installation
 
 ```bash
-# any Agent Skills-compatible agent
 npx skills add soumyaRauth/skills-hub --skill project-compass
+```
 
-# Claude Code specifically
+For Claude Code specifically:
+
+```bash
 npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-code
 ```
 
