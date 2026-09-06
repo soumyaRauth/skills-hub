@@ -514,11 +514,18 @@ not for how thorough they look. Evidence is typed `FACT` / `INFERENCE` /
 `ASSUMPTION` / `UNKNOWN`, and code inspection never establishes production
 behavior. The leading hypothesis gets attacked before the conclusion is written.
 
-Five worked investigations: [client network](skills/engineering-investigator/examples/client-network.md) ·
+Depth is bought in the investigation state, never in the answer. A finalization
+gate runs before you see anything: it keeps the evidence that *changed* the
+conclusion and deletes the rest — no command counts, no file-by-file tour, no
+`H1…H5` manufactured for a request that arrived with its own answer. Detail is
+one question away, and is read back out of the state rather than re-derived.
+
+Six worked investigations: [client network](skills/engineering-investigator/examples/client-network.md) ·
 [deployment regression](skills/engineering-investigator/examples/deployment-regression.md) ·
 [third-party dependency](skills/engineering-investigator/examples/third-party-dependency.md) ·
 [insufficient evidence](skills/engineering-investigator/examples/insufficient-evidence.md) ·
-[resuming a case](skills/engineering-investigator/examples/resumed-investigation.md)
+[resuming a case](skills/engineering-investigator/examples/resumed-investigation.md) ·
+[a clear feature request](skills/engineering-investigator/examples/implementation-request.md)
 
 ## What it will not do
 
@@ -610,14 +617,14 @@ repository, it can run these skills.
 │       ├── SKILL.md
 │       ├── README.md
 │       ├── references/           ← eleven investigation references
-│       └── examples/             ← five worked investigations
+│       └── examples/             ← six worked investigations
 ├── tests/
 │   ├── fixtures/
 │   │   ├── impact-map/           ← four repositories with hidden coupling to find
 │   │   ├── proof-driven-dev/     ← six runnable projects, green until you break them
 │   │   ├── production-guard/     ← four repositories with real production bugs
 │   │   ├── practical-localizer/  ← six repositories with bad localizations
-│   │   └── engineering-investigator/  ← five incidents, with the evidence to solve them
+│   │   └── engineering-investigator/  ← five incidents with the evidence to solve them, plus one plain feature request
 │   └── README.md                 ← expected findings per fixture
 ├── scripts/validate.sh           ← structure + frontmatter validation, all skills
 └── .github/workflows/validate.yml

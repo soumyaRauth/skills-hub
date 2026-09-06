@@ -187,3 +187,6 @@ released."
 - The production revert was proposed, not performed.
 - The fix was verified against the metric that regressed, both with and without
   the change.
+- The client paragraph was included because customers were the ones experiencing
+  the slowdown. An internal-only regression ends at `Action` — the section is
+  contextual, not part of the format.

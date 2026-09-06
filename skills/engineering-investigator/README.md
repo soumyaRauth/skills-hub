@@ -125,15 +125,41 @@ how do you know?         what did you not check?  what would change this?
 ## How it works
 
 ```
-REPORT → NORMALIZE → SCOPE → OBSERVE → HYPOTHESES → EVIDENCE
-       → DISCRIMINATING EXPERIMENT → ELIMINATE → ROOT CAUSE → VERIFY → COMMUNICATE
+REPORT → ROUTE → NORMALIZE → SCOPE → OBSERVE → HYPOTHESES → EVIDENCE
+       → DISCRIMINATING EXPERIMENT → ELIMINATE → ROOT CAUSE → VERIFY
+       → FINALIZE → ANSWER
 ```
 
-Not every investigation runs the whole loop. The skill picks a lane first —
-**QUICK** when one check settles it, **STANDARD** when explanations compete,
-**INCIDENT** when production is involved — and stops when the cause is
-established, when two experiments in a row eliminate nothing, or when the
-remaining question needs access this environment does not have.
+Not every request runs the whole loop. The skill routes first, on one question —
+*how many explanations are actually live?* — because investigation exists to
+discriminate between competing ones, and where none compete the hypothesis
+machinery is ceremony charged to your time.
+
+| Lane | When |
+| --- | --- |
+| **DIRECT** | The request names the change, not a mystery — *"only CSV upload is allowed, I need XLSX too"* |
+| **QUICK** | One check settles it |
+| **STANDARD** | Two or more explanations survive first contact with the evidence |
+| **INCIDENT** | Production impact, several layers, intermittency, or work that outlives the session |
+
+It stops when the cause is established, when two experiments in a row eliminate
+nothing, or when the remaining question needs access this environment does not
+have.
+
+### Finalization is a gate, not a format
+
+The last stage before you see anything answers four questions — what was
+established, which evidence *changed* the conclusion, how confident, what
+happens next — and then runs six checks over the draft. Narration gets
+compressed. Tool activity — *"searched 2 patterns, read 4 files, ran 12 shell
+commands"* — gets deleted. Implementation detail nobody asked for gets reduced
+to a clause. A `### Client response` appears when someone outside the team is
+waiting for one, and not as ceremony.
+
+What is never compressed away: a decision you have to make, a check that could
+not be run, or a second contributing cause. The detail is one question away —
+*show the evidence*, *what did you rule out?*, *how exactly did you implement
+it?* — and it is read back out of the investigation state, not re-derived.
 
 ### Five things that make it an investigation
 
@@ -217,6 +243,7 @@ personal data never enter the workspace or the answer. See
 | [third-party-dependency.md](examples/third-party-dependency.md) | Failures attributed to a vendor by their own error codes — plus our own contribution, reported honestly |
 | [insufficient-evidence.md](examples/insufficient-evidence.md) | No telemetry: six hypotheses stay `Blocked`, nothing is invented, three things are asked for |
 | [resumed-investigation.md](examples/resumed-investigation.md) | A second session continuing a case instead of restarting it |
+| [implementation-request.md](examples/implementation-request.md) | A clear feature request routed DIRECT — no hypothesis tree, no build diary, nine lines |
 
 ## References
 
@@ -238,7 +265,8 @@ The methodology in depth, loaded on demand:
 ## What it is not
 
 - **Not a debugger.** A known bug with a stack trace needs fixing, not
-  investigating.
+  investigating — invoked anyway, it takes the DIRECT lane and does the work
+  rather than staging an investigation around it.
 - **Not incident response.** It does not page anyone, mutate infrastructure, or
   run a status page.
 - **Not a code reviewer.** It reads the code the evidence points at — use

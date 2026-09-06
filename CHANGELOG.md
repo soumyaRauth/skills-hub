@@ -7,6 +7,34 @@ methodology and documentation.
 
 ## [Unreleased]
 
+### Changed
+
+- `engineering-investigator` v0.2 — **routing and a finalization gate.** Two
+  correctives, both to the layer between the investigation and the reader.
+  *Routing:* a new first stage asks how many explanations are actually live, and
+  a fourth lane — **DIRECT** — handles requests that name their own change
+  (*"only CSV upload is allowed, I need XLSX too"*) without normalizing a
+  symptom or manufacturing `H1…H5` for a question that arrived with its answer.
+  DIRECT keeps the discipline that matters — read the real path, reuse what
+  exists, verify, never claim a check that did not run — and skips the
+  hypothesis machinery, which exists to discriminate between competitors and has
+  nothing to do when there is one. *Finalization:* Phase 9 is now a gate rather
+  than a template. It answers four questions (what was established, which
+  evidence *changed* the conclusion, how confident, what happens next), then
+  runs six checks over the draft — narration compressed, tool activity deleted,
+  unasked-for implementation detail reduced to a clause, internal reasoning
+  dropped, one screen as the target. A new rule forbids reporting agent activity
+  at all: no counts of commands run, files read, patterns searched, or context
+  files loaded, during the work as well as at the end. `### Client response` is
+  now explicitly conditional on somebody outside the team waiting for one.
+  Three things are never compressed away: a decision the user must make, a check
+  that could not be run, and a second contributing cause. Detail on demand is
+  specified as *retrieval* from the investigation state — the state itself is
+  unchanged, and remains the memory of the case. New example
+  `implementation-request.md`; new runnable fixture
+  `tests/fixtures/engineering-investigator/csv-upload-only`; response-quality
+  and routing checks added to the scoring tables in `tests/README.md`
+
 ### Added
 
 - `engineering-investigator` skill v0.1 — **evidence-driven investigation of
