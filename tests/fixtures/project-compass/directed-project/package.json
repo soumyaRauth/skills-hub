@@ -1,0 +1,9 @@
+{
+  "name": "stockline",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Warehouse inventory reconciliation",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

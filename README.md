@@ -12,6 +12,7 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
 | **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
 | **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence — competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
+| **[project-compass](skills/project-compass/README.md)** | Keeps an evidence-based model of what the project is and where it is heading, and taps you on the shoulder when the requests stop adding up — rarely, and never twice | *Across* everything, quietly |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
@@ -19,6 +20,7 @@ npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator
+npx skills add soumyaRauth/skills-hub --skill project-compass
 ```
 
 They compose, and none requires the others:
@@ -28,6 +30,9 @@ ticket   → impact-map → proof-driven-dev → production-guard → ship
                                                             → practical-localizer → ship in another language
 
 incident → engineering-investigator → cause → proof-driven-dev → production-guard → ship
+
+project-compass sits underneath all of it, and answers a different question:
+whether the ticket should have been written in the first place.
 ```
 
 ---
@@ -541,6 +546,132 @@ authorization for that specific action.
 
 ---
 
+# Project Compass
+
+**Your agent knows how to build things. This helps it understand where the
+project is going.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill project-compass
+```
+
+Coding agents execute well. Ask for search, a refactor, another permission
+check, a dashboard — you get all of them, competently, one after another. That
+is the whole problem: execution never asks whether the sequence adds up.
+
+```
+ACTIVITY   features added, code refactored, endpoints optimized
+PROGRESS   the target problem solved, a real risk retired, a workflow completed
+```
+
+These come apart quietly. Nine permission exceptions, each reasonable, are an
+authorization system nobody designed. Four fixes for four kinds of duplicate are
+one missing idea about identity. Five performance changes with no measurement
+anywhere are five guesses with deployments attached. The person making the
+requests cannot see it — they see one request.
+
+```
+Normal coding agent          Project Compass
+
+request                      request
+  ↓                            ↓
+implementation               project state — what is known, decided, recorded
+                               ↓
+                             does this fit the trajectory?
+                               ↓
+                             does it depend on something unresolved?
+                               ↓
+                             has this pattern happened three times?
+                               ↓
+                             is it worth interrupting for?   ── almost always no
+                               ↓
+                             implementation
+```
+
+## Example
+
+```
+You:    Add CSV export to the members table.
+
+Agent:  Export added — all visible columns, respecting the current filter and
+        sort, streamed so large orgs don't time out.
+
+        One thing I'd flag. That's six controls on this table since August:
+        search, filters, sorting, saved views, bulk actions, now export. Each
+        made sense on its own, but they're pointing at a workflow nobody has
+        written down — and it's already showing: saved views track role, status
+        and joined date, bulk actions work on role and active, and export just
+        took everything.
+
+        Before the seventh, one sentence would settle it: who opens this screen,
+        and what are they trying to finish? If it's "support checks whether
+        someone still has access", the table needs three columns and a search
+        box and half of what's there is in the way. If it's "an admin does
+        quarterly access reviews", export is the main event and should probably
+        be scheduled rather than clicked.
+```
+
+Nothing was refused, and the export was built and tested. The observation is
+checkable in thirty seconds — six controls, five dates, three inconsistent
+column sets.
+
+## The harder half: knowing when to shut up
+
+An agent that comments on direction four times a week gets uninstalled in week
+two, and the one real observation it would have made in week nine never arrives.
+So a pattern is reportable only when it clears **four gates** — three or more
+instances with real locations, a shared *cause* rather than a shared topic, a
+consequence stated in terms of work already asked for, and a next step smaller
+than the work it prevents. Three out of four is a note in the project state, not
+a sentence to you.
+
+On top of that: one interruption per session, maximum, and
+
+> **a dismissed observation is closed permanently.**
+
+Say *"that's intentional"* and it is recorded as a decision with your reason,
+and never raised again — not next week, not in different wording.
+
+## What it remembers
+
+```
+.project-compass/
+├── project.md          what this is, who it serves — labeled, dated
+├── trajectory.md       dated entries: what changed, and which pattern it fed
+├── decisions.md        settled questions, including "we discussed this, proceed"
+├── open-questions.md   unresolved decisions affecting implementation
+└── blind-spots.md      patterns that cleared the bar, and what closes them
+```
+
+This is the difference between the skill and asking an agent *"what am I
+missing?"* — that question gets a fresh guess from nothing, every time. Renames,
+formatting and dependency bumps are never recorded; a trajectory that logs
+everything is a diary, and nobody finds a pattern in a diary. The repository
+always outranks the state, and recorded claims are re-verified before anything
+is built on them.
+
+Seven worked sessions: [no intervention](skills/project-compass/examples/no-intervention.md) ·
+[feature accumulation](skills/project-compass/examples/feature-accumulation.md) ·
+[decision debt](skills/project-compass/examples/decision-debt.md) ·
+[a drifting project](skills/project-compass/examples/drifting-project.md) ·
+[what should I do next](skills/project-compass/examples/next-action.md) ·
+[beginner](skills/project-compass/examples/beginner.md) ·
+[senior](skills/project-compass/examples/senior.md)
+
+## What it will not do
+
+Never invent the project's purpose, users, market, deadlines, metrics, or
+history — when the objective is undocumented, *"there is no documented
+objective"* is the finding. Never block ordinary work: even a redirect ends with
+the offer to build it as asked, because you have context the repository does
+not. Never raise a dismissed observation again. Never produce a health score, a
+percentage, or a generic backlog. Most of the time it says nothing at all, and
+its second most common answer is *keep going*.
+
+**[Full documentation →](skills/project-compass/README.md)**
+
+---
+
 ## Installation
 
 ```bash
@@ -550,6 +681,7 @@ npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator
+npx skills add soumyaRauth/skills-hub --skill project-compass
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
@@ -557,6 +689,7 @@ npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-co
 npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-code
 ```
 
 Then just ask for what it does — installed skills are matched by description, so
@@ -568,6 +701,8 @@ Before you change anything, map the impact of renaming this status.
 Is this payment flow safe to ship?
 Analyze this app for Bengali localization.
 Review the French locale — I think it reads like a translation.
+What should I work on next?
+What do you think I'm missing here?
 ```
 
 ## Supported agents
@@ -613,18 +748,25 @@ repository, it can run these skills.
 │   │   ├── references/           ← ten localization references
 │   │   ├── examples/             ← five worked language examples
 │   │   └── templates/            ← glossary, locale profile, review report
-│   └── engineering-investigator/
+│   ├── engineering-investigator/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← eleven investigation references
+│   │   └── examples/             ← six worked investigations
+│   └── project-compass/
 │       ├── SKILL.md
 │       ├── README.md
-│       ├── references/           ← eleven investigation references
-│       └── examples/             ← six worked investigations
+│       ├── references/           ← eleven project-intelligence references
+│       └── examples/             ← seven worked sessions, one of which says nothing
 ├── tests/
 │   ├── fixtures/
 │   │   ├── impact-map/           ← four repositories with hidden coupling to find
 │   │   ├── proof-driven-dev/     ← six runnable projects, green until you break them
 │   │   ├── production-guard/     ← four repositories with real production bugs
 │   │   ├── practical-localizer/  ← six repositories with bad localizations
-│   │   └── engineering-investigator/  ← five incidents with the evidence to solve them, plus one plain feature request
+│   │   ├── engineering-investigator/  ← five incidents with the evidence to solve them, plus one plain feature request
+│   │   └── project-compass/      ← five projects with a hidden pattern, plus one healthy project where the right answer is silence
+│   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions
 │   └── README.md                 ← expected findings per fixture
 ├── scripts/validate.sh           ← structure + frontmatter validation, all skills
 └── .github/workflows/validate.yml
@@ -637,6 +779,7 @@ repository, it can run these skills.
 - **[Production Guard](skills/production-guard/README.md)** · [SKILL.md](skills/production-guard/SKILL.md)
 - **[Practical Localizer](skills/practical-localizer/README.md)** · [SKILL.md](skills/practical-localizer/SKILL.md)
 - **[Engineering Investigator](skills/engineering-investigator/README.md)** · [SKILL.md](skills/engineering-investigator/SKILL.md)
+- **[Project Compass](skills/project-compass/README.md)** · [SKILL.md](skills/project-compass/SKILL.md)
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 
@@ -698,7 +841,15 @@ CI, and `locale-maintainer`, detecting newly added untranslated strings.
 | v0.4 | CI integration; detecting when a previously proven requirement regresses |
 | v0.5 | Reusable project-level proof contracts |
 
-**All four**
+**Project Compass**
+
+| Version | Focus |
+| --- | --- |
+| v0.2 | Richer pattern detectors; better inherited-history reconstruction from git |
+| v0.3 | Cross-session calibration — learning which observations this team acts on |
+| v0.4 | Team-shared project state, reviewable in a pull request |
+
+**All of them**
 
 A further skill, `change-guard`, closing the loop: take an Impact Map and a
 Production Guard report and verify that the implementation actually covered the
@@ -708,7 +859,7 @@ the outcome it defined, `change-guard` would check that outcome against a
 
 ## Limitations
 
-All four skills are instruction-driven, not static analyzers. None claims
+These skills are instruction-driven, not static analyzers. None claims
 completeness, and none can prove it.
 
 - Results vary with the agent, the repository, and how the request is phrased

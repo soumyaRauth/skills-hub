@@ -7,6 +7,48 @@ methodology and documentation.
 
 ## [Unreleased]
 
+### Added
+
+- `project-compass` v0.1.0 — **persistent project intelligence.** A skill for
+  the gap between *activity* and *progress*: an agent executes each request
+  competently and nothing ever reads the requests as a sequence. Nine permission
+  exceptions, each reasonable, are an authorization system nobody designed; four
+  fixes for four kinds of duplicate are one missing idea about identity; five
+  performance changes with no measurement are five guesses with deployments
+  attached. The person making the requests cannot see it, because they make them
+  one at a time.
+
+  State lives in `.project-compass/` — a labeled project model, a trajectory of
+  what actually changed, decisions, open questions, and blind spots that cleared
+  the bar. That persistence is the design: *"what am I missing?"* asked of a
+  stateless agent gets a fresh guess every time, and this accumulates instead.
+
+  The harder half is restraint, so intervention is gated rather than judged.
+  A pattern is reportable only when it clears four gates — **recurrence** (three
+  or more instances, each with a nameable location), **convergence** (a shared
+  cause, not a shared topic), **consequence** (what breaks next, in terms of work
+  already asked for), and **actionability** (a step smaller than the work it
+  prevents). Two exceptions fire on a single instance: irreversibility and
+  contradiction of a recorded decision. On top of that, one interruption per
+  session, and **a dismissed observation is closed permanently** — recorded as a
+  decision with the user's own reason, never raised again in any wording. That
+  last rule is what makes the skill survivable past month two.
+
+  Four engineering states (`FORMING` · `DIRECTED` · `EXPLORATORY` · `DRIFTING`),
+  with exploration suppressing drift detection outright; four evidence labels
+  (`OBSERVED` · `INFERRED` · `ASSUMED` · `UNKNOWN`) on every claim, including the
+  project's objective, which is frequently `UNKNOWN` and is reported as such
+  rather than invented. Ten blind-spot detectors, each with the evidence it
+  requires. Eleven references, seven worked examples — one of which is entirely
+  about the requests that earn no commentary at all.
+
+  Six fixtures under `tests/fixtures/project-compass/`, three seeded with a
+  `.project-compass/` directory holding evidence rather than conclusions, plus
+  `directed-project`, a healthy repository whose correct output is silence.
+  Six multi-step scenarios in `tests/longitudinal/project-compass.md`, because a
+  single-prompt test cannot measure a skill whose claim is that it improves
+  across sessions.
+
 ### Changed
 
 - `engineering-investigator` v0.2 — **routing and a finalization gate.** Two
