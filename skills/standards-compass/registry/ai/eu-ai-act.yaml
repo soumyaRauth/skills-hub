@@ -1,0 +1,61 @@
+id: eu-ai-act
+name: Artificial Intelligence Act
+identifier: Regulation (EU) 2024/1689
+version: "2024/1689"
+authority: European Union
+type: regulation
+category: ai
+status: current
+official_url: https://eur-lex.europa.eu/eli/reg/2024/1689/oj
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://ai-act-service-desk.ec.europa.eu/en/ai-act/timeline/timeline-implementation-eu-ai-act
+summary: >
+  EU regulation taking a risk-tiered approach to AI: prohibited practices,
+  high-risk systems with substantial obligations, transparency obligations for
+  systems that interact with people or generate content, and a separate regime
+  for general-purpose AI models. Obligations phase in — prohibitions and AI
+  literacy from 2 February 2025, GPAI model obligations from 2 August 2025, and
+  the general application including Article 50 transparency and Commission
+  enforcement powers from 2 August 2026.
+notes: >
+  Amendments to simplify and streamline parts of the framework were agreed
+  between the Council and Parliament in 2026. Confirm the current consolidated
+  text and dates at eur-lex.europa.eu before relying on a deadline.
+applies_when:
+  - has_ai_functionality
+  - places_ai_system_on_eu_market
+  - users_in_eu
+  - automated_decisions_about_people
+applicability_notes: >
+  Applicability turns on role (provider, deployer, importer, distributor),
+  market, and the risk tier of the specific system — none of which a repository
+  determines. The tier matters enormously: most product AI features are not
+  high-risk, and treating an internal summarization feature as a high-risk system
+  produces expensive nonsense. Identify the plausible tier, state the
+  uncertainty, and route the determination to legal review.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Whether users are told they are interacting with an AI system
+    - Whether generated content is marked as such
+    - Whether the system makes or materially influences decisions about people
+    - What the model receives, and whether outputs are logged
+  manual_only:
+    - Risk classification of the system
+    - Role of the organization in the value chain
+  external_only:
+    - Conformity assessment, technical documentation, registration, post-market monitoring
+controls:
+  - ai-governance
+  - human-oversight
+  - ai-data-boundary
+  - ai-output-handling
+  - privacy
+  - auditability
+claim_boundary: >
+  Never classify a system's risk tier as settled or state that the Act does or
+  does not apply. Report what the code shows about transparency, oversight and
+  logging, and name the determination as a legal one.

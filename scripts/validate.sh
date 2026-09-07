@@ -31,7 +31,8 @@ require_file() {
 
 head_ "Repository structure"
 for f in README.md CONTRIBUTING.md LICENSE CHANGELOG.md \
-         scripts/validate.sh .github/workflows/validate.yml tests/README.md; do
+         scripts/validate.sh scripts/validate-registry.sh \
+         .github/workflows/validate.yml tests/README.md; do
   require_file "$f"
 done
 
@@ -269,6 +270,26 @@ else
   done
 fi
 
+# -------------------------------------------------------- standards registry --
+
+# Skills that ship a standards registry validate it with its own script, which
+# reads the schema out of the registry rather than hardcoding it here.
+
+head_ "Standards registry"
+if [ -x scripts/validate-registry.sh ]; then
+  if out=$(./scripts/validate-registry.sh 2>&1); then
+    printf '%s\n' "$out" | sed '/^[[:space:]]*$/d; s/^/  /'
+    pass "registry validation passed"
+  else
+    printf '%s\n' "$out" | sed '/^[[:space:]]*$/d; s/^/  /'
+    fail "scripts/validate-registry.sh reported failures"
+  fi
+elif [ -f scripts/validate-registry.sh ]; then
+  fail "scripts/validate-registry.sh is not executable (chmod +x scripts/validate-registry.sh)"
+else
+  skip "no registry validator present"
+fi
+
 # ------------------------------------------------------------ link checking --
 
 head_ "Internal markdown links"
@@ -330,6 +351,12 @@ if [ -x scripts/validate.sh ]; then
   pass "scripts/validate.sh is executable"
 else
   fail "scripts/validate.sh is not executable (chmod +x scripts/validate.sh)"
+fi
+
+if [ -x scripts/validate-registry.sh ]; then
+  pass "scripts/validate-registry.sh is executable"
+else
+  fail "scripts/validate-registry.sh is not executable (chmod +x scripts/validate-registry.sh)"
 fi
 
 # --------------------------------------------------------------- skills-ref --

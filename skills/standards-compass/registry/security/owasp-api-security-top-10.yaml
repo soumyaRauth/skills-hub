@@ -1,0 +1,51 @@
+id: owasp-api-security-top-10
+name: OWASP API Security Top 10
+identifier: "OWASP API Security Top 10 — 2023"
+version: "2023"
+authority: OWASP
+type: security-framework
+category: security
+status: current
+official_url: https://owasp.org/API-Security/editions/2023/en/0x11-t10/
+publication_date: "2023-06-05"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://owasp.org/API-Security/editions/2023/en/0x11-t10/
+summary: >
+  The API-specific counterpart to the Top 10, and a materially different list:
+  three of its top five are authorization failures at the object, property and
+  function level. It exists because API weaknesses are usually not injection but
+  a missing check on which record the caller is allowed to touch.
+applies_when:
+  - api
+  - backend_service
+  - saas
+  - mobile_application
+  - single_page_application
+applicability_notes: >
+  Applies wherever a client the server does not control calls an interface —
+  which includes an SPA or mobile app talking to its own backend, not only
+  public APIs.
+assessment:
+  repository_evidence: full
+  automatable:
+    - Object-level authorization on parameterized routes
+    - Mass assignment through unfiltered binding
+    - Presence and placement of rate limiting
+    - Inventory of exposed routes versus documented ones
+  manual_only:
+    - Sensitive business flows worth abusing
+    - Whether an authorization rule matches the intended policy
+  external_only:
+    - Gateway-level protections
+controls:
+  - api-security
+  - authorization
+  - authentication
+  - input-validation
+  - tenant-isolation
+  - configuration-management
+claim_boundary: >
+  Same as the Top 10: an awareness list, with no conformance state to claim.

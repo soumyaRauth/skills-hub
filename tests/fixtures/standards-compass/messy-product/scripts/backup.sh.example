@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Example only — not wired into anything yet.
+# pg_dump "$DATABASE_URL" | gzip > "backup-$(date +%F).sql.gz"

@@ -1,0 +1,69 @@
+id: owasp-asvs
+name: Application Security Verification Standard
+identifier: OWASP ASVS
+version: "5.0.0"
+authority: OWASP
+type: security-framework
+category: security
+status: current
+official_url: https://owasp.org/www-project-application-security-verification-standard/
+publication_date: "2025-05-30"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://owasp.org/www-project-application-security-verification-standard/
+summary: >
+  A catalogue of verifiable application security requirements, organized by
+  chapter (authentication, session management, authorization, validation,
+  cryptography, and so on) and graded into levels, so a team can state which bar
+  it is building to. It is written to be tested against rather than read, which
+  makes it the most directly assessable security framework from source code.
+supersedes: "4.0.3"
+applies_when:
+  - web_application
+  - api
+  - backend_service
+  - saas
+  - mobile_application
+  - handles_authentication
+  - handles_personal_data
+applicability_notes: >
+  Directly applicable to essentially any application that authenticates users or
+  exposes an interface to untrusted input. The useful question is never whether
+  ASVS applies but which level the product is aiming at — L1 for most products,
+  L2 where sensitive data or money is involved, L3 for the small set of systems
+  where compromise is not survivable.
+assessment:
+  repository_evidence: full
+  automatable:
+    - Presence and consistency of authorization enforcement
+    - Password storage algorithm and parameters
+    - Session and cookie configuration
+    - Query construction and input handling
+    - Secrets in the source tree
+  manual_only:
+    - Whether a control is effective against a determined attacker
+    - Business logic abuse paths
+    - Whether the chosen level matches the product's risk
+  external_only:
+    - Production TLS and header configuration
+    - Penetration test results
+controls:
+  - authentication
+  - authorization
+  - session-management
+  - cryptography
+  - secrets-management
+  - input-validation
+  - output-encoding
+  - file-upload
+  - api-security
+  - logging
+  - error-handling
+  - data-protection
+claim_boundary: >
+  Repository evidence can show that specific ASVS requirements appear satisfied
+  or unsatisfied. It cannot establish ASVS conformance at any level: that
+  requires the full verification activity, including testing, against a defined
+  scope.

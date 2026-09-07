@@ -1,0 +1,129 @@
+# Standards Compass — registry index
+#
+# This file describes the registry. It does NOT list the entries: entries are
+# the .yaml files under the category directories below, discovered by scanning.
+# An index that had to be kept in sync would drift, and a drifted index is worse
+# than no index.
+#
+# Adding a standard = adding one file. Nothing in the skill needs to change.
+# Format, required fields and the review process: ../references/registry.md
+# Validation: scripts/validate-registry.sh at the repository root.
+
+registry_version: "0.1.0"
+
+# Date the registry as a whole was last reviewed for currentness. Entries carry
+# their own last_verified, which is what an assessment should quote.
+last_reviewed: "2026-09-07"
+
+# Read this out loud in any report that leans on the registry.
+currentness_statement: >
+  Standards change. Every entry records the date it was last checked and how.
+  An entry verified against its authority is stronger evidence than one carried
+  from bundled knowledge, and neither is a guarantee that the version is still
+  current today. When currentness affects the conclusion, check the official
+  source before relying on the assessment.
+
+categories:
+  - security
+  - quality
+  - accessibility
+  - lifecycle
+  - privacy
+  - ai
+  - payments
+  - industry
+  - cloud
+
+# What kind of thing an entry is. These are not interchangeable, and a report
+# that treats a framework as a law — or a law as a checklist — is wrong before
+# it starts. See ../references/applicability-engine.md.
+types:
+  international-standard: >
+    Published by an international standards body (ISO, IEC, IEEE). Voluntary
+    unless adopted by contract or regulation. Conformity assessment, where it
+    exists, is an organizational process.
+  technical-standard: >
+    A technical or web specification (W3C, ETSI, IETF). Often referenced by law
+    without being law itself.
+  security-framework: >
+    A structured set of security outcomes or verification requirements. Guidance,
+    not legislation, and never cited as legally binding.
+  industry-security-standard: >
+    Contractually mandatory within an industry (PCI DSS). Enforced by the
+    industry, with defined scope and validation procedures.
+  regulation: >
+    Law. Applicability depends on jurisdiction, establishment, and who the data
+    subjects or users are — never on the contents of a repository alone.
+  organizational-control-framework: >
+    Criteria for auditing an organization (SOC 2). Evidence is organizational;
+    a repository can only show a subset of the technical controls.
+  platform-requirement: >
+    Rules imposed by a distribution platform, browser, or cloud provider as a
+    condition of shipping.
+  internal-standard: >
+    The organization's own rules. Highest practical authority for a team, and
+    invisible to this registry unless the project supplies them — see
+    ../references/internal-standards.template.md.
+
+# Lifecycle of an entry's named version.
+statuses:
+  current: In force and the edition to assess against, absent a contractual reason.
+  superseded: A newer edition exists; assess against it unless the user names this one.
+  withdrawn: No longer published. Assess against it only on explicit request.
+  draft: Not yet published. Never assess against it silently.
+  historical: Retained for projects contractually aligned to an old edition.
+  unknown: Status could not be established. Say so rather than guessing.
+
+# How much of the standard repository evidence can reach at all.
+repository_evidence_levels:
+  full: Substantially assessable from code and configuration.
+  partial: Some requirements are visible in the repository; others are not.
+  limited: A few technical requirements only; the standard is mostly organizational.
+  none: Nothing in a repository can establish conformance.
+
+# Authority → the domains that count as the official source for it. The
+# validator rejects an official_url outside its authority's domains, which is
+# what keeps a vendor blog from becoming a citation.
+authorities:
+  ISO: [iso.org]
+  IEC: [iso.org, iec.ch]
+  W3C: [w3.org]
+  ETSI: [etsi.org]
+  NIST: [nist.gov, csrc.nist.gov, nvlpubs.nist.gov, airc.nist.gov]
+  OWASP: [owasp.org, genai.owasp.org, mas.owasp.org]
+  PCI SSC: [pcisecuritystandards.org]
+  European Union: [europa.eu, eur-lex.europa.eu, digital-strategy.ec.europa.eu]
+  State of California: [ca.gov, cppa.ca.gov, oag.ca.gov, leginfo.legislature.ca.gov]
+  US HHS: [hhs.gov, federalregister.gov]
+  AICPA: [aicpa.org, aicpa-cima.com]
+  CIS: [cisecurity.org]
+
+# Every entry must declare these.
+required_fields:
+  - id
+  - name
+  - identifier
+  - version
+  - authority
+  - type
+  - category
+  - status
+  - official_url
+  - last_verified
+  - verification
+  - summary
+  - applies_when
+  - applicability_notes
+  - assessment
+  - controls
+  - claim_boundary
+
+# Fields an entry may declare beyond the required ones.
+optional_fields:
+  - publication_date
+  - free_to_read
+  - supersedes
+  - superseded_by
+  - related
+  - notes
+  - not_indicated_when

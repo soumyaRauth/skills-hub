@@ -1,0 +1,51 @@
+id: nist-ssdf
+name: Secure Software Development Framework
+identifier: NIST SP 800-218 (SSDF)
+version: "1.1"
+authority: NIST
+type: security-framework
+category: security
+status: current
+official_url: https://csrc.nist.gov/pubs/sp/800/218/final
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: bundled-knowledge
+summary: >
+  Practices for building software securely, grouped into preparing the
+  organization, protecting the software, producing well-secured software, and
+  responding to vulnerabilities. It is the framework most often cited in
+  software supply chain requirements, including procurement attestations.
+applies_when:
+  - any_software_product
+  - has_ci_cd
+  - distributed_to_others
+applicability_notes: >
+  Most valuable where the question is about the development process rather than
+  the running system — build integrity, dependency handling, vulnerability
+  response. Frequently relevant to teams selling to government or enterprise
+  buyers, who increasingly ask for SSDF-shaped attestations.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Dependency pinning and lockfiles
+    - CI configuration, pinned build actions, secret scope
+    - Presence of automated security testing
+    - Security disclosure and vulnerability handling documents
+  manual_only:
+    - Whether documented practices are followed
+  external_only:
+    - Training, roles, and organizational security requirements
+    - Signing infrastructure and release approvals
+controls:
+  - supply-chain
+  - dependency-management
+  - change-management
+  - testing
+  - secrets-management
+  - incident-response
+  - lifecycle-process
+claim_boundary: >
+  SSDF practices are a framework, not a certification. Confirm the current
+  revision and any companion publication at csrc.nist.gov before quoting
+  practice identifiers.

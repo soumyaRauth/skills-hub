@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Organization {
+  id        String     @id @default(uuid())
+  name      String
+  users     User[]
+  customers Customer[]
+  invoices  Invoice[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  email          String       @unique
+  passwordHash   String
+  role           String       @default("member")
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model Customer {
+  id             String       @id @default(uuid())
+  name           String
+  email          String
+  phone          String?
+  address        String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model Invoice {
+  id             String       @id @default(uuid())
+  amountCents    Int
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String
+  createdAt DateTime @default(now())
+}

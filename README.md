@@ -13,6 +13,7 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
 | **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence — competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
 | **[project-compass](skills/project-compass/README.md)** | Keeps an evidence-based model of what the project is and where it is heading, and taps you on the shoulder when the requests stop adding up — rarely, and never twice | *Across* everything, quietly |
+| **[standards-compass](skills/standards-compass/README.md)** | Works out which standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software — then audits it against them, with evidence | *Whichever* of those you never consciously chose |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
@@ -21,6 +22,7 @@ npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 npx skills add soumyaRauth/skills-hub --skill project-compass
+npx skills add soumyaRauth/skills-hub --skill standards-compass
 ```
 
 They compose, and none requires the others:
@@ -33,6 +35,9 @@ incident → engineering-investigator → cause → proof-driven-dev → product
 
 project-compass sits underneath all of it, and answers a different question:
 whether the ticket should have been written in the first place.
+
+standards-compass sits underneath it too, and answers another one:
+what this software should have been measured against all along.
 ```
 
 ---
@@ -672,6 +677,76 @@ its second most common answer is *keep going*.
 
 ---
 
+# Standards Compass
+
+**Which standards actually apply to this software — and does it meet them?**
+
+Standards Compass is an [Agent Skill](https://code.claude.com/docs/en/skills)
+for the question nobody asks until month eight: *are we compliant?* — at which
+point nobody can say what "compliant" would mean for this product.
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill standards-compass
+```
+
+The instinct is a checklist. Five hundred requirements produce five hundred
+shallow answers, most of them irrelevant, and a team that now believes standards
+work is theatre. The value is in the two steps a checklist skips:
+
+```
+Which of these applies to this software?
+And what does the code actually show?
+```
+
+So it profiles the project, decides applicability with reasons — including for
+the standards that do **not** apply — gathers evidence, and reports gaps that
+carry their citations:
+
+```
+Applicable
+  ✓ OWASP ASVS 5.0.0        authenticated multi-tenant app, untrusted input
+  ✓ WCAG 2.2                public web UI with interactive workflows
+  ⚠ GDPR                    personal data present; jurisdiction unknown
+  ⚠ PCI DSS v4.x            hosted checkout; scope determined with your acquirer
+  ✕ HIPAA                   no clinical data or healthcare relationship observed
+
+🔴 3 high   🟠 8 medium   🟡 6 unable to verify
+
+Three admin endpoints don't enforce the authorization rule the other eleven
+use, and the export query at src/api/admin/exports.ts:31 has no tenant filter.
+```
+
+Two modes: an **auditor** for software that already exists, and a **guardrail**
+that runs during ordinary development — noticing when a feature touches
+identity, privilege, money, personal data, files or a model, building
+accordingly, and staying silent otherwise.
+
+Three things make it usable rather than alarming:
+
+- **Not found is not failed.** No backup config in the repository means *no
+  backup config was found in the repository*. That is `UNABLE TO VERIFY`, routed
+  to whoever runs the infrastructure — not a failure in a findings list.
+- **Gaps are typed.** Implementation, evidence, process, legal scope, manual
+  verification. A process gap has no code fix, and writing one to close it makes
+  the next audit less accurate.
+- **It never claims compliance.** Not GDPR, not ISO 27001, not WCAG conformance,
+  not PCI. None of those is available from reading a repository, and all of them
+  get quoted to customers.
+
+The registry is designed to be updated without touching the skill — one YAML
+file per standard, 22 of them, each recording its version, status, official
+source, and **when and how it was last verified**. `scripts/validate-registry.sh`
+enforces the schema, including that an official URL sits on the publishing
+body's own domain.
+
+State in `.project-standards/` makes the second assessment cheaper than the
+first, keeps a dismissed finding dismissed, and turns a control that used to
+pass into a **regression** rather than a rediscovery.
+
+[Read the full guide →](skills/standards-compass/README.md)
+
+---
+
 ## Installation
 
 ```bash
@@ -682,6 +757,7 @@ npx skills add soumyaRauth/skills-hub --skill production-guard
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 npx skills add soumyaRauth/skills-hub --skill project-compass
+npx skills add soumyaRauth/skills-hub --skill standards-compass
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
@@ -690,6 +766,7 @@ npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-co
 npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code
 ```
 
 Then just ask for what it does — installed skills are matched by description, so
@@ -703,6 +780,8 @@ Analyze this app for Bengali localization.
 Review the French locale — I think it reads like a translation.
 What should I work on next?
 What do you think I'm missing here?
+Which standards actually apply to this project?
+Audit this application against the standards that matter.
 ```
 
 ## Supported agents
@@ -753,11 +832,17 @@ repository, it can run these skills.
 │   │   ├── README.md
 │   │   ├── references/           ← eleven investigation references
 │   │   └── examples/             ← six worked investigations
-│   └── project-compass/
+│   ├── project-compass/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← eleven project-intelligence references
+│   │   └── examples/             ← seven worked sessions, one of which says nothing
+│   └── standards-compass/
 │       ├── SKILL.md
 │       ├── README.md
-│       ├── references/           ← eleven project-intelligence references
-│       └── examples/             ← seven worked sessions, one of which says nothing
+│       ├── references/           ← eighteen assessment references, plus a template
+│       ├── registry/             ← the standards registry: add a file, add a standard
+│       └── examples/             ← eight worked assessments, one that refuses to grade
 ├── tests/
 │   ├── fixtures/
 │   │   ├── impact-map/           ← four repositories with hidden coupling to find
@@ -765,10 +850,13 @@ repository, it can run these skills.
 │   │   ├── production-guard/     ← four repositories with real production bugs
 │   │   ├── practical-localizer/  ← six repositories with bad localizations
 │   │   ├── engineering-investigator/  ← five incidents with the evidence to solve them, plus one plain feature request
-│   │   └── project-compass/      ← five projects with a hidden pattern, plus one healthy project where the right answer is silence
+│   │   ├── project-compass/      ← five projects with a hidden pattern, plus one healthy project where the right answer is silence
+│   │   └── standards-compass/    ← five projects to assess, including one where most of the honest answer is "unable to verify"
 │   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions
 │   └── README.md                 ← expected findings per fixture
-├── scripts/validate.sh           ← structure + frontmatter validation, all skills
+├── scripts/
+│   ├── validate.sh               ← structure + frontmatter validation, all skills
+│   └── validate-registry.sh      ← standards registry schema, ids, sources, dates
 └── .github/workflows/validate.yml
 ```
 
@@ -780,6 +868,7 @@ repository, it can run these skills.
 - **[Practical Localizer](skills/practical-localizer/README.md)** · [SKILL.md](skills/practical-localizer/SKILL.md)
 - **[Engineering Investigator](skills/engineering-investigator/README.md)** · [SKILL.md](skills/engineering-investigator/SKILL.md)
 - **[Project Compass](skills/project-compass/README.md)** · [SKILL.md](skills/project-compass/SKILL.md)
+- **[Standards Compass](skills/standards-compass/README.md)** · [SKILL.md](skills/standards-compass/SKILL.md)
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 
@@ -874,6 +963,10 @@ completeness, and none can prove it.
   context-aware, evidence-driven localization designed to be more natural than
   literal translation — not guaranteed native-quality output, and it says where
   it is unsure
+- Standards Compass reads a repository: production configuration, organizational
+  process, contracts and legal applicability are outside it, and it says so
+  rather than guessing. Its bundled registry ages, and every entry carries the
+  date and method of its last verification
 - An absent finding is not proof of absence
 
 Production Guard improves the evidence available before shipping. It does not

@@ -1,0 +1,63 @@
+id: iso-iec-ieee-12207
+name: Systems and software engineering — Software life cycle processes
+identifier: ISO/IEC/IEEE 12207:2017
+version: "2017"
+authority: ISO
+type: international-standard
+category: lifecycle
+status: current
+official_url: https://www.iso.org/standard/63712.html
+publication_date: "2017-11"
+free_to_read: false
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.iso.org/standard/63712.html
+summary: >
+  A process framework for the software life cycle — agreement, organizational
+  project-enabling, technical management and technical processes, covering
+  requirements through architecture, implementation, verification, validation,
+  operation, maintenance and disposal. It describes processes to be performed,
+  not a development methodology, and explicitly does not require a waterfall.
+supersedes: "ISO/IEC 12207:2008"
+notes: >
+  ISO lists a further edition at https://www.iso.org/standard/90219.html
+  designated ISO/IEC/IEEE 12207:2026. Its publication status could not be
+  confirmed from the authority when this entry was written (iso.org returned 403
+  to automated fetching). Confirm at iso.org before assessing against an edition,
+  and name the edition explicitly in any lifecycle assessment.
+applies_when:
+  - regulated_context
+  - safety_relevant
+  - contractual_lifecycle_requirement
+  - enterprise_or_government_customer
+  - lifecycle_assessment_requested
+applicability_notes: >
+  Rarely worth invoking for a small product. It becomes relevant when a
+  contract, a regulator, or a customer's supplier questionnaire asks how the
+  software is developed and maintained — or when a team genuinely wants to know
+  which life cycle processes it has no evidence for.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Whether requirements, architecture decisions and release notes exist in-repo
+    - Verification evidence — test suites, CI gating
+    - Configuration and change management signals — branching, review rules, versioning
+  manual_only:
+    - Whether recorded processes are performed as written
+    - Validation against actual stakeholder needs
+  external_only:
+    - Agreement processes, resourcing, organizational governance
+    - Operation and maintenance in production
+controls:
+  - lifecycle-process
+  - change-management
+  - configuration-management
+  - testing
+  - maintainability
+  - data-lifecycle
+claim_boundary: >
+  Report which life cycle processes have visible evidence and which do not.
+  Do not describe a project as conforming to or violating 12207: process
+  conformance is assessed against a defined process set at organizational level,
+  and agile practice is not a deviation from this standard.

@@ -1,0 +1,55 @@
+id: iso-iec-25010
+name: Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model
+identifier: ISO/IEC 25010:2023
+version: "2023"
+authority: ISO
+type: international-standard
+category: quality
+status: current
+official_url: https://www.iso.org/standard/78176.html
+publication_date: "2023-11"
+free_to_read: false
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.iso.org/standard/78176.html
+summary: >
+  A product quality model of nine characteristics — functional suitability,
+  performance efficiency, compatibility, usability, reliability, security,
+  maintainability, flexibility and safety — each with sub-characteristics. Its
+  value is as a vocabulary that turns "the code is bad" into a claim about a
+  specific product property that someone can decide whether to care about.
+supersedes: "2011"
+related:
+  - "ISO/IEC 25002:2024 — quality model overview and usage"
+  - "ISO/IEC 25019:2023 — quality-in-use model"
+applies_when:
+  - any_software_product
+applicability_notes: >
+  Relevant to any product, and worth invoking only where a quality
+  characteristic is actually in question. Do not use it as a licence for generic
+  code criticism: a 25010 finding names a characteristic, the observable
+  behaviour that puts it at risk, and why that matters to this product.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Test coverage of core workflows, as evidence about functional suitability and reliability
+    - Structural signals for maintainability — duplicated business rules, module boundaries
+    - Query patterns and obvious performance hazards
+  manual_only:
+    - Usability, which needs users
+    - Whether the delivered functionality matches the intended need
+  external_only:
+    - Measured performance under real load
+    - Field reliability
+controls:
+  - reliability
+  - performance
+  - maintainability
+  - testing
+  - error-handling
+  - availability
+claim_boundary: >
+  25010 is a model for specifying and evaluating quality, not a conformance
+  standard. There is nothing to pass. Say "this reduces confidence in
+  reliability, a characteristic 25010 defines" — never "violates ISO 25010".

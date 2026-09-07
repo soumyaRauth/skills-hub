@@ -9,6 +9,86 @@ methodology and documentation.
 
 ### Added
 
+- `standards-compass` v0.1.0 — **software standards intelligence and compliance
+  gap analysis.** Nobody decides which standards a product is built to, because
+  the question never appears in a ticket. Eight months later someone asks whether
+  the project is compliant, and nobody can say what compliant would mean for this
+  product. The reflex at that point is a checklist, which produces five hundred
+  shallow answers, most of them irrelevant, and a team that concludes standards
+  work is theatre.
+
+  So the skill is built around the two steps a checklist skips: **which of these
+  applies to this software**, and **what does the code actually show**. It
+  profiles the project, assigns each candidate standard one of five applicability
+  states with a rationale and a scope — including `NOT CURRENTLY INDICATED`, with
+  the reason, because ruling PCI DSS out for a hosted-checkout merchant saves
+  more work than most findings create — then gathers evidence, assesses, and
+  reports.
+
+  Two modes from one machine. **Auditor** for software that already exists:
+  profile, applicability, targeted evidence collection in risk order, prioritized
+  gaps, and an explicit list of what could not be verified. **Guardrail** during
+  ordinary development: a cheap pass on every request, silence for the ones that
+  touch nothing, and for the rest a short note naming what the implementation
+  will account for, then the work, then a four-line check. A rename gets nothing.
+  A bulk customer export gets authorization, tenant scoping and an audit record
+  before anyone asks.
+
+  The distinctions that make it trustworthy are all separations other tools
+  collapse. Status has six values, not two, and **absence of evidence is
+  `UNABLE TO VERIFY`, never `FAIL`** — no backup configuration in a repository
+  means none was found in a repository. Every gap is typed as implementation,
+  evidence, process, legal scope, or manual verification, which determines who
+  can act: a process gap has no code fix, and writing one to close it makes the
+  next audit less accurate. Severity and confidence are independent, so a serious
+  finding on partial evidence reads as `HIGH` severity, `MEDIUM` confidence, and
+  says what would settle it. And the standard, the law, the framework and the
+  certification are four different objects that the report is never allowed to
+  blur.
+
+  Above all: **it never claims compliance or certification.** Not GDPR, not ISO
+  27001, not WCAG conformance, not PCI. None is available from reading a
+  repository, and all of them get quoted to customers.
+
+  Findings are made against 36 normalized controls rather than against standards,
+  so one missing authorization check is one finding with five references
+  underneath it instead of five copies. Standards entries name their controls;
+  nothing maps back, so adding a standard extends every control it touches with
+  no mapping table to drift.
+
+  The registry is 22 entries across nine categories — ASVS 5.0.0, OWASP Top
+  10:2025, API Security Top 10, MASVS, NIST CSF 2.0, SSDF, ISO/IEC 27001:2022,
+  ISO/IEC 25010:2023, WCAG 2.2, EN 301 549 V4.1.1, ISO/IEC/IEEE 12207:2017, GDPR,
+  CCPA/CPRA with the 2026 ADMT and risk-assessment regulations, ISO/IEC
+  27701:2025, ISO/IEC 42001:2023, NIST AI RMF, the EU AI Act, the OWASP GenAI LLM
+  Top 10 (2026), PCI DSS v4.0.1, SOC 2, the HIPAA Security Rule, and CIS
+  Benchmarks. Seventeen were verified against the publishing body's own site on
+  2026-09-07; five are marked as carried from bundled knowledge, because a
+  falsely verified entry is worse than an honestly unverified one. No copyrighted
+  standard text is stored — names, identifiers, versions, official links,
+  applicability and original summaries only.
+
+  `scripts/validate-registry.sh` reads the schema out of `registry.yaml` rather
+  than hardcoding it, so adding a category or an authority is a registry edit.
+  It enforces unique ids, required and unknown fields, enum membership,
+  category-directory agreement, date formats and future dates, control references
+  that resolve, verification sources that exist when claimed, and — the check
+  that matters most — that an `official_url` sits on a domain belonging to the
+  body that publishes the standard, so a vendor blog cannot become a citation.
+
+  State in `.project-standards/` buys three things a one-shot audit cannot have:
+  a dismissed finding stays dismissed, the second assessment is cheaper than the
+  first, and a control that used to pass is reported as a **regression** with the
+  commit that caused it rather than rediscovered as a new problem.
+
+  Eighteen references plus an internal-standards template, eight worked examples
+  — including one that refuses to produce a posture from an infrastructure-only
+  repository, and one that tells a beginner which four standards to ignore
+  entirely. Five fixtures under `tests/fixtures/standards-compass/`, five
+  multi-step scenarios in `tests/longitudinal/standards-compass.md`, and a table
+  of anti-tests scored purely on absence, because for this skill the worst
+  available failure is a confident sentence somebody forwards to their auditor.
+
 - `project-compass` v0.1.0 — **persistent project intelligence.** A skill for
   the gap between *activity* and *progress*: an agent executes each request
   competently and nothing ever reads the requests as a sequence. Nine permission

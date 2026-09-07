@@ -1,0 +1,45 @@
+id: iso-iec-27701
+name: Privacy information management systems — Requirements and guidance
+identifier: ISO/IEC 27701:2025
+version: "2025"
+authority: ISO
+type: international-standard
+category: privacy
+status: current
+official_url: https://www.iso.org/standard/27701
+free_to_read: false
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.iso.org/standard/27701
+summary: >
+  Requirements for a privacy information management system covering both PII
+  controllers and processors. The 2025 second edition is a standalone management
+  system standard that can be implemented and certified independently of ISO/IEC
+  27001, while still integrating with it.
+supersedes: "2019"
+applies_when:
+  - processes_personal_data
+  - organization_claims_or_pursues_pims
+  - enterprise_customers_require_privacy_certification
+applicability_notes: >
+  Organizational, like 27001. Worth naming when a team is being asked for a
+  privacy certification by customers, and not otherwise — a small product with
+  personal data needs privacy engineering, not a management system standard.
+assessment:
+  repository_evidence: limited
+  automatable:
+    - Technical measures for PII — access control, minimisation, deletion, logging
+  manual_only:
+    - Whether processing purposes are recorded and honoured
+  external_only:
+    - The management system: policy, roles, records, contracts, audits
+controls:
+  - privacy
+  - data-governance
+  - data-lifecycle
+  - data-protection
+  - auditability
+claim_boundary: >
+  Certification is organizational and independently assessed. A repository
+  contributes evidence for a subset of technical controls only.

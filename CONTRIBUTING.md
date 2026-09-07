@@ -5,7 +5,7 @@ instructions, so contributions are judged on whether they make the agent's
 analysis **more accurate and better evidenced** — not on whether they make it
 produce more output.
 
-## The three hard rules
+## The four hard rules
 
 ### 1. Do not make the skills more speculative
 
@@ -66,6 +66,33 @@ Contributions that add or correct target-language material should say what the
 choice rests on — project evidence, platform convention, or your own experience
 as a speaker, stated as such. Marking a judgement MEDIUM confidence is always
 acceptable; presenting it as fact is not.
+
+### 4. No compliance, certification, or legal claims
+
+This one governs `standards-compass`, and it is not negotiable. Never add
+instructions, examples, fixture expectations or registry text that would let the
+agent say a project is *GDPR compliant*, *ISO 27001 certified*, *WCAG 2.2 AA
+conformant*, *SOC 2 ready*, or *PCI DSS validated* on the basis of reading a
+repository.
+
+None of those is available from source code. Certification and legal compliance
+rest on organizational process, policy, contracts, scope definitions and
+independent assessment. And unlike an over-eager finding, an overclaim here does
+not merely waste someone's time — it gets quoted to a customer, an auditor, or a
+regulator.
+
+Two consequences for contributions:
+
+- **Absence of evidence is `UNABLE TO VERIFY`, never `FAIL`.** No backup
+  configuration in a repository means none was found in the repository. Any
+  example, reference or fixture expectation that collapses those two is a bug.
+- **Applicability of a law is never concluded from code.** Personal data in a
+  schema is a reason to *ask* about jurisdiction. Write the technical finding,
+  name the question, and route it to a human who can answer it.
+
+Every registry entry carries a `claim_boundary` field for exactly this reason.
+An entry whose boundary is vague will be used to overclaim, so vague boundaries
+are treated as defects.
 
 ## Ways to contribute
 
@@ -213,10 +240,53 @@ A detector earns its place when it states:
 Also welcome, and rarer: a **suppression** rule. If you have a case where the
 skill would speak and should not, that is worth more than a new detector.
 
+### Add a standard to the registry
+
+One file under `skills/standards-compass/registry/<category>/`. Nothing else
+changes — the registry is discovered by scanning, the control model is
+referenced rather than duplicated, and there is no index to update.
+
+Required with every entry:
+
+- **An authoritative source.** The publishing body's own site, and nowhere else.
+  The validator enforces that `official_url` sits on a domain listed for that
+  authority in `registry.yaml`, because a requirement quoted from a vendor blog
+  is a rumour with a citation.
+- **A verification record.** `authoritative-source` with the URL you actually
+  checked, or `bundled-knowledge` if you did not. Do not claim the first when
+  you did the second — an unverified entry is usable, and a falsely verified one
+  is worse than no entry.
+- **`applies_when` written as profile facts**, not keywords. `processes_personal_data`
+  is a fact about a project; "privacy" is a topic.
+- **`applicability_notes` that name the trap.** The valuable half of an entry is
+  usually when it looks applicable and is not — health-shaped data that is not
+  PHI, an AI feature that is not a governance problem, payments that do not put
+  card data in scope.
+- **A `claim_boundary`.** What may and may not be said about a project from
+  repository evidence. This is what keeps reports defensible, and an entry
+  without a real one will be used to overclaim.
+- **Control references that already exist** in `controls.yaml`. Adding a control
+  is a bigger change than adding a standard; do it only when a genuinely new
+  engineering concept is involved, and say what evidence speaks to it.
+
+**Do not paste standard text.** Many standards are copyrighted and sold. Names,
+identifiers, versions, official links, applicability, and summaries you wrote
+yourself. Requirement identifiers may be cited where they are public and citing
+them is normal practice; the text stays with its publisher.
+
+Run `./scripts/validate-registry.sh` before opening the pull request. It checks
+ids, required and unknown fields, enum membership, category-directory agreement,
+date formats and future dates, official-URL domains, and control references.
+
+Updating an existing entry — a new edition, a changed status, a superseded
+version — is equally welcome, and is the maintenance this registry needs most.
+Update `last_verified` only when you actually checked: a refreshed date on an
+unchecked entry converts an honest doubt into a false assurance.
+
 ### Add a longitudinal scenario
 
-New sections in `tests/longitudinal/project-compass.md`, usually with a fixture
-under `tests/fixtures/project-compass/`.
+New sections in `tests/longitudinal/<skill>.md`, usually with a fixture under
+`tests/fixtures/<skill>/`.
 
 Project Compass cannot be tested with a single prompt — its claim is that the
 fifth request is handled differently from the first. A scenario states the
@@ -226,6 +296,13 @@ the expected result, not the absence of one.
 
 At least one scenario per pattern family must be a project where the correct
 output is nothing at all.
+
+Standards Compass has the same shape for a different reason: its claim is that
+guardrail mode stays quiet on a rename and speaks on a bulk export, that a
+dismissed finding stays dismissed, and that a control which used to pass is
+reported as a **regression** rather than rediscovered. None of that is visible
+in a single audit. A scenario states the steps, which one should produce a note,
+and what counts as failure at the steps before it.
 
 ### Add examples
 
@@ -340,6 +417,7 @@ valuable kind.
 | Worked reports and language examples | `skills/<skill>/examples/` |
 | Copy-into-your-project starting points | `skills/<skill>/templates/` |
 | Fake repositories that exercise reasoning | `tests/fixtures/<skill>/` |
+| Standards metadata, controls, and applicability signals | `skills/standards-compass/registry/` |
 | Expected findings per fixture | `tests/README.md` |
 | Multi-step scenarios that only show up across sessions | `tests/longitudinal/` |
 | Usage, installation, limitations | `skills/<skill>/README.md` |
@@ -368,6 +446,14 @@ when Node is unavailable. If you add runnable fixtures for another skill, add
 their directory to `RUNNABLE_ROOTS` in the script; do not widen it to every
 `package.json` under `tests/fixtures/`, because the illustrative fixtures declare
 test scripts they were never meant to satisfy.
+
+Skills that ship a standards registry are validated by
+`./scripts/validate-registry.sh`, which `validate.sh` runs for you. It reads the
+schema out of `registry.yaml` rather than hardcoding it, so adding a category, a
+type, or an authority is a registry edit and not a code change. It deliberately
+does not check that URLs resolve — that needs the network, and a validator that
+fails when a standards body reorganizes its site is a validator people switch
+off.
 
 Adding a new skill requires no change to the validator.
 
