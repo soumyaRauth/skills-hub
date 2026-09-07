@@ -1,0 +1,47 @@
+id: nist-ai-rmf
+name: AI Risk Management Framework
+identifier: NIST AI 100-1 (AI RMF 1.0)
+version: "1.0"
+authority: NIST
+type: security-framework
+category: ai
+status: current
+official_url: https://www.nist.gov/itl/ai-risk-management-framework
+publication_date: "2023-01-26"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.nist.gov/itl/ai-risk-management-framework
+summary: >
+  Voluntary guidance for managing risks of AI systems, organized into four
+  functions — Govern, Map, Measure, Manage — and a set of trustworthiness
+  characteristics including validity, reliability, safety, security, privacy,
+  fairness, explainability and accountability.
+notes: >
+  NIST has stated that AI RMF 1.0 is being revised. Check nist.gov before
+  quoting version-specific content in a report where currentness matters.
+applies_when:
+  - has_ai_functionality
+  - ai_affects_people
+  - automated_decisions
+applicability_notes: >
+  Useful as the vocabulary for an AI risk conversation, especially where the
+  question is "what could this feature do to a user", and useful precisely
+  because it is not a checklist. Voluntary — never presented as a requirement.
+assessment:
+  repository_evidence: limited
+  automatable:
+    - Whether AI outputs are evaluated or measured anywhere
+    - Whether there is a path for a person to override or contest an output
+  manual_only:
+    - Mapping of context and affected populations
+  external_only:
+    - Governance structures and organizational risk decisions
+controls:
+  - ai-governance
+  - human-oversight
+  - ai-output-handling
+  - monitoring
+claim_boundary: >
+  No conformance state exists. Use it to structure findings, never to grade.

@@ -1,0 +1,60 @@
+id: hipaa-security-rule
+name: HIPAA Security Rule
+identifier: 45 CFR Part 164 Subpart C
+version: "current rule (2013 omnibus)"
+authority: US HHS
+type: regulation
+category: industry
+status: current
+official_url: https://www.hhs.gov/hipaa/for-professionals/security/index.html
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.hhs.gov/hipaa/for-professionals/security/index.html
+summary: >
+  US requirements for safeguarding electronic protected health information,
+  organized into administrative, physical and technical safeguards, with
+  addressable and required implementation specifications. Access control, audit
+  controls, integrity, authentication and transmission security are the
+  technical safeguards a repository can speak to.
+notes: >
+  HHS issued a notice of proposed rulemaking in December 2024 to strengthen the
+  Security Rule; the current rule remains in effect while that proceeds. Check
+  hhs.gov for the status before relying on either text.
+applies_when:
+  - covered_entity
+  - business_associate
+  - processes_protected_health_information
+applicability_notes: >
+  Applies to covered entities and their business associates. Health-shaped data
+  in a schema does not make an organization either one — a fitness tracker, an
+  employer wellness tool and a clinic have three different answers. Ask before
+  raising it, and never raise it merely because the word "patient" appears.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Access control and unique user identification
+    - Audit controls over PHI access
+    - Encryption in transit and at rest where configured in-repo
+    - PHI appearing in logs, analytics, or third-party calls
+  manual_only:
+    - Whether the minimum necessary principle is respected in practice
+  external_only:
+    - Risk analysis, workforce training, sanction policy, BAAs, contingency plans,
+      physical safeguards
+controls:
+  - authorization
+  - authentication
+  - auditability
+  - data-protection
+  - cryptography
+  - logging
+  - backup-recovery
+  - incident-response
+claim_boundary: >
+  Never state that a system is HIPAA compliant, and never conclude that HIPAA
+  applies from repository contents. Report technical safeguard evidence and name
+  the applicability question.
+not_indicated_when: >
+  No healthcare context is evident and the user has not indicated one.

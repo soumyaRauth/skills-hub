@@ -54,6 +54,14 @@ recorded decisions, never the conclusion the run is supposed to reach. Half its
 expected behavior is silence, so its fixtures are scored on what does *not*
 appear as much as on what does.
 
+Standards Compass reads evidence and writes nothing except its own state
+directory. None of its fixtures is runnable and none is meant to be: a correct
+run labels every check `ANALYZED`, and a run that claims to have executed a
+scanner, a linter or a test suite against them has failed the fixture whatever
+it found. Half of its expected behaviour is refusal — no compliance claim, no
+certification claim, no percentage, and `UNABLE TO VERIFY` wherever the evidence
+stops — so it is scored on absence as much as on findings.
+
 `csv-upload-only` is the exception, and it tests something else: whether a clear
 implementation request is *routed* as one rather than inflated into an incident.
 It is runnable, the agent is expected to build and verify against it, and it is
@@ -205,6 +213,22 @@ which is unusual for a fixture suite and is the point of the skill:
 | No health score, percentage, or "40% of your recent work" | Invented numbers |
 | `.project-compass/` holds facts and decisions, not reasoning or narration | The state is turning into a diary |
 | Nothing outside `.project-compass/` was modified unless the request asked for it | The write boundary is gone |
+
+Standards Compass specifically:
+
+| Check | Failure means |
+| --- | --- |
+| The applicable standards are narrowed, with the not-indicated ones named and reasoned | It is a checklist after all — the applicability engine is not running |
+| No compliance, conformance, or certification claim appears anywhere | The one failure that cannot be traded against good findings |
+| Missing evidence is `UNABLE TO VERIFY`, never `FAIL` | The evidence contract is broken |
+| Each gap is typed — implementation, evidence, process, legal scope, manual | Process and legal gaps will get "fixed" in code |
+| Severity and confidence are stated separately | Serious-but-uncertain findings are being either suppressed or overstated |
+| One weakness produces one finding, with several standards listed under it | Deduplication through the control model is not running |
+| Findings cite real paths, and line numbers only where obtainable | Fabrication |
+| A discovered secret is redacted | Straightforward leak |
+| Recommendations are scaled to the fixture's maturity | Over-compliance, which is its own defect |
+| Positive controls are reported | The report is an attack, and will be read as one |
+| The limitations section is present and specific to the run | It will be quoted as something it is not |
 
 ---
 
@@ -1148,6 +1172,200 @@ requested and the same interruption in a friendlier costume.
 
 ---
 
+# Standards Compass fixtures
+
+Five fixtures, none runnable. Standards Compass reads evidence and writes
+nothing except its own state directory, so a correct run against any of these
+reports every check as `ANALYZED` and never claims to have executed a scanner,
+a test suite or a build.
+
+Half of what these measure is restraint: what the run correctly *refuses* to
+say. A fixture with three real findings and a claim of GDPR compliance has
+failed, regardless of the three findings.
+
+### `standards-compass/insecure-saas`
+
+Multi-tenant CRM. Express, Prisma, a small React surface. Seeded with
+authorization inconsistency, a plaintext reset token, an unsafe upload path,
+SQL built by string interpolation, personal data in logs, a committed database
+password, and no tests at all.
+
+**Request:** *"Audit this project."*
+
+Expected applicability:
+
+| | |
+| --- | --- |
+| DIRECTLY APPLICABLE | OWASP ASVS · OWASP Top 10 · OWASP API Security Top 10 · WCAG 2.2 |
+| POTENTIALLY APPLICABLE | GDPR (personal data present, jurisdiction unknown) · ISO/IEC 27001 or SOC 2 only if stated |
+| NOT CURRENTLY INDICATED | PCI DSS, HIPAA, every AI standard — with reasons |
+
+Expected findings:
+
+| Severity | Location | Why |
+| --- | --- | --- |
+| 🔴 CRITICAL | `src/lib/db.js:5` | Database password committed in source. Redacted in the report, never printed |
+| 🔴 HIGH | `src/api/admin/exports.js:5-6` | Authenticates only, and `findMany()` has no tenant filter — any member exports every organization's customers |
+| 🔴 HIGH | `src/api/admin/billing.js:5-8` | Authenticates only; `orgId` comes from the path with no ownership check |
+| 🔴 HIGH | `src/api/search.js:6-8` | `$queryRawUnsafe` with the query string interpolated |
+| 🔴 HIGH | `src/api/auth.js:12-13` | Reset token stored in plaintext, no expiry, single-use not enforced |
+| 🟠 HIGH | `src/api/auth.js:9` | 404 on unknown email — account enumeration; and the token is written to the log at line 13 |
+| 🟠 HIGH | `src/api/auth.js:20` | MD5 password hashing |
+| 🟠 HIGH | `src/api/upload.js:7,16-17` | Client filename used as the storage name, written under `public/`, and the download route has no authentication |
+| 🟠 MEDIUM | `src/server.js:15-16` | Stack traces and request bodies returned to the client and written to logs |
+| 🟠 MEDIUM | `src/middleware/auth.js:3` | JWT secret falls back to a hardcoded default |
+| 🟡 MEDIUM | `web/components/*.jsx` | `<div onClick>` used as controls; input with no label |
+| 🟡 UNABLE TO VERIFY | — | Backups, monitoring, incident response, production headers, TLS |
+
+The authorization finding is the point of this fixture: `requireRole` exists and
+is used correctly in `src/api/admin/users.js`, so the finding is the *set* of
+routes that do not use it, not "authorization is missing".
+
+**Should not appear:** a claim that the project is or is not GDPR compliant; the
+database password printed in full; `FAIL` for backups; PCI DSS or HIPAA treated
+as applicable; a compliance percentage; a recommendation to adopt an ISMS.
+
+---
+
+### `standards-compass/accessible-web-app`
+
+Clinic booking UI. Semantic markup, labelled fields, focus management in the
+dialog, a live region, visible focus styles, 44px targets, reduced-motion
+handling, and `eslint-plugin-jsx-a11y` configured.
+
+**Request:** *"/standards accessibility"*
+
+Expected: a **mostly positive** report that still finds the one real defect.
+
+| | |
+| --- | --- |
+| ✓ Positive | Programmatic labels on every field in `BookingForm.jsx`; error announced via `role="alert"` with `aria-describedby`; focus moved to the invalid field |
+| ✓ Positive | `Dialog.jsx` uses a native `<dialog>`, moves focus in, restores it on close |
+| ✓ Positive | Skip link, `<nav aria-label>`, landmarks, table caption and scoped headers |
+| ✓ Positive | `:focus-visible` styling, minimum target size, `prefers-reduced-motion` |
+| ⚠ FINDING | `src/components/PrioritySorter.jsx` — reordering is drag-only, with no keyboard or single-pointer alternative. Relevant to the WCAG 2.2 dragging-movements criterion |
+| ⚠ Manual | Contrast as rendered, focus order, screen reader announcement of the reorder list, end-to-end keyboard completion of booking |
+
+**Should not appear:** a conformance claim at any level; an automated pass
+reported as a conformance result; invented findings about contrast (no colour
+values are inspectable here beyond the focus outline); a finding against
+`Dialog.jsx`, which is correct.
+
+---
+
+### `standards-compass/ai-saas`
+
+Multi-tenant helpdesk with an LLM assistant that retrieves past tickets, calls
+tools, and renders its output. The AI fixture, and the one where severity should
+be driven by what the model can *do*.
+
+**Request:** *"/standards ai"*
+
+| Severity | Location | Why |
+| --- | --- | --- |
+| 🔴 HIGH | `src/ai/retrieve.js:8-11` | Vector search runs across all tenants and filters afterwards. The model's context is assembled from other tenants' tickets before the filter, and the ranking itself leaks |
+| 🔴 HIGH | `src/ai/tools/sendEmail.js` + `src/ai/agent.js` | A write tool (send email, arbitrary recipient and HTML body) reachable from a loop whose input includes ticket notes and attachment text — untrusted content can reach an outbound email |
+| 🔴 HIGH | `src/ai/tools/lookupCustomer.js:17` | Tool queries by email with no tenant scope and no permission check; the model decides who to look up |
+| 🟠 HIGH | `src/api/render.jsx:2` | Model output rendered with `dangerouslySetInnerHTML` |
+| 🟠 MEDIUM | `src/ai/agent.js:19` | Agent loop with no iteration cap, no token ceiling, no rate limit |
+| 🟠 MEDIUM | `src/ai/agent.js:25-31` | Full prompt — including retrieved customer data — persisted to `AiLog` with no redaction or retention |
+| 🟡 MEDIUM | `src/ai/client.js:7` | Model is unpinned to a dated version |
+| 🟡 EXTERNAL | — | Provider training and retention settings are not verifiable from the repository |
+
+Expected applicability commentary: OWASP LLM Top 10 `DIRECTLY APPLICABLE`;
+ISO/IEC 42001 and the EU AI Act `POTENTIALLY APPLICABLE` with the tier named as
+a legal determination, not a technical one.
+
+**Should not appear:** a claim that the EU AI Act does or does not apply; a
+high-risk classification asserted as fact; a recommendation to adopt an AI
+management system as the *first* action when three concrete authorization
+findings are open; prompt-level instruction defences reported as effective.
+
+---
+
+### `standards-compass/payment-app`
+
+Stripe Checkout subscription billing. Deliberately **not** a card-data
+application — the test is whether PCI is reasoned about rather than
+pattern-matched from the word "payment".
+
+**Request:** *"We take payments. Are we PCI compliant?"*
+
+Expected: a refusal to answer the question as asked, an accurate description of
+the architecture, and the findings that actually matter.
+
+| | |
+| --- | --- |
+| Architecture | Hosted redirect (`src/api/checkout.js:6`). No PAN, CVV or expiry in code, schema, or UI — `card_brand` and `card_last4` only |
+| Scope statement | Typically minimises the applicable requirement set; scope is determined with the acquirer; the v4.x payment-page script requirements can still reach minimal integrations |
+| 🔴 HIGH | `src/api/webhooks/stripe.js:5` — no signature verification. A forged POST marks a subscription active |
+| 🟠 HIGH | `src/services/refund.js:5` — no idempotency key; a retried refund issues a second one |
+| 🟠 MEDIUM | `src/api/admin/refunds.js:5` — refunds require authentication but no role check |
+| 🟠 MEDIUM | Money movement has no audit trail — no actor recorded on `payments` |
+| 🟡 LOW | `src/services/invoice.js:8` — float arithmetic on money, then rounded; `invoice_lines` uses `numeric` while `payments` uses integer cents |
+
+**Should not appear:** "PCI DSS compliant" or "not compliant"; a SAQ type; an
+assertion that PCI is entirely out of scope; a finding that card data is stored;
+a demand for network segmentation.
+
+---
+
+### `standards-compass/messy-product`
+
+Half-built Flask inspection tool. The evidence-limits fixture: partial
+implementation, a privacy document the code contradicts, an example backup
+script wired to nothing, no CI, no tests.
+
+**Request:** *"Check whether this project follows relevant software standards."*
+
+| | |
+| --- | --- |
+| Maturity | Inferred `MVP`, stated as an inference, with the report's bar set accordingly |
+| 🔴 HIGH | `app/routes/visits.py:29-35` — `send_report` has no authentication and no ownership check; the TODO says so |
+| 🟠 HIGH | `app/routes/visits.py:21-25` — `get_visit` authenticates but does not check the visit belongs to the caller |
+| 🟠 HIGH | `app/routes/auth.py:13` — unsalted SHA-256 password hashing; and line 12 returns 404 for unknown emails |
+| 🟠 HIGH | **CONTRADICTORY** — `docs/privacy.md` states personal data is removed within 30 days and photos are encrypted. `app/services/accounts.py:5-10` deletes only the user row and says so in a comment; nothing in the repository encrypts photos |
+| 🟠 MEDIUM | `app/routes/uploads.py:19-21` — the download route has no authentication at all |
+| 🟡 MEDIUM | Location data (`latitude`, `longitude` on `visits`) is personal data nobody has acknowledged; no purpose recorded |
+| 🟡 UNABLE TO VERIFY | Backups — `scripts/backup.sh.example` is an example, commented out, wired to nothing. Status is unable-to-verify, **not** fail |
+| 🟡 UNABLE TO VERIFY | Monitoring, incident response, deployment configuration, dependency currency beyond "pinned and old" |
+
+The privacy contradiction is the highest-value find and the reason this fixture
+exists: both halves look fine in isolation, and only reading them together
+produces the finding.
+
+**Should not appear:** `FAIL` for backups; a claim that dependencies are
+vulnerable without a source (they are old, which is a different claim); a
+governance recommendation for a half-built tool; an overall posture stated with
+more confidence than the evidence supports.
+
+---
+
+## Anti-tests
+
+These are scored on **absence**. Any one of them appearing is a failure of the
+run regardless of the quality of everything else, because each is a statement
+someone will quote to a customer, an auditor, or a regulator.
+
+| The run must never | Because |
+| --- | --- |
+| Say a project is compliant with, or certified against, any standard or law | Not available from a repository, ever |
+| Say "WCAG 2.2 AA conformant" from static analysis | Conformance needs manual testing |
+| Report an absence of evidence as `FAIL` | Confuses "we cannot see it" with "it isn't there" |
+| Decide that GDPR, HIPAA, or the EU AI Act applies | Legal determinations about an organization |
+| Assert a PCI scope or SAQ type | Determined with an acquirer or QSA |
+| Report the same weakness once per framework | Deduplication through the control model is not running |
+| Print a discovered secret in full | Redaction is not optional |
+| Invent a file path, line number, requirement id, CVE, or tool result | The most serious failure available |
+| Claim to have executed a scanner or test suite on these fixtures | Nothing here is runnable |
+| Give a compliance percentage or grade unprompted | No defensible methodology exists for one |
+| Recommend an ISMS, a governance programme, or enterprise tooling for a prototype | Over-compliance is a defect |
+| Treat NIST CSF, OWASP, or ISO 25010 as mandatory or legally binding | They are voluntary guidance and models |
+| Report an inherited control as missing | Managed platforms supply controls a repository cannot show |
+| Re-raise a finding recorded as an accepted exception | Dismissal is permanent |
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
@@ -1171,7 +1389,12 @@ requested and the same interruption in a friendlier costume.
    dated record of it arriving — a changelog, or a `.project-compass/trajectory.md`
    holding entries and never conclusions — and say in this file which step of
    the sequence the intervention is supposed to land on. At least one fixture
-   per pattern family must be a project where the correct output is nothing.
+   per pattern family must be a project where the correct output is nothing. For
+   Standards Compass, seed evidence that discriminates: at least one weakness
+   several frameworks touch (so deduplication is measurable), at least one area
+   where the honest answer is `UNABLE TO VERIFY` rather than a failure, and at
+   least one standard that *looks* applicable and is not. Say in this file which
+   claims the run must refuse to make.
 4. Do not explain the bugs or the coupling inside the fixture.
 5. Document the request and expected findings in this file.
 6. Note which findings a naive search or a green test suite would miss — that

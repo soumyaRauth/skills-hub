@@ -1,0 +1,51 @@
+id: iso-iec-42001
+name: Artificial intelligence management system — Requirements
+identifier: ISO/IEC 42001:2023
+version: "2023"
+authority: ISO
+type: international-standard
+category: ai
+status: current
+official_url: https://www.iso.org/standard/42001
+publication_date: "2023-12"
+free_to_read: false
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.iso.org/standard/42001
+summary: >
+  Requirements for an AI management system: policy, roles, AI risk assessment
+  and impact assessment, objectives, controls over the AI life cycle, data for
+  AI systems, third-party and supplier considerations, monitoring and
+  improvement. The first management system standard for organizations that
+  develop, provide or use AI.
+applies_when:
+  - has_ai_functionality
+  - organization_claims_or_pursues_aims
+  - enterprise_customers_require_ai_governance
+applicability_notes: >
+  Organizational. A chat feature does not create a 42001 obligation. It becomes
+  relevant when an organization is being asked to demonstrate AI governance — by
+  customers, by a regulator's expectations, or by its own risk appetite. The
+  repository-side value is showing which of its concerns (data provenance,
+  human oversight, monitoring, documented purpose) have no evidence anywhere.
+assessment:
+  repository_evidence: limited
+  automatable:
+    - Whether AI use is documented at all — purpose, model, provider, data sent
+    - Whether human review exists for consequential outputs
+    - Whether AI interactions are logged and evaluable
+  manual_only:
+    - Whether AI risks and impacts have been assessed
+  external_only:
+    - Policy, roles, supplier agreements, impact assessment records, audits
+controls:
+  - ai-governance
+  - ai-data-boundary
+  - human-oversight
+  - data-governance
+  - monitoring
+  - lifecycle-process
+claim_boundary: >
+  Certification is organizational. Report "repository evidence relevant to
+  ISO/IEC 42001 themes" and list what is outside repository reach.

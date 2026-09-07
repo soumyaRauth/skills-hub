@@ -1,0 +1,49 @@
+id: ccpa-cpra
+name: California Consumer Privacy Act, as amended
+identifier: CCPA/CPRA + CPPA regulations
+version: "statute effective 2026-01-01; ADMT, risk assessment and cybersecurity audit regulations effective 2026-01-01 with phased compliance"
+authority: State of California
+type: regulation
+category: privacy
+status: current
+official_url: https://cppa.ca.gov/regulations/ccpa_updates.html
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://cppa.ca.gov/regulations/ccpa_updates.html
+summary: >
+  California privacy law giving residents rights to know, delete, correct, and
+  opt out of sale or sharing of personal information, with heightened treatment
+  of sensitive personal information. Regulations adopted in 2025 added annual
+  cybersecurity audits, risk assessments for higher-risk processing, and rights
+  to access and opt out of automated decisionmaking technology, with phased
+  compliance deadlines after the January 2026 effective date.
+applies_when:
+  - processes_personal_data
+  - users_or_customers_in_california
+  - meets_business_thresholds
+applicability_notes: >
+  Applies to businesses meeting statutory thresholds (revenue, volume of
+  personal information, or revenue derived from selling or sharing it). A
+  repository cannot establish any of those. Raise it when California users are
+  plausible and the thresholds are unknown — and note the ADMT provisions
+  specifically when the product makes automated decisions about people.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Presence of deletion, access and correction flows
+    - Opt-out signalling and third-party sharing in client code
+    - Automated decision logic affecting individuals
+  manual_only:
+    - Whether disclosures match actual processing
+  external_only:
+    - Threshold determination, risk assessments, cybersecurity audits, contracts
+controls:
+  - privacy
+  - data-lifecycle
+  - human-oversight
+  - data-governance
+claim_boundary: >
+  Applicability is a legal determination based on organizational facts. Report
+  the technical gaps that would matter if it applies; do not decide that it does.

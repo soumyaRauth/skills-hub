@@ -1,0 +1,64 @@
+id: pci-dss
+name: Payment Card Industry Data Security Standard
+identifier: PCI DSS v4.0.1
+version: "4.0.1"
+authority: PCI SSC
+type: industry-security-standard
+category: payments
+status: current
+official_url: https://www.pcisecuritystandards.org/document_library/
+publication_date: "2024-06"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://blog.pcisecuritystandards.org/just-published-pci-dss-v4-0-1
+summary: >
+  The card brands' security requirements for entities that store, process or
+  transmit cardholder data, or that can affect the security of a payment
+  transaction. v4.0 and v4.0.1 (together "v4.x") are the active versions; the
+  future-dated requirements introduced in v4.0 became mandatory on 31 March 2025,
+  including requirements for payment page script integrity that apply even to
+  merchants who never touch card numbers.
+supersedes: "3.2.1"
+applies_when:
+  - stores_processes_or_transmits_card_data
+  - accepts_card_payments
+  - hosts_a_payment_page
+  - integrates_payment_provider
+applicability_notes: >
+  Scope is determined by the payment architecture, not by whether payments
+  exist. A hosted checkout or a provider-hosted iframe usually keeps card data
+  out of the application entirely and reduces the applicable requirement set
+  dramatically — but does not always reduce it to nothing, because requirements
+  covering scripts on the payment page and service provider management can still
+  reach the merchant. Determine the architecture before saying anything.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Whether card numbers or CVV appear in code, schemas, logs, or fixtures
+    - Which integration model is used — hosted page, iframe, tokenized fields, direct API
+    - Scripts loaded on payment pages
+    - Webhook signature verification
+  manual_only:
+    - Actual data flows through third parties
+  external_only:
+    - Network segmentation, cardholder data environment definition
+    - Merchant level, SAQ eligibility, and validation status
+controls:
+  - data-protection
+  - cryptography
+  - secrets-management
+  - logging
+  - configuration-management
+  - supply-chain
+  - api-security
+claim_boundary: >
+  Never claim PCI compliance, a SAQ type, or a scope determination from source
+  code. The defensible output is a description of the payment architecture as
+  the repository shows it, the requirements that architecture plausibly engages,
+  and the statement that scope and validation are determined with the acquirer
+  or a QSA.
+not_indicated_when: >
+  No payment functionality exists in the repository and none is planned — state
+  that this is an observation about the code, not a scope determination.

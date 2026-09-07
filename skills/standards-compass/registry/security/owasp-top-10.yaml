@@ -1,0 +1,56 @@
+id: owasp-top-10
+name: OWASP Top 10 Web Application Security Risks
+identifier: "OWASP Top 10:2025"
+version: "2025"
+authority: OWASP
+type: security-framework
+category: security
+status: current
+official_url: https://owasp.org/Top10/2025/
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://owasp.org/Top10/2025/
+summary: >
+  An awareness document naming the ten risk categories most consequential in
+  practice — access control, misconfiguration, supply chain, cryptography,
+  injection, insecure design, authentication, integrity, logging and alerting,
+  and mishandled exceptional conditions. It is a prioritization aid and a shared
+  vocabulary, not a verification standard: use it to decide where to look first,
+  then verify against ASVS.
+supersedes: "2021"
+applies_when:
+  - web_application
+  - api
+  - saas
+  - public_facing
+applicability_notes: >
+  Useful for almost any web-facing system, and most useful early: it points a
+  first pass at the categories that actually produce incidents. Do not report
+  "an OWASP Top 10 violation" as a finding — the finding is the concrete
+  weakness, and the category is a label on it.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Access control consistency across routes
+    - Query construction and template escaping
+    - Dependency and build-pipeline exposure
+    - Presence of security logging on auth events
+  manual_only:
+    - Insecure design, which is a property of decisions rather than of lines
+    - Whether alerting produces a human response
+  external_only:
+    - Deployed configuration and headers
+controls:
+  - authorization
+  - configuration-management
+  - supply-chain
+  - cryptography
+  - input-validation
+  - authentication
+  - logging
+  - error-handling
+claim_boundary: >
+  The Top 10 defines no conformance state. Nothing can be "Top 10 compliant";
+  a project either has a specific weakness or does not.

@@ -1,0 +1,53 @@
+id: owasp-masvs
+name: Mobile Application Security Verification Standard
+identifier: OWASP MASVS
+version: "2.x"
+authority: OWASP
+type: security-framework
+category: security
+status: current
+official_url: https://mas.owasp.org/MASVS/
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: bundled-knowledge
+summary: >
+  The mobile counterpart to ASVS, organized around storage, cryptography,
+  authentication, network communication, platform interaction, code quality and
+  resilience. It exists because a mobile binary runs on hardware the attacker
+  owns, which invalidates several assumptions a server-side standard can make.
+applies_when:
+  - mobile_application
+  - ios
+  - android
+applicability_notes: >
+  Applies to the client. It does not replace ASVS for the backend the app talks
+  to — a mobile product usually needs both, and the backend is where the more
+  serious findings normally are.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Local storage of credentials and tokens
+    - Logging of sensitive values
+    - Network security configuration and certificate handling
+    - Declared permissions and exported components
+    - Deep link handling
+  manual_only:
+    - Resilience against a tampered device or repackaged binary
+    - Whether platform keystore usage is correct in practice
+  external_only:
+    - Store-level configuration and signing keys
+controls:
+  - data-protection
+  - cryptography
+  - authentication
+  - session-management
+  - configuration-management
+  - logging
+  - secrets-management
+claim_boundary: >
+  Verify the exact current version at mas.owasp.org before quoting a requirement
+  identifier; this entry has not been checked against the authority.
+notes: >
+  Version carried from bundled knowledge and recorded as a series rather than a
+  point release for that reason.

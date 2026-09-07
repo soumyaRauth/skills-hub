@@ -1,0 +1,52 @@
+model Tenant {
+  id        String     @id @default(uuid())
+  name      String
+  users     User[]
+  customers Customer[]
+  tickets   Ticket[]
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  role     String @default("agent")
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model Customer {
+  id       String    @id @default(uuid())
+  email    String
+  name     String
+  phone    String?
+  tenantId String
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  invoices Invoice[]
+  tickets  Ticket[]
+}
+
+model Ticket {
+  id             String   @id @default(uuid())
+  subject        String
+  notes          String
+  attachmentText String?
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  amountCents Int
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+}
+
+model AiLog {
+  id         String   @id @default(uuid())
+  userId     String
+  prompt     String
+  completion String
+  createdAt  DateTime @default(now())
+}

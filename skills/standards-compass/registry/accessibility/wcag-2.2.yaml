@@ -1,0 +1,59 @@
+id: wcag-2.2
+name: Web Content Accessibility Guidelines
+identifier: WCAG 2.2
+version: "2.2"
+authority: W3C
+type: technical-standard
+category: accessibility
+status: current
+official_url: https://www.w3.org/TR/WCAG22/
+publication_date: "2023-10-05"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.w3.org/TR/WCAG22/
+summary: >
+  Success criteria for making web content perceivable, operable, understandable
+  and robust, at three conformance levels (A, AA, AAA). AA is the level most
+  laws and procurement rules reference. 2.2 added criteria including focus
+  appearance and obscuring, dragging alternatives, target size, consistent help,
+  redundant entry, and accessible authentication.
+related:
+  - "Published as ISO/IEC 40500:2025"
+  - "WCAG 3.0 is an incomplete W3C Working Draft — not a standard to assess against"
+applies_when:
+  - web_application
+  - public_web_content
+  - web_ui
+  - electronic_documents
+applicability_notes: >
+  Directly applicable to any product with a web interface. Whether it is legally
+  required depends on jurisdiction, sector and customer contracts — a public
+  sector body in the EU, a US government supplier and a private B2B tool are in
+  three different positions, and the repository cannot tell you which one this
+  is.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Form controls without programmatic labels
+    - Images without alternative text
+    - Non-semantic elements used as interactive controls
+    - Missing page language, heading structure, landmark structure
+    - Keyboard handlers attached to non-focusable elements
+    - Positive tabindex, focus suppression, outline removal
+  manual_only:
+    - Whether alternative text is meaningful
+    - Focus order and visible focus in the rendered page
+    - Colour contrast as actually rendered
+    - Whether an error message helps
+    - Screen reader experience, which is the only real test of several criteria
+  external_only:
+    - Third-party embedded content
+controls:
+  - accessibility
+claim_boundary: >
+  Static inspection cannot establish WCAG conformance. It can find specific
+  failures and it can find missing evidence. A clean automated pass typically
+  covers a minority of the success criteria — say which criteria were assessed
+  and by what means, and never report a conformance level.

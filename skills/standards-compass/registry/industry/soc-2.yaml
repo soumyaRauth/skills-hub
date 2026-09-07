@@ -1,0 +1,54 @@
+id: soc-2
+name: SOC 2 Trust Services Criteria
+identifier: AICPA Trust Services Criteria (security, availability, processing integrity, confidentiality, privacy)
+version: "2017, as revised"
+authority: AICPA
+type: organizational-control-framework
+category: industry
+status: current
+official_url: https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: bundled-knowledge
+summary: >
+  Criteria used by accounting firms to report on a service organization's
+  controls. Security (the common criteria) is always in scope; availability,
+  processing integrity, confidentiality and privacy are optional categories. A
+  SOC 2 report is an auditor's opinion over a period, not a certification, and
+  the controls it examines are mostly organizational.
+applies_when:
+  - saas
+  - b2b
+  - enterprise_customers_require_soc2
+  - hosts_customer_data
+applicability_notes: >
+  Comes up because a customer asked for a report, essentially always. Software
+  evidence supports a minority of the criteria — access control, change
+  management, monitoring, encryption. If nobody has asked, this is not a reason
+  to build controls.
+assessment:
+  repository_evidence: limited
+  automatable:
+    - Logical access controls in application code
+    - Change management signals — review requirements, CI gating, release process
+    - Logging, monitoring and alerting configuration
+    - Encryption in transit and at rest, where configured in-repo
+  manual_only:
+    - Whether controls operated consistently over the audit period
+  external_only:
+    - Policies, onboarding and offboarding, vendor management, risk assessment,
+      physical security, and the auditor's testing itself
+controls:
+  - authorization
+  - authentication
+  - change-management
+  - monitoring
+  - logging
+  - data-protection
+  - backup-recovery
+  - incident-response
+claim_boundary: >
+  Never describe a project as SOC 2 compliant or ready. A repository can show
+  that specific technical controls exist; the report is produced by an
+  independent auditor examining an organization.

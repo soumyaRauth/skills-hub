@@ -1,0 +1,59 @@
+id: gdpr
+name: General Data Protection Regulation
+identifier: Regulation (EU) 2016/679
+version: "2016/679"
+authority: European Union
+type: regulation
+category: privacy
+status: current
+official_url: https://eur-lex.europa.eu/eli/reg/2016/679/oj
+publication_date: "2016-04-27"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: bundled-knowledge
+summary: >
+  EU law governing the processing of personal data. The parts that reach code
+  are lawful basis and purpose limitation, data minimisation, storage limitation,
+  the data subject rights (access, rectification, erasure, portability,
+  objection), security of processing, processor obligations, transfers outside
+  the EU, breach notification timelines, and privacy by design and by default.
+applies_when:
+  - processes_personal_data
+  - users_or_customers_in_eu
+  - established_in_eu
+  - offers_goods_or_services_to_eu_residents
+applicability_notes: >
+  Applicability is a legal question about the organization and its users, not
+  about the repository. Personal data in a schema makes GDPR worth raising; it
+  does not make GDPR apply. State the condition — establishment in the EU, or
+  offering services to or monitoring people in the EU — and ask, rather than
+  concluding. If the answer is unknown, the status is POTENTIALLY APPLICABLE and
+  the finding is that nobody has determined it.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - What personal data the schema stores
+    - Whether deletion and export paths exist, and what they miss
+    - Retention jobs, or their absence
+    - Third parties the data is sent to, from client and server code
+    - Personal data in logs and analytics
+  manual_only:
+    - Lawful basis and purpose for each processing activity
+    - Whether consent, where relied on, is validly obtained
+  external_only:
+    - Records of processing, DPAs with processors, transfer mechanisms
+    - Breach procedures, DPO, DPIAs, retention policy as an organizational rule
+controls:
+  - privacy
+  - data-lifecycle
+  - data-protection
+  - data-governance
+  - auditability
+  - logging
+  - incident-response
+claim_boundary: >
+  Never state that a project is or is not GDPR compliant. Report technical
+  observations relevant to specific obligations — "deleting a user leaves their
+  email on order records, which is relevant to erasure" — and route the legal
+  determination to a person qualified to make it.

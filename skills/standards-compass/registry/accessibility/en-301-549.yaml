@@ -1,0 +1,48 @@
+id: en-301-549
+name: Accessibility requirements for ICT products and services
+identifier: EN 301 549
+version: "4.1.1"
+authority: ETSI
+type: technical-standard
+category: accessibility
+status: current
+official_url: https://www.etsi.org/deliver/etsi_en/301500_301599/301549/04.01.01_60/en_301549v040101p.pdf
+publication_date: "2026-09"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.etsi.org/deliver/etsi_en/301500_301599/301549/04.01.01_60/en_301549v040101p.pdf
+summary: >
+  The European harmonised standard for ICT accessibility. It incorporates WCAG
+  for web content and adds requirements web guidelines do not cover — hardware,
+  documents, real-time text, support services, and non-web software. V4.1.1
+  aligns clauses 9, 10 and 11 with WCAG 2.2 and adds annexes relating the
+  standard to the Web Accessibility Directive and the European Accessibility Act.
+supersedes: "3.2.1"
+applies_when:
+  - sells_or_operates_in_eu
+  - public_sector_customer_in_eu
+  - consumer_product_in_eu
+  - web_application
+  - mobile_application
+applicability_notes: >
+  Relevance is jurisdictional and contractual: EU public sector procurement and
+  the European Accessibility Act are the usual routes in. If the project has no
+  EU exposure, WCAG alone is normally the right frame. Ask rather than assume —
+  geography is not visible in a repository.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - The same web-facing signals as WCAG, since clauses 9–11 reference it
+  manual_only:
+    - Non-web software and document requirements
+    - Real-time text, where present
+  external_only:
+    - Support services, documentation and procurement conformance claims
+controls:
+  - accessibility
+claim_boundary: >
+  Conformance is a procurement-grade claim made by an organization, usually in a
+  published accessibility statement. Repository review contributes evidence
+  toward it and nothing more.

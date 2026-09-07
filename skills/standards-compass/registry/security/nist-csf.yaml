@@ -1,0 +1,51 @@
+id: nist-csf
+name: NIST Cybersecurity Framework
+identifier: NIST CSF 2.0
+version: "2.0"
+authority: NIST
+type: security-framework
+category: security
+status: current
+official_url: https://www.nist.gov/cyberframework
+publication_date: "2024-02-26"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://www.nist.gov/cyberframework
+summary: >
+  A framework of cybersecurity outcomes organized into six functions — Govern,
+  Identify, Protect, Detect, Respond, Recover — intended to be used as a risk
+  management vocabulary across an organization. Version 2.0 added Govern and
+  widened the audience beyond critical infrastructure.
+supersedes: "1.1"
+applies_when:
+  - any_software_with_security_relevance
+applicability_notes: >
+  Useful as an organizing frame for a security assessment — particularly for
+  showing what a repository review cannot see, since Govern, Respond and Recover
+  are overwhelmingly organizational. It is voluntary guidance in most contexts.
+  Treating it as a legal requirement is a category error.
+assessment:
+  repository_evidence: limited
+  automatable:
+    - Protect-function technical controls visible in code and configuration
+    - Detect-function evidence such as logging and alerting configuration
+  manual_only:
+    - Whether identified assets and risks are actually tracked
+  external_only:
+    - Govern — roles, policy, risk appetite, supplier management
+    - Respond and Recover — incident handling, communications, restoration
+controls:
+  - authorization
+  - data-protection
+  - logging
+  - monitoring
+  - incident-response
+  - backup-recovery
+  - supply-chain
+  - configuration-management
+  - change-management
+claim_boundary: >
+  CSF has no certification and defines no pass state. Findings map to CSF
+  outcomes; they never establish a "CSF tier" from repository evidence.

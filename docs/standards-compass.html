@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standards Compass — Skills Hub</title>
+<meta name="description" content="Works out which engineering standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software — then audits the repository against them, with evidence, and never claims compliance.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="impact-map.html">Impact Map</a>
+      <a href="proof-driven-dev.html">ProofBuild</a>
+      <a href="production-guard.html">Production Guard</a>
+      <a href="engineering-investigator.html">Investigator</a>
+      <a href="project-compass.html">Compass</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/standards-compass/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; the standards you never consciously chose</span>
+    <h1>Standards Compass</h1>
+    <p class="lede">
+      Your code can work perfectly and still be missing things that matter.
+      Security controls. Accessibility. Privacy. Auditability. AI governance.
+      This works out which of those actually apply to <em>your</em> software
+      &mdash; then checks the project against them, with evidence.
+    </p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill standards-compass</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>&ldquo;are we compliant?&rdquo; &nbsp;&rarr;&nbsp; compliant with <em>what</em>?</b></p>
+    <p>
+      Nobody decides which standards a product is built to. Not out of
+      negligence &mdash; because the question never appears in a ticket. Then
+      eight months in somebody asks whether the project is compliant, and the
+      honest answer is that nobody knows what compliant would even mean for this
+      product.
+    </p>
+    <p>
+      The instinct at that point is a checklist. Five hundred requirements
+      produce five hundred shallow answers, most of them irrelevant, none of them
+      trustworthy &mdash; and a team that now believes standards work is theatre.
+    </p>
+
+    <h3>What it does instead</h3>
+    <p class="flow mono">
+      profile &nbsp;&rarr;&nbsp; <b>which of these applies here?</b> &nbsp;&rarr;&nbsp; scope<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; evidence &nbsp;&rarr;&nbsp; status + confidence + gap type<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; deduplicate &nbsp;&rarr;&nbsp; prioritize &nbsp;&rarr;&nbsp; report
+    </p>
+    <p>
+      Nine standards considered, four assessed against, five ruled out
+      <em>with reasons</em>. That ratio is the product. Telling a team that PCI
+      DSS is not indicated because payments go through a hosted provider saves
+      more work than most findings create.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What an audit looks like</h2>
+<pre class="block">You:    Audit this project.
+
+Agent:  Applicable
+          &#10003; OWASP ASVS 5.0.0        authenticated multi-tenant app, untrusted input
+          &#10003; OWASP API Top 10 2023   SPA and mobile clients call the API directly
+          &#10003; WCAG 2.2                public web UI with interactive workflows
+          &#9888; GDPR                    personal data present; jurisdiction unknown
+          &#9888; PCI DSS v4.x            hosted checkout; scope determined with your acquirer
+          &#10007; HIPAA                   no clinical data or healthcare relationship observed
+
+        3 high &middot; 8 medium &middot; 6 unable to verify
+
+        Three administrative endpoints don&rsquo;t enforce the authorization rule
+        the other eleven use, and the export query at
+        src/api/admin/exports.ts:31 has no tenant filter &mdash; so a signed-in
+        member may be able to export another organization&rsquo;s customers.
+
+        Separately, there&rsquo;s no evidence in the repository about backups,
+        recovery, or incident handling. That&rsquo;s not the same as their
+        absence &mdash; those things normally live outside a codebase &mdash;
+        but nobody can confirm them from here.</pre>
+    <div class="note">
+      <strong>Every citation is checkable.</strong> Real paths, line numbers only
+      where they were actually obtained, and an explicit list of the questions
+      that belong to someone other than an engineer.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Two modes, one machine</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Mode</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><b>Auditor</b></td><td>Software already exists. Profile, applicability, targeted evidence in risk order, prioritized gaps, and an explicit list of what could not be verified</td></tr>
+          <tr><td><b>Guardrail</b></td><td>Software is being built. Notices when a change touches identity, privilege, money, personal data, files or a model &mdash; builds accordingly, reports in four lines, and stays silent otherwise</td></tr>
+        </tbody>
+      </table>
+    </div>
+<pre class="block">You:    Add drag-and-drop file upload.
+
+Agent:  Uploads bring a few requirements with them, so I&rsquo;ll build it with
+        server-side type and size limits, generated filenames, storage outside
+        the web root, download authorization as strict as upload, and a
+        keyboard-accessible file picker alongside the drop zone.
+
+        [&hellip; implements &hellip;]
+
+        &#10003; Type allowlist and 25&nbsp;MB limit enforced server-side
+        &#10003; Storage key is a generated UUID; original name kept as metadata
+        &#10003; Download authorization reuses the case access policy
+        &#10003; Drop zone has a keyboard-operable file input
+        &#9888; No retention rule &mdash; case documents currently live forever.
+          That&rsquo;s a decision someone should make rather than a default.</pre>
+    <p>
+      A rename gets nothing at all. That silence is what buys the right to speak
+      on the bulk customer export.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Not found is not failed</h2>
+    <p>
+      The distinction most standards tooling collapses, and the one that decides
+      whether a report is trusted. No backup configuration in a repository means
+      <em>no backup configuration was found in the repository</em> &mdash;
+      backups usually live somewhere a codebase cannot see.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Gap type</th><th>Means</th><th>Fixed by</th></tr></thead>
+        <tbody>
+          <tr><td><b>Implementation</b></td><td>The code does not satisfy the requirement</td><td>An engineer, here</td></tr>
+          <tr><td><b>Evidence</b></td><td>It might; nothing here shows it</td><td>Adding the evidence</td></tr>
+          <tr><td><b>Process</b></td><td>An organizational process a repository cannot establish</td><td>The organization. <em>Never</em> by writing code</td></tr>
+          <tr><td><b>Legal scope</b></td><td>Applicability depends on facts outside the code</td><td>Legal or leadership</td></tr>
+          <tr><td><b>Manual verification</b></td><td>A human has to test it</td><td>A tester, with a stated method</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Writing a <span class="mono">SECURITY.md</span> does not create an incident
+      response capability. Where the honest answer is a process gap, it says so
+      and stops &mdash; a code change that papers over it makes the next audit
+      <em>less</em> accurate.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it will never say</h2>
+<pre class="block">&#10007; &ldquo;This software is GDPR compliant&rdquo;
+&#10007; &ldquo;The company is ISO 27001 compliant&rdquo;
+&#10007; &ldquo;WCAG 2.2 AA conformant&rdquo;
+&#10007; &ldquo;This application passed PCI DSS&rdquo;
+
+&#10003; &ldquo;The repository appears to satisfy&hellip;&rdquo;
+&#10003; &ldquo;Evidence consistent with&hellip;&rdquo;
+&#10003; &ldquo;Gaps relevant to&hellip;&rdquo;
+&#10003; &ldquo;Unable to verify.&rdquo;</pre>
+    <p>
+      None of the first four is available from reading a repository, and all of
+      them get quoted to customers, auditors and regulators. Certification and
+      legal compliance rest on organizational process, policy, contracts, scope
+      and independent assessment. This is an engineering standards assessment
+      tool &mdash; not a certification body, an auditor, or a legal adviser.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>One weakness, one finding</h2>
+<pre class="block">Missing authorization on 3 admin endpoints        &larr; one finding
+    &#9492;&#9472; OWASP ASVS &middot; API Top 10 (API5) &middot; NIST CSF PR.AA &middot; ISO 27001 themes</pre>
+    <p>
+      Five frameworks care about authorization. Reported five times, nobody reads
+      the second one. Findings are made against 36 normalized controls, and the
+      standards attach underneath &mdash; so adding a standard extends every
+      control it names, with no mapping table to maintain and nothing to drift.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>A registry that can be kept current</h2>
+<pre class="block">registry/
+  registry.yaml     categories, types, statuses, authority domains, schema
+  controls.yaml     36 normalized control concepts
+  &lt;category&gt;/*.yaml one file per standard &mdash; add one, nothing else changes</pre>
+    <p>
+      22 entries across security, quality, accessibility, lifecycle, privacy, AI,
+      payments, industry and cloud &mdash; ASVS, OWASP Top 10:2025, API Security
+      Top 10, MASVS, NIST CSF 2.0, SSDF, ISO/IEC 27001, ISO/IEC 25010, WCAG 2.2,
+      EN 301 549, ISO/IEC/IEEE 12207, GDPR, CCPA/CPRA, ISO/IEC 27701, ISO/IEC
+      42001, NIST AI RMF, the EU AI Act, the OWASP GenAI LLM Top 10, PCI DSS,
+      SOC 2, the HIPAA Security Rule and CIS Benchmarks.
+    </p>
+    <p>
+      Every entry records its version, status, official source, <em>and when and
+      how it was last verified</em> &mdash; against the publishing body&rsquo;s
+      own site, or carried from bundled knowledge and marked as such. Reports say
+      which, because a falsely verified entry is worse than an honestly
+      unverified one. A validator enforces the schema, including that an official
+      URL sits on the domain of the body that publishes the standard, so a vendor
+      blog cannot become a citation. No copyrighted standard text is stored.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>It gets better across sessions</h2>
+<pre class="block">.project-standards/
+  profile.md                  what this software is, labelled
+  applicable-standards.yaml   applicability decisions, and the negatives
+  findings.md                 findings with status history and stable ids
+  accepted-risks.md           what the team decided to live with, and why
+  exceptions.md               intentional deviations, with compensating controls
+  assessment-history.md       what was assessed when, and what changed</pre>
+    <p>
+      Which buys three things a one-shot audit cannot have: a dismissed finding
+      stays dismissed, the second assessment is cheaper than the first, and a
+      control that used to pass and no longer does is reported as a
+      <b>regression</b> &mdash; with the commit that caused it &mdash; rather
+      than rediscovered as a new problem.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>It scales down, and up</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Maturity</th><th>What the report contains</th></tr></thead>
+        <tbody>
+          <tr><td><b>Prototype</b></td><td>Dangerous mistakes only. No process findings, no governance</td></tr>
+          <tr><td><b>MVP</b></td><td>Authorization consistency, personal data, dependencies, basic accessibility</td></tr>
+          <tr><td><b>Production</b></td><td>Full technical assessment; operational evidence expected</td></tr>
+          <tr><td><b>Business-critical</b></td><td>Availability, recovery, auditability, tenant isolation depth</td></tr>
+          <tr><td><b>Regulated</b></td><td>Traceability and evidence become findings in their own right</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A prototype told to build a governance programme ignores the whole report.
+      A regulated system told to &ldquo;add some tests&rdquo; has been failed by
+      it. Over-compliance is treated as a defect: every recommendation names the
+      risk it reduces, or it does not go in.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      Standards Compass decides what the software should be measured against.
+      <a href="impact-map.html">Impact Map</a> maps what a change would touch,
+      <a href="proof-driven-dev.html">ProofBuild</a> proves it does what it
+      claims, <a href="production-guard.html">Production Guard</a> decides whether
+      it is safe to ship,
+      <a href="engineering-investigator.html">Engineering Investigator</a>
+      establishes what happened when it breaks, and
+      <a href="project-compass.html">Project Compass</a> asks whether the ticket
+      should have been written. None requires the others.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Limitations</h2>
+    <ul class="plain">
+      <li>It reads a repository. Production configuration, organizational process, contracts, training and physical security are outside it &mdash; and it says so rather than guessing</li>
+      <li>Legal applicability is never determined from code. Personal data means <em>ask about jurisdiction</em>, not <em>GDPR applies</em></li>
+      <li>Accessibility findings from source are real; accessibility <em>conformance</em> is not establishable without manual testing, and the report says which criteria were assessed by which means</li>
+      <li>Infrastructure-as-code is evidence of intent. The cloud console is the fact</li>
+      <li>The bundled registry ages. Entries carry a verification date and method, and reports quote them</li>
+      <li>Severity is judgment informed by context. Being overruled costs one sentence</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

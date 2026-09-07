@@ -1,0 +1,7 @@
+{
+  "extends": ["plugin:jsx-a11y/recommended"],
+  "rules": {
+    "jsx-a11y/no-noninteractive-element-interactions": "error",
+    "jsx-a11y/label-has-associated-control": "error"
+  }
+}

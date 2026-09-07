@@ -1,0 +1,49 @@
+id: cis-benchmarks
+name: CIS Benchmarks
+identifier: CIS Benchmarks (per-platform)
+version: "rolling, per platform"
+authority: CIS
+type: platform-requirement
+category: cloud
+status: current
+official_url: https://www.cisecurity.org/cis-benchmarks
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: bundled-knowledge
+summary: >
+  Consensus hardening configuration baselines published per platform — cloud
+  providers, operating systems, container runtimes, orchestrators, databases.
+  Each benchmark is versioned independently and tracks its platform, so the
+  version that matters is always the one for the specific platform in use.
+applies_when:
+  - self_managed_infrastructure
+  - container_deployment
+  - kubernetes
+  - cloud_account_configuration
+  - has_infrastructure_as_code
+applicability_notes: >
+  Relevant where the team actually owns the configuration. A product deployed on
+  a fully managed platform inherits most of it, and reporting unimplemented
+  hardening items against inherited infrastructure is how a standards report
+  loses its reader. Scale to maturity: a prototype does not need a hardened
+  cluster.
+assessment:
+  repository_evidence: partial
+  automatable:
+    - Infrastructure-as-code settings against the relevant benchmark items
+    - Container and image build configuration — user, privileges, base images
+    - Obvious open network rules in committed configuration
+  manual_only:
+    - Whether committed IaC reflects what is deployed
+  external_only:
+    - Live cloud console and cluster configuration, which is the authoritative state
+controls:
+  - configuration-management
+  - data-protection
+  - monitoring
+  - supply-chain
+claim_boundary: >
+  Infrastructure-as-code is evidence of intent, not of deployed state. Findings
+  from it are at most MEDIUM confidence unless production configuration is
+  actually observed.

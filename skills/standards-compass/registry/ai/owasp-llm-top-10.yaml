@@ -1,0 +1,60 @@
+id: owasp-llm-top-10
+name: OWASP Top 10 for LLM Applications
+identifier: "OWASP GenAI LLM Top 10 (2026)"
+version: "2026"
+authority: OWASP
+type: security-framework
+category: ai
+status: current
+official_url: https://genai.owasp.org/llm-top-10/
+publication_date: "2026-08-04"
+free_to_read: true
+last_verified: "2026-09-07"
+verification:
+  method: authoritative-source
+  source: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
+summary: >
+  The risk list for applications built on large language models — prompt
+  injection and the tool-calling consequences that follow it, sensitive
+  information disclosure through prompts and outputs, insecure output handling,
+  supply chain risk in models and plugins, excessive agency, and unbounded
+  consumption. It is the most directly useful AI security reference for
+  application code, because most of its risks are visible in how the prompt and
+  the tool surface are built.
+related:
+  - "OWASP Top 10 for Agentic Applications (2026) — https://genai.owasp.org/"
+applies_when:
+  - has_ai_functionality
+  - llm_integration
+  - rag_or_retrieval
+  - agent_or_tool_calling
+applicability_notes: >
+  Directly applicable to any product that sends text to a model and does
+  something with what comes back. Applies with much greater force when the model
+  can call tools, read customer data, or act on behalf of a user.
+assessment:
+  repository_evidence: full
+  automatable:
+    - How prompts are assembled, and which untrusted content enters them
+    - What data the retrieval layer can reach, and whether it is scoped per user
+    - What the model is permitted to invoke, and with whose privileges
+    - How output is rendered, executed, or stored
+    - Whether prompts and outputs are logged, and what that log contains
+  manual_only:
+    - Whether a specific injection defence actually holds
+    - Whether the agent's authority matches the user's
+  external_only:
+    - Model provider data handling and retention terms
+controls:
+  - ai-input-integrity
+  - ai-output-handling
+  - ai-data-boundary
+  - authorization
+  - tenant-isolation
+  - logging
+  - supply-chain
+  - availability
+claim_boundary: >
+  An awareness and risk list. No conformance state. Findings are concrete —
+  "retrieval is not filtered by tenant at src/ai/retrieve.ts" — with the category
+  as a label.

@@ -1,0 +1,228 @@
+# Normalized control model
+#
+# One engineering weakness usually violates several standards at once. Reporting
+# it three times, once per framework, is how a standards report becomes
+# unreadable. So findings are made against the concepts below, and the standards
+# that care about a concept are derived from the entries that list it.
+#
+# That derivation is one-directional and needs no maintenance: a standard entry
+# names its controls, and "who cares about authorization?" is answered by
+# scanning entries. Adding a standard automatically extends every existing
+# control's coverage. See ../references/control-model.md.
+
+controls:
+  - id: authentication
+    name: Authentication
+    question: Can the system establish who is making a request, and how strongly?
+    evidence: [source_code, configuration, tests]
+    look_for: [login, password hashing, MFA, token issuance, session creation, account recovery]
+
+  - id: authorization
+    name: Authorization
+    question: Is every privileged operation gated by a rule, and is that rule the same rule everywhere?
+    evidence: [source_code, tests]
+    look_for: [middleware, policies, role checks, ownership checks, admin routes]
+
+  - id: session-management
+    name: Session Management
+    question: How long does a session live, where does it live, and what invalidates it?
+    evidence: [source_code, configuration]
+    look_for: [cookie flags, token expiry, refresh, logout, revocation]
+
+  - id: cryptography
+    name: Cryptography
+    question: What is encrypted, with what, and who can decrypt it?
+    evidence: [source_code, configuration, infrastructure]
+    look_for: [hashing algorithms, TLS config, key derivation, at-rest encryption, random number sources]
+
+  - id: secrets-management
+    name: Secrets Management
+    question: Are credentials outside the source tree, and rotatable?
+    evidence: [source_code, configuration, ci_cd, git_history]
+    look_for: [.env handling, secret managers, CI variables, committed keys]
+
+  - id: input-validation
+    name: Input Validation
+    question: Is untrusted input constrained before it reaches an interpreter or a store?
+    evidence: [source_code, tests]
+    look_for: [schema validation, parameterized queries, allowlists, deserialization]
+
+  - id: output-encoding
+    name: Output Encoding
+    question: Is data encoded for the context it is rendered into?
+    evidence: [source_code, templates]
+    look_for: [template escaping, dangerouslySetInnerHTML, raw HTML rendering, CSP]
+
+  - id: file-upload
+    name: File Upload Security
+    question: What can be uploaded, where does it land, and what happens if it is hostile?
+    evidence: [source_code, configuration, infrastructure]
+    look_for: [type checks, size limits, storage isolation, filename handling, download paths]
+
+  - id: api-security
+    name: API Security
+    question: Are the API's own boundaries — objects, properties, functions, rate — enforced per request?
+    evidence: [source_code, api_definitions, tests]
+    look_for: [object-level checks, mass assignment, rate limiting, schema contracts, versioning]
+
+  - id: logging
+    name: Logging
+    question: Are security-relevant events recorded, and is anything sensitive recorded that should not be?
+    evidence: [source_code, configuration]
+    look_for: [auth events, error logs, PII in logs, log levels, redaction]
+
+  - id: monitoring
+    name: Monitoring
+    question: Would anyone find out that something went wrong?
+    evidence: [configuration, infrastructure, ci_cd]
+    look_for: [health checks, alerts, error tracking, metrics]
+
+  - id: auditability
+    name: Auditability
+    question: For a consequential action — who did it, what, when, to what, and did it succeed?
+    evidence: [source_code, database_schema]
+    look_for: [audit tables, actor recording, immutable trails, admin action logs]
+
+  - id: error-handling
+    name: Error Handling
+    question: Do failures stay contained, and do they leak internals to the user?
+    evidence: [source_code, configuration]
+    look_for: [stack traces in responses, debug flags, generic error pages, error taxonomies]
+
+  - id: data-protection
+    name: Data Protection
+    question: Is sensitive data protected in transit, at rest, and in the places it gets copied to?
+    evidence: [source_code, configuration, infrastructure, database_schema]
+    look_for: [TLS enforcement, column encryption, backups, exports, caches, third-party transfers]
+
+  - id: privacy
+    name: Privacy
+    question: What personal data is collected, why, where does it go, and can a person get it out or have it removed?
+    evidence: [source_code, database_schema, documentation]
+    look_for: [data subject requests, consent, retention, analytics, third-party SDKs]
+
+  - id: data-lifecycle
+    name: Data Lifecycle
+    question: Does data have an end, and does deleting the parent actually remove the child?
+    evidence: [source_code, database_schema, configuration]
+    look_for: [retention jobs, cascade rules, soft deletes, archives, backup scope]
+
+  - id: data-governance
+    name: Data Governance
+    question: Is it known what data exists, who owns it, and what it may be used for?
+    evidence: [documentation, database_schema, source_code]
+    look_for: [data catalogs, classification, ownership, purpose records]
+
+  - id: tenant-isolation
+    name: Tenant Isolation
+    question: Can one customer's data reach another, through any path — query, cache, job, export, model?
+    evidence: [source_code, database_schema, tests]
+    look_for: [tenant scoping, shared caches, background jobs, search indexes, file storage keys]
+
+  - id: accessibility
+    name: Accessibility
+    question: Can the product be operated without a mouse, without sight, and without fine motor control?
+    evidence: [source_code, templates, tests]
+    look_for: [semantic elements, labels, focus management, keyboard handlers, live regions, target size]
+
+  - id: availability
+    name: Availability
+    question: What happens under load, partial failure, or a dependency outage?
+    evidence: [source_code, configuration, infrastructure]
+    look_for: [timeouts, retries, circuit breakers, graceful degradation, redundancy]
+
+  - id: backup-recovery
+    name: Backup and Recovery
+    question: Can the system be restored, and has anyone proved it?
+    evidence: [infrastructure, configuration, documentation]
+    look_for: [backup jobs, snapshot policies, restore runbooks, RPO/RTO statements]
+
+  - id: reliability
+    name: Reliability
+    question: Does the system behave correctly over time, including on the unhappy paths?
+    evidence: [source_code, tests, logs]
+    look_for: [idempotency, transaction boundaries, race conditions, retry safety]
+
+  - id: performance
+    name: Performance Efficiency
+    question: Is there a stated expectation, and any evidence about whether it is met?
+    evidence: [source_code, tests, configuration]
+    look_for: [N+1 queries, indexes, pagination, caching, benchmarks, timeouts]
+
+  - id: maintainability
+    name: Maintainability
+    question: Can a competent engineer change this safely without reading everything?
+    evidence: [source_code, tests, documentation]
+    look_for: [module boundaries, duplication of rules, dead code, test coverage of core logic]
+
+  - id: testing
+    name: Testing and Verification
+    question: Which claims about this system are backed by an automated check?
+    evidence: [tests, ci_cd]
+    look_for: [test suites, negative tests, CI gating, coverage of security paths]
+
+  - id: dependency-management
+    name: Dependency Management
+    question: Are dependencies pinned, current, and watched?
+    evidence: [dependency_manifests, ci_cd]
+    look_for: [lockfiles, version ranges, audit tooling, update automation]
+
+  - id: supply-chain
+    name: Supply Chain Integrity
+    question: Can you tell what went into a build, and could someone else have put something there?
+    evidence: [ci_cd, configuration, dependency_manifests]
+    look_for: [pinned actions, build provenance, artifact signing, registry sources, CI secret scope]
+
+  - id: change-management
+    name: Change Management
+    question: How does a change get from an idea to production, and who agreed?
+    evidence: [ci_cd, git_history, documentation]
+    look_for: [branch protection, review requirements, release process, migration procedure]
+
+  - id: configuration-management
+    name: Configuration Management
+    question: Is the deployed configuration knowable, versioned, and reviewed?
+    evidence: [configuration, infrastructure, ci_cd]
+    look_for: [IaC, environment parity, config drift, secure defaults, security headers]
+
+  - id: incident-response
+    name: Incident Response
+    question: When something goes wrong, is there a defined path from detection to fix to disclosure?
+    evidence: [documentation, external]
+    look_for: [runbooks, on-call, security contact, disclosure policy]
+
+  - id: lifecycle-process
+    name: Lifecycle Process
+    question: Are requirements, design, verification and maintenance recorded anywhere a new person could find them?
+    evidence: [documentation, git_history, ci_cd]
+    look_for: [ADRs, requirement traceability, release notes, deprecation and retirement paths]
+
+  - id: ai-governance
+    name: AI Governance
+    question: Is there an owner, a purpose, a risk view, and a review path for the AI in this product?
+    evidence: [documentation, source_code, external]
+    look_for: [model choice rationale, acceptable use, human review, evaluation records]
+
+  - id: ai-data-boundary
+    name: AI Data Boundary
+    question: What reaches the model, from whose data, and what does the provider do with it?
+    evidence: [source_code, configuration, documentation]
+    look_for: [prompt construction, retrieval scope, provider settings, logging of prompts, training opt-out]
+
+  - id: ai-input-integrity
+    name: AI Input Integrity
+    question: Can content the model reads change what the system does?
+    evidence: [source_code, tests]
+    look_for: [untrusted text in prompts, tool calling, retrieved documents, agent loops]
+
+  - id: ai-output-handling
+    name: AI Output Handling
+    question: Is model output treated as untrusted data before it is rendered, executed, or stored?
+    evidence: [source_code, tests]
+    look_for: [rendering of model output, generated SQL or code, downstream actions, validation]
+
+  - id: human-oversight
+    name: Human Oversight
+    question: For consequential automated decisions, can a person see, contest, or reverse them?
+    evidence: [source_code, documentation]
+    look_for: [approval steps, override paths, decision records, appeal routes]
