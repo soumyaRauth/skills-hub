@@ -1,23 +1,41 @@
-# Direction and what to do next
+# Direction
 
-Two questions this file answers: *where does this project appear to be going?*
-and *what should I do next?* They are the same question at different distances,
-and both are answered from the project or not at all.
+Two questions live here: *what is this project actually doing?* and *what is it
+turning into?* The answers are the input to every recommendation the skill
+makes, which is why they get their own file and their own evidence standard.
 
-## Reconstructing direction
+The crossing itself — a task list becoming a task management system, screens
+becoming an administration system — is in `becoming.md`. Choosing what to do
+about it is in `next-action.md`. This file is about establishing the direction
+honestly in the first place.
+
+## Three directions, and what their disagreement means
 
 Direction is not what the README says the project is for. It is what the work
 has actually been doing, which is often different and occasionally more honest.
 
 ```
-Stated direction    README, docs, roadmap, what the user has said
-Actual direction    trajectory entries, recent commits, where churn concentrates
-Structural direction what the schema and the interface are becoming
+Stated direction      README, docs, roadmap, what the user has said
+Actual direction      trajectory entries, recent commits, where churn concentrates
+Structural direction  what the schema and the interface are becoming
 ```
 
 When those three agree, direction is `OBSERVED` and there is nothing to say.
 When they disagree, the disagreement is the finding — and it is usually the most
 interesting thing in the project.
+
+| Disagreement | What it usually means |
+| --- | --- |
+| Stated says A, actual does B | Either the goal changed and nobody wrote it down, or the work has quietly gone somewhere else. **Ask, do not diagnose** |
+| Actual says A, structure says B | The schema is ahead of the feature work — often the truest signal of what is being built |
+| Stated and actual agree, structure lags | Normal. The model catches up when it has to |
+| All three disagree | `FORMING`, a rewrite in progress, or a project that has changed hands |
+
+The first row is worth one question and never a verdict: *"we started on X and
+the last eight changes are mostly Y — did the goal change, or did we end up
+here?"* Both answers are fine, and either one belongs in `decisions.md`.
+
+## Writing it down
 
 ```markdown
 ### Direction
@@ -30,111 +48,98 @@ tables are all adjustment-related; the README still describes a stock-count tool
 
 **Confidence:** High for the direction, Low for whether it is deliberate.
 
-**Worth noting:** the adjustment flow now has approval, audit and reporting, but
+**Biggest gap:** the adjustment flow now has approval, audit and reporting and
 no defined lifecycle. Each of those three features invented its own idea of what
 "approved" means.
+
+**Next step:** list the states and the legal transitions before the fourth
+feature reads `approved_at`.
 ```
 
 Always separate *where it is going* from *whether that is intended*. The first
 is evidence. The second is only ever the user's to state.
 
-## Answering "what should I do next?"
+## `direction.md`
 
-This is the highest-value question the skill takes, and the easiest to answer
-badly — a generic backlog is worse than no answer, because it looks like work.
+The persisted form of the above, and the file that makes *"what should I do
+next?"* answerable without re-deriving a project every time. It is **rewritten,
+not appended to** — it is a view of the present, and an out-of-date direction is
+worse than none.
 
-Read six things before answering, in this order:
+```markdown
+# Direction
 
-```
-1  The objective                     what is this trying to achieve?
-2  Blocked work                      what is waiting on an unmade decision?
-3  Half-built things                 what is started and not usable?
-4  The nearest outcome               what is closest to being real for a user?
-5  Unretired risk                    what would hurt most, discovered late?
-6  What was just being worked on     momentum is worth something
-```
-
-Then return **three items at most**, ordered, each labeled:
-
-| Label | Means |
-| --- | --- |
-| `REQUIRED` | Something already asked for is blocked without it |
-| `RECOMMENDED` | Evidence supports it; a reasonable person could sequence differently |
-| `WORTH CONSIDERING` | Judgment. No strong evidence. Say so |
-
-Never invent a fourth category, never present it as a roadmap, and never pad to
-three when there is one.
-
-## Answers that are frequently right and rarely given
-
-**Keep going.** The current work is the thing; the project is `DIRECTED`. Say it
-in one line and get out of the way. Manufacturing a concern here is the worst
-failure this skill has, because it is invisible — it just quietly wastes weeks.
-
-**Settle one decision.** Three features are waiting on a question a human can
-answer in a sentence. This outranks all coding.
-
-**Ship it and watch.** The feature is functional, the polish is speculative, and
-nothing on the list is evidence-driven. See below.
-
-**Measure it.** There is a suspicion of a performance problem and no number
-anywhere. The next optimization is a guess with a deployment attached.
-
-**Validate the assumption.** Something substantial is about to be built on a
-belief about users that nothing has tested.
-
-**Delete it.** Something half-built that nothing uses is charging maintenance
-rent. Deleting is progress, and it is the recommendation nobody makes.
-
-**Write it down.** A rule lives in four conditionals that disagree. One
-paragraph fixes it more thoroughly than a refactor would.
-
-## Ship it
-
-Recommend shipping when the core workflow is functional end to end, the recent
-work is refinement, and no known problem is driving the refinement.
-
-The evidence is specific: several iterations on the same surface, no bug report,
-no usage data, no user request behind them.
-
-> This screen has been through four passes and the workflow already works. Unless
-> you know of a usability problem I cannot see, I would ship it and let real use
-> tell you what to fix next — right now we are guessing about what is worth
-> polishing.
-
-Do not say this when there is a known defect, an accessibility gap, a security
-issue, or anything that costs a user something real. "Ship it" is about
-diminishing returns, never about lowered standards.
-
-## Recommendations change with maturity
-
-The same project deserves different advice at different points, and a skill that
-gives the same answer in week ten as in week one has learned nothing:
-
-```
-Early     make one path work end to end; do not generalize anything yet
-Then      validate that the path is the right one, with a real user or real data
-Then      define the rules the path assumed — lifecycle, permissions, failures
-Then      stabilize: failure modes, idempotency, the parts that lose data
-Then      measure, and optimize what the measurement names
-Throughout delete what nothing uses
+**Appears to be**    [what the software currently is]
+**Becoming**         [the crossing, with a label and confidence]
+**Key workflow**     [the path that has to work, and where it currently breaks]
+**Biggest gap**      [the decision, model or measurement that work depends on]
+**Next step**        [the concrete action]
+**Why**              [the consequence it prevents, in terms of real work]
+**Confidence**       High / Medium / Low, and for which part
+**Evidence**         [locations and dates]
+**Verified**         [date]
 ```
 
-This is a shape, not a checklist, and skipping steps is often correct. Its use
-is as a sanity check: a project doing step five in week one is optimizing
-something nobody has used, and a project on step one in month nine has never
-finished anything.
+Update it when the direction moves, when the gap closes, when a milestone lands,
+or when the recorded next step has been done. Not per request — a `direction.md`
+that changes daily is a diary with a better name.
 
-## What this can never know
+Two lines are worth adding when they apply:
 
-Say so plainly when it applies. Nothing in a repository reveals:
+```
+**Not yet said**   nothing is blocked; raise at the next control request
+**Stated goal**    user said 2026-09-04 this is a throwaway prototype
+```
 
-market demand · willingness to pay · what a competitor is shipping · internal
-politics · undisclosed strategy · legal or regulatory requirements · what a
-stakeholder promised · how long the runway is · who is about to quit
+The first makes silence deliberate rather than forgetful. The second makes sure
+the next session inherits the frame rather than re-deriving advice the user has
+already declined.
 
-When a recommendation depends on one of those, name the dependency and let the
-human decide:
+## Direction on a project with no stated objective
+
+Common, and not a failure. Record it plainly:
+
+```
+Objective   UNKNOWN — not stated in README, docs, or any commit message.
+            The code is evidently for [what it does]; why it exists has
+            not been recorded anywhere.
+```
+
+Then answer direction questions from what the code is evidently for, and say
+that is what you are doing. On a project with no written objective, that
+sentence is frequently the most useful output of the session — and it is the
+reason a recommendation can be honestly labeled *"this comes from what is
+closest to working, not from what matters most to you."*
+
+Never fill the gap with a plausible-sounding goal. A fabricated objective reads
+exactly like a discovered one, and every recommendation built on it inherits the
+fabrication invisibly.
+
+## Recommendations follow direction, not the other way round
+
+The order matters. Establish what the project is becoming, then decide what to
+do about it. Reversing those two produces the characteristic failure of
+architecture advice: a recommendation in search of evidence.
+
+```
+Right   the schema, the trajectory and the interface all point at a lifecycle
+        → therefore the next step is to define one
+Wrong   defining a lifecycle is good practice
+        → therefore let us find some evidence that this project needs one
+```
+
+Where the recommendation goes from there — the six reads, the ranking, the
+concreteness tests, the answers that are frequently right and rarely given —
+lives in `next-action.md`.
+
+## What direction can never tell you
+
+Nothing in a repository reveals market demand, willingness to pay, what a
+competitor is shipping, internal politics, undisclosed strategy, legal
+requirements, what a stakeholder promised, or how long the runway is.
+
+When a reading of direction depends on one of those, name the dependency and
+hand it back:
 
 > If the reporting feature is the thing customers are asking for, ignore this
 > and build it. I only see that nothing in the repository connects it to

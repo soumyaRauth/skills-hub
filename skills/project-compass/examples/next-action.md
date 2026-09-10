@@ -1,8 +1,9 @@
 # Example — "I don't know what to work on"
 
-The answer must come from the project. A generic backlog — *add tests, improve
-error handling, write documentation* — is worse than saying nothing, because it
-looks like an answer and costs a week.
+The question this skill exists to answer, asked out loud for once. The answer
+must come from the project. A generic backlog — *add tests, improve error
+handling, write documentation* — is worse than saying nothing, because it looks
+like an answer and costs a week.
 
 ---
 
@@ -40,6 +41,13 @@ real.
 indistinguishable from one that never happened.
 
 **Momentum.** The last four sessions were all on reconciliation.
+
+**And what it is becoming.** The README describes a stock-count tool. What is in
+the repository is an approval system with organizations, roles, an audit table
+and monthly reporting — intake → adjustment → approval → reconciliation. The
+crossing already happened; it is worth stating once, because it is why
+"reconciliation export" is the nearest outcome rather than one feature among
+four.
 
 ---
 
@@ -103,6 +111,40 @@ half the answer, and the half that is usually missing.
 **The limit is stated at the end, not hedged throughout.** No invented objective,
 no fabricated customer, no invented deadline — and a specific description of the
 input that would change the answer.
+
+**The ordering is not by category.** A policy decision outranks two coding tasks
+and a security-adjacent cleanup outranks a feature, because the ranking is by
+what most improves the trajectory — see the priority list in
+`references/next-action.md`. "Fix the technical thing first" would have produced
+a different and worse answer.
+
+---
+
+## What gets recorded
+
+The answer is the expensive part, so it is cached. `direction.md` is rewritten:
+
+```markdown
+# Direction
+
+**Appears to be**  Warehouse stock tracking, per the README
+**Becoming**       An inventory adjustment approval system —
+                   intake → adjustment → approval → reconciliation   INFERRED (High)
+**Key workflow**   that path; first three steps work, reconciliation
+                   stops at a dead export button (ui/Reconcile.tsx:88)
+**Biggest gap**    whether an approved adjustment can be edited —
+                   blocks bulk adjustments, distorts monthly reports
+**Next step**      finish the export, then get that question answered
+**Why**            one button between four features and one usable workflow
+**Confidence**     High for the gap, Low for priority — no objective is recorded
+**Evidence**       open-questions.md; ui/Reconcile.tsx:88; routes/mobile/*
+**Verified**       2026-09-06
+```
+
+Next session, *"what should I do next?"* costs one file read and a re-check of
+the two claims the answer rests on — not a second reconstruction of the project.
+And when the export lands, the file is rewritten rather than appended to, because
+it describes the present.
 
 ---
 

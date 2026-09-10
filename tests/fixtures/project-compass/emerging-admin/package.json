@@ -1,0 +1,9 @@
+{
+  "name": "helpdesk-console",
+  "version": "0.11.0",
+  "private": true,
+  "description": "Internal console for looking up customers",
+  "scripts": {
+    "start": "node api/server.js"
+  }
+}

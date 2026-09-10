@@ -32,13 +32,14 @@ making them one at a time.
 | Consequence | Export is the second feature in a row that needs to know which columns matter, and there is no answer. Bulk actions already guessed, and guessed differently from saved views |
 | Actionability | One sentence naming who uses this screen and what they are trying to finish. Ten minutes |
 
-Clears the bar. And a detail that raises it from a nudge to something worth a
-question: **saved views store `role`, `status`, `joined`; bulk actions operate on
-`role` and `active`; the export request does not say which columns.** Three
-features, three different ideas about what a member *is* here.
+Clears the bar. And a detail that raises it from a passing note to something
+worth a question: **saved views store `role`, `status`, `joined`; bulk actions
+operate on `role` and `active`; the export request does not say which columns.**
+Three features, three different ideas about what a member *is* here.
 
-Not a Level 3. Nothing is contradicted, nothing is irreversible, and export is
-independently useful. Level 1, delivered with the work.
+Not Mode C. Nothing is contradicted, nothing is irreversible, export is
+independently useful, and the missing definition does not change what export
+should do today. **Mode B** — build it, flag one thing.
 
 ---
 
@@ -81,6 +82,10 @@ actual point.
 
 **No solution was proposed.** Not "you need an information architecture", not a
 redesign. The missing thing is one sentence from a human, and the code follows.
+
+**It still ends in an action.** *"Before the seventh, one sentence would settle
+it"* is a next step with a trigger attached — not "worth thinking about", which
+is what the same observation becomes when the action is left off.
 
 ---
 

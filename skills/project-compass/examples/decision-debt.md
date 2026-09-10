@@ -48,7 +48,7 @@ question. Update `open-questions.md` first, then decide what to say.
 
 ---
 
-## Level 2, and why
+## Mode C, and why
 
 Bulk approve *cannot* be built without answering this. Approving fifty
 adjustments at once means deciding what happens to the ones that get edited

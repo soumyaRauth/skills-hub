@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project Compass — Skills Hub</title>
-<meta name="description" content="Persistent project intelligence for coding agents. Builds an evidence-based model of what a project is and where it is heading, notices when the requests stop adding up — and stays silent the rest of the time.">
+<meta name="description" content="A project-aware engineering guide for coding agents. Works out what a project is becoming and what you are actually trying to accomplish, then tells you what to do next — usually by just building what you asked for, and saying nothing.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
 </head>
@@ -32,10 +32,10 @@
     <span class="eyebrow">Skill &middot; across everything, quietly</span>
     <h1>Project Compass</h1>
     <p class="lede">
-      Your agent knows how to build things. This helps it understand
-      <em>where the project is going</em> &mdash; and notice, from evidence, when
-      the requests have stopped adding up. Then, almost always, it says nothing
-      and does the work.
+      Your agent knows how to build things. This helps it work out
+      <em>what to build next</em> &mdash; from what the project is becoming, not
+      from general advice. Then, almost always, it builds what you asked for and
+      says nothing.
     </p>
     <div class="hero-foot">
       <div class="byline">
@@ -59,7 +59,19 @@
 
 <section>
   <div class="wrap">
-    <h2>The problem</h2>
+    <h2>One question</h2>
+    <p class="flow mono">
+      <b>Given everything I know about this project,<br>
+      what should this developer do next, and why?</b>
+    </p>
+    <p>
+      Usually the answer is <em>the thing you just asked for</em>, and it builds
+      it and says nothing. Occasionally it is not, and on those occasions the
+      answer is worth more than the implementation would have been. You rarely
+      know that this is the question you are asking &mdash; which is the point.
+    </p>
+
+    <h3>The problem</h3>
     <p class="flow mono"><b>activity &ne; progress</b></p>
     <p>
       Coding agents execute well. Ask for search, a refactor, another permission
@@ -69,20 +81,29 @@
     </p>
     <p>
       Nine permission exceptions, each reasonable, are an authorization system
-      nobody designed. Four fixes for four kinds of duplicate are one missing
-      idea about identity. Five performance changes with no measurement anywhere
-      are five guesses with deployments attached. A project can accumulate a year
-      of good commits and be further from working than it was in month three.
+      nobody designed. Five performance changes with no measurement anywhere are
+      five guesses with deployments attached. And the expensive one:
     </p>
+<pre class="block">Add search.        Add export.          Add user groups.
+Add filtering.     Add bulk delete.     Add permissions.
+Add sorting.       Add saved filters.</pre>
     <p>
-      The person making the requests cannot see this. They see one request.
+      Eight reasonable requests. Together they say <em>we are building an
+      administration system and nobody has defined the administration
+      workflow</em> &mdash; a sentence no single request could produce, and one
+      the person making them cannot see, because they see one at a time.
     </p>
 
-    <h3>What it does instead</h3>
+    <h3>Three modes, and the first one is the default</h3>
     <p class="flow mono">
-      request &nbsp;&rarr;&nbsp; project state &nbsp;&rarr;&nbsp; trajectory &nbsp;&rarr;&nbsp; unresolved decisions<br>
-      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; has this happened three times? &nbsp;&rarr;&nbsp; is it worth interrupting for?<br>
-      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>almost always no</b> &nbsp;&rarr;&nbsp; implementation
+      <b>A</b> build it &nbsp;&middot;&nbsp; <b>B</b> build it, flag one thing
+      &nbsp;&middot;&nbsp; <b>C</b> pause and guide
+    </p>
+    <p>
+      Mode A is the overwhelming majority: no manufactured concerns, no
+      <em>&ldquo;this looks fine from a project perspective&rdquo;</em>. Mode C is
+      rare, is never a refusal, and always ends with the offer to build it as
+      asked.
     </p>
   </div>
 </section>
@@ -90,30 +111,45 @@
 <section>
   <div class="wrap">
     <h2>The moment it is built for</h2>
-<pre class="block">You:    Add CSV export to the members table.
+<pre class="block">You:    Add another status to orders.
 
-Agent:  Export added &mdash; all visible columns, respecting the current filter and
-        sort, streamed so large orgs don&rsquo;t time out.
+Agent:  I&rsquo;d stop for a moment before adding this status.
 
-        One thing I&rsquo;d flag. That&rsquo;s six controls on this table since August:
-        search, filters, sorting, saved views, bulk actions, now export. Each
-        made sense on its own, but they&rsquo;re pointing at a workflow nobody has
-        written down &mdash; and it&rsquo;s already showing: saved views track role,
-        status and joined date, bulk actions work on role and active, and
-        export just took everything.
+        The problem isn&rsquo;t really the new status. There&rsquo;s no defined order
+        lifecycle &mdash; pay.js treats paid as final, ship.js doesn&rsquo;t check
+        cancellation, and refund.js will refund a cancelled order. A fifth
+        flag lands in a set of four that already contradict each other.
 
-        Before the seventh, one sentence would settle it: who opens this
-        screen, and what are they trying to finish? If it&rsquo;s &ldquo;support checks
-        whether someone still has access&rdquo;, the table needs three columns and a
-        search box and half of what&rsquo;s there is in the way. If it&rsquo;s &ldquo;an admin
-        does quarterly access reviews&rdquo;, export is the main event and should
-        probably be scheduled rather than clicked.</pre>
+        What I&rsquo;d do first: write down the states and which transitions are
+        legal. Ten lines, half an hour. Then the new status goes into that
+        instead of becoming a fifth exception.
+
+        Say the word and I&rsquo;ll just add the flag &mdash; you may know something
+        the repository doesn&rsquo;t.</pre>
     <div class="note">
-      <strong>Nothing was refused.</strong> The export was built and tested. The
-      observation is checkable in thirty seconds &mdash; six controls, five dates,
-      three inconsistent column sets &mdash; and the missing thing is one sentence
-      from a human, not a refactor.
+      <strong>Nothing was refused.</strong> The alternative is smaller than the
+      work it replaces, it is startable today, and the evidence is three file
+      names you can check in thirty seconds.
     </div>
+
+    <h3>Every finding ends in an action</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Not this</th><th>This</th></tr></thead>
+        <tbody>
+          <tr><td>&ldquo;There is no order lifecycle&rdquo;</td><td>&ldquo;Define the order lifecycle before adding a fifth status&rdquo;</td></tr>
+          <tr><td>&ldquo;There is technical debt&rdquo;</td><td>&ldquo;Extract the shared permission rule and route the three existing paths through it, before the fourth exception&rdquo;</td></tr>
+          <tr><td>&ldquo;The product direction is unclear&rdquo;</td><td>&ldquo;Decide what the dashboard is meant to help someone decide, before the next widget&rdquo;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      When several things could be done, they are ranked by what most improves
+      the trajectory &mdash; blocking decisions, then broken core workflows, then
+      domain-model problems, then boundaries getting expensive, then security and
+      data integrity, and only then debt, performance and polish. Technical
+      issues do not automatically outrank product and workflow ones.
+    </p>
   </div>
 </section>
 
@@ -123,7 +159,7 @@ Agent:  Export added &mdash; all visible columns, respecting the current filter 
     <p>
       An agent that comments on project direction four times a week gets
       uninstalled in week two, and the one real observation it would have made in
-      week nine never arrives. So intervention is gated, not judged.
+      week nine never arrives. So Modes B and C are gated, not judged.
     </p>
     <div class="tablewrap">
       <table>
@@ -138,11 +174,13 @@ Agent:  Export added &mdash; all visible columns, respecting the current filter 
     </div>
     <p>
       Three out of four is a note in the project state, not a sentence to you. On
-      top of that: one interruption per session, maximum &mdash; and a dismissed
+      top of that: one intervention per session, maximum &mdash; and a dismissed
       observation is closed <em>permanently</em>. Say &ldquo;that&rsquo;s
       intentional&rdquo; and it is recorded as a decision with your reason, and
-      never raised again, in any wording. That single rule is what makes the
-      skill survivable past month two.
+      never raised again, in any wording. Say &ldquo;this is a throwaway
+      prototype&rdquo; and that becomes the frame every later recommendation is
+      measured against, because you know the goal and it does not. Those rules
+      are what make the skill survivable past month two.
     </p>
   </div>
 </section>
@@ -152,17 +190,24 @@ Agent:  Export added &mdash; all visible columns, respecting the current filter 
     <h2>What it remembers</h2>
 <pre class="block">.project-compass/
   project.md          what this is, who it serves &mdash; labeled, dated
+  direction.md        what it is becoming, the biggest gap, the next step
   trajectory.md       dated entries: what changed, and which pattern it fed
   decisions.md        settled questions, including &ldquo;we discussed this, proceed&rdquo;
   open-questions.md   unresolved decisions affecting implementation
-  blind-spots.md      patterns that cleared the bar, and what closes them</pre>
+  blind-spots.md      gaps that cleared the bar, and what closes them</pre>
     <p>
-      This is the difference between the skill and asking an agent <em>&ldquo;what
-      am I missing?&rdquo;</em> &mdash; that question gets a fresh guess from
-      nothing, every time. Renames, formatting and dependency bumps are never
-      recorded; a trajectory that logs everything is a diary, and nobody finds a
-      pattern in a diary. The repository always outranks the state, and recorded
-      claims are re-verified before anything is built on them.
+      <code>direction.md</code> is <em>&ldquo;what should I do next?&rdquo;</em>,
+      cached &mdash; so next week the answer costs one file read instead of a
+      second reconstruction of the project. This is the difference between the
+      skill and asking an agent <em>&ldquo;what am I missing?&rdquo;</em>: that
+      question gets a fresh guess from nothing, every time.
+    </p>
+    <p>
+      The purpose of every file is better guidance later, not a record of what
+      happened. Renames, formatting and dependency bumps are never written down;
+      a trajectory that logs everything is a diary, and nobody finds a pattern in
+      a diary. The repository always outranks the state, and recorded claims are
+      re-verified before anything is built on them.
     </p>
   </div>
 </section>
@@ -196,15 +241,15 @@ Agent:  Export added &mdash; all visible columns, respecting the current filter 
     <h2>What it notices</h2>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>What recurs</th><th>What is usually missing</th></tr></thead>
+        <thead><tr><th>What accumulated</th><th>What it has become</th><th>What to do about it</th></tr></thead>
         <tbody>
-          <tr><td>Permission exceptions, role special-cases, bypasses</td><td>An authorization model</td></tr>
-          <tr><td>Boolean status flags, &ldquo;can this still be edited?&rdquo;</td><td>A lifecycle: states, transitions, who may cause them</td></tr>
-          <tr><td>Fixes for four shapes of the same duplicate</td><td>Idempotency, and what makes an operation <em>the same</em> one</td></tr>
-          <tr><td>Timeout raised, retry, queue, cache, Redis</td><td>A measurement &mdash; what is slow, and what target matters</td></tr>
-          <tr><td>Search, filter, sort, saved views, bulk actions, export</td><td>The workflow those controls serve</td></tr>
-          <tr><td>Notification rules added per feature</td><td>Event semantics</td></tr>
-          <tr><td>&ldquo;What counts as active?&rdquo; asked in three features</td><td>A business rule nobody wrote down</td></tr>
+          <tr><td>Search, filter, sort, saved views, bulk, export</td><td>A list-management workflow</td><td>One sentence naming who uses the screen and what they are finishing</td></tr>
+          <tr><td>Draft, submit, approve, reject, publish</td><td>A lifecycle</td><td>The states, the legal transitions, and who may cause each</td></tr>
+          <tr><td>Invite, role, permission, org, access, audit</td><td>An authorization model</td><td>Subjects, resources, actions &mdash; and does ownership outrank role</td></tr>
+          <tr><td>Payments, refunds, subscriptions, invoices</td><td>A billing lifecycle</td><td>How those four interact, before the fifth</td></tr>
+          <tr><td>Notification rules added per feature</td><td>An event system</td><td>The real events, their consumers, their guarantees</td></tr>
+          <tr><td>Timeout, retry, queue, cache, Redis</td><td>Five guesses</td><td>One number: what is slow, measured how, acceptable at what</td></tr>
+          <tr><td>UI passes while the workflow underneath breaks</td><td>A sequencing problem</td><td>Finish the path end to end, then return to the interface</td></tr>
         </tbody>
       </table>
     </div>
@@ -219,10 +264,10 @@ Agent:  Export added &mdash; all visible columns, respecting the current filter 
   <div class="wrap">
     <h2>Answers it is willing to give</h2>
 <pre class="block">Keep going &mdash; this is the thing. (The most common non-silent answer.)
+Settle one decision; three features are waiting on it.
+Finish the workflow underneath before adding more interface on top of it.
 Ship it and watch. Four passes on a working screen is guessing.
 Measure it first. There is no performance problem here yet, only a suspicion.
-This is a product decision, not a technical one &mdash; one sentence unblocks
-    three features.
 Delete it. Nothing uses it and it is charging rent.
 Write down the rule. It currently lives in four conditionals that disagree.</pre>
     <p>
@@ -238,7 +283,7 @@ Write down the rule. It currently lives in four conditionals that disagree.</pre
   <div class="wrap">
     <h2>Where it fits</h2>
     <p>
-      Project Compass asks whether the ticket should have been written.
+      Project Compass asks whether the ticket is the right next thing at all.
       <a href="impact-map.html">Impact Map</a> maps what the change would touch,
       <a href="proof-driven-dev.html">ProofBuild</a> proves it does what it
       claims, <a href="production-guard.html">Production Guard</a> decides whether
@@ -256,7 +301,7 @@ Write down the rule. It currently lives in four conditionals that disagree.</pre
       <li>It sees the repository and the conversation. Your users, your market, what a stakeholder promised &mdash; invisible, and it says so rather than guessing</li>
       <li>Value compounds with use. A first session can reconstruct a project model; a trajectory takes weeks to become one</li>
       <li>Inherited history helps &mdash; on a repository that arrives with a pattern already in it, git history counts as evidence from the first session</li>
-      <li>Pattern detection is judgment, not analysis. It will sometimes read focused work as a pattern; the four gates make that rare, and being overruled costs one sentence</li>
+      <li>Reading direction is judgment, not analysis. It will sometimes read focused work as a pattern; the four gates make that rare, and being overruled costs one sentence</li>
       <li>It cannot tell you whether your idea is good. It can tell you that nothing in the repository connects it to anything else</li>
       <li>Work done outside the agent is invisible unless it left a commit</li>
     </ul>

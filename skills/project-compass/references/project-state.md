@@ -9,20 +9,55 @@ are mostly about restraint.
 | File | Holds | Written when |
 | --- | --- | --- |
 | `project.md` | The model — a page, labeled, dated | Purpose, users, workflows, domain, architecture, or milestone change |
+| `direction.md` | What it is becoming, the biggest gap, the next step | The direction moves, the gap closes, or the recorded next step is done |
 | `trajectory.md` | Dated entries: what changed, which pattern it fed | A request changes what the project is or does |
 | `decisions.md` | Settled questions, including dismissed observations | A decision is made, stated, or inferred with High confidence |
 | `open-questions.md` | Unresolved decisions currently affecting implementation | A question blocks or distorts work a second time |
 | `blind-spots.md` | Patterns that cleared the bar, and what closes them | A pattern clears all four gates |
 
 Create the smallest set that carries the state. A first session usually writes
-`project.md` alone. `blind-spots.md` may never exist — that is a healthy
-project, not a failed run.
+`project.md` alone; `direction.md` appears once there is a direction worth
+recording, which is rarely on day one. `blind-spots.md` may never exist — that
+is a healthy project, not a failed run.
+
+The purpose of all of it is **better guidance later**. Nothing goes in that does
+not change a future recommendation, which is the test that keeps this directory
+from becoming a diary with five filenames.
 
 Nothing else belongs in the directory. No `milestones.md` until there are
 milestones (they live in `project.md` until there are more than five), no
 `architecture.md` duplicating the repo's own docs, no per-session logs.
 
 ## Formats
+
+**direction.md** — the answer to *"what should I do next?"*, cached. Rewritten
+rather than appended to: it describes the present, and a stale direction is
+worse than none.
+
+```markdown
+# Direction
+
+**Appears to be**  Team task tracker for small teams
+**Becoming**       A list/query management workflow            INFERRED (High)
+**Key workflow**   create → assign → complete. Assign and complete work;
+                   nothing closes the loop — no detail view, no comments
+**Biggest gap**    Nobody has said who the list screen is for; three features
+                   already disagree about what a task is on it
+**Next step**      One sentence naming the user and the job of that screen,
+                   before the eighth control goes on it
+**Why**            Export is the second feature running that needs to know which
+                   fields matter, and there is no answer
+**Confidence**     High for the pattern, Low for whether it is deliberate
+**Evidence**       CHANGELOG 0.5.0–0.9.0; TaskFilters.jsx:3 (4 fields),
+                   SavedViews.jsx:4 (2), api/tasks.js:3 (3)
+**Not yet said**   nothing is blocked; raise at the next control request
+**Verified**       2026-09-10
+```
+
+`Not yet said` is what makes silence deliberate rather than forgetful, and
+`Stated goal` is added whenever the user has declared one — *"throwaway
+prototype, 2026-09-04"* — so the next session inherits the frame instead of
+re-deriving advice they already declined.
 
 **trajectory.md** — the substrate for every pattern claim. Terse, scannable,
 one block per meaningful change:
@@ -86,6 +121,7 @@ directory nobody reads.
 
 ```
 project.md         one page
+direction.md       half a page, rewritten in place, never a history
 trajectory.md      the last ~40 entries; older ones compress into project.md
 decisions.md       unbounded, but each entry four lines
 open-questions.md  five or fewer; if there are more, they are not all blocking
@@ -101,7 +137,7 @@ collapse.
 
 State is a cache. The repository is the truth.
 
-- Every claim in `project.md` sits under a `Verified` date.
+- Every claim in `project.md` and `direction.md` sits under a `Verified` date.
 - Re-verify a claim before building an intervention on it. One grep.
 - When a re-check fails, fix the file before doing anything else, and consider
   whether the finding survives. Often it does not.
@@ -136,6 +172,10 @@ the directory.
   closed.
 - Continue the trajectory; do not restart it.
 - Do not re-derive the project model from scratch when a dated one exists —
-  verify the parts you are about to use.
+  verify the parts you are about to use. `direction.md` exists precisely so that
+  *"what should I do next?"* does not cost a full re-read; re-check the two or
+  three claims the answer rests on, not all of them.
+- Honor a recorded `Stated goal`. A prototype recorded in August is still a
+  prototype in October unless the user says otherwise.
 - If the recorded state contradicts the repository, the repository wins and the
   file gets corrected in the same breath.

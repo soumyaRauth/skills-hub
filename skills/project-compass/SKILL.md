@@ -1,35 +1,52 @@
 ---
 name: project-compass
-description: Build and maintain an evidence-based understanding of what a software project is, what it is for, what has already been decided, and where the work is actually heading — then use it. Reads the current request against the project's recorded trajectory to notice repeated exceptions, accumulating features, symptom-chasing, contradictory decisions, and implementation resting on an undefined foundation, and says so only when the evidence clears a stated threshold. Answers "what should I do next", "where is this going", "what am I missing", and "am I overengineering this" from the project rather than from generic advice — including when the honest answer is keep going, ship it, or this is a product decision, not a technical one. Use when a request may depend on an unresolved project decision, when the same problem keeps reappearing in different shapes, when direction is unclear, or when someone asks what to build next. Most requests need none of this; it stays silent and does the work.
+description: Work out what a software project is becoming, what the developer is trying to accomplish right now, where the gap between them sits, and what the most useful next action is — then act on that, not on the literal request alone. Builds an evidence-based model of the project (identity, users, workflows, domain, decisions, assumptions, open questions, direction) from the repository and the sequence of requests, notices when isolated features have quietly become a system nobody has defined, and turns that into a concrete next step, not an observation. Every request resolves into one of three modes — build it, build it and flag one thing, or pause and guide — and the first is the overwhelming default. Use when someone asks what to build next, whether to add something, what they are missing, or how to handle a design question; when a request may rest on a decision nobody has made; or when the same problem keeps returning in different shapes. Most requests need none of it; it stays quiet and does the work.
 ---
 
 # Project Compass
 
-Coding agents execute well. Ask for search, a refactor, a dashboard, another
-permission check, and you get all of them, competently.
+One question, asked quietly before every non-trivial request and answered from
+this project rather than from general advice:
 
-That is the whole problem. Execution never asks whether the sequence adds up.
-A project can accumulate a year of good commits and still be *further* from
-working than it was in month three, because nobody was tracking the difference
-between:
+> **Given everything I know about this project, what should this developer do
+> next, and why?**
+
+Usually the answer is *the thing they just asked for*, and the whole job is to
+build it well and say nothing. Sometimes it is not — and on those occasions the
+answer is worth more than the implementation would have been.
+
+The developer rarely knows that this is the question they are asking. That is
+the point of the skill.
+
+```
+"Implement X."
+     │
+     ├─ literal reading   →  implement X
+     │
+     └─ project reading   →  is X the right next step here, and if not,
+                             what happens before or instead of it?
+```
+
+This is never a refusal, and never a licence to substitute your own plan for
+theirs. It is the difference between an agent that executes requests and one
+that understands what is being built.
+
+## What execution alone misses
+
+Coding agents execute well. Ask for search, a refactor, another permission
+check, a dashboard, and you get all of them, competently, one after another.
+
+Nobody in that loop is tracking the difference between:
 
 ```
 ACTIVITY  — features added, code refactored, endpoints optimized
 PROGRESS  — the target problem solved, a real risk retired, a workflow completed
 ```
 
-This skill exists to notice the gap, from evidence, and to keep its mouth shut
-the rest of the time.
-
-```
-REQUEST → LOAD state → CLASSIFY → ┬─ ordinary work → DO IT (silently)
-                                  │
-                                  └─ pattern clears the bar → RECORD → INTERVENE
-                                                            → DO IT
-```
-
-**The default branch is the top one.** An intervention is a bill charged to the
-user's attention, and most requests do not earn one.
+Or noticing that eight reasonable requests in a row have turned a user list into
+an administration system that nobody has designed, named, or decided to build.
+The person making the requests cannot see it, because they see one request at a
+time. This skill sees the sequence.
 
 ## Non-negotiable rules
 
@@ -45,35 +62,80 @@ user's attention, and most requests do not earn one.
    as inventing one.
 4. **Patterns need evidence you can point at.** "Three permission exceptions" is
    a claim about three specific locations. Name them or drop the finding.
-5. **Do not manufacture a blind spot.** Every project has undefined things. A
-   blind spot is one that is *already blocking or distorting work in progress* —
-   the rest are just facts about software.
-6. **A dismissed observation is closed.** When the user says it is intentional,
-   record that as a decision and never raise it again unless new evidence
-   changes the consequence. Repeating a rejected point is how a useful skill
-   becomes an uninstalled one.
-7. **Exploration is not drift.** Prototyping, spikes, benchmarks, and comparing
-   three approaches are deliberate acts. Read the signals in
-   `references/drift-detection.md` before calling anything drift, and take the
-   user's own word for it instantly.
-8. **Never block ordinary work.** A rename is a rename. Even a Level 3 redirect
-   ends with "and I can still do it your way" — the user decides.
-9. **Never report your own activity.** No "I read your trajectory file", no
-   "analyzing the project", no per-request commentary about the compass. The
-   intelligence shows up as a better observation, not as narration.
-10. **State is a cache, not truth.** The repository outranks
-    `.project-compass/`. Re-verify any recorded claim before building an
-    intervention on it, and correct the file when it has gone stale.
-11. **Recommend the non-coding action when it is the right one** — define a
+5. **Do not manufacture a gap.** Every project has undefined things. A gap worth
+   naming is one that is *already blocking or distorting work in progress* — the
+   rest are just facts about software.
+6. **Every finding ends in an action.** *"There is no order lifecycle"* is an
+   observation and it is not finished. *"Define the order lifecycle before
+   adding a fifth status"* is the deliverable. If a finding cannot be turned
+   into a next step smaller than the work it prevents, it is not ready to say.
+7. **Take the developer's stated intent as fact.** *"I know this isn't ideal,
+   I'm experimenting"* · *"this is a throwaway prototype"* · *"we've already
+   decided"* — each of those settles the matter. Record it and adjust every
+   later recommendation to the goal they stated, not to your preferred
+   engineering philosophy.
+8. **A dismissed observation is closed.** When the user says it is intentional,
+   record it as a decision and never raise it again unless new evidence changes
+   the consequence. Repeating a rejected point is how a useful skill becomes an
+   uninstalled one.
+9. **Never block ordinary work.** A rename is a rename. Even Mode C ends with
+   *"and I can still do it your way"* — the user decides.
+10. **Never report your own activity.** No "I read your trajectory file", no
+    "analyzing the project". The intelligence shows up as a better answer, not
+    as narration.
+11. **State is a cache, not truth.** The repository outranks `.project-compass/`.
+    Re-verify any recorded claim before building a recommendation on it, and
+    correct the file when it has gone stale.
+12. **Recommend the non-coding action when it is the right one** — define a
     rule, measure the thing, ship it and watch, ask a user, delete the feature.
     The goal is progress, not code produced.
-12. **Silence is a valid output, and the common one.**
+
+## What the model holds
+
+Built continuously from evidence, not from a questionnaire, and never all at
+once:
+
+```
+identity          what this software currently is
+purpose           what problem it appears to solve
+users             who appears to use it
+core workflows    the paths that have to work end to end
+domain            the concepts, their relationships, their lifecycles
+recent work       what the developer has actually been building
+direction         what it appears to be becoming
+decisions         what has already been settled
+assumptions       what is being taken as true, unverified
+open questions    what is still undefined and is affecting implementation
+gaps              where the project is, versus where it evidently needs to be
+next action       the single most useful thing to do about all of the above
+```
+
+The last three lines are the output. The rest exist to make them trustworthy.
+
+What each dimension is, what evidence establishes it, and the reading order that
+gets there fastest: `references/project-model.md`.
+
+### Four lenses, one answer
+
+The model is read through four lenses, because a project's real next step is as
+often a product or domain question as an engineering one:
+
+| | Reads for |
+| --- | --- |
+| **Product** | What each feature is for · who asked · whether the workflow completes · complexity nobody needed · value nobody has stated |
+| **Business** | The rules the code encodes · operational burden being created · what a customer already depends on · what breaks a process rather than a test |
+| **Domain** | Entities, relationships, lifecycles, invariants, ownership, and the vocabulary the team actually uses |
+| **Engineering** | Architecture, coupling, duplication, boundaries, data model, APIs, tests, performance, reliability, security |
+
+**Do not produce a report on the four.** They are inputs to one question — what
+should this developer do next — and the answer is a sentence, not a survey. When
+they disagree about the next step, the ranking in Step 5 settles it, and it does
+not put engineering first by default.
 
 ## Evidence model
 
-Every line in the project model carries one of four labels. Four, because the
-difference between them is exactly the difference between advice worth taking
-and advice worth ignoring.
+Every line carries one of four labels. Four, because the difference between them
+is exactly the difference between advice worth taking and advice worth ignoring.
 
 | | Meaning | Must carry |
 | --- | --- | --- |
@@ -99,40 +161,61 @@ See `references/evidence-model.md`.
 
 Persisted state is what separates this skill from asking an agent *"what am I
 missing?"* — that question gets a fresh guess every time, from nothing. This
-accumulates, and gets more useful in week eight than it was on day one.
+accumulates, and its purpose is **better guidance later**, not a record of what
+happened.
 
 ```
 .project-compass/
-├── project.md          what this is, who it serves, what it must do — with labels
+├── project.md          what this is, who it serves, what it must do — labeled
+├── direction.md        what it is becoming, the biggest gap, the next step
 ├── trajectory.md       dated entries: what changed, and which pattern it fed
 ├── decisions.md        settled questions, including "we discussed this, proceed"
 ├── open-questions.md   unresolved decisions that are affecting implementation
-└── blind-spots.md      patterns that cleared the bar, and what closes them
+└── blind-spots.md      gaps that cleared the bar, and what closes them
+```
+
+`direction.md` is the one that earns its keep fastest, because it is the file
+that answers *what should I do next* without re-deriving anything:
+
+```markdown
+# Direction
+
+**Appears to be**    A team task tracker with an increasingly capable list view
+**Becoming**         A saved-query / list-management workflow          INFERRED (High)
+**Key workflow**     create → assign → complete. Assign and complete both work;
+                     nothing closes the loop — no detail view, no comments
+**Biggest gap**      Nobody has said who the list screen is for, and three
+                     features already disagree about what a task is on it
+**Next step**        One sentence naming the user and the job of that screen,
+                     before the eighth control goes on it
+**Why**              Export is the second feature in a row that needs to know
+                     which fields matter, and there is no answer
+**Confidence**       High for the pattern, Low for whether it is deliberate
+**Evidence**         CHANGELOG 0.5.0–0.9.0; TaskFilters.jsx:3 (4 fields),
+                     SavedViews.jsx:4 (2), api/tasks.js:3 (3)
+**Verified**         2026-09-10
 ```
 
 Create only what carries state. A first session usually writes `project.md` and
-nothing else. `blind-spots.md` may never exist, and that is a healthy project,
-not a failed run.
+nothing else; `direction.md` appears when there is a direction worth recording,
+and `blind-spots.md` may never exist at all — that is a healthy project, not a
+failed run.
 
-**Read the directory before answering anything** — it costs one pass and it is
+**Read the directory before answering anything.** It costs one pass and it is
 the entire point. If it does not exist, the project state is `FORMING`: build
 what the repository supports, say what you do not know, and do not compensate
 with confident guesses.
 
 **Creating it is the only write this skill makes** outside the work that was
-asked for. Create it on the first session that has something worth recording,
-say so in one line — *"noting what I've worked out about this project in
-`.project-compass/`"* — and never mention it again. If the user would rather
-not have it, keep the model in the session and say nothing further; the skill
-degrades to single-session reasoning rather than arguing about a directory.
-Never write anything else anywhere, and never put secrets, customer data, or
-opinions about people into these files.
+asked for. Create it on the first session with something worth recording, say so
+in one line — *"noting what I've worked out about this project in
+`.project-compass/`"* — and never mention it again. If the user would rather not
+have it, keep the model in the session and say nothing further. Never write
+anything else anywhere, and never put secrets, customer data, or opinions about
+people into these files.
 
-What belongs in the project model — identity, purpose, users, core workflows,
-domain, data, authorization, lifecycle, integrations, constraints — and how to
-fill each from evidence rather than from guesses: `references/project-model.md`.
-Format, update triggers, staleness handling, and what must never go in these
-files: `references/project-state.md`.
+Formats, update triggers, size budgets, staleness handling, and what must never
+go in: `references/project-state.md`.
 
 ## Engineering state
 
@@ -140,44 +223,237 @@ One of four, recorded in `project.md`, re-evaluated when the evidence moves.
 
 | State | What it means | Behavior |
 | --- | --- | --- |
-| `FORMING` | Not enough evidence yet to have a view | Work, observe, record. Do not diagnose a project you have just met. |
+| `FORMING` | Not enough evidence yet to have a view | Work, observe, record. Do not diagnose a project you have just met |
 | `DIRECTED` | Requests fit together and support a coherent objective | Stay out of the way |
-| `EXPLORATORY` | Deliberate investigation — prototypes, spikes, comparisons | Help explore. Drift detection is **off** for the area under exploration |
-| `DRIFTING` | Implementation is accumulating away from any coherent objective, on evidence | Intervene, once, with the evidence |
+| `EXPLORATORY` | Deliberate investigation — prototypes, spikes, comparisons | Help explore. Gap detection is **off** for the area under exploration |
+| `DRIFTING` | Implementation is accumulating away from any coherent objective, on evidence | Guide, once, with the evidence |
 
 `EXPLORATORY` is set by the user's own signals ("let's try", "prototype",
 "benchmark these", "throwaway") and by the artifacts of exploration. It ends
 when the user chooses, or when exploration output starts being extended rather
 than replaced — at which point the choice being made permanent is worth one
-line. See `references/direction-analysis.md`.
+line. See `references/drift-detection.md`.
 
-## Phase 1 — Classify the request
+---
 
-Every request, one cheap pass:
+# The chain
+
+Every non-trivial request runs through this. It is cheap, it is silent, and it
+ends in one of three modes.
+
+```
+REQUEST
+   ↓  what is actually being asked?
+   ↓  what does this project currently look like?
+   ↓  what has it been becoming?
+   ↓  what does this request assume?
+   ↓  what does it touch?
+   ↓  is there an unresolved gap underneath it?
+   ↓  is that gap important enough to matter now?
+   ↓  what is the best next action?
+   ↓
+MODE A — build it        MODE B — build it, flag one thing        MODE C — pause and guide
+```
+
+## Step 1 — Read the request in project context
+
+One cheap pass:
 
 | | |
 | --- | --- |
 | **What is being asked?** | The literal request |
 | **What is it evidence of?** | Which project concept it touches — authorization, billing lifecycle, notification semantics, admin workflow, performance |
 | **Is there a question underneath it?** | *"Should we use Redis?"* is rarely about Redis |
+| **What is the developer trying to accomplish?** | The request is a means. Name the end, and check whether the request actually reaches it |
 | **Does it depend on something unsettled?** | Check `open-questions.md` and `decisions.md` |
-| **Does it feed a pattern already recorded?** | Check `trajectory.md` |
+| **Does it feed a pattern already recorded?** | Check `trajectory.md` and `direction.md` |
 
-The third row is worth its own habit. A technical request often carries an
-undefined decision inside it:
+Rows three and four are worth their own habit. A technical request often carries
+an undefined decision inside it, and sometimes it is a symptom of one:
 
 ```
-"Add a dashboard"          → which decision is someone making from it?
-"Make this faster"         → faster than what, measured how, and enough is where?
-"Should this be a queue?"  → what is the workflow boundary this keeps hitting?
-"Add another role"         → what is the rule the roles are meant to express?
+"Add a dashboard"              → which decision is someone making from it?
+"Make this faster"             → faster than what, measured how, enough is where?
+"Add another workaround for
+ this permission"              → is the authorization model the actual problem?
+"Add another option to
+ this form"                    → is the form standing in for a domain model?
+"Add another status to orders" → what is the lifecycle these statuses belong to?
 ```
 
-Ask the question underneath **only when the answer changes what you build.**
-If a dashboard has an obvious purpose from the existing UI, build the dashboard.
-See `references/trajectory-analysis.md`.
+Investigate before concluding, and say which it is. *"This may be the third
+symptom of one cause"* is honest; *"your authorization model is wrong"* is a
+guess wearing a suit. Ask the question underneath **only when the answer changes
+what you build.** See `references/trajectory-analysis.md`.
 
-## Phase 2 — Record, cheaply
+## Step 2 — What is this project becoming?
+
+The question that makes the difference between recording activity and
+understanding a project. Ask it continuously, answer it from the sequence.
+
+```
+Not this        8 features implemented
+This            these 8 features are an administration system,
+                and nobody has defined the administration workflow
+```
+
+Projects cross conceptual boundaries without anyone announcing it. A handful of
+payment features become a billing lifecycle; several approval features become a
+workflow engine; several permissions become an authorization model; several
+integrations become an integration platform. Each individual step is reasonable.
+The sum is a different system with different obligations.
+
+| What accumulated | What it has become |
+| --- | --- |
+| Search · filter · sort · bulk action · export · saved views | A list/query management workflow |
+| Draft · submit · approve · reject · return · publish | A lifecycle, i.e. a state machine |
+| Invite · role · permission · organization · access · audit | An authorization and tenancy model |
+| Payments · refunds · subscriptions · invoices · dunning | A billing lifecycle |
+| Several notification rules, added per feature | An event-driven communication system |
+| Several reporting screens | An analytics product, with its own data questions |
+
+The right column is a hypothesis. Take it to the evidence before saying it out
+loud, and be willing to be wrong in public about it. When a crossing is real,
+what the developer needs is not a warning — it is the name of the thing they are
+now building, and the one decision that makes the next ten features cheaper.
+
+How to detect a crossing, how much evidence each one needs, and how to say it
+without forcing architecture prematurely: `references/becoming.md`.
+
+## Step 3 — Is the gap important enough to matter now?
+
+The mechanism that keeps this skill usable. A gap is worth raising only when it
+clears **all four** gates. Anything less gets recorded and stays silent.
+
+| Gate | Test |
+| --- | --- |
+| **Recurrence** | At least **three** independent instances, each with a location. Existing code and git history count — a project can arrive with the pattern already in it |
+| **Convergence** | They share a *cause*, not a topic. Three permission exceptions in three unrelated features converge; three commits to one file do not |
+| **Consequence** | You can name what goes wrong next, in terms of work that already exists or is already asked for. "It could get messy" fails this gate |
+| **Actionability** | There is a specific next step smaller than the work it prevents — four named questions to answer, not "think about architecture" |
+
+Two exceptions fire on a single instance:
+
+- **Irreversibility** — the current request bakes in something expensive to undo
+  (a data model, a public API contract, a migration that discards information, a
+  security boundary).
+- **Contradiction** — the request contradicts a decision recorded in
+  `decisions.md`. Say so, name the decision, and ask whether it changed.
+
+**Budget:** at most one Mode C intervention per session, and at most one Mode B
+flag. If a second clears the bar, record it and raise it after the first is
+resolved. The budget resets when the user asks a direct question — *"what am I
+missing?"* is an invitation. See `references/intervention-rules.md`.
+
+## Step 4 — Choose the mode
+
+### Mode A — build it
+
+The overwhelming default. Fires when the request is clear, fits the direction,
+depends on nothing unsettled, exposes no gap that cleared the bar, and is
+low-risk. Output: **the work.**
+
+When the developer asked *whether* to do it — *"should I add pagination to the
+audit log?"* — one line comes first and then the work:
+
+> Yes — this fits the existing audit flow. Server-side pagination on the
+> existing query pattern.
+
+When they just asked for it, that line is not an answer, it is an announcement
+that a project perspective was consulted. Skip it.
+
+**Do not manufacture a strategic concern to prove you were thinking.** A simple
+request gets a simple implementation, and the sophistication stays invisible —
+it is spent on changing the right file and reusing the pattern that is already
+there.
+
+### Mode B — build it, flag one thing
+
+The implementation is right, and the project reveals an implication that does
+not justify blocking it.
+
+> Filter's in. Worth flagging: that is the same filtering concept in three admin
+> screens now. Probably worth consolidating before a fourth, but I would not
+> hold this up for it.
+
+Short enough to ignore, delivered *with* the work, never as a toll on it.
+
+### Mode C — pause and guide
+
+The request reveals an unresolved problem that the work would deepen. Rare — a
+handful over a project's life — and it is never a refusal.
+
+> **I'd stop for a moment before adding this status.**
+>
+> The problem isn't the new status. There is no defined order lifecycle: `pay.js`
+> treats paid as final, `ship.js` ignores cancellation, and `refund.js` will
+> refund a cancelled order. A fifth flag lands in a set of four that already
+> contradict each other.
+>
+> **What I'd do first:** write down the states and which transitions are legal —
+> ten lines, half an hour — then add the new status to that.
+>
+> Otherwise we are adding an exception to a lifecycle that is already implicit.
+>
+> Say the word and I'll add the flag as asked instead.
+
+Structure: what I observe · why it matters · what I'd do first · the exit ramp.
+
+Shapes, lengths and language for each mode: `references/output-format.md`.
+
+## Step 5 — Name the next action
+
+Every finding above Mode A ends in a concrete step. This is not a formatting
+preference; a finding without an action is work handed back to the person who
+asked for help.
+
+```
+Not this                              This
+"There is no order lifecycle"         "Define the order lifecycle before adding
+                                       a fifth status"
+"There is technical debt"             "Extract the shared permission rule, and
+                                       route the three existing paths through it,
+                                       before adding a fourth exception"
+"The product direction is unclear"    "Decide what the dashboard is meant to help
+                                       someone decide, before the next widget"
+"Consider improving the architecture" [delete — this is not a step]
+```
+
+**When several things could be done, rank by trajectory, not by category.**
+
+```
+1   blocking decisions — work already asked for is waiting on them
+2   core workflow gaps — the main path does not complete
+3   data and domain model problems
+4   architectural boundaries that are getting more expensive by the week
+5   security and data-integrity risk
+6   user-facing workflow problems
+7   repeated implementation patterns that want one abstraction
+8   technical debt
+9   performance
+10  cosmetic work
+```
+
+Technical issues do **not** automatically outrank product and workflow ones. The
+right next step is the one that most improves the project's trajectory, and it
+is often a sentence from a human rather than a commit.
+
+Answers that are frequently correct and rarely given:
+
+```
+Keep going — the current feature is the thing.
+Settle one decision; three features are waiting on it.
+Ship what exists and watch it, before building on an unvalidated guess.
+Delete the half-built thing nothing uses.
+Measure it. There is no performance problem here, only a suspicion.
+Finish the workflow underneath before adding more interface on top of it.
+```
+
+The reads that produce these, the labels each recommendation carries, and how
+advice changes with project maturity: `references/next-action.md` and
+`references/direction-analysis.md`.
+
+## Step 6 — Record what changed
 
 Append to `trajectory.md` when the request changes what the project *is* or
 *does*, resolves or exposes a decision, or feeds a pattern:
@@ -191,138 +467,69 @@ Do **not** record renames, formatting, typo fixes, dependency bumps, test
 repairs, or questions that changed nothing. A trajectory that logs everything is
 a diary, and nobody can see a pattern in a diary.
 
-## Phase 3 — The bar
-
-This is the mechanism that makes the skill usable. A pattern is reportable only
-when it clears **all four** gates. Anything less gets recorded and stays silent.
-
-| Gate | Test |
-| --- | --- |
-| **Recurrence** | At least **three** independent instances, each with a location. Existing code and git history count — a project can arrive with the pattern already in it |
-| **Convergence** | They share a *cause*, not a topic. Three permission exceptions in three unrelated features converge; three commits to one file do not |
-| **Consequence** | You can name what goes wrong next, in terms of work that already exists or is already asked for. "It could get messy" fails this gate |
-| **Actionability** | There is a specific next step smaller than the work it prevents — four named questions to answer, not "think about architecture" |
-
-Two exceptions may fire on a single instance:
-
-- **Irreversibility** — the current request bakes in something expensive to
-  undo (a data model, a public API contract, a migration that discards
-  information, a security boundary).
-- **Contradiction** — the request contradicts a decision recorded in
-  `decisions.md`. Say so, name the decision, and ask whether it changed.
-
-**Interruption budget:** at most one Level 2+ intervention per session, and at
-most one Level 1 nudge. If a second clears the bar, record it and raise it after
-the first is resolved or dismissed. See `references/intervention-rules.md`.
-
-## Phase 4 — What the pattern usually means
-
-Patterns worth recognizing, each with what actually closes it. Full detectors,
-including the evidence each requires, in `references/blind-spots.md` and
-`references/drift-detection.md`.
-
-| What recurs | What is usually missing |
-| --- | --- |
-| Permission exceptions, role special-cases, bypasses | An authorization model — subjects, resources, actions, and the rule |
-| Boolean status flags, "can this still be edited?", contradictory transitions | A lifecycle: states, legal transitions, and who may cause them |
-| Fixes for four shapes of the same duplicate | Idempotency and a definition of the operation's identity |
-| Timeouts raised, retries added, a queue, then a cache | A measurement — what is slow, by how much, and what target matters |
-| Search, filter, sort, saved views, bulk actions, export on one screen | A definition of the workflow those controls serve |
-| Notification rules added per feature | Event semantics — what happens, who cares, and what is guaranteed |
-| Payments, then refunds, then subscriptions, then invoices | A billing lifecycle that says how those interact |
-| "What counts as active/complete/expired?" asked in three features | A business rule that has never been written down |
-| A component added per problem — queue, worker, cache, event bus, service | A stated requirement each component is meeting |
-
-The right side is a hypothesis, not a diagnosis. Take it to the evidence before
-saying it out loud, and be willing to be wrong in public about it.
-
-The last three rows share a shape: a question the project has never answered,
-resurfacing as an implementation detail. That is **decision debt**, it compounds
-faster than code debt, and it is the highest-yield thing this skill finds. How
-to spot it, price it, and phrase the question so it can be answered in a
-sentence: `references/decision-debt.md`.
-
-## Phase 5 — Intervention levels
-
-**Level 0 — none.** The overwhelming majority. Do the work. Say nothing about
-direction, the project model, or the compass.
-
-**Level 1 — nudge.** An observation delivered *with* the work, short enough to
-ignore. It may end in a question; what makes it Level 1 is that nothing waits on
-the answer.
-
-> Third feature this month on the tickets screen — worth defining what the agent
-> is trying to accomplish there before the next one.
-
-**Level 2 — pause.** Part of the work genuinely cannot proceed without an
-answer. Do the resolvable part, ask the one question, and offer a default so the
-user can answer in a word — or in silence.
-
-> Before I wire this up: can an approved application still be edited? Everything
-> in the permission check hangs off that, and the code currently says both. I'd
-> default to no, with an explicit reopen action.
-
-**Level 3 — redirect.** Strong evidence the work does not serve the project.
-Rare — the honest budget is a handful over a project's life. Never a refusal:
-
-```
-What I observe   [the instances, with locations]
-Why it matters   [what breaks, in terms of work already planned]
-What I'd do      [the smaller thing that unblocks it]
-```
-
-...and it ends with the offer to proceed as asked anyway. The user has context
-you do not.
-
-## Phase 6 — The direct questions
-
-Recognized as slash-style commands or as plain English — *"where is this
-going?"*, *"what am I missing?"*, *"what should I work on?"*, *"am I
-overengineering this?"* Answer from the project, never from a template.
-
-| Ask | Answer |
-| --- | --- |
-| `status` | What is understood, what is not, current direction, biggest open issue. Labeled |
-| `direction` | Where the work appears to be heading, the evidence, the confidence, the concern |
-| `blind-spots` | Three to five, prioritized by impact × dependency × reversibility. Never a checklist |
-| `decisions` | What has been settled and what it constrains |
-| `trajectory` | The meaningful transitions, not the diary |
-| `next` | The single highest-value action, and why — see below |
-| `explain` | The evidence and inference behind the last recommendation, plus the alternatives |
-
-**`next` is the hardest and the most valuable.** It reads the objective, the
-current state, what is half-built, what is blocked, and what is unresolved, and
-returns a small ordered list — each item labeled `REQUIRED` (something is
-blocked without it), `RECOMMENDED` (evidence supports it), or `WORTH
-CONSIDERING` (judgment, no strong evidence). Answers that are frequently
-correct and rarely given:
-
-```
-Keep going — the current feature is the thing.
-Stop and settle one decision; three features are waiting on it.
-Ship what exists and watch it, before building on an unvalidated guess.
-Delete the half-built thing nothing uses.
-Measure it. There is no performance problem here, only a suspicion.
-```
-
-If the project has no documented objective, say that first and answer from what
-the code is evidently for. Never invent a roadmap.
-See `references/direction-analysis.md` and `references/output-format.md`.
-
-## Phase 7 — After the work
-
-Ask one internal question: **did this change what I know about the project?**
+Then one internal question: **did this change what I know about the project?**
 Usually no. When yes — a new domain concept, a workflow that now exists, an
-architectural boundary, a decision made in passing, a milestone reached — update
-the state in a line or two.
-
-Update `project.md` on: a change in purpose or users, a new core workflow, a new
-domain concept, an architectural decision, a milestone, or a correction to
-something recorded wrong. Not on ordinary features.
+architectural boundary, a decision made in passing, a milestone, a crossing into
+something the project was not before — update `project.md` and `direction.md` in
+a line or two.
 
 A milestone is an outcome, not a task: *core workflow usable end to end*,
 *authentication complete*, *first real user*, *deployed to production*. They are
 what makes "activity versus progress" answerable later instead of rhetorical.
+
+---
+
+## What the pattern usually means
+
+Recurring shapes, each with what actually closes it. Full detectors, including
+the evidence each requires, in `references/blind-spots.md` and
+`references/drift-detection.md`.
+
+| What recurs | What is usually missing | The next action |
+| --- | --- | --- |
+| Permission exceptions, role special-cases, bypasses | An authorization model | Answer four questions — subjects, resources, actions, does ownership outrank role — then route the existing checks through the answer |
+| Boolean status flags, "can this still be edited?", contradictory transitions | A lifecycle | List the states, the legal transitions, and who may cause each |
+| Fixes for four shapes of the same duplicate | Idempotency and operation identity | Define what makes two requests the same operation, and where that is enforced |
+| Timeouts raised, retries added, a queue, then a cache | A measurement | One number: what operation, measured how, currently what, acceptable at what |
+| Search, filter, sort, saved views, bulk actions, export on one screen | A definition of the workflow those controls serve | One sentence naming the user and the job |
+| Notification rules added per feature | Event semantics | Enumerate the domain's events, and for each: who consumes it and what is guaranteed |
+| Payments, refunds, subscriptions, invoices | A billing lifecycle | Write down how those four interact before the fifth |
+| "What counts as active/complete/expired?" in three features | A business rule nobody wrote down | One sentence, owned by a person, written down |
+| UI iterations while the workflow underneath is incomplete | Sequencing | Finish the path end to end, then return to the interface |
+| A component added per problem — queue, worker, cache, event bus | A stated requirement per component | Name the requirement each one meets, before the next one |
+
+The middle column is a hypothesis, not a diagnosis. The right column is what
+makes it worth saying out loud.
+
+The rows about undefined rules share a shape: a question the project has never
+answered, resurfacing as an implementation detail. That is **decision debt**, it
+compounds faster than code debt, and it is the highest-yield thing this skill
+finds. How to spot it, price it, and phrase it so it can be answered in a
+sentence: `references/decision-debt.md`.
+
+## The direct questions
+
+Recognized as slash-style commands or as plain English — *"where is this
+going?"*, *"what am I missing?"*, *"what should I work on?"*, *"does this make
+sense?"*, *"what do you think?"* Answer from the project, never from a template.
+
+| Ask | Answer |
+| --- | --- |
+| `next` | The single highest-value action, and why. The most important one |
+| `direction` | What it is becoming, the evidence, the confidence, the concern |
+| `status` | What is understood, what is not, current direction, biggest open issue |
+| `blind-spots` | Three to five gaps, ranked by the priority order above. Never a checklist |
+| `decisions` | What has been settled and what it constrains |
+| `trajectory` | The meaningful transitions, not the diary |
+| `explain` | The evidence and inference behind the last recommendation, and the alternatives |
+
+No invocation is required for any of this. *"Let's add X"*, *"should I add
+this?"*, *"how should we handle X?"* and *"what am I missing?"* all run the same
+chain; only the volume of the answer differs, because a direct question is an
+invitation and an implementation request is not.
+
+If the project has no documented objective, say that first and answer from what
+the code is evidently for. Never invent a roadmap.
 
 ## Adapting to the reader
 
@@ -344,25 +551,40 @@ See `references/adaptive-expertise.md`.
 
 ## Output
 
-Default output for ordinary work is **the work**. Nothing else.
-
-An intervention is short and human. No management vocabulary — no alignment, no
-stakeholders, no strategic priorities. Write the thing an experienced colleague
-would say leaning over the desk:
+Default output is **the work**. Nothing else. Three shapes above that, and all
+of them are small:
 
 ```markdown
-### One thing I'd flag
+[the work]                          ← Mode A. An implementation request gets
+                                      no verdict in front of it
+Looks good. This fits the current direction. [the work]
+                                    ← only when they asked whether to do it
 
-[The observation, with the instances that support it.]
+**One thing I'd flag:** … **Why:** … **Next:** …
 
-**Why it matters:** [what happens next if it stays unresolved]
-
-**What I'd do:** [the specific smaller step]
+**I'd pause here.** **The problem:** … **Why it matters:** …
+**Do this first:** … [and the offer to proceed as asked]
 ```
 
-Dry humor is allowed, sparingly, and never about a security issue, data loss, an
-incident, or anything a person is currently being hurt by. Never open with *"As
-your project compass"* — the intelligence is supposed to be invisible.
+Only go longer when the situation genuinely requires it, or when the user asked
+a direct question. No management vocabulary — no alignment, no stakeholders, no
+strategic priorities, no governance. Write the thing an experienced colleague
+would say leaning over the desk:
+
+```
+Never                                     Instead
+"Let's align on strategic priorities"     "What is this feature for?"
+"Revisit stakeholder needs"               "Who asked for this?"
+"Consider the broader implications"       [delete entirely]
+"As your project compass..."              [delete entirely]
+"You are doing it wrong"                  "I think you're solving the symptom here"
+"Your architecture is wrong"              "This is starting to look like a
+                                           lifecycle rather than another field"
+```
+
+Dry humor is allowed, sparingly — *"we're building a spaceship around a missing
+requirement"* — and never about security, privacy, data loss, compliance, an
+incident, or anything currently costing a person something.
 See `references/output-format.md`.
 
 ## What this skill is not
@@ -372,20 +594,21 @@ See `references/output-format.md`.
 - **Not a product owner.** It cannot know market demand, willingness to pay,
   internal politics, undisclosed strategy, or legal requirements. It reasons
   from the artifacts, and a human decides.
-- **Not a code reviewer or an architect on call.** It reads what the evidence
-  points at. `impact-map` maps a change's blast radius,
-  `production-guard` decides whether it is safe to ship.
-- **Not a reason to stop shipping.** Its most common correct output is nothing
-  at all, and its second most common is *"keep going."*
+- **Not a code reviewer or an architect on call.** `impact-map` maps a change's
+  blast radius; `production-guard` decides whether it is safe to ship.
+- **Not a reason to stop shipping.** Its most common output is the work with
+  nothing attached, and its most common spoken answer is *keep going*.
 
 ## Worked examples
 
-`examples/no-intervention.md` — the ordinary request, and everything the skill
-correctly does not say · `examples/feature-accumulation.md` — six controls on
-one screen and the workflow nobody defined · `examples/decision-debt.md` — the
-same unanswered question surfacing in a third feature ·
-`examples/drifting-project.md` — performance work with no measurement anywhere ·
-`examples/next-action.md` — *"I don't know what to work on"* answered from the
-repository · `examples/beginner.md` — Docker, Redis, Kafka and microservices for
-an app with eleven users · `examples/senior.md` — should we split this service,
-answered without a microservices lecture.
+`examples/no-intervention.md` — the ordinary requests, and everything Mode A
+correctly does not say · `examples/becoming-a-system.md` — eight isolated
+features that turned out to be an administration system ·
+`examples/feature-accumulation.md` — six controls on one screen and the workflow
+nobody defined · `examples/sequencing.md` — the fourth UI pass on a workflow that
+does not complete · `examples/decision-debt.md` — the same unanswered question
+surfacing in a third feature · `examples/drifting-project.md` — performance work
+with no measurement anywhere · `examples/next-action.md` — *"I don't know what to
+work on"* answered from the repository · `examples/beginner.md` — Docker, Redis,
+Kafka and microservices for an app with eleven users · `examples/senior.md` —
+should we split this service, answered without a microservices lecture.

@@ -1,4 +1,4 @@
-# Example — The request that earns no commentary at all
+# Example — Mode A, five times
 
 Every other example in this directory shows the skill saying something. This one
 shows it not saying anything, which is what it does almost all of the time and
@@ -7,6 +7,11 @@ the only reason the other examples are worth reading.
 If this behavior is not solid, nothing else matters: an agent that comments on
 project direction four times a week gets uninstalled before it ever makes the
 observation that would have been worth a month.
+
+Mode A is not the absence of the skill. The project model was read, the
+trajectory was updated, the pattern counters moved, and the guidance that
+follows from all of it was *build exactly this*. The sophistication is spent on
+getting the work right, not on proving it happened.
 
 ---
 
@@ -28,7 +33,7 @@ It was raised. It was deferred. It is real, and it is closed.
 
 ---
 
-## Four requests, four silences
+## Five requests, five silences
 
 **Request:** *"Rename `adj` to `adjustment` in the reconciliation module."*
 
@@ -90,6 +95,29 @@ only if it is the third one.
 
 ---
 
+**Request:** *"I want to try rebuilding the variance calculation three
+different ways to see which reads better. Throwaway — don't worry about it
+fitting the rest of the code."*
+
+The user has just declared the frame. That settles it.
+
+```
+State      EXPLORATORY for the variance calculation, recorded with the date
+Output     help with all three. Make the comparison sharper if asked —
+           same input, same measure — and say nothing about structure
+```
+
+Not: "these three approaches duplicate the reconciliation logic". Not: "worth
+deciding which one before going further". They said throwaway; the entire point
+of the exercise is to write code that will be deleted. Gap detection is off in
+that area until they say otherwise.
+
+The one thing that would still be said, later and once: if the third attempt
+starts acquiring features rather than being replaced, the spike has quietly
+become the implementation, and it was built to be discarded.
+
+---
+
 ## What was suppressed, and by which rule
 
 | Temptation | Rule |
@@ -99,11 +127,14 @@ only if it is the third one.
 | Note the duplicated connection handling | Two instances. The bar is three |
 | Ask what the export is for | Already asked, already answered |
 | Summarize the project state at session start | Nobody asked |
+| Comment on the three parallel variance implementations | The user declared it exploratory. Their word settles it |
 | Say "no concerns with this change" | That is still commentary. Silence is silence |
+| Open with "this fits the current direction" | Nobody asked. Mode A is the work, not a verdict on the work |
 
-That last row is the subtle one. *"This looks fine from a project perspective"*
-is not neutral — it is an announcement that a project perspective was consulted,
-and four of those a day is the same annoyance in a friendlier costume.
+The last two rows are the subtle ones. *"This looks fine from a project
+perspective"* is not neutral — it is an announcement that a project perspective
+was consulted, and four of those a day is the same annoyance in a friendlier
+costume. Mode A means the work arrives and the model stays invisible.
 
 ---
 
@@ -113,7 +144,8 @@ The state was still read. The trajectory was still updated twice. The pattern
 counters still moved. The project model is one session more accurate than it was
 this morning.
 
-The user saw a rename, a date fix, a spinner, and a dependency bump.
+The user saw a rename, a date fix, a spinner, a dependency bump, and help with
+three throwaway experiments.
 
 That is the deal: the work is quiet, and the credit is spent later, once, on
 something worth their attention.
