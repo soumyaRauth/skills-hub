@@ -45,6 +45,12 @@ reasonable, and none of them a workflow.
 without an event model, permissions UI without an authorization rule, reports
 without report definitions, offline sync without a conflict rule.
 
+**Sequence inversion.** Interface work running ahead of a workflow that does not
+complete — three or more presentation changes while the path underneath still
+has a break in it that nothing is scheduled to fix. This one has a specific
+recommendation rather than a diagnosis, and the evidence it requires is in the
+sequencing section of `next-action.md`.
+
 **Oscillation.** A decision made, reversed, remade, then made configurable.
 Configurability as the resolution of an argument is drift's clearest tell —
 "make it a setting" is what a project does when it cannot decide.
@@ -53,24 +59,20 @@ Configurability as the resolution of an argument is drift's clearest tell —
 is for, while the periphery grows. Only usable when the project *has* a stated
 objective; otherwise this is an `UNKNOWN`, not a signal.
 
-## Product drift
+## Product drift is not drift
 
-A distinct kind, worth separating: the *product* changes without anyone
-noticing. An internal tool acquires accounts, then organizations, then
-permissions, then billing, then notifications, then an audit log.
+Worth separating carefully, because the two get confused and the response is
+opposite. Drift is work losing its objective. A *product crossing* — an internal
+tool acquiring accounts, then organizations, then permissions, then billing — is
+work succeeding its way into a different category.
 
-Each step is reasonable. The sum is a different product with different
-obligations — support, migrations, uptime, data protection — that nobody has
-signed up for.
+The second is usually not a problem at all. It is a fact the developer should
+know, stated once, with the obligations it brings, and then dropped. It belongs
+to `becoming.md`, which has the crossings, the evidence each needs, and how to
+say it without moralizing.
 
-Report it as an observation, never a criticism, and never as a request to stop:
-
-> This is not behaving like the internal tool it started as. In the last two
-> months it has grown accounts, orgs, roles and an audit trail — that is the
-> shape of a multi-tenant product, with the support and upgrade obligations that
-> come with it. Worth deciding whether that is the plan before the next layer.
-
-The failure mode here is moralizing. State it once, and drop it.
+If you find yourself about to describe a coherent, successful expansion as
+drift, you have the wrong file open.
 
 ## Architectural drift
 

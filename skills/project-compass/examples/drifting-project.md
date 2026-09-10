@@ -53,7 +53,7 @@ be right. Nothing in the repository could currently tell anyone either way.
 
 ---
 
-## Level 3, and the shape of it
+## Mode C, and the shape of it
 
 Recurrence: four instances, four locations, three weeks. Convergence: every one
 of them is a response to "reports are slow". Consequence: Redis is a permanent
@@ -94,9 +94,9 @@ written it down.
 
 ---
 
-## Why this is a redirect rather than a nudge
+## Why this is Mode C rather than Mode B
 
-A nudge would be *"worth measuring at some point"* — true, ignorable, and it
+A flag would be *"worth measuring at some point"* — true, ignorable, and it
 would still be true after Redis was in production forever. The escalation makes
 the difference: each step raised the operational cost, and this step raises it
 permanently. That is the moment when one afternoon of measurement is cheapest.

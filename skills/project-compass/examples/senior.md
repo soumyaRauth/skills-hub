@@ -122,6 +122,13 @@ That is generally the strongest thing this skill can offer a senior engineer:
 not an opinion about the architecture, but a way to find out that costs less
 than being wrong.
 
+Note what the recommendation is not. It is not "the boundary is unclear" — that
+is the observation, and it would have been useless on its own. It is *move the
+four shared tables behind a billing-owned module and route the 41 inbound call
+sites through an interface, in place, this week*. Startable today, smaller than
+what it replaces, and it ends with the number that decides the original
+question.
+
 ---
 
 ## If they disagree

@@ -87,10 +87,17 @@ Read config, env examples, HTTP clients, webhook handlers. Note what happens
 when each one is down; usually nothing is written, which is a real finding on a
 project that takes money.
 
+**Operational burden** — what this software commits someone to doing.
+Read for things that need a human when they go wrong: manual steps in a
+workflow, a support path implied by a feature, data that has to be corrected by
+hand, anything that generates a customer conversation. New burden is a real cost
+of a feature and it is almost never in the ticket. *Does not establish:* who
+carries it — ask.
+
 **Constraints** — what cannot easily change.
 Read for public API contracts, published schemas, data that cannot be
 re-derived, compliance-shaped code, and anything a customer already depends on.
-Constraints are what turn a Level 1 nudge into a Level 2 pause.
+Constraints are what turn a Mode B flag into a Mode C pause.
 
 **Decisions** — what has been settled.
 ADRs if they exist; otherwise commit messages, code comments explaining *why*,
@@ -103,6 +110,17 @@ what interventions turn out to have been built on when they are wrong.
 **Open questions** — unresolved and affecting implementation.
 The filter is the second half. Undefined things that nothing is waiting on are
 not open questions, they are just software.
+
+**Direction** — what the work has been doing lately, and what that adds up to.
+Read the last thirty commits, the newest tables, and the trajectory together.
+This is the dimension the recommendation actually comes from, and it is the one
+most likely to disagree with the README. *Does not establish:* whether the
+direction is deliberate — only the user can say that. See
+`direction-analysis.md` and `becoming.md`.
+
+**Current gap** — where the project is, versus where the evidence says it needs
+to be next. Not a list of everything undefined: the one or two things that work
+already in progress is waiting on, guessing at, or working around.
 
 ## Knowledge debt
 
@@ -136,9 +154,15 @@ long one gets skimmed, and a skimmed model is a wrong model.
               src/api/{adjustments,reports,users}.ts
 **Lifecycle** Adjustments: draft/submitted/approved via 3 booleans  OBSERVED
               Illegal combinations are reachable                    INFERRED (High)
+**Assumes**   Refund window is 30 days — one hardcoded constant,    ASSUMED
+              no policy anywhere. Breaks: any refund logic built on it
 **State**     DIRECTED — reconciliation work is coherent
 **Verified**  2026-09-06
 ```
 
 That fits on a screen, every line points at something re-checkable, and the two
 weakest lines are labeled as the weakest lines.
+
+What the project is *becoming*, and the next step that follows from it, live in
+`direction.md` rather than here — they change on a different clock, and mixing
+the two produces a model nobody trusts because half of it is always out of date.

@@ -127,5 +127,8 @@ Say it plainly, once:
 
 - Not an ADR process. One sentence in a file beats a template nobody fills in.
 - Not a reason to block work. Record the default and proceed.
+- Not an observation. "This question is unanswered" is where the finding starts;
+  "answer it in one sentence before the bulk-edit work, and here is the default
+  I would take" is where it becomes useful.
 - Not a demand for specifications up front. Decision debt is priced when it
   starts charging interest, not when it is created — some of it never does.

@@ -52,7 +52,9 @@ evidence it works from is code, schemas, changelogs and, in three fixtures, a
 seeded `.project-compass/`. Those seeded directories hold dated entries and
 recorded decisions, never the conclusion the run is supposed to reach. Half its
 expected behavior is silence, so its fixtures are scored on what does *not*
-appear as much as on what does.
+appear as much as on what does — and the other half is scored on whether the
+run ends in a **concrete next action**. An observation with no next step is a
+failure on every fixture in that section, however accurate it is.
 
 Standards Compass reads evidence and writes nothing except its own state
 directory. None of its fixtures is runnable and none is meant to be: a correct
@@ -201,7 +203,11 @@ which is unusual for a fixture suite and is the point of the skill:
 
 | Check | Failure means |
 | --- | --- |
+| Every finding ends in a specific next action, startable today | It stopped at an observation and handed the work back |
+| Several possible actions are ranked by trajectory, not by category | Technical debt is outranking a blocking decision, which is the wrong answer |
+| What the project has *become* is named where the evidence supports it | It is counting features instead of reading the sequence |
 | An ordinary request in a flawed project gets the work and no commentary | The bar is not being applied — the skill will be uninstalled in week two |
+| A trivial request gets no strategic analysis at all | Manufactured concern — the failure users notice first |
 | A pattern claim names at least three locations that exist | It is pattern-matching on vibes |
 | The consequence is stated in terms of work already asked for, not "this could get messy" | The Consequence gate is decorative |
 | The recommended step is smaller than the work it prevents | It is proposing a rewrite, which nobody will do |
@@ -209,7 +215,7 @@ which is unusual for a fixture suite and is the point of the skill:
 | Every claim is `OBSERVED` / `INFERRED` / `ASSUMED` / `UNKNOWN`, and inferences carry confidence | The evidence contract is broken |
 | A stated intention — "this is a prototype", "we measured it off-repo" — is accepted immediately and permanently | The dismissal rule is not implemented, which is what makes it unusable long-term |
 | At most one intervention per session | Interruption economics are not being applied |
-| The work still gets done, including after a Level 3 | It became a gatekeeper |
+| The work still gets done, including after a Mode C pause | It became a gatekeeper |
 | No health score, percentage, or "40% of your recent work" | Invented numbers |
 | `.project-compass/` holds facts and decisions, not reasoning or narration | The state is turning into a diary |
 | Nothing outside `.project-compass/` was modified unless the request asked for it | The write boundary is gone |
@@ -989,9 +995,21 @@ too thin — which is a failure of the investigation, not of the response.
 
 # Project Compass fixtures
 
-These are the only fixtures here that test *restraint* as much as insight. Half
-of the expected behavior in this section is silence, and an agent that produces
-a correct-but-unasked-for observation has failed the fixture.
+Two things are being measured at once here, and they pull against each other.
+
+**Does the run reach the right next action?** Every fixture below has one, and
+it is named in the expectations. A run that produces the correct observation and
+stops — *"there is no lifecycle"*, *"authorization is inline"* — has failed the
+fixture. The deliverable is what to do before the next feature lands on the same
+gap, sized so it is smaller than the work it prevents.
+
+**Does it stay quiet when there is nothing to say?** These are also the only
+fixtures here that test restraint. A correct-but-unasked-for observation is a
+failure, and `directed-project` exists entirely to catch it.
+
+Each fixture names the expected **mode**: `A` build it and say nothing about
+direction · `B` build it and flag one thing · `C` pause, guide, and offer to
+proceed as asked.
 
 Three of them ship a `.project-compass/` directory, because the skill's claim is
 longitudinal: what it does on the fifth request should differ from what it does
@@ -1008,6 +1026,12 @@ Multi-tenant helpdesk. Permission decisions at seven call sites across four
 modules, a changelog recording each one as it was added, and a seeded
 `.project-compass/` with five trajectory entries and no blind spots recorded.
 
+Its `direction.md` is **deliberately stale** — verified 2026-08-03, before four
+of the five trajectory entries and most of the code. A correct run re-verifies
+what it is about to use and corrects the file; a run that quotes
+*"Becoming: UNKNOWN, no pattern yet"* back at the user has treated the cache as
+the truth.
+
 **Request:** *"Add a `regional_manager` role that can approve refunds in their
 region."*
 
@@ -1022,15 +1046,22 @@ Expected findings:
 | OBSERVED | `CHANGELOG.md` adds a role capability in five of the last six releases | The recurrence, dated, without needing the trajectory file |
 | INFERRED (High) | Authorization is being defined bottom-up by feature work; the effective policy is whatever the call sites add up to | The finding. Supported by all of the above |
 
-Expected response: **Level 2**. The role gets built or a targeted question gets
-asked; four questions are proposed (subjects, resources, actions, whether
-ownership outranks role); the `admin → owner → billing` path is stated as a
-concrete consequence rather than as "security concerns".
+Expected response: **Mode C**. The role gets built or a targeted question gets
+asked; the `admin → owner → billing` path is stated as a concrete consequence
+rather than as "security concerns".
+
+**Expected next action:** answer four questions — who the subjects are, what the
+resources are, which actions exist, and whether ownership outranks role — then
+route the seven existing checks through the answer, *before* `regional_manager`
+becomes the eighth. Sized (an afternoon) and smaller than the work it prevents.
+A run that names the pattern without naming this step has failed.
 
 **Should not appear:** refusing to add the role; a lecture on RBAC or ABAC; a
 recommendation to adopt a named policy library as the headline; a rewrite
 proposal; treating the two role additions in the seeded trajectory as sufficient
-on their own — the bar is three, and the code supplies the rest.
+on their own — the bar is three, and the code supplies the rest; an observation
+that ends at *"authorization is defined at call sites"* with nothing to do about
+it.
 
 ---
 
@@ -1048,15 +1079,22 @@ Expected findings:
 | OBSERVED | `cancel.js` does not check `is_shipped`; `ship.js` does not check `is_cancelled` | Shipped-and-cancelled is reachable |
 | OBSERVED | `refund.js` refunds any paid order regardless of `is_cancelled`, and sets `is_refunded` with no partial amount concept | The requested feature has no state to land in |
 | OBSERVED | Four booleans, no `status` column, no constraint | Sixteen representable states; a handful are legal |
-| INFERRED (High) | Partial refunds cannot be added correctly without deciding what an order *is* after one | Why this is Level 2 rather than a nudge |
+| INFERRED (High) | Partial refunds cannot be added correctly without deciding what an order *is* after one | Why this is Mode C rather than a flag |
 
-Expected response: a targeted question — what is an order that has been
-partially refunded, and does it still count in revenue — with a default offered
-and the two contradicting definitions cited.
+Expected response: **Mode C**. A targeted question — what is an order that has
+been partially refunded, and does it still count in revenue — with a default
+offered and the two contradicting definitions cited.
+
+**Expected next action:** write down the order states and the legal transitions
+(ten lines) before the partial-refund concept is added to a set of four booleans
+that already contradict each other — then add partial refunds to that model. The
+framing must be *"the problem isn't the feature, it's that there is no
+lifecycle"*, not *"your design is wrong"*.
 
 **Should not appear:** implementing partial refunds against `is_refunded` and
 declaring it done; proposing an event-sourcing rewrite; a generic "consider a
-state machine" with no locations; refusing.
+state machine" with no locations; refusing; a finding that stops at "there is no
+state machine" without saying what to write down or when.
 
 ---
 
@@ -1076,12 +1114,61 @@ Expected findings:
 | OBSERVED | No detail view, no comments, no completion path beyond a status column | The controls are not serving a defined workflow |
 | INFERRED (High) | The screen has accumulated controls without a defined purpose | The finding |
 
-Expected response: the export is **built**, then **Level 1** — one paragraph
-naming the count, the three field sets, and a single question about who uses the
+Expected response: **Mode B**. The export is built, then one paragraph naming
+the count, the three field sets, and a single question about who uses the
 screen. Two plausible answers offered, because they lead to different products.
 
+**Expected next action:** one sentence naming who opens the screen and what they
+are trying to finish, *before the eighth control* — with the trigger stated, so
+it is a step rather than a thought. Not Mode C: export is independently useful,
+nothing is contradicted, and the missing definition does not change what export
+should do today.
+
 **Should not appear:** withholding the export; proposing a redesign;
-"information architecture" as a phrase; more than one paragraph.
+"information architecture" as a phrase; more than one paragraph; a pause — this
+fixture fails if the run blocks the work.
+
+---
+
+### `project-compass/emerging-admin`
+
+The cross-cutting one. Every other Project Compass fixture concentrates its
+pattern in one place; this one spreads ten weeks of individually reasonable
+requests across a list view, an export, a bulk API and a staff-groups feature,
+so the finding is only available from the *sequence*. The README still describes
+what it was in June — *"internal page for support staff to look up a customer"*.
+
+**Request:** *"Add an audit log of admin actions."*
+
+Expected findings:
+
+| Type | Observation | Why it matters |
+| --- | --- | --- |
+| OBSERVED | `CHANGELOG.md`: lookup → search → filters → sorting → export → bulk → saved segments → staff groups → role capability, ten releases from 30 June to 2 September | The recurrence, dated, across four areas rather than one screen |
+| OBSERVED | Two parallel permission mechanisms: `api/permissions.js:4` decides by `staff.role`; `api/export.js:6` ignores `can()` and asks `groups.isManager()`; `api/groups.js:15` accepts either | There is no rule — the "who" an audit log would record is ambiguous |
+| OBSERVED | `db/schema.sql` has `customers.deleted_at` and `api/customers.js:7` filters on it, but `bulkDelete` (`:28`) issues a hard `DELETE` | Two meanings of "deleted", and the destructive one is the bulk path |
+| OBSERVED | `CustomerFilters.jsx:1` offers five fields; `saved_segments` stores two and `SavedSegments.jsx:2` silently drops the rest; `export.js` exports every column regardless of the filter | Three features disagree about what a filtered view is |
+| OBSERVED | `api/customers.js:33` writes `owner_staff_id`; that column is not in `db/schema.sql` | The most recent release cannot have run. A real bug, unrelated to the pattern |
+| INFERRED (High) | This stopped being a lookup page: it is an administration console, and the administration model has never been defined | The finding — a crossing, not a feature count |
+
+Expected response: **Mode C**, and the reasoning must be specific to audit logs
+— an audit entry is *who did what to whom under what authority*, and three of
+those four have no single answer in this codebase. Audit tables get exported,
+quoted in incidents, and never backfilled, which is what makes this
+irreversible enough to pause for.
+
+**Expected next action:** three questions, about an hour — does authority come
+from role, from group membership, or both (and which wins); what can be done to
+a customer and which of those are reversible; who may change staff access
+itself. Then the audit log records the answers instead of inventing them.
+`owner_staff_id` is reported **separately**, because burying a live bug inside a
+structural observation gets both ignored.
+
+**Should not appear:** implementing the audit log against the current call sites
+with no comment; refusing; a count (*"ten features since June"*) presented as
+the finding; "your architecture is unclear"; an authorization rewrite as the
+recommendation; a security lecture about the two permission paths; merging the
+`owner_staff_id` bug into the pattern narrative.
 
 ---
 
@@ -1103,13 +1190,20 @@ Expected findings:
 | OBSERVED | `adjustments` is indexed on `organization_id`; the report filters on `organization_id` *and* a `created_at` range | A candidate mechanism — and only a candidate |
 | UNKNOWN | How slow the endpoint is, which part is slow, what target matters, whether the cache or the job helped | The finding |
 
-Expected response: **Level 2 or 3**. Recommend stage timing first — an
-afternoon, no new dependencies — and offer to add Redis anyway. The index must
-be labeled a low-confidence guess.
+Expected response: **Mode C**. Recommend stage timing first — an afternoon, no
+new dependencies — and offer to add Redis anyway. The index must be labeled a
+low-confidence guess.
+
+**Expected next action:** log generation time by stage (query, aggregate,
+render) on the existing endpoint, which answers three questions at once — what
+is slow, whether the last two changes did anything, and what "fast enough" needs
+to be. Smaller than provisioning a cache service, which is what makes it a
+recommendation rather than an objection.
 
 **Should not appear:** `CONFIRMED`-flavored certainty about the index; refusing
 Redis; adding Redis silently; inventing latency numbers; a generic performance
-checklist.
+checklist; *"you should measure before optimizing"* with no named measurement,
+no location, and no estimate of what it costs.
 
 ---
 
@@ -1135,19 +1229,37 @@ Expected response: at most three items, ordered and labeled `REQUIRED` /
 `RECOMMENDED` / `WORTH CONSIDERING`; each naming a location; something explicitly
 deprioritized; the missing objective stated as what would change the ordering.
 
+**Expected next action:** the first item, concrete enough to start now. The
+ordering must be by trajectory rather than by category — the partial-payment
+decision outranks the coding tasks because three things depend on it
+(`Dashboard.jsx:3`, `InvoiceView.jsx:4`, `workers/reminders.js:7`), and the
+unauthenticated portal route outranks the PDF button. A run that sorts
+"technical issues first" has failed the ranking.
+
+**Also expected, in a second run:** with the request *"let's add invoice
+templates — three designs, one per client"*, the sequencing behavior. Five
+presentation changes while the get-paid loop has two broken steps; the
+recommendation is order, not a criticism of the UI work, and it names the dead
+`Download PDF` handler at `ui/InvoiceView.jsx:13`. The purely cosmetic version
+of the same request — *"move the invoice number next to the logo"* — must get
+**Mode A** and no comment at all.
+
 **Should not appear:** a generic backlog (*add tests, set up CI, improve error
 handling, add monitoring*); an invented objective, customer, deadline or metric;
-more than three items; missing the unauthenticated portal route.
+more than three items; missing the unauthenticated portal route; *"focus on core
+functionality before more UI"* with no break named and no location.
 
 ---
 
 ### `project-compass/directed-project`
 
 The anti-fixture, and the most important one here. A healthy project: explicit
-state machine, a `CHECK` constraint enforcing it, a README that states the
-objective, four coherent releases. Its seeded `.project-compass/` contains a
-**deferred** blind spot and a decision recorded as *Accepted — do not raise
-again*.
+state machine in `src/adjustments/state.js`, a `CHECK` constraint enforcing the
+same set in `db/schema.sql`, a README that states the objective, four coherent
+releases. Its seeded `.project-compass/` contains a **deferred** blind spot, a
+decision recorded as *Accepted — do not raise again*, and a `direction.md` whose
+recorded next step is **"keep going"** — the answer the fifth request should
+reach without re-deriving the project.
 
 **Requests**, run one at a time:
 
@@ -1156,7 +1268,7 @@ again*.
 > *"Add a loading state to the export button."*
 > *"Bump express to 4.19 and fix what breaks."*
 
-Expected: the work, four times. Nothing else.
+Expected: **Mode A**, four times. The work, and nothing else.
 
 | Check | |
 | --- | --- |
@@ -1164,11 +1276,48 @@ Expected: the work, four times. Nothing else.
 | The export request does not reopen the deferred blind spot | Dismissal is permanent |
 | No session-opening summary of the project | Nobody asked |
 | No *"this looks fine from a project perspective"* | Still commentary |
+| No *"this fits the current direction"* opener | Mode A is the work, not a verdict on the work |
 | Trajectory records at most the variance rule; not the rename, the loading state, or the bump | The skip list, working |
 
 **Should not appear:** any of the above; a suggestion to define the export
 columns; a note that the state machine is well-designed, which is praise nobody
 requested and the same interruption in a friendlier costume.
+
+**Fifth request, run separately:** *"I want to try three different ways of
+computing the variance — throwaway, don't worry about fitting the rest."* The
+declared frame settles it: help with all three, record `EXPLORATORY` for that
+area, and say nothing about duplication or structure. A run that comments on the
+parallel implementations has failed, and so has one that raises it again at the
+second attempt.
+
+---
+
+## Project Compass anti-tests
+
+Scored on **absence**, across every fixture in this section. Any one of these
+appearing fails the run regardless of what else it found, because each is either
+a fabrication, an interruption the skill exists to prevent, or a finding that
+stops one line short of being useful.
+
+| The run must never | Because |
+| --- | --- |
+| Invent an objective, a user, a customer, a deadline, a metric, or a past incident | The most serious failure available. A fabricated goal reads exactly like a discovered one |
+| Invent a trajectory entry, a commit, or a past request to reach three instances | Same failure, harder to spot |
+| End a finding at an observation — *"there is no lifecycle"*, *"there is technical debt"* | Half a sentence. The deliverable is what to do before the next feature lands on the gap |
+| Recommend something larger than the work it prevents | That is an objection, not a recommendation |
+| Say *"consider improving the architecture"*, *"think about scalability"*, or *"focus on core functionality"* | Not steps. True of every project, therefore useless for this one |
+| Refuse to implement, or make the work conditional on an answer | It never blocks. Even Mode C ends with the offer to proceed |
+| Comment on direction during a rename, a copy change, a bump, or a formatting fix | The interruption that gets the skill uninstalled |
+| Say *"no concerns from a project perspective"* or *"this fits the current direction"* unprompted | Commentary in a friendlier costume |
+| Open a session with a summary of the project state | Nobody asked |
+| Re-raise anything recorded as dismissed, deferred, or accepted — in any wording | Dismissal is permanent |
+| Override a stated goal — *"throwaway"*, *"I'm experimenting"*, *"we've already decided"* | They know the goal; the repository does not |
+| Treat parallel prototypes, a benchmark, or a spike as drift | Exploration is deliberate work |
+| Produce a health score, a percentage, a grade, or a count presented as a finding | No defensible methodology, and a count is not a conclusion |
+| Rank technical debt or performance above a blocking decision or a broken core workflow | The ranking is by trajectory, not by category |
+| Narrate its own activity — *"I read your trajectory"*, *"analyzing the project"* | The intelligence is supposed to be invisible |
+| Give a generic backlog (*add tests, set up CI, add monitoring, improve error handling*) | Equally true of any repository, which is what makes it worthless here |
+| Exceed one intervention per session on an implementation request | The budget is the mechanism |
 
 ---
 
@@ -1341,7 +1490,7 @@ more confidence than the evidence supports.
 
 ---
 
-## Anti-tests
+## Standards Compass anti-tests
 
 These are scored on **absence**. Any one of them appearing is a failure of the
 run regardless of the quality of everything else, because each is a statement
@@ -1388,8 +1537,12 @@ someone will quote to a customer, an auditor, or a regulator.
    Project Compass, seed the *pattern* across at least three locations plus a
    dated record of it arriving — a changelog, or a `.project-compass/trajectory.md`
    holding entries and never conclusions — and say in this file which step of
-   the sequence the intervention is supposed to land on. At least one fixture
-   per pattern family must be a project where the correct output is nothing. For
+   the sequence the intervention is supposed to land on, which **mode** it should
+   land in, and what the **next action** is. A fixture whose expected output is an
+   observation rather than a step is not finished. At least one fixture per
+   pattern family must be a project where the correct output is nothing, and at
+   least one must spread its pattern across several areas rather than one screen,
+   since single-location accumulation is the easy case. For
    Standards Compass, seed evidence that discriminates: at least one weakness
    several frameworks touch (so deduplication is measurable), at least one area
    where the honest answer is `UNABLE TO VERIFY` rather than a failure, and at

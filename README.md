@@ -12,7 +12,7 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
 | **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
 | **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence — competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
-| **[project-compass](skills/project-compass/README.md)** | Keeps an evidence-based model of what the project is and where it is heading, and taps you on the shoulder when the requests stop adding up — rarely, and never twice | *Across* everything, quietly |
+| **[project-compass](skills/project-compass/README.md)** | Works out what the project is becoming and what you are actually trying to accomplish, then tells you what to do next — usually by just building what you asked for, and saying nothing | *Across* everything, quietly |
 | **[standards-compass](skills/standards-compass/README.md)** | Works out which standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software — then audits it against them, with evidence | *Whichever* of those you never consciously chose |
 
 ```bash
@@ -34,7 +34,7 @@ ticket   → impact-map → proof-driven-dev → production-guard → ship
 incident → engineering-investigator → cause → proof-driven-dev → production-guard → ship
 
 project-compass sits underneath all of it, and answers a different question:
-whether the ticket should have been written in the first place.
+given where this project is heading, is this ticket the right next thing at all.
 
 standards-compass sits underneath it too, and answers another one:
 what this software should have been measured against all along.
@@ -553,110 +553,131 @@ authorization for that specific action.
 
 # Project Compass
 
-**Your agent knows how to build things. This helps it understand where the
-project is going.**
+**Your agent knows how to build things. This helps it work out what to build
+next.**
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill project-compass
 ```
 
-Coding agents execute well. Ask for search, a refactor, another permission
-check, a dashboard — you get all of them, competently, one after another. That
-is the whole problem: execution never asks whether the sequence adds up.
+One question, asked before every non-trivial request and answered from your
+project rather than from general advice:
+
+> **Given everything I know about this project, what should this developer do
+> next, and why?**
+
+Usually the answer is *the thing you just asked for*, and it builds it and says
+nothing. Occasionally it is not, and on those occasions the answer is worth more
+than the implementation would have been.
 
 ```
 ACTIVITY   features added, code refactored, endpoints optimized
 PROGRESS   the target problem solved, a real risk retired, a workflow completed
 ```
 
-These come apart quietly. Nine permission exceptions, each reasonable, are an
-authorization system nobody designed. Four fixes for four kinds of duplicate are
-one missing idea about identity. Five performance changes with no measurement
-anywhere are five guesses with deployments attached. The person making the
-requests cannot see it — they see one request.
+Those come apart quietly. Nine permission exceptions, each reasonable, are an
+authorization system nobody designed. Five performance changes with no
+measurement are five guesses with deployments attached. And the expensive one:
 
 ```
-Normal coding agent          Project Compass
-
-request                      request
-  ↓                            ↓
-implementation               project state — what is known, decided, recorded
-                               ↓
-                             does this fit the trajectory?
-                               ↓
-                             does it depend on something unresolved?
-                               ↓
-                             has this pattern happened three times?
-                               ↓
-                             is it worth interrupting for?   ── almost always no
-                               ↓
-                             implementation
+Add search.        Add export.          Add user groups.
+Add filtering.     Add bulk delete.     Add permissions.
+Add sorting.       Add saved filters.
 ```
+
+Eight reasonable requests. Together they say *we are building an administration
+system and nobody has defined the administration workflow* — a sentence no
+single request could produce, and one the person making them cannot see, because
+they see one request at a time.
+
+## Three modes, and the first one is the default
+
+**Mode A — build it.** The overwhelming majority. No manufactured concerns, no
+*"this looks fine from a project perspective"*. **Mode B — build it, flag one
+thing**, in a paragraph delivered with the work. **Mode C — pause and guide**,
+which is rare and always ends with the offer to build it as asked.
 
 ## Example
 
 ```
-You:    Add CSV export to the members table.
+You:    Add another status to orders.
 
-Agent:  Export added — all visible columns, respecting the current filter and
-        sort, streamed so large orgs don't time out.
+Agent:  I'd stop for a moment before adding this status.
 
-        One thing I'd flag. That's six controls on this table since August:
-        search, filters, sorting, saved views, bulk actions, now export. Each
-        made sense on its own, but they're pointing at a workflow nobody has
-        written down — and it's already showing: saved views track role, status
-        and joined date, bulk actions work on role and active, and export just
-        took everything.
+        The problem isn't really the new status. There's no defined order
+        lifecycle — pay.js treats paid as final, ship.js doesn't check
+        cancellation, and refund.js will refund a cancelled order. A fifth flag
+        lands in a set of four that already contradict each other.
 
-        Before the seventh, one sentence would settle it: who opens this screen,
-        and what are they trying to finish? If it's "support checks whether
-        someone still has access", the table needs three columns and a search
-        box and half of what's there is in the way. If it's "an admin does
-        quarterly access reviews", export is the main event and should probably
-        be scheduled rather than clicked.
+        What I'd do first: write down the states and which transitions are
+        legal. Ten lines, half an hour. Then the new status goes into that
+        instead of becoming a fifth exception.
+
+        Say the word and I'll just add the flag — you may know something the
+        repository doesn't.
 ```
 
-Nothing was refused, and the export was built and tested. The observation is
-checkable in thirty seconds — six controls, five dates, three inconsistent
-column sets.
+Nothing was refused. The alternative is smaller than the work it replaces, it is
+startable today, and the evidence is three file names you can check in thirty
+seconds.
+
+## Every finding ends in an action
+
+| Not this | This |
+| --- | --- |
+| "There is no order lifecycle" | "Define the order lifecycle before adding a fifth status" |
+| "There is technical debt" | "Extract the shared permission rule and route the three existing paths through it, before the fourth exception" |
+| "The product direction is unclear" | "Decide what the dashboard is meant to help someone decide, before the next widget" |
+
+When several things could be done, they are ranked by what most improves the
+trajectory — blocking decisions, then broken core workflows, then domain-model
+problems, then boundaries getting expensive, then security and data integrity,
+and only then debt, performance and polish. Technical issues do not
+automatically outrank product and workflow ones.
 
 ## The harder half: knowing when to shut up
 
 An agent that comments on direction four times a week gets uninstalled in week
 two, and the one real observation it would have made in week nine never arrives.
-So a pattern is reportable only when it clears **four gates** — three or more
+So Modes B and C fire only when a gap clears **four gates** — three or more
 instances with real locations, a shared *cause* rather than a shared topic, a
 consequence stated in terms of work already asked for, and a next step smaller
 than the work it prevents. Three out of four is a note in the project state, not
 a sentence to you.
 
-On top of that: one interruption per session, maximum, and
+On top of that: one intervention per session, maximum, and
 
 > **a dismissed observation is closed permanently.**
 
-Say *"that's intentional"* and it is recorded as a decision with your reason,
-and never raised again — not next week, not in different wording.
+Say *"that's intentional"* and it is recorded as a decision with your reason, and
+never raised again. Say *"this is a throwaway prototype"* and that becomes the
+frame every later recommendation is measured against, because you know the goal
+and it does not.
 
 ## What it remembers
 
 ```
 .project-compass/
 ├── project.md          what this is, who it serves — labeled, dated
+├── direction.md        what it is becoming, the biggest gap, the next step
 ├── trajectory.md       dated entries: what changed, and which pattern it fed
 ├── decisions.md        settled questions, including "we discussed this, proceed"
 ├── open-questions.md   unresolved decisions affecting implementation
-└── blind-spots.md      patterns that cleared the bar, and what closes them
+└── blind-spots.md      gaps that cleared the bar, and what closes them
 ```
 
-This is the difference between the skill and asking an agent *"what am I
-missing?"* — that question gets a fresh guess from nothing, every time. Renames,
-formatting and dependency bumps are never recorded; a trajectory that logs
-everything is a diary, and nobody finds a pattern in a diary. The repository
-always outranks the state, and recorded claims are re-verified before anything
-is built on them.
+`direction.md` is *"what should I do next?"*, cached — so next week the answer
+costs one file read instead of a second reconstruction of the project. The
+purpose of all of it is better guidance later, not a record of what happened:
+renames, formatting and dependency bumps are never written down, because a
+trajectory that logs everything is a diary and nobody finds a pattern in a diary.
+The repository always outranks the state, and recorded claims are re-verified
+before anything is built on them.
 
-Seven worked sessions: [no intervention](skills/project-compass/examples/no-intervention.md) ·
+Nine worked sessions: [no intervention](skills/project-compass/examples/no-intervention.md) ·
+[becoming a system](skills/project-compass/examples/becoming-a-system.md) ·
 [feature accumulation](skills/project-compass/examples/feature-accumulation.md) ·
+[sequencing](skills/project-compass/examples/sequencing.md) ·
 [decision debt](skills/project-compass/examples/decision-debt.md) ·
 [a drifting project](skills/project-compass/examples/drifting-project.md) ·
 [what should I do next](skills/project-compass/examples/next-action.md) ·
@@ -667,11 +688,12 @@ Seven worked sessions: [no intervention](skills/project-compass/examples/no-inte
 
 Never invent the project's purpose, users, market, deadlines, metrics, or
 history — when the objective is undocumented, *"there is no documented
-objective"* is the finding. Never block ordinary work: even a redirect ends with
-the offer to build it as asked, because you have context the repository does
-not. Never raise a dismissed observation again. Never produce a health score, a
-percentage, or a generic backlog. Most of the time it says nothing at all, and
-its second most common answer is *keep going*.
+objective"* is the finding. Never block ordinary work: even Mode C ends with the
+offer to build it as asked, because you have context the repository does not.
+Never override a goal you have stated. Never raise a dismissed observation
+again. Never produce a health score, a percentage, or a generic backlog. Most of
+the time it says nothing at all, and its most common spoken answer is *keep
+going*.
 
 **[Full documentation →](skills/project-compass/README.md)**
 
@@ -835,8 +857,8 @@ repository, it can run these skills.
 │   ├── project-compass/
 │   │   ├── SKILL.md
 │   │   ├── README.md
-│   │   ├── references/           ← eleven project-intelligence references
-│   │   └── examples/             ← seven worked sessions, one of which says nothing
+│   │   ├── references/           ← thirteen project-guidance references
+│   │   └── examples/             ← nine worked sessions, one of which says nothing
 │   └── standards-compass/
 │       ├── SKILL.md
 │       ├── README.md
@@ -850,7 +872,7 @@ repository, it can run these skills.
 │   │   ├── production-guard/     ← four repositories with real production bugs
 │   │   ├── practical-localizer/  ← six repositories with bad localizations
 │   │   ├── engineering-investigator/  ← five incidents with the evidence to solve them, plus one plain feature request
-│   │   ├── project-compass/      ← five projects with a hidden pattern, plus one healthy project where the right answer is silence
+│   │   ├── project-compass/      ← six projects with a hidden pattern, plus one healthy project where the right answer is silence
 │   │   └── standards-compass/    ← five projects to assess, including one where most of the honest answer is "unable to verify"
 │   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions
 │   └── README.md                 ← expected findings per fixture
@@ -934,9 +956,9 @@ CI, and `locale-maintainer`, detecting newly added untranslated strings.
 
 | Version | Focus |
 | --- | --- |
-| v0.2 | Richer pattern detectors; better inherited-history reconstruction from git |
-| v0.3 | Cross-session calibration — learning which observations this team acts on |
-| v0.4 | Team-shared project state, reviewable in a pull request |
+| v0.2 | More crossings; better inherited-history reconstruction from git |
+| v0.3 | Cross-session calibration — learning which recommendations this team acts on |
+| v0.4 | Team-shared project state and direction, reviewable in a pull request |
 
 **All of them**
 

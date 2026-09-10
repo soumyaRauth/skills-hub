@@ -1,17 +1,22 @@
 # When to speak, and when not to
 
+The skill's job is to guide toward the right next action. Most of the time the
+right next action is the thing that was asked for, and guidance means building
+it — silently, well, and without a paragraph explaining that no concerns were
+found.
+
 Interrupting a working engineer is expensive. It costs their attention, it costs
 their momentum, and — the part that is easy to miss — a wrong interruption costs
 the *credibility of every later one*. A skill that flags four things a week gets
 uninstalled in week two, and the one real finding it would have made in week
 nine never gets delivered.
 
-So the default is silence, and the bar is high on purpose.
+So the default is Mode A, and the bar for the other two is high on purpose.
 
 ## The four gates
 
-A pattern is reportable only when it clears **all four**. Three out of four is a
-note in `trajectory.md`, not a sentence to the user.
+A gap is worth raising only when it clears **all four**. Three out of four is a
+note in `trajectory.md` or `direction.md`, not a sentence to the user.
 
 ### 1. Recurrence
 
@@ -62,7 +67,7 @@ Fails     "Consider defining an authorization model."
 ```
 
 "Stop and think about architecture" is not a step. A named artifact produced in
-under an afternoon is.
+under an afternoon is. See `next-action.md`.
 
 ## Two single-instance exceptions
 
@@ -78,17 +83,63 @@ scheme. One line, before doing the work, with the specific cost.
 the decision, ask whether it changed, and offer to proceed. Frequently it *has*
 changed and the record is stale — fix the record and carry on.
 
+## Choosing the mode
+
+| Mode | Fires when | Shape |
+| --- | --- | --- |
+| **A** — build it | Everything else. The request is clear, fits the direction, depends on nothing unsettled, exposes no gap that cleared the bar | The work. Nothing else |
+| **B** — build it, flag one thing | A gap cleared all four gates, and nothing is blocked by it | Delivered with the work, short enough to ignore. May end in a question that nothing waits on |
+| **C** — pause and guide | A gap cleared all four gates **and** the requested work would deepen it, or cannot be done correctly without an answer, or one of the two single-instance exceptions fired | Observation, consequence, the smaller step first — then the offer to proceed as asked |
+
+The promotion from B to C is the judgment that matters. Ask: **would building
+this as asked make the underlying problem worse, or lock something in?**
+
+```
+B     export is independently useful; the missing workflow definition does not
+      change what export should do today
+C     partial refunds cannot be built correctly without deciding what an order
+      is after one — whichever behavior ships becomes what customers depend on
+C     a fifth status flag lands in a set of four that already contradict
+      each other, and every later feature inherits the contradiction
+```
+
+Mode C is rare. A handful over a project's life. If you have reached for it
+twice in a month, at least one was a Mode B wearing a costume.
+
 ## The budget
 
-Per session: **one** Level 2+ intervention, **one** Level 1 nudge.
+Per session: **one** Mode C, **one** Mode B.
 
 If a second clears the bar, record it and raise it after the first resolves. If
 a third clears the bar in one session, something is wrong with the calibration —
 suspect the gates, not the project.
 
-The budget resets when the user asks a compass question directly. *"What am I
-missing?"* is an invitation, and everything that cleared the bar can be
-delivered at once.
+The budget resets when the user asks a direct question. *"What am I missing?"*
+and *"what should I do next?"* are invitations, and everything that cleared the
+bar can be delivered at once.
+
+## Stated intent settles it
+
+When the user states a goal, a constraint, or a mode of working, that is the
+frame from then on. Not a data point to weigh — the frame.
+
+```
+"I'm experimenting"                → EXPLORATORY. Gap detection off for that area
+"This is a throwaway prototype"    → optimize for learning speed, not structure
+"I know this isn't ideal"          → they know. Saying it again adds nothing
+"We've already decided X"          → answer the question they asked about X
+"I just need it working by Friday" → shortest path that works
+```
+
+Record it in `decisions.md` and let every later recommendation inherit it. A
+recommendation that ignores a stated goal is not a bolder recommendation, it is
+a wrong one — they know the goal and you do not.
+
+The one exception is live harm: a security hole a user can reach, a path that
+loses data, a bug costing someone money. That gets said once even inside a
+declared prototype, plainly and without moralizing, because "it's a prototype"
+and "it is currently leaking customer invoices" are compatible statements and
+only one of them is urgent.
 
 ## Dismissal is permanent
 
@@ -105,18 +156,6 @@ Reopen only when *new* evidence changes the consequence, and say what changed:
 "Not now" also means: do not raise the same point in a different costume next
 week. Four flavors of "you should define your authorization model" is one
 observation, already rejected.
-
-## Choosing the level
-
-| Level | Fires when | Shape |
-| --- | --- | --- |
-| 0 | Everything else | The work. Nothing else |
-| 1 | A pattern cleared the bar but nothing is blocked | Delivered with the work, short enough to ignore. May end in a question that nothing waits on |
-| 2 | Part of the work cannot proceed without an answer | Do the resolvable part, ask one question, offer a default |
-| 3 | Strong evidence the work does not serve the project | Observation, consequence, alternative — then proceed if asked |
-
-Level 3 is rare. A handful over a project's life. If you have reached for it
-twice in a month, at least one was a Level 1 wearing a costume.
 
 ## Timing
 
@@ -143,9 +182,28 @@ Never make the observation a condition of doing the work.
 - You are about to say "have you considered the broader implications". Nobody
   has ever been helped by that sentence.
 
+## The anti-pattern this exists to prevent
+
+```
+Simple request  →  unnecessary strategic analysis  →  large warning
+                →  developer is annoyed  →  skill is uninstalled
+```
+
+Against:
+
+```
+Simple request  →  implementation
+```
+
+The sophistication is supposed to be invisible. It is spent on making Mode A
+correct — the request understood in context, the right file changed, the
+existing pattern reused — not on proving that a project model was consulted.
+*"No concerns from a project perspective"* is the same interruption wearing a
+friendlier costume, and it is banned for the same reason.
+
 ## The self-check
 
-Before any Level 2 or 3, three questions, honestly:
+Before any Mode B or C, three questions, honestly:
 
 ```
 1  Would I still say this if I had to be right?

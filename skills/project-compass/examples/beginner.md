@@ -96,6 +96,12 @@ skill exists to catch. One, not five.
 **Ends with a concrete next step**, phrased as a choice. Momentum is the scarcest
 resource a beginner has.
 
+**It quietly answers a different question than the one asked.** They asked which
+infrastructure to adopt; what they needed was *what should I build next*, and the
+answer — the cancel path, then UTC timestamps — comes from their routes and their
+schema. Nothing was refused, and no lecture was delivered. That substitution,
+made silently and backed by evidence, is the whole skill in one response.
+
 ---
 
 ## What it must never do

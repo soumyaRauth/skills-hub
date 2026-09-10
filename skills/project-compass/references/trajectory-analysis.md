@@ -69,6 +69,33 @@ payments flow with no entry ever tagged `reconciliation` or `failure` is not
 missing a feature — it is missing a question. Absence is only evidence when you
 looked for it, so name what you searched.
 
+## From entries to structure
+
+Counting is not the point. Four entries tagged `admin` is a number; *"these four
+are an administration workflow that has never been defined"* is a finding. The
+step between them is the one that matters, and it is the step a request-by-request
+reading never takes.
+
+```
+Record        2026-08-04 admin  Search on the members table
+              2026-08-11 admin  Filters: role, status, joined
+              2026-08-19 admin  Sortable columns
+              2026-08-26 admin  Saved filter presets
+              2026-09-01 admin  Bulk deactivate / change role
+
+Do not stop   "five admin features since August"
+at
+Reach         these five are a list-management workflow over one entity, and
+              three of them already disagree about which fields a member has
+```
+
+Ask the structural question every time a concept reaches four entries: **what
+system do these add up to, and has anyone defined it?** The answer is a
+hypothesis until it is checked against the code, and the check is usually cheap —
+find the place where two of the features disagree, or fail to find it and drop
+the claim. `becoming.md` has the crossings worth recognizing and the evidence
+each one needs.
+
 ## Activity versus progress
 
 The question that makes a trajectory worth keeping:
@@ -80,6 +107,12 @@ Milestones are outcomes — *core workflow usable end to end*, *first real user*
 bad: infrastructure phases look exactly like that, and so do rewrites. It earns
 a mention only when the entries are also *radial* or *corrective*, i.e. the work
 is fanning outward or chasing itself.
+
+The sharpest version of the question is about sequencing: **is the work
+happening on top of something that does not finish?** Three entries of interface
+refinement while the path underneath still has a button wired to nothing is not
+a productivity observation, it is a recommendation about order — see the
+sequencing section of `next-action.md`.
 
 Never present this as a scolding, and never present it as a metric. There is no
 number here. The observation is:

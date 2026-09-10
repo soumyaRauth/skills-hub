@@ -1,13 +1,16 @@
 # Project Compass
 
-### Your agent knows how to build things. This helps it understand where the project is going.
+### Your agent knows how to build things. This helps it work out what to build next.
 
 Project Compass is an [Agent Skill](https://code.claude.com/docs/en/skills) that
-builds an evidence-based understanding of a project — what it is, what has been
-decided, what keeps recurring, where the work is heading — and uses it to notice
-the thing the person making one request at a time cannot see.
+answers one question before every non-trivial request:
 
-Then, almost always, it says nothing and does the work.
+> **Given everything I know about this project, what should this developer do
+> next, and why?**
+
+Usually the answer is *the thing they just asked for*, and it builds it and says
+nothing. Occasionally it is not — and on those occasions the answer is worth
+more than the implementation would have been.
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill project-compass
@@ -27,15 +30,23 @@ ACTIVITY   features added, code refactored, endpoints optimized
 PROGRESS   the target problem solved, a real risk retired, a workflow completed
 ```
 
-These come apart quietly. A project can accumulate a year of good commits and be
-further from working than it was in month three — not because anyone did bad
-work, but because nobody was reading the requests as a sequence. Nine
-permission exceptions, each reasonable, are an authorization system nobody
-designed. Four fixes for four kinds of duplicate are one missing idea about
-identity. Five performance changes with no measurement anywhere are five
-guesses with deployments attached.
+These come apart quietly. Nine permission exceptions, each reasonable, are an
+authorization system nobody designed. Four fixes for four kinds of duplicate are
+one missing idea about identity. Five performance changes with no measurement
+anywhere are five guesses with deployments attached.
 
-The person making the requests cannot see this. They see one request.
+And the version that costs the most:
+
+```
+Add search.        Add export.          Add user groups.
+Add filtering.     Add bulk delete.     Add permissions.
+Add sorting.       Add saved filters.
+```
+
+Eight reasonable requests. Together they say *we are building an administration
+system and nobody has defined the administration workflow* — which is a sentence
+no single request could produce, and which the person making them cannot see,
+because they see one request at a time.
 
 ## The change
 
@@ -44,49 +55,79 @@ Normal coding agent          Project Compass
 
 request                      request
   ↓                            ↓
-implementation               project state — what is known, decided, recorded
+implementation               what is actually being asked?
                                ↓
-                             does this fit the trajectory?
+                             what does this project look like now?
                                ↓
-                             does it depend on something unresolved?
+                             what has it been becoming?
                                ↓
-                             has this pattern happened three times?
+                             what does this request assume, and what does it touch?
                                ↓
-                             is it worth interrupting for?   ── almost always no
+                             is there an unresolved gap underneath it?
+                               ↓
+                             does that gap matter now?  ── almost always no
+                               ↓
+                             what is the best next action?
                                ↓
                              implementation
 ```
 
-The last two steps are the skill. Everything above them is cheap, and everything
-below them is unchanged.
+Everything above the last two rows is cheap. Everything below them is unchanged.
 
-## The moment it is built for
+## Three modes, and the first one is the default
+
+Every request lands in one of three:
+
+**Mode A — build it.** The overwhelming majority. The request fits, nothing is
+unresolved, nothing is at risk. Build it, say nothing about direction. No
+manufactured concerns, no *"this looks fine from a project perspective"*.
+
+**Mode B — build it, flag one thing.** The implementation is right and the
+project reveals something worth one paragraph, delivered *with* the work and
+short enough to ignore.
+
+**Mode C — pause and guide.** The request runs into an unresolved problem the
+work would deepen. Rare, never a refusal, and it always ends with the offer to
+build it as asked.
 
 ```
-You:    Add CSV export to the members table.
+You:    Add another status to orders.
 
-Agent:  Export added — all visible columns, respecting the current filter and
-        sort, streamed so large orgs don't time out.
+Agent:  I'd stop for a moment before adding this status.
 
-        One thing I'd flag. That's six controls on this table since August:
-        search, filters, sorting, saved views, bulk actions, now export. Each
-        made sense on its own, but they're pointing at a workflow nobody has
-        written down — and it's already showing: saved views track role, status
-        and joined date, bulk actions work on role and active, and export just
-        took everything.
+        The problem isn't really the new status — there's no defined order
+        lifecycle. pay.js treats paid as final, ship.js doesn't check
+        cancellation, and refund.js will refund a cancelled order. A fifth flag
+        lands in a set of four that already contradict each other.
 
-        Before the seventh, one sentence would settle it: who opens this screen,
-        and what are they trying to finish? If it's "support checks whether
-        someone still has access", the table needs three columns and a search
-        box and half of what's there is in the way. If it's "an admin does
-        quarterly access reviews", export is the main event and should probably
-        be scheduled rather than clicked.
+        What I'd do first: write down the states and which transitions are
+        legal. Ten lines, half an hour. Then the new status goes into that
+        instead of becoming a fifth exception.
+
+        Say the word and I'll just add the flag — you may know something the
+        repository doesn't.
 ```
 
-Nothing was refused. The export was built and tested. The observation is
-checkable in thirty seconds — six controls, five dates, three inconsistent
-column sets — and the missing thing is one sentence from a human, not a
-refactor.
+Nothing was refused. The alternative is smaller than the work it replaces, it is
+startable today, and the evidence is three file names you can check in thirty
+seconds.
+
+## Every finding ends in an action
+
+An observation is half a sentence. The deliverable is the other half.
+
+| Not this | This |
+| --- | --- |
+| "There is no order lifecycle" | "Define the order lifecycle before adding a fifth status" |
+| "There is technical debt" | "Extract the shared permission rule and route the three existing paths through it, before the fourth exception" |
+| "The product direction is unclear" | "Decide what the dashboard is meant to help someone decide, before the next widget" |
+| "Consider improving the architecture" | *[deleted — this is not a step]* |
+
+When several things could be done, they are ranked by what most improves the
+project's trajectory — blocking decisions, then broken core workflows, then
+domain-model problems, then boundaries getting expensive, then security and data
+integrity, and only then debt, performance and polish. **Technical issues do not
+automatically outrank product and workflow ones.**
 
 ## The harder half: knowing when to shut up
 
@@ -94,7 +135,7 @@ An agent that comments on project direction four times a week gets uninstalled
 in week two, and the one real observation it would have made in week nine never
 arrives.
 
-So a pattern is reportable only when it clears **four gates**:
+So Mode B and Mode C fire only when a gap clears **four gates**:
 
 | Gate | Test |
 | --- | --- |
@@ -104,13 +145,15 @@ So a pattern is reportable only when it clears **four gates**:
 | **Actionability** | There is a step smaller than the work it prevents. *"Consider defining an authorization model"* is not a step |
 
 Three out of four is a note in the project state, not a sentence to you. On top
-of that: **one interruption per session, maximum**, and
+of that: **one intervention per session, maximum**, and
 
 > **a dismissed observation is closed permanently.**
 
-Say *"that's intentional"* and it is recorded as a decision with your reason,
-and never raised again — not next week, not in different wording. That one rule
-is what makes the skill survivable past month two.
+Say *"that's intentional"* and it is recorded as a decision with your reason, and
+never raised again — not next week, not in different wording. Say *"this is a
+throwaway prototype"* or *"I'm experimenting"* and that becomes the frame every
+later recommendation is measured against, because you know the goal and it does
+not.
 
 ## Installation
 
@@ -124,48 +167,58 @@ For Claude Code specifically:
 npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-code
 ```
 
-No slash command needed — installed skills are matched by description. It
-engages on its own when a request touches something unresolved, and answers
-directly when you ask:
+No slash command needed — installed skills are matched by description, and
+ordinary development supplies the evidence. It engages on its own when a request
+touches something unresolved, and answers directly when you ask:
 
 ```
-What should I work on next?
-Where is this project going?
-What do you think I'm missing?
-Am I overengineering this?
-Why do I keep running into this?
-What have we not thought about?
+What should I work on next?          Should I add this?
+What should I build now?             Does this make sense?
+Where is this project going?         How should we handle X?
+What do you think I'm missing?       Am I overengineering this?
 ```
 
 ## What it remembers
 
 ```
 .project-compass/
-├── project.md          what this is, who it serves, what it must do — labeled, dated
+├── project.md          what this is, who it serves — labeled, dated
+├── direction.md        what it is becoming, the biggest gap, the next step
 ├── trajectory.md       dated entries: what changed, and which pattern it fed
 ├── decisions.md        settled questions, including "we discussed this, proceed"
 ├── open-questions.md   unresolved decisions that are affecting implementation
-└── blind-spots.md      patterns that cleared the bar, and what closes them
+└── blind-spots.md      gaps that cleared the bar, and what closes them
+```
+
+`direction.md` is the one that earns its keep fastest — it is *"what should I do
+next?"*, cached, so the answer next week costs one file read instead of a second
+reconstruction of the project:
+
+```markdown
+**Appears to be**  Team task tracker
+**Becoming**       A list/query management workflow          INFERRED (High)
+**Biggest gap**    Nobody has said who the list screen is for; three features
+                   already disagree about what a task is on it
+**Next step**      One sentence naming the user and the job of that screen,
+                   before the eighth control goes on it
+**Not yet said**   nothing is blocked; raise at the next control request
 ```
 
 This is the difference between the skill and asking an agent *"what am I
 missing?"* — that question gets a fresh guess from nothing, every time. This
 accumulates, and it is more useful in week eight than on day one.
 
-Only what carries state gets written. A first session usually writes
-`project.md` and nothing else, `blind-spots.md` may never exist, and renames,
-formatting and dependency bumps are never recorded. A trajectory that logs
-everything is a diary, and nobody finds a pattern in a diary.
-
-The repository always outranks the state: recorded claims are re-verified before
-anything is built on them, and a claim that has gone stale gets corrected rather
-than quoted.
+The purpose of every file is **better guidance later**, not a record of what
+happened. A first session usually writes `project.md` and nothing else; renames,
+formatting and dependency bumps are never recorded, because a trajectory that
+logs everything is a diary and nobody finds a pattern in a diary. The repository
+always outranks the state: recorded claims are re-verified before anything is
+built on them.
 
 Creating that directory is the only write the skill makes outside the work you
 asked for. It is announced once, in a line, and never mentioned again — and if
 you would rather not have it, it degrades to single-session reasoning without
-arguing about it. It generally belongs in version control, since a decision the
-whole team can see is worth more than one only an agent remembers.
+arguing about it.
 
 ## Everything is labeled
 
@@ -178,21 +231,21 @@ whole team can see is worth more than one only an agent remembers.
 
 It will not invent your project's purpose, users, market, deadlines, metrics, or
 history. When the objective is undocumented, *"there is no documented
-objective"* is the finding — usually a useful one — and recommendations say
-which parts of them that limits.
+objective"* is the finding — usually a useful one — and the recommendation says
+which part of itself that limits.
 
 ## What it notices
 
-| What recurs | What is usually missing |
-| --- | --- |
-| Permission exceptions, role special-cases, bypasses | An authorization model |
-| Boolean status flags, "can this still be edited?" | A lifecycle: states, transitions, who may cause them |
-| Fixes for four shapes of the same duplicate | Idempotency, and what makes an operation *the same* one |
-| Timeout raised, retry, queue, cache, Redis | A measurement — what is slow, and what target matters |
-| Search, filter, sort, saved views, bulk actions, export | The workflow those controls serve |
-| Notification rules added per feature | Event semantics |
-| Payments, refunds, subscriptions, invoices | A billing lifecycle |
-| "What counts as active?" asked in three features | A business rule nobody wrote down |
+| What accumulated | What it has become | What to do about it |
+| --- | --- | --- |
+| Search · filter · sort · saved views · bulk · export | A list-management workflow | One sentence naming who uses the screen and what they are finishing |
+| Draft · submit · approve · reject · publish | A lifecycle | List the states, the legal transitions, and who may cause each |
+| Invite · role · permission · org · access · audit | An authorization model | Subjects, resources, actions — and does ownership outrank role |
+| Payments · refunds · subscriptions · invoices | A billing lifecycle | Write down how those four interact, before the fifth |
+| Notification rules added per feature | An event system | Enumerate the real events, their consumers, their guarantees |
+| Timeout · retry · queue · cache · Redis | Five guesses | One number: what is slow, measured how, acceptable at what |
+| Fixes for four shapes of the same duplicate | A missing identity | Define what makes two requests the same operation |
+| UI passes while the workflow underneath breaks | A sequencing problem | Finish the path end to end, then return to the interface |
 
 Each detector requires specific evidence before it fires, and every one of them
 is a hypothesis until it has been checked against the code.
@@ -203,9 +256,10 @@ Most agents will build whatever you ask. This one is allowed to say:
 
 ```
 Keep going — this is the thing. (The most common non-silent answer.)
+Settle one decision; three features are waiting on it.
+Finish the workflow underneath before adding more interface on top of it.
 Ship it and watch. Four passes on a working screen is guessing.
 Measure it first. There is no performance problem here yet, only a suspicion.
-This is a product decision, not a technical one — one sentence unblocks three features.
 Delete it. Nothing uses it and it is charging rent.
 Write down the rule. It currently lives in four conditionals that disagree.
 ```
@@ -216,10 +270,14 @@ it anyway, because you have context the repository does not.
 
 ## Worked examples
 
-- [**No intervention**](examples/no-intervention.md) — four ordinary requests in
-  a project with a real open blind spot, and every temptation the skill suppresses
+- [**No intervention**](examples/no-intervention.md) — five ordinary requests in
+  a project with a real open gap, and every temptation Mode A suppresses
+- [**Becoming a system**](examples/becoming-a-system.md) — eight isolated
+  features that turned out to be an administration console
 - [**Feature accumulation**](examples/feature-accumulation.md) — six controls on
   one screen and the workflow nobody defined
+- [**Sequencing**](examples/sequencing.md) — the fifth UI pass on a workflow that
+  does not complete, and the fourth one that correctly got no comment
 - [**Decision debt**](examples/decision-debt.md) — the same unanswered question
   surfacing in a third feature, asked so it takes one word to answer
 - [**A drifting project**](examples/drifting-project.md) — five solutions to a
@@ -237,17 +295,19 @@ The skill loads these on demand.
 
 | | |
 | --- | --- |
+| [`next-action.md`](references/next-action.md) | The decision chain, the ranking, the concreteness tests, sequencing, and what a stated goal overrides |
+| [`becoming.md`](references/becoming.md) | Crossings — when features have become a system, the evidence each needs, and how to say so without forcing architecture |
+| [`direction-analysis.md`](references/direction-analysis.md) | Stated versus actual versus structural direction, and the `direction.md` file |
 | [`project-model.md`](references/project-model.md) | The dimensions of a project, what evidence establishes each, and the reading order that gets there fastest |
 | [`project-state.md`](references/project-state.md) | The state directory: formats, write triggers, size budgets, staleness, resuming |
 | [`evidence-model.md`](references/evidence-model.md) | The four labels, strong versus weak inference, the source hierarchy, anti-fabrication |
-| [`trajectory-analysis.md`](references/trajectory-analysis.md) | Turning requests into concepts, reading a sequence, activity versus progress |
-| [`intervention-rules.md`](references/intervention-rules.md) | The four gates, the budget, dismissal, level selection, timing, when never to speak |
+| [`trajectory-analysis.md`](references/trajectory-analysis.md) | Turning requests into concepts, reading a sequence, getting from entries to structure |
+| [`intervention-rules.md`](references/intervention-rules.md) | The four gates, mode selection, the budget, stated intent, dismissal, when never to speak |
 | [`drift-detection.md`](references/drift-detection.md) | Telling drift from focused work — and the long list of things that are not drift |
-| [`blind-spots.md`](references/blind-spots.md) | Ten detectors, the evidence each one requires, and what closes it |
+| [`blind-spots.md`](references/blind-spots.md) | Eleven detectors, the evidence each one requires, and what closes it |
 | [`decision-debt.md`](references/decision-debt.md) | Spotting unanswered questions, pricing them, and phrasing them to be answerable in a word |
-| [`direction-analysis.md`](references/direction-analysis.md) | Reconstructing direction; answering "what next"; what a repository can never know |
 | [`adaptive-expertise.md`](references/adaptive-expertise.md) | The same finding at four densities, without condescension in either direction |
-| [`output-format.md`](references/output-format.md) | Shapes per level, language, humor, and what never appears in output |
+| [`output-format.md`](references/output-format.md) | Shapes per mode, language, humor, and what never appears in output |
 
 ## What it is not
 
@@ -259,8 +319,8 @@ The skill loads these on demand.
 - **Not a code reviewer.** [Impact Map](../impact-map/README.md) maps a change's
   blast radius; [Production Guard](../production-guard/README.md) decides whether
   it is safe to ship.
-- **Not a reason to stop shipping.** Its most common correct output is nothing,
-  and its second most common is *keep going*.
+- **Not a reason to stop shipping.** Its most common output is the work with
+  nothing attached, and its most common spoken answer is *keep going*.
 
 ## Limitations
 
@@ -271,7 +331,7 @@ The skill loads these on demand.
   reconstruct a project model, but a trajectory takes weeks to become one.
 - Inherited history helps: on a repository that arrives with a pattern already
   in it, git history counts as evidence from the first session.
-- Pattern detection is judgment, not analysis. It will sometimes read focused
+- Reading direction is judgment, not analysis. It will sometimes read focused
   work as a pattern; the four gates exist to make that rare, and being overruled
   costs one sentence.
 - It cannot tell you whether your idea is good. It can tell you that nothing in

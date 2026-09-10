@@ -62,6 +62,10 @@ Six permission exceptions and no authorization rule:
 
 Same evidence, same locations, same recommendation. Four lengths.
 
+Note what does not change across the four: every one of them ends in something
+to do next. Density is adjustable; the next action is not optional at any level,
+and the beginner version is the one where it matters most.
+
 ## Beginners
 
 Three things beginners need that experts do not:

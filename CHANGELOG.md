@@ -89,45 +89,85 @@ methodology and documentation.
   of anti-tests scored purely on absence, because for this skill the worst
   available failure is a confident sentence somebody forwards to their auditor.
 
-- `project-compass` v0.1.0 — **persistent project intelligence.** A skill for
-  the gap between *activity* and *progress*: an agent executes each request
-  competently and nothing ever reads the requests as a sequence. Nine permission
-  exceptions, each reasonable, are an authorization system nobody designed; four
-  fixes for four kinds of duplicate are one missing idea about identity; five
-  performance changes with no measurement are five guesses with deployments
-  attached. The person making the requests cannot see it, because they make them
-  one at a time.
+- `project-compass` v0.1.0 — **a project-aware engineering guide.** One question,
+  asked before every non-trivial request and answered from the repository rather
+  than from general advice: *given everything I know about this project, what
+  should this developer do next, and why?* Usually the answer is the thing they
+  just asked for, and the skill builds it and says nothing. Occasionally it is
+  not, and on those occasions the answer is worth more than the implementation
+  would have been. The developer rarely knows that this is the question they are
+  asking, which is the whole point.
 
-  State lives in `.project-compass/` — a labeled project model, a trajectory of
-  what actually changed, decisions, open questions, and blind spots that cleared
-  the bar. That persistence is the design: *"what am I missing?"* asked of a
-  stateless agent gets a fresh guess every time, and this accumulates instead.
+  It exists for the gap between *activity* and *progress*: an agent executes each
+  request competently and nothing ever reads the requests as a sequence. Nine
+  permission exceptions, each reasonable, are an authorization system nobody
+  designed. Five performance changes with no measurement are five guesses with
+  deployments attached. And the expensive one — *add search, filtering, sorting,
+  export, bulk delete, saved filters, groups, permissions* — is eight legitimate
+  requests that together say **we are building an administration system and
+  nobody has defined the administration workflow.** No single request could
+  produce that sentence, and the person making them cannot see it, because they
+  see one at a time.
 
-  The harder half is restraint, so intervention is gated rather than judged.
-  A pattern is reportable only when it clears four gates — **recurrence** (three
-  or more instances, each with a nameable location), **convergence** (a shared
-  cause, not a shared topic), **consequence** (what breaks next, in terms of work
-  already asked for), and **actionability** (a step smaller than the work it
-  prevents). Two exceptions fire on a single instance: irreversibility and
-  contradiction of a recorded decision. On top of that, one interruption per
-  session, and **a dismissed observation is closed permanently** — recorded as a
-  decision with the user's own reason, never raised again in any wording. That
-  last rule is what makes the skill survivable past month two.
+  Every request resolves into one of **three modes**: **A** build it and say
+  nothing about direction (the overwhelming default), **B** build it and flag one
+  thing in a paragraph delivered with the work, **C** pause and guide — rare,
+  never a refusal, always ending with the offer to build it as asked. Mode A is
+  not the absence of the skill: the model is read, the sequence is updated, and
+  the guidance that falls out is *build exactly this*. Manufacturing a strategic
+  concern for a simple request is the failure the skill is most likely to make,
+  and it is named as an anti-pattern in the instructions, the tests and the
+  anti-tests.
+
+  **Every finding ends in an action.** *"There is no order lifecycle"* is half a
+  sentence; *"define the order lifecycle before adding a fifth status — ten
+  lines, half an hour"* is the deliverable. Each of the eleven blind-spot
+  detectors carries a closing step, and when several things could be done they
+  are ranked by what most improves the trajectory: blocking decisions, then
+  broken core workflows, then domain-model problems, then boundaries getting
+  expensive, then security and data integrity, and only then debt, performance
+  and polish. Technical issues do not automatically outrank product and workflow
+  ones.
+
+  State lives in `.project-compass/` — a labeled project model, `direction.md`
+  holding what the project is becoming and the current next step, a trajectory of
+  what actually changed, decisions, open questions, and gaps that cleared the bar.
+  That persistence is the design: *"what should I do next?"* asked of a stateless
+  agent gets a fresh guess every time, and this accumulates instead. The purpose
+  of every file is better guidance later, never a record of what happened.
+
+  The harder half is restraint, so speaking is gated rather than judged. A gap is
+  reportable only when it clears four gates — **recurrence** (three or more
+  instances, each with a nameable location), **convergence** (a shared cause, not
+  a shared topic), **consequence** (what breaks next, in terms of work already
+  asked for), and **actionability** (a step smaller than the work it prevents).
+  Two exceptions fire on a single instance: irreversibility and contradiction of a
+  recorded decision. On top of that, one intervention per session; **a dismissed
+  observation is closed permanently**, recorded with the user's own reason and
+  never raised again in any wording; and **a stated goal settles it** — *"this is
+  a throwaway prototype"*, *"I'm experimenting"*, *"we've already decided"* become
+  the frame every later recommendation is measured against, because the developer
+  knows the goal and the repository does not.
 
   Four engineering states (`FORMING` · `DIRECTED` · `EXPLORATORY` · `DRIFTING`),
-  with exploration suppressing drift detection outright; four evidence labels
+  with exploration suppressing gap detection outright; four evidence labels
   (`OBSERVED` · `INFERRED` · `ASSUMED` · `UNKNOWN`) on every claim, including the
   project's objective, which is frequently `UNKNOWN` and is reported as such
-  rather than invented. Ten blind-spot detectors, each with the evidence it
-  requires. Eleven references, seven worked examples — one of which is entirely
-  about the requests that earn no commentary at all.
+  rather than invented. Thirteen references and nine worked examples — one
+  entirely about the requests that earn no commentary at all, one about eight
+  scattered features that turned out to be an administration console, and one
+  about the fifth UI pass that was worth stopping for and the fourth that was
+  not.
 
-  Six fixtures under `tests/fixtures/project-compass/`, three seeded with a
-  `.project-compass/` directory holding evidence rather than conclusions, plus
-  `directed-project`, a healthy repository whose correct output is silence.
-  Six multi-step scenarios in `tests/longitudinal/project-compass.md`, because a
-  single-prompt test cannot measure a skill whose claim is that it improves
-  across sessions.
+  Seven fixtures under `tests/fixtures/project-compass/`, three seeded with a
+  `.project-compass/` directory holding evidence rather than conclusions;
+  `emerging-admin`, whose pattern is spread across four areas so that it is
+  visible only in the sequence; and `directed-project`, a healthy repository
+  whose correct output is silence. Nine multi-step scenarios in
+  `tests/longitudinal/project-compass.md`, each naming the step the intervention
+  should land on, the mode, and the next action it must produce — plus a table of
+  Project Compass anti-tests scored purely on absence, in which ending at an
+  observation is failed as firmly as inventing one.
 
 ### Changed
 

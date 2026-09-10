@@ -10,6 +10,11 @@ Both halves are required. "There is no event model" is a fact about the code.
 "There is no event model, and the three notification rules added this month each
 invented their own trigger semantics" is a blind spot.
 
+Every detector below ends in a **closing step**, and that step is the actual
+deliverable. A detector that fires and produces an observation has done half the
+job; the half that helps is the sentence naming what to do before the next
+feature lands on the same gap.
+
 ## Detectors
 
 Each detector below lists the evidence it requires. Without that evidence, it is
@@ -108,8 +113,23 @@ partially successful. No entry ever tagged reconciliation or failure.
 
 **Closing step:** for each critical dependency: what does the user see, what is
 retried, what is reconciled later, and what is lost. This one is worth raising
-at Level 2 even at two instances, because the consequence is other people's
+at Mode C even at two instances, because the consequence is other people's
 money.
+
+### Interface ahead of workflow
+
+**Evidence:** three or more presentation changes to one area while the workflow
+underneath has a break in it — a control wired to nothing, a worker attached to
+no scheduler, a step with no backend — and nothing indicates the break is next.
+
+**Closing step:** finish the path end to end, then return to the interface. Name
+the break and its location; the recommendation is about order, not about the
+quality of the UI work.
+
+**Not this** when the user has said the interface is the current job, when the
+break is a deliberate stub, when the polish is fixing something reported, or
+when the missing backend belongs to somebody else. Ask before diagnosing. Full
+evidence requirements in the sequencing section of `next-action.md`.
 
 ### Missing validation
 
@@ -138,6 +158,11 @@ A decision that three planned features need, is expensive to reverse, and has
 resurfaced three times outranks everything else in the file. An undocumented UI
 detail ranks nowhere and should not be written down at all.
 
+The ranking that governs the *whole* project — where a blind spot sits against a
+blocked decision, a broken workflow, live harm, or a performance suspicion — is
+in `next-action.md`. Technical gaps do not automatically outrank product and
+workflow ones.
+
 Never present a score. Present the order, and the reason the first one is first.
 
 ## Reporting
@@ -158,7 +183,14 @@ unreachable.
 
 **Closes with:** four questions — subjects, resources, actions, and whether
 ownership outranks role. An afternoon, and it unblocks the next three features.
+
+**Do this next:** answer those four, then route the six existing checks through
+the answer. Before the bulk-edit work, not after it.
 ```
+
+The last line is the one that must never be missing. Everything above it is the
+case; that is the recommendation, and a report that stops one line short leaves
+the reader exactly where they started.
 
 ## Never do this
 

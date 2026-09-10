@@ -213,16 +213,22 @@ Do not add an experiment that mutates production as a first-line step, and do no
 add hypotheses to a stock list: the skill generates them from the symptom and the
 system, and a canned list is what it exists to replace.
 
-### Add a blind-spot detector
+### Add a blind-spot detector or a crossing
 
-Edits to `skills/project-compass/references/blind-spots.md`, or to
-`drift-detection.md` when the pattern is about direction rather than a missing
-model.
+Edits to `skills/project-compass/references/blind-spots.md`, to `becoming.md`
+when the pattern is that a set of features has quietly become a *system*, or to
+`drift-detection.md` when it is about work losing its objective.
 
 **Do not add a detector because it sounds clever.** Every detector costs the
 user attention on every project it fires against, including the ones where it is
 wrong. The bar is not "this is a real problem in software" — it is "this problem
 is *detectable from evidence*, and naming it saves work".
+
+A detector that produces an observation is not finished. Every one of them must
+end in a **closing step** — a named artifact, smaller than the work it prevents,
+that someone could start today. *"There is no event model"* is the diagnosis;
+*"enumerate the domain's events and their guarantees before the fourth
+notification rule"* is the reason anyone would install this.
 
 A detector earns its place when it states:
 
@@ -290,9 +296,16 @@ New sections in `tests/longitudinal/<skill>.md`, usually with a fixture under
 
 Project Compass cannot be tested with a single prompt — its claim is that the
 fifth request is handled differently from the first. A scenario states the
-requests in order, the step where the intervention should land, and what
-counts as failure at every *earlier* step. Silence in steps 1 and 2 is part of
-the expected result, not the absence of one.
+requests in order, the step where the intervention should land, the **mode** it
+should land in (`A` build it · `B` build it and flag one thing · `C` pause and
+guide), the **next action** the run is expected to produce, and what counts as
+failure at every *earlier* step. Silence in steps 1 and 2 is part of the
+expected result, not the absence of one.
+
+Two failures are scored equally: intervening before the evidence supports it,
+and landing the right observation with no step attached to it. A scenario whose
+expected outcome is a diagnosis rather than something to do next is not
+finished.
 
 At least one scenario per pattern family must be a project where the correct
 output is nothing at all.
@@ -357,10 +370,13 @@ Every fixture needs documented expected findings in `tests/README.md`.
   independent locations, plus a dated record of it arriving — a changelog, or a
   `.project-compass/` holding trajectory entries and recorded decisions. Those
   seeded state files must contain **evidence, never conclusions**: dated entries
-  and locations, never the blind spot the run is supposed to find. And the suite
-  needs at least one *healthy* project, where the expected output for an
-  ordinary request is nothing at all — the skill's hardest behavior is silence,
-  and a fixture set that only rewards findings will train it out.
+  and locations, never the gap the run is supposed to find. Document the expected
+  *next action*, not just the expected finding. The suite needs at least one
+  *healthy* project, where the expected output for an ordinary request is nothing
+  at all — the skill's hardest behavior is silence, and a fixture set that only
+  rewards findings will train it out — and at least one where the pattern is
+  spread across several areas rather than one screen, since a single accumulating
+  screen is the easy case and cross-cutting emergence is the one that matters.
 
 Do not explain the seeded problem inside the fixture — that hands the agent the
 answer.
