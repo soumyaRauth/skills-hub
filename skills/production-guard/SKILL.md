@@ -1,6 +1,6 @@
 ---
 name: production-guard
-description: Validate whether a software change is safe enough to ship by analyzing and, where possible, executing checks for functional behavior, regressions, failures, security, data integrity, concurrency, performance, observability, and recovery. Use before merging or releasing meaningful code changes.
+description: Decide whether a change is safe to ship. Checks behavior, regressions, failure modes, retries and idempotency, security and tenancy, data integrity and migrations, performance at volume, observability and recovery, running the project's own checks where possible, and ends in SHIP, CONDITIONAL SHIP or DO NOT SHIP derived from explicit rules. Use when someone asks whether a change is ready to merge, release or deploy, and when meaningful work on money, authentication, authorization, migrations, bulk or destructive operations, multi-tenancy or external integrations is being wrapped up. Not for work still in progress, low-risk changes, or prototypes not headed to production.
 ---
 
 # Production Guard
@@ -13,6 +13,59 @@ real users?**
 The deliverable is a production-readiness report ending in one verdict —
 🟢 SHIP, 🟠 CONDITIONAL SHIP, or 🔴 DO NOT SHIP — derived from explicit checks,
 not from an impression of quality.
+
+## Activation
+
+**Engage when** someone asks about shipping (*is this safe to merge*, *ready to
+release*, *can I deploy*), or when a meaningful change has just been completed
+on a high-risk surface: money, authentication, authorization, migrations, bulk
+or destructive operations, multi-tenancy, external integrations, deploy
+configuration.
+
+**Stay quiet when** the work is still in progress, the change is low-risk, or
+the user said it is not going to production.
+
+**Depth** `GATING` when a person asked for the ship decision: the full report
+and a verdict. Otherwise `CONSULT`. After high-risk work nobody asked to gate,
+name the two or three failure scenarios that most need a check, and offer the
+full readiness pass. It never blocks work nobody asked it to gate.
+
+**Composes with** `proof-driven-dev` (starts from what was proven; hands failed
+checks back) · `impact-map` (the hidden-coupling findings are the regression
+surface) · `standards-compass` (applicable controls feed the security category)
+· `dependency-guard` (a manifest change in the diff). Observability is one of
+this skill's own categories, not another skill's.
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
 

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Contract Guard — Skills Hub</title>
+<meta name="description" content="Settles what a new or changed interface promises before anyone depends on it: the house conventions, the decisions consumers will build against, and whether a change is breaking.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="impact-map.html">Impact Map</a>
+      <a href="proof-driven-dev.html">ProofBuild</a>
+      <a href="production-guard.html">Production Guard</a>
+      <a href="standards-compass.html">Standards</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/api-contract-guard/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; before anyone integrates</span>
+    <h1>API Contract Guard</h1>
+    <p class="lede">Code is cheap to change; a promise to someone who deploys on their own schedule is not. This settles what an API, webhook or event promises &mdash; before the promise is made by accident.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill api-contract-guard</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>&ldquo;we&rsquo;ll fix it in v2&rdquo;</b> &nbsp;&rarr;&nbsp; running v1 for years</p>
+    <p>
+      Once a mobile build ships, a partner integrates, or a webhook receiver is
+      written against a payload, every field name, status code and retry behavior
+      carries weight.
+    </p>
+    <p>
+      Agents build endpoints well. What they miss is that this one is the first in
+      the API to use offset pagination where the rest use cursors &mdash; or that a
+      <span class="mono">POST</span> without an idempotency key will act twice on
+      the client&rsquo;s first retry.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. Installed, it is loaded when a request needs it
+      and stays out of the way otherwise &mdash; and when it does shape the work,
+      one <span class="mono">&#9889;</span> line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>An interface others deploy against is added or changed: a public or partner API, a webhook, an event, an SDK, CLI output that scripts parse.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>Internal functions, UI-only work, and endpoints whose every consumer ships in the same deploy.</td></tr>
+          <tr><td class="klass">Depth</td><td>A decisions block before the work. A fuller design for a new public API or a breaking change. Never a gate.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="impact-map.html">Impact Map</a>, <a href="proof-driven-dev.html">ProofBuild</a>, <a href="production-guard.html">Production Guard</a>, <a href="standards-compass.html">Standards Compass</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it produces</h2>
+<pre class="block">CONTRACT  GET /v1/invoices &mdash; public, API-key clients
+FOLLOWS   error envelope (src/api/errors.js:3) &middot; cursor pagination, max 100
+          (GET /v1/payments) &middot; integer minor units + currency &middot; ISO-8601 UTC
+DECIDES   order by (created_at, id) so cursors stay stable &middot; status is an
+          open enum &middot; another customer&rsquo;s invoice returns 404, like a missing one
+CHANGE    additive
+HANDOFF &rarr; proof-driven-dev: contract tests for page stability and cross-customer 404</pre>
+    <p>
+      Every line is a convention followed, with its location; a decision made,
+      with its reason; or a question for a person. There is no style guide in it
+      but the one the repository already has.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Additive, behavioral, breaking</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Label</th><th>Examples</th></tr></thead>
+        <tbody>
+          <tr><td class="klass">Additive</td><td>A new endpoint, a new optional field, a new value on an enum documented as open</td></tr>
+          <tr><td class="klass">Behavioral</td><td>The same field with a different meaning &mdash; the dangerous one, treated as breaking</td></tr>
+          <tr><td class="klass">Breaking</td><td>A field removed, renamed or retyped; tighter validation; a changed status code, ordering or pagination</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The label is about consumers, not the diff: renaming one field in an event is
+      a one-word change, and breaking for a service that deploys on its own
+      schedule. A breaking change gets a migration path in which every step is
+      safe to deploy.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      <a href="impact-map.html">Impact Map</a> finds who in this repository
+      depends on an interface today; this decides what it should promise.
+      <a href="production-guard.html">Production Guard</a> checks idempotency after
+      the code exists, and <a href="standards-compass.html">Standards Compass</a>
+      keeps the security half &mdash; authorization depth, rate limits, exposure.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

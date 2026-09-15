@@ -14,6 +14,8 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence — competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
 | **[project-compass](skills/project-compass/README.md)** | Works out what the project is becoming and what you are actually trying to accomplish, then tells you what to do next — usually by just building what you asked for, and saying nothing | *Across* everything, quietly |
 | **[standards-compass](skills/standards-compass/README.md)** | Works out which standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software — then audits it against them, with evidence | *Whichever* of those you never consciously chose |
+| **[dependency-guard](skills/dependency-guard/README.md)** | Decides whether a dependency should come in — whether it is needed at all, whether the package is the one you meant, what it brings with it | *Before* anything is installed |
+| **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises — the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
@@ -23,12 +25,16 @@ npx skills add soumyaRauth/skills-hub --skill practical-localizer
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 npx skills add soumyaRauth/skills-hub --skill project-compass
 npx skills add soumyaRauth/skills-hub --skill standards-compass
+npx skills add soumyaRauth/skills-hub --skill dependency-guard
+npx skills add soumyaRauth/skills-hub --skill api-contract-guard
 ```
 
 They compose, and none requires the others:
 
 ```
 ticket   → impact-map → proof-driven-dev → production-guard → ship
+                        ↑ api-contract-guard  when the change is an interface others deploy against
+                        ↑ dependency-guard    when the change brings in a dependency
                                                             → practical-localizer → ship in another language
 
 incident → engineering-investigator → cause → proof-driven-dev → production-guard → ship
@@ -39,6 +45,34 @@ given where this project is heading, is this ticket the right next thing at all.
 standards-compass sits underneath it too, and answers another one:
 what this software should have been measured against all along.
 ```
+
+## You don't call them — they show up
+
+There are no slash commands to remember. The agent sees every installed
+skill's description, and each description says when that skill applies *and
+when it does not*. The agent brings in the ones the request needs, judging
+from the request and from what the repository shows.
+
+| | |
+| --- | --- |
+| **Automatic** | *"Add password reset"* is a Standards Compass and ProofBuild request. *"Why does checkout randomly fail?"* is an Engineering Investigator one. You don't have to say so |
+| **Composed** | Several skills can share one task. Impact Map maps the surface, Standards Compass names the controls, ProofBuild proves the result, and each hands the rest on in a one-line `HANDOFF` |
+| **Quiet** | A button label, a typo, a patch bump: nothing loads. A skill loaded for the last request says nothing on this one unless this one earns it |
+| **Visible** | When skills shape the work, one line says which: `⚡ Impact Map · Standards Compass — rename reaches report SQL; export carries personal data` |
+| **Still manual** | Name one (*"use Impact Map first"*) or type `/impact-map`. *"Skip the standards review"* is honored. A live hazard (a reachable security hole, data loss, money at risk) is still said, once |
+
+This is the agent's judgment steered by the descriptions, not a keyword router,
+and it is measured, not promised. [`evals/activation/`](evals/activation/README.md)
+runs real sessions against the fixtures and checks which skills load, and which
+must not. [ECOSYSTEM.md](ECOSYSTEM.md) explains how the pieces fit, including
+the skills considered and deliberately not added.
+
+**In Claude Code, also add the ten-line standing instruction** from
+[integrations/claude-code](integrations/claude-code/README.md). In the
+activation suite, it is what gets Claude to reach for the skills during
+implementation work, not only when a request sounds like the skill's own name.
+It caused no extra false alarms. The same folder has an optional colored
+active-skills status line.
 
 ---
 
@@ -769,6 +803,69 @@ pass into a **regression** rather than a rediscovery.
 
 ---
 
+# Dependency Guard
+
+**Should this dependency come in — and is it the one you think it is?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill dependency-guard
+```
+
+Most dependencies are never decided. A request's obvious implementation is
+`npm install x`, and that is the whole review. Agents make it worse: they reach
+for a library by reflex, and occasionally name packages that do not exist,
+which is the gap a squatter registers into.
+
+```
+DEPENDENCY  lodash — debounce for the customer search box
+DECISION    USE EXISTING
+WHY         The need is one function. src/lib/timing.js already holds throttle();
+            a 9-line debounce beside it covers this without a new package.
+```
+
+It climbs a ladder first: already in the codebase, the standard library or
+platform, an installed dependency, a few lines of code. Only then does it
+evaluate a package, and there the name is resolved before it is trusted.
+Install scripts and transitive growth are measured from a dry run or the
+lockfile diff. Registry facts it did not read are marked `UNVERIFIED`, never
+supplied from memory. A routine patch bump gets no comment at all.
+
+[Read the full guide →](skills/dependency-guard/README.md)
+
+---
+
+# API Contract Guard
+
+**What does this interface promise — and which of those promises can never be
+taken back?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill api-contract-guard
+```
+
+Code is cheap to change. A promise to someone who deploys on their own schedule
+is not. Before an endpoint, webhook or event ships, this reads how the rest of
+the API already works and writes down the decisions a consumer will build
+against:
+
+```
+CONTRACT  GET /v1/invoices — public, API-key clients
+FOLLOWS   error envelope (src/api/errors.js:3) · cursor pagination, max 100
+          (GET /v1/payments) · integer minor units + currency · ISO-8601 UTC
+DECIDES   order by (created_at, id) so cursors stay stable · status is an open
+          enum · another customer's invoice returns 404, like a missing one
+CHANGE    additive
+```
+
+Changes to an existing contract are labeled additive, behavioral or breaking,
+and the label describes consumers rather than the diff. A breaking change gets a
+migration path in which every step deploys safely. An endpoint whose every
+consumer ships in the same deploy gets nothing.
+
+[Read the full guide →](skills/api-contract-guard/README.md)
+
+---
+
 ## Installation
 
 ```bash
@@ -780,6 +877,8 @@ npx skills add soumyaRauth/skills-hub --skill practical-localizer
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 npx skills add soumyaRauth/skills-hub --skill project-compass
 npx skills add soumyaRauth/skills-hub --skill standards-compass
+npx skills add soumyaRauth/skills-hub --skill dependency-guard
+npx skills add soumyaRauth/skills-hub --skill api-contract-guard
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
@@ -789,10 +888,13 @@ npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code
 ```
 
-Then just ask for what it does — installed skills are matched by description, so
-no slash command is needed:
+Then work as you normally would. Installed skills are matched by description,
+so the agent brings them in without a slash command. You can also ask for one
+directly:
 
 ```
 What's the blast radius of adding an approval step to course completions?
@@ -819,6 +921,16 @@ inspection an agent already has.
 
 If your agent supports the Agent Skills format and can read files and search a
 repository, it can run these skills.
+
+Everything Claude Code-specific is kept outside the skills:
+
+- a ten-line standing instruction for `CLAUDE.md`, which is recommended,
+  because the activation suite measures a clear difference with it
+- a status line segment that shows the active skills in color
+- a plugin manifest, so `claude --plugin-dir` can load all nine at once and
+  `claude plugin eval` can test them
+
+See [integrations/claude-code](integrations/claude-code/README.md).
 
 ---
 
@@ -859,12 +971,18 @@ repository, it can run these skills.
 │   │   ├── README.md
 │   │   ├── references/           ← thirteen project-guidance references
 │   │   └── examples/             ← nine worked sessions, one of which says nothing
-│   └── standards-compass/
-│       ├── SKILL.md
-│       ├── README.md
-│       ├── references/           ← eighteen assessment references, plus a template
-│       ├── registry/             ← the standards registry: add a file, add a standard
-│       └── examples/             ← eight worked assessments, one that refuses to grade
+│   ├── standards-compass/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← eighteen assessment references, plus a template
+│   │   ├── registry/             ← the standards registry: add a file, add a standard
+│   │   └── examples/             ← eight worked assessments, one that refuses to grade
+│   ├── dependency-guard/         ← two references, four examples, one of them silence
+│   └── api-contract-guard/       ← two references, four examples, one of them silence
+├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
+├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
+├── integrations/claude-code/     ← optional: standing instruction, colored status line
+├── .claude-plugin/plugin.json    ← makes the repository loadable as a Claude Code plugin
 ├── tests/
 │   ├── fixtures/
 │   │   ├── impact-map/           ← four repositories with hidden coupling to find
@@ -873,8 +991,10 @@ repository, it can run these skills.
 │   │   ├── practical-localizer/  ← six repositories with bad localizations
 │   │   ├── engineering-investigator/  ← five incidents with the evidence to solve them, plus one plain feature request
 │   │   ├── project-compass/      ← six projects with a hidden pattern, plus one healthy project where the right answer is silence
-│   │   └── standards-compass/    ← five projects to assess, including one where most of the honest answer is "unable to verify"
-│   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions
+│   │   ├── standards-compass/    ← five projects to assess, including one where most of the honest answer is "unable to verify"
+│   │   ├── dependency-guard/     ← an installed library that covers the need, an unverified name, SHA-pinned CI
+│   │   └── api-contract-guard/   ← a public API with a flaw not to copy, and two services that deploy apart
+│   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions and skills
 │   └── README.md                 ← expected findings per fixture
 ├── scripts/
 │   ├── validate.sh               ← structure + frontmatter validation, all skills
@@ -891,6 +1011,11 @@ repository, it can run these skills.
 - **[Engineering Investigator](skills/engineering-investigator/README.md)** · [SKILL.md](skills/engineering-investigator/SKILL.md)
 - **[Project Compass](skills/project-compass/README.md)** · [SKILL.md](skills/project-compass/SKILL.md)
 - **[Standards Compass](skills/standards-compass/README.md)** · [SKILL.md](skills/standards-compass/SKILL.md)
+- **[Dependency Guard](skills/dependency-guard/README.md)** · [SKILL.md](skills/dependency-guard/SKILL.md)
+- **[API Contract Guard](skills/api-contract-guard/README.md)** · [SKILL.md](skills/api-contract-guard/SKILL.md)
+- **[How they work together](ECOSYSTEM.md)** — activation, composition, visibility, overrides, and what was not added
+- **[Activation suite](evals/activation/README.md)** — which skill a request should load, and which it must not
+- **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction and status line
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 
@@ -990,6 +1115,10 @@ completeness, and none can prove it.
   rather than guessing. Its bundled registry ages, and every entry carries the
   date and method of its last verification
 - An absent finding is not proof of absence
+- Automatic activation is the agent's judgment, steered by descriptions. It is
+  not a guarantee. The activation suite measures it on a fixed set of requests
+  and one model at a time, and a skill that should have loaded and did not is
+  still possible. Name it and it loads
 
 Production Guard improves the evidence available before shipping. It does not
 guarantee production safety, and a human owns the release decision.

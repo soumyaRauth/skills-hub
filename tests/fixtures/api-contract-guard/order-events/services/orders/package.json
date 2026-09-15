@@ -1,0 +1,1 @@
+{ "name": "orders", "private": true, "dependencies": { "amqplib": "^0.10.4" } }

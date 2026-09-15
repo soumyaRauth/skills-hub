@@ -1,0 +1,39 @@
+schema_version: '1.1'
+name: compose-duplicate-orders
+tags:
+- composition
+description: An intermittent symptom first. Impact Map and ProofBuild may follow once a cause exists.
+expected_outcome: 'Must engage: engineering-investigator. Must stay quiet: practical-localizer, dependency-guard, project-compass.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Users sometimes see duplicate orders after retrying checkout.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0
+- name: quiet-project-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-compass)"'
+  min: 0
+  max: 0

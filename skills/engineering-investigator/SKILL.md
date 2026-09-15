@@ -1,6 +1,6 @@
 ---
 name: engineering-investigator
-description: Investigate vague engineering complaints — slowness, intermittent failures, wrong data, production incidents, works-locally-but-fails-in-production — by evidence instead of guesswork. Normalizes the symptom, establishes scope, forms competing hypotheses with explicit kill conditions, runs the smallest experiment that discriminates between them, eliminates what the evidence kills, and determines whether the application, a dependency, the infrastructure, or the client's own network is responsible. Returns a short evidence-backed conclusion with a confidence level, plus a client-ready explanation — not a debugging transcript. Use when a report describes a symptom whose cause or scope is unclear ("the app is slow", "checkout randomly fails", "payments started failing yesterday"), when a regression must be tied to a deployment, or to resume an investigation already in progress. Depth scales with uncertainty; a request that names its own change is done directly, not turned into an investigation.
+description: Investigate a symptom whose cause is unclear, by evidence instead of guesswork — slowness, intermittent failures, wrong data, production incidents, works locally but fails in production, a regression to tie to a deploy, or a fix that did not hold. Normalizes the symptom, scopes it by contrast, forms competing hypotheses with kill conditions, runs the smallest experiment that discriminates, and says whether the application, a dependency, the infrastructure or the client's own network is responsible, as a short conclusion with a confidence level rather than a debugging transcript. Use when someone asks why something is happening, reports a vague or intermittent problem, or asks to resume an investigation. Not for requests that name their own change, or a defect whose stack trace already names the line.
 ---
 
 # Engineering Investigator
@@ -28,6 +28,57 @@ REPORT → ROUTE → NORMALIZE → SCOPE → OBSERVE → HYPOTHESES → EVIDENCE
 not a formatting step: nothing reaches the user that has not passed it.
 
 The investigation may be deep. **The answer is short.**
+
+## Activation
+
+**Engage when** a report describes a symptom whose cause or scope is unclear:
+*slow*, *randomly fails*, *wrong totals*, *started yesterday*. Also when evidence
+conflicts, an external cause is plausible, a previous fix did not hold, or
+`.agent-investigation/` exists and the user says *continue*.
+
+**Stay quiet when** the request names its own change (*add XLSX upload*) or a
+stack trace names the line. Invoked anyway, it takes the DIRECT lane. *Fix this*
+does not, by that phrase alone, make something an investigation.
+
+**Depth** `ACTIVE`. The lane (DIRECT, QUICK, STANDARD or INCIDENT) scales with
+how many explanations are live.
+
+**Composes with** `proof-driven-dev` (an established application cause becomes
+the reproduction requirement when a fix is asked for) · `impact-map` (a cause
+that crosses systems, or a fix in shared code) · `production-guard` (after a fix
+on a high-risk path) · `standards-compass` (a cause that turns out to be a
+security or privacy exposure).
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
 

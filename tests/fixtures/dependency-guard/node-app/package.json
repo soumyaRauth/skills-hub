@@ -1,0 +1,12 @@
+{
+  "name": "field-notes",
+  "version": "0.4.0",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": { "test": "node --test" },
+  "dependencies": {
+    "date-fns": "^3.6.0",
+    "express": "^4.18.2",
+    "zod": "^3.23.8"
+  }
+}

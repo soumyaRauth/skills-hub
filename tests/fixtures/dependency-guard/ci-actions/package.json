@@ -1,0 +1,1 @@
+{ "name": "ledger-web", "private": true, "scripts": { "test": "node --test", "build": "node build.js" } }

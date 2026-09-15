@@ -1,0 +1,40 @@
+schema_version: '1.1'
+name: sc-password-reset
+tags:
+- positive
+- core
+description: 'Account recovery: token handling, enumeration, rate limits. Standards Compass names them before the code.'
+expected_outcome: 'Must engage: standards-compass. Must stay quiet: practical-localizer, engineering-investigator, dependency-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Clients keep forgetting their passwords. Add a password reset by email.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-standards-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:standards-compass)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0

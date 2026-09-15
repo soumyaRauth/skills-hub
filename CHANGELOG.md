@@ -9,6 +9,78 @@ methodology and documentation.
 
 ### Added
 
+- **Automatic activation across the whole set.** The skills no longer depend on
+  anyone remembering a slash command, and the fix is not a router. Agents that
+  support Agent Skills already show the model each skill's description and let
+  it decide what to load. What was missing was descriptions that say when a
+  skill should *not* load, a contract for how deep a loaded skill goes, and a way
+  for several skills to share one task without talking over each other.
+  [`ECOSYSTEM.md`](ECOSYSTEM.md) documents the design: four depths (`PASSIVE`,
+  `CONSULT`, `ACTIVE`, `GATING`), a relationship graph, conflict order,
+  overrides, and the rule that matters most in Claude Code, where a loaded skill
+  stays in context for the rest of the session. **Loaded is not engaged**: every
+  skill re-decides on every request.
+- **An activation contract in every skill.** Each description now says when to
+  use the skill and when not to (`Not for …`), and stays within the 1024
+  characters `skills-ref` allows. Each `SKILL.md` gains an `## Activation`
+  section (what it engages on, what it stays quiet on, its depth, whom it hands
+  work to) and a shared protocol block, copied verbatim so that a skill installed
+  alone still carries it. The protocol covers the one-line `⚡` announcement, a
+  single interruption per request however many skills engage, `HANDOFF → skill`
+  lines, conflict order, opt-outs that never suppress invented evidence, an
+  unrun check or a live hazard, and reading sibling skills' state instead of
+  re-deriving it.
+- `evals/activation/` — **38 activation cases for `claude plugin eval`.** Each
+  copies a fixture repository into a sandbox, sends a request phrased the way a
+  developer would type it, and grades which skills the session loaded, with
+  deterministic `tool_used` graders on the Skill tool. Every skill has at least
+  one case where it must engage and one where it must stay quiet. The quiet
+  cases cover trivial edits, keyword traps (*refund* in a comment, *payments* in
+  an incident), low-risk edits in high-risk files, a requirement that already
+  holds, an explicit opt-out, and the same request shape in two repositories
+  that should get different answers.
+- `dependency-guard` v0.1.0 — **should this dependency come in, and is it the
+  one we think it is?** It climbs a necessity ladder first: codebase, standard
+  library, installed dependencies, a few lines. Then it resolves the package
+  name before anything installs it, because names that sound right and do not
+  exist are what squatters register. It reports install scripts and transitive
+  growth from a dry run or the lockfile diff, never from memory, follows the
+  house pinning policy, and answers `USE EXISTING` / `ADD` /
+  `ADD WITH CONDITIONS` / `DON'T ADD` in a few lines. Routine patch bumps get
+  nothing. Two references, four examples, three fixtures.
+- `api-contract-guard` v0.1.0 — **what does this interface promise, and which
+  of those promises can never be taken back?** Before an endpoint, webhook,
+  event or SDK surface that others deploy against ships, it reads the house
+  conventions from the existing interfaces and writes a short block of
+  decisions consumers will build against: identifiers, enum openness, error
+  codes, idempotency, page stability, webhook delivery and signing. Changes are
+  labeled additive, behavioral or breaking by their effect on consumers, with a
+  migration path in which every step deploys safely. Internal same-deploy
+  endpoints get nothing. Two references, four examples, two fixtures.
+- `integrations/claude-code/` — optional and Claude Code-only: a ten-line
+  standing instruction for `CLAUDE.md`, and `statusline-skills.py`, a status line
+  segment that shows the skills invoked in the current turn in color. The
+  status line is the Claude Code surface where ANSI color is documented. The
+  segment clears on the next prompt, respects `NO_COLOR`, and comes with a
+  self-check that `validate.sh` runs.
+- `.claude-plugin/plugin.json` — the repository is now also a Claude Code
+  plugin, which is what lets `claude plugin eval` run the activation suite and
+  `claude --plugin-dir` load all nine skills at once. `npx skills add` is
+  unaffected.
+- `tests/longitudinal/ecosystem.md` — six multi-request scenarios across
+  skills: engagement ending when the request changes, opt-outs scoped to what
+  they named, a handoff chain from investigation to proof to release, a
+  dismissal that survives repetition, context flipping the answer, and manual
+  invocation.
+
+### Considered and not added
+
+Architecture, data-architecture, release and migration, observability, and
+accessibility skills were each evaluated against what the existing skills
+already own. Project Compass, Impact Map, Production Guard and Standards Compass
+cover them respectively, and a second skill would split an authority rather than
+add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and-not-added).
+
 - `standards-compass` v0.1.0 — **software standards intelligence and compliance
   gap analysis.** Nobody decides which standards a product is built to, because
   the question never appears in a ticket. Eight months later someone asks whether
@@ -170,6 +242,41 @@ methodology and documentation.
   observation is failed as firmly as inventing one.
 
 ### Changed
+
+- **All seven existing skills: rewritten descriptions, plus an `## Activation`
+  section.** The methodology of each skill is unchanged, with one behavioral
+  change. **Impact Map**, loaded on a request to *make* a change rather than to
+  map one, now runs as a compact pre-step: MUST CHANGE, HIDDEN COUPLING and open
+  questions. The requested change then proceeds on that surface, instead of the
+  session stopping at a full report nobody asked for. An explicit request for a
+  map still gets the full read-only report and stops. The Project Compass,
+  Standards Compass and Engineering Investigator descriptions were shortened to
+  make room for their quiet clauses.
+- `scripts/validate.sh` holds every skill to the activation contract. The
+  description needs a `Not for` clause. The Activation section needs its four
+  labels and may name only skills that exist. The protocol block must match
+  `ECOSYSTEM.md`. And every skill needs one activation case where it must engage
+  and one where it must stay quiet. It also checks that every activation case
+  is valid and listed, runs the status line self-check, and parses the plugin
+  manifest.
+- `CONTRIBUTING.md` gains a fifth hard rule, **activation is earned**: a change
+  that makes a skill engage more often comes with a case where it must stay
+  quiet.
+- The top-level README, the site, and `tests/README.md` cover nine skills and
+  how they activate. Each skill page on the site gains a *When it activates*
+  section.
+
+### Compatibility
+
+- `npx skills add soumyaRauth/skills-hub --skill <name>` works exactly as before.
+  Frontmatter still uses only fields the Agent Skills specification allows.
+  Claude Code's `when_to_use` was deliberately not used, because `skills-ref
+  validate` rejects it.
+- Nothing requires Claude Code. The `⚡` line and handoffs are plain text, and
+  everything Claude Code-specific lives in `integrations/claude-code/` and
+  `.claude-plugin/`.
+- Installing a skill both with `npx skills` and as a plugin shows it twice. The
+  plugin form is namespaced, as `skills-hub:<name>`.
 
 - `engineering-investigator` v0.2 — **routing and a finalization gate.** Two
   correctives, both to the layer between the investigation and the reader.

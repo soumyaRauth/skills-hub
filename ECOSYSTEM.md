@@ -1,0 +1,252 @@
+# How the skills work together
+
+Nine skills, each one engineering discipline. None of them needs a slash
+command. This document covers how they end up in a task without being named,
+how several of them share one, and how they stay out of the way the rest of the
+time.
+
+## Architecture
+
+Nothing here is a router. Agents that support Agent Skills already show the
+model each installed skill's `name` and `description`, and the model decides
+what to load. In Claude Code that means the Skill tool: Claude invokes whatever
+the task calls for, and can invoke several skills in one turn. This repository
+makes that decision easier to get right, and it adds no runtime.
+
+```
+request ──▶ model reads every installed description ──▶ Skill tool loads the relevant ones
+                                                              │
+                        each skill's ## Activation section ◀──┘
+                        decides how deep it goes (or that it stays quiet)
+                                                              │
+                        shared protocol: announce · hand off · resolve conflicts
+                                                              │
+                                                              ▼
+                                                          the work
+```
+
+| Layer | Responsibility | Where |
+| --- | --- | --- |
+| Model reasoning | Decides which disciplines are relevant, from the request, the repository and what it has already seen | the agent, not this repository |
+| Description | The only text the model sees before it loads a skill. Says what the skill is for, when to use it, and when not to | `skills/<name>/SKILL.md` frontmatter |
+| Activation section | Read once the skill is loaded. Covers when it engages, when it stays quiet, how deep it goes, and what it hands to whom | `skills/<name>/SKILL.md`, `## Activation` |
+| Shared protocol | Covers announcing, handoffs, conflicts, overrides and state. The text is identical in every skill so each skill still works when installed alone | the marked block below, copied into every `SKILL.md` |
+| Claude Code extras | A standing instruction, recommended because it measurably raises how often skills load when they should, and an optional colored status line segment | `integrations/claude-code/` |
+| Tests | Deterministic graders on which skills a real session invoked, and which it did not | `evals/activation/` |
+
+Hooks are not involved in the decision. Deciding which discipline matters is
+semantic work, and a hook can only match strings. The status line segment is
+the one deterministic piece, and it only displays what already happened.
+
+## Depth
+
+Being relevant and speaking up are different things. Every skill engages at one
+of four depths, and the depth is part of its contract:
+
+| Depth | What it does | Example |
+| --- | --- | --- |
+| `PASSIVE` | Informs judgment and adds nothing to the reply | Project Compass on an ordinary request, recording what the project is becoming |
+| `CONSULT` | A few lines that change what gets built | Standards Compass naming what password reset must account for |
+| `ACTIVE` | Shapes the work | Impact Map before a rename that reaches raw SQL; an investigation |
+| `GATING` | Decides whether something proceeds, and only when someone asked for that decision | Production Guard asked "is this safe to ship?" |
+
+## The skills
+
+| Skill | Question it answers | Engages when | Stays quiet when | Usual depth |
+| --- | --- | --- | --- | --- |
+| **Impact Map** · `impact-map` | What else does this change touch? | Existing behavior others depend on changes: a shared concept, a schema, an API, config, cross-module code | New isolated code, copy, formatting, local renames the type checker covers | `ACTIVE` |
+| **ProofBuild** · `proof-driven-dev` | Did the outcome actually happen? | Meaningful implementation: a feature, a fix, a behavior change, a migration | Typos, copy, comments, formatting, questions, analysis-only requests, declared throwaway spikes | `ACTIVE` |
+| **Production Guard** · `production-guard` | Is this safe to ship? | Someone asks about shipping or merging; high-risk work (money, auth, migrations, bulk or destructive operations) is wrapping up | Mid-implementation, low-risk changes, prototypes not headed for production | `GATING` when asked, `CONSULT` otherwise |
+| **Practical Localizer** · `practical-localizer` | Does this read like a local product? | Locales, translations, plural and format mechanics, RTL | English-only copy in an app with no catalogs | `ACTIVE` · `CONSULT` for stale translations |
+| **Engineering Investigator** · `engineering-investigator` | Why is this happening, and is it even us? | An unexplained symptom, an intermittent failure, wrong data, a regression, a fix that didn't hold | The request names its own change, or a stack trace names the line | `ACTIVE` |
+| **Project Compass** · `project-compass` | Given what this is becoming, what should happen next? | Direction questions; a request that adds to a recurring pattern or locks something in | Everything else, which is nearly everything | `PASSIVE`, rarely `CONSULT` or `ACTIVE` |
+| **Standards Compass** · `standards-compass` | Which standards apply, and does the code meet them? | Audits; identity, privilege, money, personal data, uploads, AI, accessibility-relevant UI; a weakened control | Renames, copy, refactors with no boundary change, including in regulated projects | `CONSULT` · `ACTIVE` for audits |
+| **Dependency Guard** · `dependency-guard` | Should this dependency come in? | Adding a package, action, image or SDK; a major upgrade; "should we use X?" | Routine patch bumps with no new transitive packages or install scripts | `CONSULT` |
+| **API Contract Guard** · `api-contract-guard` | What does this interface promise, and can it be taken back? | Adding or changing an endpoint, webhook, event, SDK surface or CLI output that consumers deploy separately from | Interfaces whose every consumer ships in the same deploy; UI-only work | `CONSULT` · `ACTIVE` for new public APIs |
+
+## How they relate
+
+Each skill's `Composes with` line is the source for this graph. The graph is
+advisory. It shows what usually helps, not a sequence anything must follow.
+
+```mermaid
+flowchart LR
+  PC[Project Compass] -. can recommend .-> IM[Impact Map]
+  PC -. can recommend .-> SC[Standards Compass]
+  PC -. can recommend .-> AC[API Contract Guard]
+  EI[Engineering Investigator] -- cause found --> PB[ProofBuild]
+  EI -. cross-system cause .-> IM
+  IM -- surface + hidden coupling --> PB
+  IM -. public contract .-> AC
+  AC -- contract decisions --> PB
+  SC -- requirements --> PB
+  DG[Dependency Guard] -- add / don't add --> PB
+  PB -- proven change --> PG[Production Guard]
+  IM -- regression surface --> PG
+  SC -- applicable controls --> PG
+  PG -- failed checks --> PB
+  PG -. manifest changed .-> DG
+  PB -- shipped --> PL[Practical Localizer]
+  IM -. recurring coupling .-> PC
+```
+
+What each skill does *not* do matters as much as the edges:
+
+- **Impact Map** maps consequences. It does not judge direction (Project Compass), API semantics (API Contract Guard), or readiness (Production Guard).
+- **Project Compass** decides what should happen next. It does not review architecture on demand, and it never gates.
+- **Standards Compass** is the only authority on standards, frameworks and regulations. Accessibility *implementation* happens inside the work it informs. There is no separate accessibility skill.
+- **Production Guard** owns the ship verdict, and observability is one of its categories. **ProofBuild** owns `VERIFIED`. Neither overrules the other.
+
+## Composition, by example
+
+Candidates are not a sequence to run in full. Each skill engages only when it
+changes the result.
+
+| Request | Likely | Why the others stay quiet |
+| --- | --- | --- |
+| *Add bulk customer export, admin only* | Impact Map, Standards Compass, ProofBuild, then possibly Production Guard | Project Compass speaks only if exports are becoming a subsystem nobody defined |
+| *Add password reset* | Standards Compass, ProofBuild, Production Guard at the end | Impact Map only if an existing auth flow is being changed rather than extended |
+| *Why does the nightly sync sometimes duplicate records?* | Engineering Investigator | Impact Map only if the cause turns out to cross systems |
+| *Add subscription cancellation* | Impact Map, Standards Compass, ProofBuild, Production Guard; API Contract Guard if clients call it | — |
+| *Split `customer_name` into first and last name* | Impact Map, ProofBuild, Production Guard | Standards Compass stays quiet: it is a rename of personal data, not new personal data |
+| *Rename the button from Save to Submit* | none | Nothing about it changes with a discipline applied. Practical Localizer adds one line only if translated catalogs now hold the old meaning |
+
+The same sentence can go either way depending on the repository. *"Add another
+status"* in a project with a declared state machine gets the status and nothing
+more. In a project with four contradictory status booleans, it gets Project
+Compass. The skills read the repository before deciding, not just the prompt.
+
+## Visibility
+
+When a skill materially shapes the work, the reply says so in one line:
+
+```
+⚡ Impact Map · Standards Compass — rename reaches report SQL; export carries personal data
+```
+
+The line has names and a few words of reason, and it never carries reasoning.
+It does not appear for `PASSIVE` engagement or for a trivial request, so on most
+requests there is no line at all.
+
+- **In any agent:** the ⚡ line is plain text and needs nothing extra.
+- **In Claude Code:** the transcript already shows each skill load as a
+  `Skill(...)` line. Model replies render Markdown, and nothing documents ANSI
+  color in them, so the ⚡ line does not attempt color.
+- **In color:** the status line is the Claude Code surface where color is
+  documented. [`integrations/claude-code/statusline-skills.py`](integrations/claude-code/README.md)
+  shows the skills invoked in the current turn, clears on the next prompt, and
+  respects `NO_COLOR`.
+
+## Overrides and gates
+
+- *"Use Impact Map before doing this"* engages it, whatever the skill would have decided on its own.
+- *"Skip the standards review"*, *"no review"*, *"just do it"* drop that skill's ceremony: the note, the report, the check.
+- Three things are never dropped, because dropping them turns the output false rather than shorter:
+  - an invented piece of evidence
+  - a check reported as run when it did not run
+  - a live hazard: a reachable security hole, a path that loses data, money at risk
+
+  A live hazard is said once, in one line, and the work continues. ProofBuild asked to skip verification still builds, and reports the change as *not verified* instead of *verified*.
+
+## When skills disagree
+
+```
+user intent → project context → engineering risk → applicable standards → verification depth
+```
+
+Project Compass sees a domain model forming. The user asked for a throwaway
+prototype. Production Guard notes it is not bound for production. The prototype
+gets built, and the domain-model observation is recorded rather than spoken.
+Each skill keeps its own verdict: Production Guard's `DO NOT SHIP` is not
+softened by ProofBuild's `VERIFIED`, and neither is repeated back as the other's
+opinion. Skills advise. None of them takes over the session.
+
+## Engagement is per request; state is per project
+
+Once loaded, a skill stays in context for the rest of the session. Claude Code
+does not re-read it, and it does not unload it. So every skill says it
+explicitly: **loaded is not engaged.** Relevance to the payment feature an hour
+ago gives the skill nothing to say about the button rename now.
+
+What persists is project state, and each skill keeps its own in the repository:
+
+| Directory | Written by | Read by |
+| --- | --- | --- |
+| `.project-compass/` | Project Compass | any skill that needs what the project is and where it is heading |
+| `.project-standards/` | Standards Compass | ProofBuild and Production Guard, for applicable controls |
+| `.proofbuild/` | ProofBuild | Production Guard, for what has been proven |
+| `.agent-investigation/` | Engineering Investigator | ProofBuild, for the established cause |
+
+Reading another skill's state is cheap composition. Writing it is not allowed.
+
+## Portability
+
+| Portable (every Agent Skills agent) | Claude Code only |
+| --- | --- |
+| Descriptions: the `name` and `description` frontmatter fields, which [`skills-ref`](https://github.com/agentskills/agentskills) accepts | `integrations/claude-code/CLAUDE.md`, a standing instruction to consider the skills without being asked. Recommended, because descriptions alone leave Claude doing most implementation work without them |
+| Activation sections and the shared protocol | `integrations/claude-code/statusline-skills.py`, colored active-skill indicator |
+| The ⚡ line and handoffs, which are plain text | `.claude-plugin/plugin.json`, which makes the repository loadable as a plugin and runnable by `claude plugin eval` |
+
+`npx skills add soumyaRauth/skills-hub --skill <name>` is unchanged: skills are
+still discovered under `skills/`, each is still self-contained, and each carries
+its own copy of the protocol.
+
+## Testing activation
+
+[`evals/activation/`](evals/activation/README.md) is a `claude plugin eval`
+suite. Each case puts a fixture repository in a sandbox, sends a request phrased
+the way a developer would, and grades which skills the session invoked and which
+it did not. Every skill has cases where it must engage and cases where it must
+not. The quiet cases carry equal weight: trivial edits, keyword traps, low-risk
+changes inside high-risk projects, and explicit opt-outs.
+
+## Skills considered and not added
+
+Each one was checked against what the existing skills already cover. A skill
+that splits a discipline two ways is worse than one that owns it.
+
+| Candidate | Decision | Why |
+| --- | --- | --- |
+| Architecture Guardian | Not added | Project Compass already detects emerging state machines, authorization models and boundaries getting expensive, and turns them into a next step. Impact Map covers coupling for a given change. A third reviewer would split that authority |
+| Data Architecture Guardian | Not added | Impact Map owns schema impact and backfills, Production Guard owns constraints, atomicity and destructive operations, Project Compass owns domain-model problems, and Standards Compass owns retention and deletion |
+| Release / Migration Guardian | Not added | Production Guard's migration checks (defaults, batching, locks, deploy ordering, reversibility) and Impact Map's plan (compatibility first, backfill, remove the shim) already cover it |
+| Observability Engineer | Not added | Production Guard's observability category asks exactly *"if this fails at 3 AM, how would anyone know?"*, and Engineering Investigator reports missing instrumentation as a finding |
+| Accessibility Specialist | Not added | Standards Compass guardrail mode already implements accessibility requirements inside the work, for example adding the keyboard alternative while building drag-to-reorder. A second skill would blur which one decides |
+| **Dependency / Supply Chain Guardian** | **Added as `dependency-guard`** | Nothing decided *whether a dependency should come in*: necessity, whether the package is the one intended, install scripts, transitive growth, license. Standards Compass audits dependency management as a control area. Nothing made the per-change call |
+| **API Contract Guardian** | **Added as `api-contract-guard`** | Impact Map maps consequences of changing an existing API, and Production Guard checks idempotency after the fact. Nothing made the *design-time* decisions a consumer later depends on: house conventions, idempotency, pagination, error codes, versioning |
+
+## The shared protocol
+
+This block appears verbatim in every `SKILL.md`, so each skill carries it when
+installed alone. `scripts/validate.sh` fails if any copy drifts from this one.
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->

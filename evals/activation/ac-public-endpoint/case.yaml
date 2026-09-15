@@ -1,0 +1,34 @@
+schema_version: '1.1'
+name: ac-public-endpoint
+tags:
+- positive
+- new-skill
+description: 'A public read API: pagination, error shape, authorization boundary, versioning — hard to take back.'
+expected_outcome: 'Must engage: api-contract-guard. Must stay quiet: practical-localizer, engineering-investigator.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Add a public API endpoint so customers can list their invoices from their own systems.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0

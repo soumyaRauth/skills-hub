@@ -5,7 +5,7 @@ instructions, so contributions are judged on whether they make the agent's
 analysis **more accurate and better evidenced** — not on whether they make it
 produce more output.
 
-## The four hard rules
+## The five hard rules
 
 ### 1. Do not make the skills more speculative
 
@@ -93,6 +93,24 @@ Two consequences for contributions:
 Every registry entry carries a `claim_boundary` field for exactly this reason.
 An entry whose boundary is vague will be used to overclaim, so vague boundaries
 are treated as defects.
+
+### 5. Activation is earned
+
+The skills load on their own, which is only worth anything if they stay quiet
+when they have nothing to add. Every skill's `description` says when to use it
+**and** when not to (`Not for …`). Its `## Activation` section says what it
+engages on, what it stays quiet on, how deep it goes and whom it hands work to.
+And it carries the shared protocol from [ECOSYSTEM.md](ECOSYSTEM.md), verbatim.
+
+A change that makes a skill engage more often (a broader description, a new
+trigger) comes with an activation case where the skill must **stay quiet**,
+not only one where it must engage. A skill that loads on every request gets
+uninstalled. The quiet half of [`evals/activation/`](evals/activation/README.md)
+is the evidence that this one doesn't.
+
+Never solve activation with keywords: no hook, script or instruction that loads
+a skill because a word appeared. *Refund* in a comment is not a payments change,
+and the suite has a case to prove it.
 
 ## Ways to contribute
 
@@ -317,6 +335,20 @@ reported as a **regression** rather than rediscovered. None of that is visible
 in a single audit. A scenario states the steps, which one should produce a note,
 and what counts as failure at the steps before it.
 
+### Add an activation case
+
+A directory under `evals/activation/` with a `case.yaml` and a two-line
+`scaffold.sh` that sources `../fixture.sh <skill>/<fixture>`. Phrase the request
+the way a developer would type it, never by naming the skill (unless the case is
+about explicit invocation). Grade with `tool_used` graders on the `Skill` tool:
+`min: 1` for a skill that must engage, `min: 0` and `max: 0` for one that must
+not. Leave skills that could go either way ungraded. Say why in `description`,
+and add the row to the table in `evals/activation/README.md`.
+
+The cases most worth adding are the ones where a skill would speak and should
+not: a domain word with no domain work behind it, a trivial change in a
+high-risk file, a requirement that already holds.
+
 ### Add examples
 
 New files under `skills/<skill>/examples/`.
@@ -437,6 +469,11 @@ valuable kind.
 | Expected findings per fixture | `tests/README.md` |
 | Multi-step scenarios that only show up across sessions | `tests/longitudinal/` |
 | Usage, installation, limitations | `skills/<skill>/README.md` |
+| When a skill engages, stays quiet, and hands off | `skills/<skill>/SKILL.md`, `## Activation` |
+| How the skills compose, the shared protocol, and skills considered and not added | `ECOSYSTEM.md` |
+| Which skill should load for a request, and which must not | `evals/activation/` |
+| Behavior across several skills and requests | `tests/longitudinal/ecosystem.md` |
+| Claude Code-only extras (standing instruction, status line) | `integrations/claude-code/` |
 | Repository pitch and catalog page | top-level `README.md` |
 
 Reference files are loaded on demand, so detail is cheap there and expensive in
@@ -470,6 +507,21 @@ type, or an authority is a registry edit and not a code change. It deliberately
 does not check that URLs resolve — that needs the network, and a validator that
 fails when a standards body reorganizes its site is a validator people switch
 off.
+
+It also holds every skill to the activation contract. The description needs a
+`Not for` clause. The `## Activation` section needs its four labels and may name
+only skills that exist. The protocol block must match `ECOSYSTEM.md`
+byte for byte. And every skill needs at least one activation case where it must
+engage and one where it must stay quiet. It self-checks the Claude Code status
+line segment too.
+
+The activation suite itself runs real model sessions, so it is not part of
+`validate.sh` or CI. Run it before a pull request that changes a description or
+an Activation section:
+
+```bash
+claude plugin eval . --scaffold --allow-tools Write Edit --ablation none --no-publish
+```
 
 Adding a new skill requires no change to the validator.
 

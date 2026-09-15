@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: Billing API
+  version: "1"
+  description: Public API for account holders. Authenticate with an API key.
+paths:
+  /v1/payments:
+    get:
+      summary: List payments, newest first
+      parameters:
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }
+      responses:
+        "200": { description: A page of payments, with next_cursor }
+        "400": { description: "error.code = invalid_limit" }
+  /v1/refunds:
+    post:
+      summary: Create a refund
+      parameters:
+        - { name: Idempotency-Key, in: header, required: true, schema: { type: string } }
+      responses:
+        "201": { description: Refund created }
+        "200": { description: Replay of an earlier request with the same key }
