@@ -379,6 +379,12 @@ migrations, edit configuration, install packages, delete files, commit, push, or
 
 Implementation happens only when you explicitly ask for it, after the map.
 
+When the skill is loaded because you asked for a *change*, not for a map
+(*"rename COMPLETED to APPROVED"*), the map runs first as a compact pre-step:
+MUST CHANGE, HIDDEN COUPLING and open questions only. The change you asked for
+then proceeds on that surface. The analysis step still edits nothing. It stops
+for you only when a finding needs your decision.
+
 ---
 
 ## Team customization

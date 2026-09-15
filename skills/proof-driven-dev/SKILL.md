@@ -1,6 +1,6 @@
 ---
 name: proof-driven-dev
-description: Convert software development requests into explicit outcome contracts, implement them, verify behavior with evidence, automatically repair failures, detect uncertainty, and give developers concise verified/review/blocked results instead of long implementation explanations. Use when a developer asks for a feature, fix, refactor, migration, performance work, or security change and needs to know whether the outcome actually happened — not a narration of what was edited.
+description: Implement a feature, bug fix or behavior change with proof that it works. Before coding, turns the request into numbered, observable requirements, including the ones nobody stated (negative cases, boundaries, behavior that must not change); then implements, runs the checks that prove each requirement, repairs failures within a budget, and reports VERIFIED, REVIEW REQUIRED or BLOCKED instead of narrating edits. Use when asked to add, build, implement or fix something whose success is not obvious from the diff — features, bug fixes, refactors that must preserve behavior, migrations, performance or security changes. Not for copy, typo, comment or formatting edits, local renames, questions, analysis-only requests, or declared throwaway prototypes.
 ---
 
 # Proof-Driven Development
@@ -26,6 +26,63 @@ backed by evidence traceable to a numbered requirement:
 ```
 ✓ VERIFIED          ⚠ REVIEW REQUIRED          ✗ BLOCKED
 ```
+
+## Activation
+
+**Engage when** the request asks for behavior to change — a feature, a bug fix,
+a refactor that must change nothing, a migration, performance or security work —
+and whether it worked is not obvious from the diff. Also when another skill hands
+over requirements: Impact Map's surface, Standards Compass's controls, API
+Contract Guard's decisions.
+
+**Stay quiet when** the change is copy, a typo, a comment, formatting or a local
+rename. The diff is the proof. Also stay quiet on questions, explanations,
+analysis-only requests, and prototypes the user called throwaway.
+
+**Depth** `ACTIVE`, sized by risk. A small change gets an inline contract and
+one line of evidence. A critical one gets the full artifact set. It gates only
+its own status word: nothing it has not proven is called `VERIFIED`.
+
+**Composes with** `impact-map` and `api-contract-guard` (their findings become
+requirements) · `standards-compass` (requirements for identity, money, personal
+data, uploads, AI) · `engineering-investigator` (an established cause becomes
+the reproduction requirement) · `dependency-guard` (the decision before an
+install) · `production-guard` (hands over what was proven; takes back what
+failed).
+
+**Told to skip verification**, it still builds, and reports *not verified* in one
+line. It never reports `VERIFIED` without evidence.
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
 

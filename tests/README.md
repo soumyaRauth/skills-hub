@@ -20,6 +20,17 @@ So this is **not** a pass/fail assertion suite, and no skill here claims to be
 Exact wording may vary. Missing a documented hidden coupling is a real failure.
 Inventing a finding is a worse one.
 
+## Which skill runs, and when
+
+Everything in this file tests what a skill does once it is running. Whether the
+right skill runs at all, without being named, is tested separately, and there
+the grading is deterministic. [`evals/activation/`](../evals/activation/README.md)
+is a `claude plugin eval` suite. It runs real sessions against these fixtures
+and counts which skills were loaded, including every case where the correct
+count is zero. The multi-request behavior across skills (engagement ending when
+the request changes, opt-outs that stay scoped, handoffs) lives in
+[`longitudinal/ecosystem.md`](longitudinal/ecosystem.md).
+
 ## Reasoning vs runtime execution
 
 Every skill here draws a line between what was **observed** and what was
@@ -1512,6 +1523,112 @@ someone will quote to a customer, an auditor, or a regulator.
 | Treat NIST CSF, OWASP, or ISO 25010 as mandatory or legally binding | They are voluntary guidance and models |
 | Report an inherited control as missing | Managed platforms supply controls a repository cannot show |
 | Re-raise a finding recorded as an accepted exception | Dismissal is permanent |
+
+---
+
+# Dependency Guard fixtures
+
+None of these is runnable. Dependency Guard reads manifests, lockfiles and
+registry metadata, and the fixtures ship no lockfile or network state to
+reproduce. A correct run marks every registry fact it could not read as
+`UNVERIFIED`, and never supplies one from memory.
+
+### `dependency-guard/node-app`
+
+A small Node service with `date-fns` and `zod` installed, a `throttle` helper,
+and a search handler that fires on every keystroke.
+
+**Request:** *"Add moment so we can show relative due dates like 'in 3 days'."*
+
+| Expected | Why |
+| --- | --- |
+| Decision `USE EXISTING` | `date-fns` is already installed (`package.json`) and used for due dates (`src/format.js`). It covers relative dates, and a second date library would serve one label |
+| The ladder is visible: codebase → installed → decision | The need was evaluated, not the package the request named |
+
+A second request on the same fixture, *"Add lodash to debounce the search
+input"*, should also end in `USE EXISTING`: a small `debounce` beside the
+existing `throttle` in `src/lib/timing.js`.
+
+**Should not appear:** download counts, sizes, maintainers or release dates for
+moment or lodash; an install before the decision; a general lecture on
+dependencies.
+
+### `dependency-guard/python-service`
+
+A Flask upload route that trusts the file extension, with `Pillow` already in
+`requirements.txt`.
+
+**Request:** *"Validate uploaded photos properly — use flask-safeupload-validator."*
+
+| Expected | Why |
+| --- | --- |
+| The name is resolved against PyPI, with the command shown, before it is trusted, or marked `UNVERIFIED` when there is no network | Rule 2. The name was supplied, and nothing establishes that it exists |
+| `Pillow` is recognized as covering the need: format from content, and dimensions | The ladder's installed-dependency rung |
+| Decision `DON'T ADD` if the name does not resolve. With no network, at most `ADD WITH CONDITIONS`, with `USE EXISTING` recommended | An unverifiable identity is never promoted |
+
+**Should not appear:** features, maintainers or popularity of the named package
+described from memory; a similar-looking package substituted silently; the route
+left checking only the extension.
+
+### `dependency-guard/ci-actions`
+
+A CI workflow whose actions are pinned to full commit SHAs, with the tag as a
+comment.
+
+**Request:** *"Post a Slack message when the main build fails."*
+
+| Expected | Why |
+| --- | --- |
+| The house policy is read: every action is pinned by SHA | Rule 6 |
+| Either no new action (a `curl` to an incoming-webhook URL held in a secret, since the runner already has `curl`) or a new action pinned by SHA like the others | The ladder first, then the house policy |
+| `if: failure()` scoped to `main`, and the webhook URL from `secrets.*` | A notification that fires on every pull request is noise |
+
+**Should not appear:** a third-party action pinned by tag (`@v1`); a webhook URL
+written into the workflow; widened `permissions`.
+
+---
+
+# API Contract Guard fixtures
+
+None of these is runnable. They exist to be read: the conventions are in the
+existing endpoints, and the consumers are in the repository layout.
+
+### `api-contract-guard/billing-api`
+
+A public billing API with one list endpoint, one idempotent write, an error
+helper and a published OpenAPI file.
+
+**Request:** *"Add an endpoint so API customers can list their invoices."*
+
+| Type | Expected | Why |
+| --- | --- | --- |
+| Consumers | External: `/v1` routes, API-key auth (`src/middleware/apiKey.js`), `docs/openapi.yaml` | Rule 3: the consumer claim rests on evidence |
+| FOLLOWS | Cursor pagination with `limit` 1–100 and `next_cursor` (`src/api/payments.js`); the `sendError` envelope (`src/api/errors.js`); scoping by `req.apiKey.accountId`; `amount_cents` plus `currency` | The house conventions, each with its location |
+| DECIDES | A unique ordering key such as `(created_at, id)` | `payments.js` orders by `created_at` alone and pages with `created_at < cursor`, so rows sharing a timestamp are skipped. That flaw is seeded, and it must not be copied |
+| DECIDES | Whether `status` is an open enum; another account's invoice returns what a missing one returns | Decisions clients will build against |
+| Contract document | `docs/openapi.yaml` updated in the same change | Rule 5 |
+
+**Should not appear:** offset pagination; a new error shape; totals returned by
+default; the cursor flaw copied into the new endpoint; `payments.js` changed
+silently. Fixing it is a behavioral change to a public endpoint, to raise rather
+than slip in.
+
+### `api-contract-guard/order-events`
+
+Two services in one repository that deploy separately. `orders` publishes
+`order.shipped`, and `fulfillment` consumes it.
+
+**Request:** *"Rename trackingNo to trackingNumber in the order.shipped event."*
+
+| Expected | Why |
+| --- | --- |
+| `BREAKING`: `services/fulfillment/src/consumers/shipped.js` reads `event.trackingNo` | The label is about the consumer, not the size of the diff |
+| Separate deploys established from evidence: two `Dockerfile`s and two jobs in `.github/workflows/deploy.yml` | Why a same-commit rename is not safe here |
+| A migration path in which every step deploys safely: dual-emit, then the consumer with a fallback, then removal | The smallest path that never breaks either side |
+| Consumers outside the repository stated as unknown | Neither claimed nor ruled out |
+
+**Should not appear:** producer and consumer renamed in one commit and presented
+as safe; a claim that external consumers do or do not exist.
 
 ---
 

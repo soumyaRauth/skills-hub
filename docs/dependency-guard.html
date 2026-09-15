@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dependency Guard — Skills Hub</title>
+<meta name="description" content="Decides whether a dependency should come in before it is installed: whether it is needed at all, whether the package is the one intended, and what it brings with it.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="impact-map.html">Impact Map</a>
+      <a href="proof-driven-dev.html">ProofBuild</a>
+      <a href="production-guard.html">Production Guard</a>
+      <a href="standards-compass.html">Standards</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/dependency-guard/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; before anything is installed</span>
+    <h1>Dependency Guard</h1>
+    <p class="lede">Most dependencies are never decided &mdash; a request&rsquo;s obvious implementation is <code>npm install x</code>, and that is the whole review. This asks whether it should come in, and whether it is even the package you think it is.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill dependency-guard</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>request &nbsp;&rarr;&nbsp; npm install x</b> &nbsp;&rarr;&nbsp; nobody decides again</p>
+    <p>
+      Every dependency is a lasting grant. Code nobody here wrote runs in the
+      build, often at install time. Its transitive tree grows without anyone
+      choosing it. And a mistyped or invented name installs somebody else&rsquo;s
+      package.
+    </p>
+    <p>
+      Coding agents make all three more likely: they reach for a library by
+      reflex, even for eight lines of code, and occasionally name packages that
+      do not exist &mdash; exactly the gap a squatter registers into.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. Installed, it is loaded when a request needs it
+      and stays out of the way otherwise &mdash; and when it does shape the work,
+      one <span class="mono">&#9889;</span> line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>The work would add, replace or major-upgrade a dependency &mdash; a package, SDK, framework, build tool, GitHub Action or base image &mdash; or someone asks which library to use.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>Routine patch bumps that bring no new packages or install scripts, and removals.</td></tr>
+          <tr><td class="klass">Depth</td><td>A decision in a few lines before anything installs. A fuller evaluation for a major upgrade or a choice between libraries. Never a gate.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="standards-compass.html">Standards Compass</a>, <a href="impact-map.html">Impact Map</a>, <a href="proof-driven-dev.html">ProofBuild</a>, <a href="production-guard.html">Production Guard</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="flow mono">
+      the need &nbsp;&rarr;&nbsp; <b>already here?</b> codebase &middot; standard library &middot; installed &middot; a few lines<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>the one intended?</b> resolves &middot; publisher &middot; repository<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>what comes with it?</b> install scripts &middot; transitive growth &middot; license<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; USE EXISTING &middot; ADD &middot; ADD WITH CONDITIONS &middot; DON&rsquo;T ADD
+    </p>
+<pre class="block">You:    Add lodash so we can debounce the customer search box.
+
+Agent:  DEPENDENCY  lodash &mdash; debounce for the customer search box
+        DECISION    USE EXISTING
+        WHY         The need is one function. src/lib/timing.js already holds
+                    throttle(); a 9-line debounce beside it covers this.
+
+        [&hellip; adds debounce() beside throttle(), with two tests &hellip;]</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Is it the package you think it is?</h2>
+<pre class="block">$ pip index versions flask-safeupload-validator
+ERROR: No matching distribution found for flask-safeupload-validator
+
+DECISION    DON&rsquo;T ADD &mdash; the name does not resolve on PyPI
+WHY         Pillow, already installed, verifies the format from content
+            and caps dimensions.</pre>
+    <p>
+      A name is resolved before it is trusted. One that does not resolve is not
+      &ldquo;probably fine&rdquo;, and no similar-looking name is substituted
+      quietly &mdash; that would be a new dependency decision, made without anyone
+      noticing.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Never an invented number</h2>
+    <p>
+      Versions, downloads, maintainers, advisories and transitive counts come from
+      output actually read &mdash; registry metadata, a dry run, the lockfile diff,
+      the ecosystem&rsquo;s audit tool &mdash; or they are marked
+      <span class="mono">UNVERIFIED</span>. A plausible number is worse than none,
+      because it is the one that gets repeated.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      <a href="standards-compass.html">Standards Compass</a> audits dependency
+      management across the whole project; this decides one dependency at a time,
+      as it arrives. A major upgrade&rsquo;s broken call sites go to
+      <a href="impact-map.html">Impact Map</a>, and the proof that it still works
+      to <a href="proof-driven-dev.html">ProofBuild</a>.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 ---
 name: standards-compass
-description: Work out which engineering standards, security frameworks, accessibility requirements, quality models, privacy obligations, AI governance frameworks and industry requirements actually apply to a project, then assess the repository against them with evidence. Audits an existing codebase into a prioritized, evidence-backed gap report, and during ordinary development notices when a feature has standards implications and builds accordingly. Distinguishes an implementation gap from missing evidence, a technical control from an organizational one, and a standard from a law. Use when auditing a project, when asked which standards apply, when implementing anything touching authentication, authorization, payments, personal data, file uploads, AI or accessibility, or when checking whether a change weakens a control that previously held. Never claims legal compliance or certification from repository inspection.
+description: Build security, privacy and accessibility requirements into features as they are written, and audit a project against the standards that actually apply. Use when implementing or changing sign-in, sign-up, password reset, sessions, roles or permissions, admin actions, payments or refunds, personal or sensitive data (including exports and new fields that hold it), file uploads, AI or LLM features, or accessibility-relevant UI; when a change weakens an existing control; and when asked which standards apply or for an audit. Names what the feature must account for in a few lines, builds it in, and checks it afterwards; audits decide applicability with reasons and report evidence-backed gaps. Covers OWASP ASVS and Top 10, WCAG, GDPR and other privacy law, PCI DSS, AI governance, ISO and NIST frameworks. Not for renames, copy, formatting, or refactors that move no boundary, even in regulated projects. Never claims compliance or certification.
 ---
 
 # Standards Compass
@@ -27,6 +27,62 @@ Two modes, same machinery:
 | --- | --- |
 | **Guardrail** | Something is being built. Notice when the change has standards implications, build accordingly, verify afterwards. Cheap, quiet, continuous |
 | **Auditor** | Something is already built. Profile it, decide what applies, gather evidence, report the gaps in priority order with their limitations |
+
+## Activation
+
+**Engage when** someone asks for an audit, a standards question, or a standards
+focus. In guardrail mode, also engage when a change touches identity,
+privilege, money, personal or sensitive data (exports included), file handling,
+a model, or accessibility-relevant interaction, or when it removes or weakens a
+control that held before. Decide from what the data *is*, not from keywords: a
+national identifier engages, a nickname field does not.
+
+**Stay quiet when** the change is a rename, copy, formatting, a refactor that
+moves no boundary, or a restructuring of data already held (splitting a name
+field adds no new personal data). That holds in regulated projects too:
+low-risk work in a high-risk project is still low-risk.
+
+**Depth** `CONSULT` in guardrail mode: the short block before the work and the
+short check after, per `references/continuous-mode.md`. `ACTIVE` for audits.
+Never `GATING`: it informs work, it does not block it.
+
+**Composes with** `proof-driven-dev` (named requirements become contract
+requirements) · `production-guard` (applicable controls feed its security
+category) · `dependency-guard` (the per-change supply-chain call, where this
+skill audits the control area) · `api-contract-guard` (API authorization and
+rate limits stay here; semantics go there). Accessibility implementation happens
+inside the work: there is no separate accessibility skill.
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
 

@@ -21,6 +21,8 @@
       <a href="engineering-investigator.html">Investigator</a>
       <a href="project-compass.html">Compass</a>
       <a href="standards-compass.html">Standards</a>
+      <a href="dependency-guard.html">Dependencies</a>
+      <a href="api-contract-guard.html">API Contracts</a>
       <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
     </nav>
   </div>
@@ -192,6 +194,43 @@
         <span class="more">Read the guide &rarr;</span>
       </a>
 
+      <a class="card" href="dependency-guard.html">
+        <h3>Dependency Guard</h3>
+        <p>
+          Decides whether a dependency should come in <em>before</em> it is
+          installed: whether the need is already met, whether the package is the
+          one you meant &mdash; a name that resolves, not a typosquat or an
+          invented one &mdash; and what install scripts and transitive packages
+          it brings with it.
+        </p>
+        <div class="tags">
+          <span class="tag">supply chain</span>
+          <span class="tag">necessity</span>
+          <span class="tag">package identity</span>
+          <span class="tag">major upgrades</span>
+          <span class="tag">before install</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+      <a class="card" href="api-contract-guard.html">
+        <h3>API Contract Guard</h3>
+        <p>
+          Settles what an API, webhook or event promises before anyone integrates:
+          the conventions the rest of your API already follows, the decisions a
+          consumer will build against, and whether a change is additive,
+          behavioral or breaking &mdash; with a migration path when it is.
+        </p>
+        <div class="tags">
+          <span class="tag">API design</span>
+          <span class="tag">webhooks &amp; events</span>
+          <span class="tag">compatibility</span>
+          <span class="tag">idempotency</span>
+          <span class="tag">before integration</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
     </div>
 
     <p style="margin-top:22px;color:var(--text-muted);font-size:14.5px">
@@ -203,7 +242,49 @@
       something is already broken. <code>project-compass</code> runs underneath
       all of it, and asks whether the ticket is the right next thing at all;
       <code>standards-compass</code> asks what the software should have been
-      measured against in the first place.
+      measured against in the first place. <code>dependency-guard</code> and
+      <code>api-contract-guard</code> step in at the two moments a change
+      becomes hard to take back: a dependency arriving, and an interface
+      someone else will build against.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Automatic activation</h2>
+    <p>
+      There are no slash commands to remember. The agent reads each installed
+      skill&rsquo;s description &mdash; which says when it applies <em>and when it
+      does not</em> &mdash; and brings in the ones a request needs: several at
+      once when several apply, none when none do.
+    </p>
+    <div class="grid two">
+      <div class="card">
+        <h3>&#10003; Context-aware</h3>
+        <p>The same request goes differently in different repositories. &ldquo;Add another status&rdquo; is a one-line change beside a declared state machine, and a lifecycle question beside four contradicting booleans.</p>
+      </div>
+      <div class="card">
+        <h3>&#10003; Composable</h3>
+        <p>A customer export can bring in Impact Map, Standards Compass and ProofBuild at once &mdash; each doing its own part, handing the rest on in one line.</p>
+      </div>
+      <div class="card">
+        <h3>&#10003; Evidence-driven</h3>
+        <p>Every skill keeps the rules it started with: observed versus inferred, no invented numbers, no check reported that did not run.</p>
+      </div>
+      <div class="card">
+        <h3>&#10003; Quiet by default</h3>
+        <p>A button label, a typo, a patch bump: nothing loads, nothing is announced. When skills do shape the work, one line says which.</p>
+      </div>
+    </div>
+<pre class="block">&#9889; Impact Map &middot; Standards Compass &mdash; rename reaches report SQL; export carries personal data</pre>
+    <p>
+      Measured, not asserted: an
+      <a href="https://github.com/soumyaRauth/skills-hub/tree/main/evals/activation">activation suite</a>
+      runs real sessions against fixture repositories and checks which skills
+      load &mdash; and, just as often, which must not. Naming a skill still works,
+      and so does telling one to stand down.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How they work together &rarr;</a>
     </p>
   </div>
 </section>
@@ -259,6 +340,14 @@
       <code>npx skills add soumyaRauth/skills-hub --skill standards-compass</code>
       <button type="button" data-copy>Copy</button>
     </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill dependency-guard</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill api-contract-guard</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
 
     <h3>Claude Code</h3>
     <div class="cmd">
@@ -289,11 +378,22 @@
       <code>npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code</code>
       <button type="button" data-copy>Copy</button>
     </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
 
     <p style="margin-top:20px">
       Installed skills are selected by their description, so there is no slash
-      command to memorize — you ask for what the skill does and the agent picks
-      it up.
+      command to memorize &mdash; work normally and the agent brings in what the
+      request needs. In Claude Code, also add the ten-line standing instruction
+      &mdash; it is what gets Claude to reach for the skills during implementation
+      work &mdash; and, optionally, a colored active-skills status line:
+      <a href="https://github.com/soumyaRauth/skills-hub/tree/main/integrations/claude-code">integrations/claude-code</a>.
     </p>
   </div>
 </section>

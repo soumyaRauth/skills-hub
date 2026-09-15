@@ -1,6 +1,6 @@
 ---
 name: practical-localizer
-description: Localize software applications into natural, context-aware target-language experiences rather than literal translations. Use when translating, reviewing, or analyzing application UI strings, locale files, terminology, pluralization, formatting, or language-specific product conventions.
+description: Localize application UI into natural, context-aware target-language product copy rather than literal translation, and keep it technically intact — placeholders, ICU plurals, locale formatting, right-to-left layout, consistent terminology. Three modes — analyze, localize (writes locale resources only), and review. Use when adding a locale or language, translating or reviewing locale files, fixing plural, date, number or currency formatting, or asking whether translated copy sounds natural. Not for English-only copy changes in an app with no translation catalogs.
 ---
 
 # Practical Localizer
@@ -13,6 +13,57 @@ string, answer the product question rather than the dictionary question:
 
 The deliverable is a **localization decision** per meaningful string — strategy,
 evidence, confidence — not a bilingual word list.
+
+## Activation
+
+**Engage when** a locale or language is added; locale resources are translated,
+reviewed or changed; plural rules, date, number, currency or unit formatting,
+or right-to-left layout are involved; or someone asks whether translated copy
+reads naturally.
+
+**Stay quiet when** English copy changes in an app with no translation
+catalogs. A copy change that is not localization work gets no localization
+commentary.
+
+**Depth** `ACTIVE` in its three modes. `CONSULT` in one case: source copy
+changed for a key other locales already translate. Add one line naming the
+catalogs that now hold the old meaning, and do not touch them.
+
+**Composes with** `proof-driven-dev` (hardcoded strings, concatenated plurals
+and formatter bugs are source changes, handed over rather than fixed here) ·
+`production-guard` (localizing what already ships) · `standards-compass`
+(accessible names and document language stay its call).
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
 

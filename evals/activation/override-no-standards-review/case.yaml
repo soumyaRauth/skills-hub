@@ -1,0 +1,42 @@
+schema_version: '1.1'
+name: override-no-standards-review
+tags:
+- override
+- core
+description: Explicit opt-out of a consultation the request would otherwise earn.
+expected_outcome: 'Must engage: none required. Must stay quiet: standards-compass, practical-localizer, engineering-investigator, dependency-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Add a CSV export of customers for admins. Don't run a standards review, just build it.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: quiet-standards-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:standards-compass)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0

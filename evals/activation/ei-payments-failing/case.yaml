@@ -1,0 +1,53 @@
+schema_version: '1.1'
+name: ei-payments-failing
+tags:
+- positive
+- keyword-trap
+- core
+description: 'An unexplained symptom. ''Payments'' is a keyword trap for Standards Compass: nothing here is a standards question.'
+expected_outcome: 'Must engage: engineering-investigator. Must stay quiet: standards-compass, practical-localizer, dependency-guard, project-compass, api-contract-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Payments started failing randomly this morning. What's going on?
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+- name: quiet-standards-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:standards-compass)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0
+- name: quiet-project-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-compass)"'
+  min: 0
+  max: 0
+- name: quiet-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+  min: 0
+  max: 0

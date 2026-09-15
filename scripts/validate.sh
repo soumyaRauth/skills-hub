@@ -30,9 +30,10 @@ require_file() {
 # ---------------------------------------------------------------- structure --
 
 head_ "Repository structure"
-for f in README.md CONTRIBUTING.md LICENSE CHANGELOG.md \
+for f in README.md CONTRIBUTING.md LICENSE CHANGELOG.md ECOSYSTEM.md \
          scripts/validate.sh scripts/validate-registry.sh \
-         .github/workflows/validate.yml tests/README.md; do
+         .github/workflows/validate.yml tests/README.md \
+         .claude-plugin/plugin.json evals/activation/README.md; do
   require_file "$f"
 done
 
@@ -116,7 +117,7 @@ for skill in "${SKILLS[@]}"; do
         pass "description present (${desc_len} characters)"
         [ "$desc_len" -lt 40 ] && warn "description is very short; agents select skills by description"
         [ "$desc_len" -gt 1024 ] && fail "description is $desc_len characters; keep it under 1024"
-        if printf '%s' "$description" | grep -qiE '\b(use when|use this|use before|use after)\b'; then
+        if printf '%s' "$description" | grep -qiE '\b(use when|use this|use before|use after|use for)\b'; then
           pass "description states when to use the skill"
         else
           warn "description does not say when the skill applies"
@@ -290,6 +291,135 @@ else
   skip "no registry validator present"
 fi
 
+# ----------------------------------------------------- activation contracts --
+
+# Skills activate on their own, so each one must say when it should not: a
+# description with a "Not for" clause, an ## Activation section naming only
+# skills that exist, and a verbatim copy of the shared protocol in ECOSYSTEM.md.
+# The activation suite must give every skill a case where it has to engage and
+# a case where it has to stay quiet — a skill tested only on when it fires is
+# being tested for the wrong half.
+
+head_ "Activation contracts and suite"
+if python3 -c 'import yaml' >/dev/null 2>&1; then
+  act_out=$(python3 - <<'PY'
+import glob, os, re, yaml
+
+G, R, OFF = "\033[32m", "\033[31m", "\033[0m"
+def ok(m): print(f"  {G}ok{OFF}   {m}")
+def bad(m): print(f"  {R}FAIL{OFF} {m}")
+
+skills = sorted(d for d in os.listdir("skills") if os.path.isfile(f"skills/{d}/SKILL.md"))
+M0, M1 = "<!-- skills-hub:protocol -->", "<!-- /skills-hub:protocol -->"
+def block(text):
+    i, j = text.find(M0), text.find(M1)
+    return text[i:j + len(M1)] if 0 <= i < j else None
+
+eco = open("ECOSYSTEM.md").read()
+canon = block(eco)
+if canon is None:
+    bad("ECOSYSTEM.md has no shared protocol block")
+
+for sk in skills:
+    text = open(f"skills/{sk}/SKILL.md").read()
+    desc = str(yaml.safe_load(text.split("---")[1]).get("description", ""))
+    probs = []
+    if "Not for" not in desc:
+        probs.append('description never says when not to use it ("Not for ...")')
+    m = re.search(r"(?ms)^## Activation\n(.*?)(?=^## )", text)
+    if not m:
+        probs.append("no '## Activation' section")
+    else:
+        sec = m.group(1)
+        for label in ("**Engage when**", "**Stay quiet when**", "**Depth**", "**Composes with**"):
+            if label not in sec:
+                probs.append(f"Activation section lacks {label}")
+        comp = re.search(r"\*\*Composes with\*\*(.*?)(?:\n\n|\n<!--)", sec, re.S)
+        refs = set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)+)`", comp.group(1))) if comp else set()
+        for r in sorted(refs - set(skills)):
+            probs.append(f"Composes with names a skill that does not exist: {r}")
+        if sk in refs:
+            probs.append("Composes with names itself")
+    if canon is not None and block(text) != canon:
+        probs.append("shared protocol block differs from ECOSYSTEM.md; copy it verbatim")
+    if f"`{sk}`" not in eco:
+        probs.append("not described in ECOSYSTEM.md")
+    for p in probs:
+        bad(f"{sk}: {p}")
+    if not probs:
+        ok(f"{sk}: quiet clause, Activation section, protocol in sync")
+
+cases = sorted(glob.glob("evals/activation/*/case.yaml"))
+readme = open("evals/activation/README.md").read()
+cases_table = readme.split("\n## Cases", 1)[-1].split("\n## ", 1)[0]
+listed = set(re.findall(r"^\| `([a-z0-9-]+)` \|", cases_table, re.M))
+engage, quiet, names, failed = set(), set(), [], False
+for path in cases:
+    d = os.path.dirname(path)
+    name = os.path.basename(d)
+    names.append(name)
+    c = yaml.safe_load(open(path))
+    probs = []
+    if c.get("schema_version") != "1.1" or c.get("name") != name:
+        probs.append('needs schema_version "1.1" and a name matching its directory')
+    scaffold = (c.get("context") or {}).get("scaffold_script")
+    if scaffold:
+        sp = os.path.join(d, scaffold)
+        if not os.access(sp, os.X_OK):
+            probs.append(f"{scaffold} is missing or not executable")
+        else:
+            for fx in re.findall(r'fixture\.sh"?\s+(\S+)', open(sp).read()):
+                if not os.path.isdir(f"tests/fixtures/{fx}"):
+                    probs.append(f"fixture tests/fixtures/{fx} does not exist")
+    for g in c.get("graders") or []:
+        if g.get("tool") != "Skill":
+            continue
+        named = set(re.findall(r"[a-z0-9]+(?:-[a-z0-9]+)+", str(g.get("input_match", ""))))
+        for u in sorted(named - set(skills)):
+            probs.append(f"grader {g.get('name')} names a skill that does not exist: {u}")
+        if g.get("max") == 0:
+            quiet |= named
+        elif len(named) == 1:
+            engage |= named
+    if name not in listed:
+        probs.append("missing from the table in evals/activation/README.md")
+    for p in probs:
+        bad(f"evals/activation/{name}: {p}")
+    failed |= bool(probs)
+for n in sorted(listed - set(names)):
+    bad(f"evals/activation/README.md lists a case that does not exist: {n}")
+    failed = True
+for sk in skills:
+    if sk not in engage:
+        bad(f"evals/activation: no case requires {sk} to engage")
+        failed = True
+    if sk not in quiet:
+        bad(f"evals/activation: no case requires {sk} to stay quiet")
+        failed = True
+if cases and not failed:
+    ok(f"{len(cases)} activation case(s); every skill must engage in one and stay quiet in another")
+elif not cases:
+    bad("no activation cases under evals/activation/")
+PY
+)
+  printf '%s\n' "$act_out"
+  FAILURES=$((FAILURES + $(printf '%s\n' "$act_out" | grep -c 'FAIL')))
+else
+  skip "PyYAML unavailable; activation contracts not checked"
+fi
+
+head_ "Claude Code integration"
+if python3 integrations/claude-code/test_statusline_skills.py >/dev/null 2>&1; then
+  pass "status line segment self-check"
+else
+  fail "integrations/claude-code/test_statusline_skills.py failed"
+fi
+if python3 -c 'import json, sys; m = json.load(open(".claude-plugin/plugin.json")); sys.exit(0 if m.get("name") else 1)' 2>/dev/null; then
+  pass ".claude-plugin/plugin.json parses and names the plugin"
+else
+  fail ".claude-plugin/plugin.json is missing, not JSON, or has no name"
+fi
+
 # ------------------------------------------------------------ link checking --
 
 head_ "Internal markdown links"
@@ -328,7 +458,7 @@ else
 fi
 
 path_hits=$(grep -rInE '(/home/[a-z]|/Users/[a-z]|C:\\\\Users)' \
-  . --exclude-dir=.git --exclude=validate.sh 2>/dev/null || true)
+  . --exclude-dir=.git --exclude-dir=results --exclude=validate.sh 2>/dev/null || true)
 if [ -z "$path_hits" ]; then
   pass "no hardcoded local paths"
 else

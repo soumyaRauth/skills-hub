@@ -1,6 +1,6 @@
 ---
 name: project-compass
-description: Work out what a software project is becoming, what the developer is trying to accomplish right now, where the gap between them sits, and what the most useful next action is — then act on that, not on the literal request alone. Builds an evidence-based model of the project (identity, users, workflows, domain, decisions, assumptions, open questions, direction) from the repository and the sequence of requests, notices when isolated features have quietly become a system nobody has defined, and turns that into a concrete next step, not an observation. Every request resolves into one of three modes — build it, build it and flag one thing, or pause and guide — and the first is the overwhelming default. Use when someone asks what to build next, whether to add something, what they are missing, or how to handle a design question; when a request may rest on a decision nobody has made; or when the same problem keeps returning in different shapes. Most requests need none of it; it stays quiet and does the work.
+description: Work out what a software project is becoming and what the developer should do next, from the repository and the sequence of requests. Notices when isolated features have quietly become a system nobody defined — a lifecycle, an authorization model, an admin console — when a request rests on an undecided business rule, or when work drifts from its goal, and turns that into one concrete next step. Mostly silent. Each request becomes build it, build it and flag one thing, or pause and guide, and the first is the default. Use when asked what to build next, whether to add something, or what is being missed; when a request adds another instance of a recurring pattern (another status, permission exception, option or workaround); when it locks in a data model or public contract; or when the repository keeps .project-compass/. Not for renames, copy, formatting, dependency bumps, or questions unrelated to direction.
 ---
 
 # Project Compass
@@ -47,6 +47,61 @@ Or noticing that eight reasonable requests in a row have turned a user list into
 an administration system that nobody has designed, named, or decided to build.
 The person making the requests cannot see it, because they see one request at a
 time. This skill sees the sequence.
+
+## Activation
+
+**Engage when** the user asks a direction question: *what next*, *should I add
+this*, *what am I missing*, *does this make sense*. Also engage when a request
+adds another instance of something already recurring (another status flag,
+another permission exception, another control on the same screen, another
+workaround), locks in something expensive to undo (a data model that will be
+populated, a public contract), or contradicts a recorded decision. Engage too
+when the repository keeps `.project-compass/`.
+
+**Stay quiet when** the request is small and local (a rename, copy, formatting,
+a dependency bump, a test fix), even in a drifting project. Also stay quiet
+during declared exploration.
+
+**Depth** `PASSIVE` by default: read the state, record what changed, say
+nothing. `CONSULT` is Mode B, one flag delivered with the work. `ACTIVE` is
+Mode C, or a direct question. Never `GATING`: even Mode C ends with the offer to
+build it as asked.
+
+**Composes with** `impact-map` (before the refactor a crossing calls for) ·
+`standards-compass` (a crossing into identity, billing or personal data) ·
+`api-contract-guard` (a request that fixes a public contract). Architecture
+review stays here: there is no separate architecture skill to hand it to.
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
 

@@ -1,6 +1,6 @@
 ---
 name: impact-map
-description: Analyze the blast radius of a proposed software change before implementation. Use when a developer asks what files, modules, APIs, database structures, tests, integrations, permissions, or hidden dependencies may be affected by a change. Produces an evidence-based impact map and implementation handoff without modifying source code.
+description: Before changing anything other code depends on, find everything the change touches — renaming or removing a status, enum, field, table, column, route or shared concept, or changing a schema, API response, event, configuration or cross-module behavior. Traces callers, jobs, reports, raw SQL, string comparisons, fixtures, permissions and tests, including hidden couplings no import shows, and returns that surface with evidence and confidence so the change lands on all of it. Use when asked what the blast radius is, or what a change or PR missed. Read-only analysis. Not for new isolated code, copy or typo edits, formatting, comments, local renames the compiler resolves, or dependency bumps.
 ---
 
 # Impact Map
@@ -12,6 +12,61 @@ Answer one question before any code is written:
 The deliverable is an **evidence-based blast-radius report**: what is affected,
 why it is affected, how it is connected, how confident you are, and what should
 happen next. A list of filenames is not the deliverable.
+
+## Activation
+
+**Engage when** a change alters something other code depends on: a shared
+concept, status or enum renamed or removed; a schema, API response, event or
+configuration key changed; behavior that crosses modules or layers; code read by
+raw SQL, jobs, reports or string comparisons. Also on *what's the blast radius*
+or *what did this PR miss*, and whenever the user names the skill.
+
+**Stay quiet when** the code is new and nothing consumes it yet, or the change
+is copy, a typo, formatting, a comment, a rename the type checker fully covers,
+or a dependency bump.
+
+**Depth** `ACTIVE`. An explicit request for a map gets the full report and stops
+there, read-only. When the user asked for the change itself, the map runs first
+as a compact pre-step: 🟥 MUST CHANGE, ⚠️ HIDDEN COUPLING and the open questions,
+nothing else. The requested change then proceeds on that surface. Stop for the
+user only when a finding needs their decision.
+
+**Composes with** `proof-driven-dev` (MUST CHANGE and hidden coupling become
+regression requirements) · `production-guard` (the hidden-coupling findings are
+its regression surface) · `api-contract-guard` (an external consumer shows up in
+the map) · `project-compass` (the same coupling surfacing in a third change) ·
+`engineering-investigator` (a cause that crosses systems comes back for a map).
+
+<!-- skills-hub:protocol -->
+### Working with the other Skills Hub skills
+
+- **Loaded is not engaged.** This file stays in context once loaded. Decide
+  again on every new request whether it applies. Relevance to an earlier request
+  carries nothing forward. Project state persists, and engagement does not.
+- **Depth.** `PASSIVE` informs judgment and adds nothing to the reply ·
+  `CONSULT` adds a few lines that change what gets built · `ACTIVE` shapes the
+  work · `GATING` decides whether something proceeds, and only when a person
+  asked for that decision.
+- **Announce once.** When any skill engages at `CONSULT` or above, open the
+  reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
+  report SQL; export carries personal data`: names and a few words of reason.
+  Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+- **One interruption per request.** Skills that must speak before the work share
+  one short block. Everything else arrives with the work.
+- **Hand off; don't absorb.** When another discipline is needed, write
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
+  not installed, do the smallest version of its check inline and say so.
+- **Conflicts.** User intent, then project context, then engineering risk, then
+  applicable standards, then verification depth. Each skill keeps its own
+  verdict, and none overrules another's.
+- **Overrides.** "Use X" engages X. "Skip X" or "no review" drops X's ceremony.
+  Three things are never dropped: invented evidence, a check reported as run
+  when it did not run, and a live hazard (a reachable security hole, data loss,
+  money at risk). A live hazard is said once, in one line.
+- **State.** Read what sibling skills recorded (`.project-compass/`,
+  `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
+  re-deriving it. Write only your own.
+<!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
 
@@ -28,9 +83,11 @@ happen next. A list of filenames is not the deliverable.
 4. **No fabricated numbers.** Only report counts you actually produced. Prefer
    "several files inspected" over an invented total. Counts are optional;
    accuracy is not.
-5. **No implementation.** Stop at the report. Offer the implementation plan;
-   produce it only when the user asks. Produce code only when the user asks for
-   code.
+5. **No implementation inside the map.** When the map was asked for, stop at
+   the report and offer the implementation plan; produce it only when the user
+   asks. When the map runs as the pre-step to a change the user requested (see
+   Activation), the analysis still edits nothing — the requested change follows
+   it, on the surface the map found.
 6. **Report the gaps.** Name the parts of the system you could not inspect
    (generated code, private packages, external repos) rather than leaving them
    silently missing.

@@ -1,0 +1,40 @@
+schema_version: '1.1'
+name: ac-outgoing-webhook
+tags:
+- positive
+- new-skill
+description: 'A contract with systems that deploy independently: payload, signing, retries, ordering, versioning.'
+expected_outcome: 'Must engage: api-contract-guard. Must stay quiet: practical-localizer, engineering-investigator, dependency-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Send a webhook to our customers' systems whenever an order ships.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0
