@@ -38,7 +38,14 @@ methodology and documentation.
   cases cover trivial edits, keyword traps (*refund* in a comment, *payments* in
   an incident), low-risk edits in high-risk files, a requirement that already
   holds, an explicit opt-out, and the same request shape in two repositories
-  that should get different answers.
+  that should get different answers. Measured on `claude-opus-5`, one run per
+  case:
+  - **skills alone:** 30/38
+  - **with the Claude Code standing instruction:** 37/38
+  - **false alarms:** none in either setup (15/15 quiet, trap and contextual
+    cases held)
+  - **before this change:** 10 of the 16 core cases passed, every failure a
+    skill that should have loaded and did not
 - `dependency-guard` v0.1.0 — **should this dependency come in, and is it the
   one we think it is?** It climbs a necessity ladder first: codebase, standard
   library, installed dependencies, a few lines. Then it resolves the package

@@ -25,6 +25,11 @@ It helps because a description only says what a skill is for. Nothing in the
 description tells the model it may load two skills for one request, or that
 it should reach for one before it is named.
 
+The difference is measured. On the [activation suite](../../evals/activation/README.md#results),
+the skills alone passed 30 of 38 cases, and the skills with this instruction
+passed 37 of 38. Neither setup loaded a skill on any of the 15 cases where the
+right answer was to stay quiet.
+
 ## 2. Active skills in the status line, in color
 
 The status line is the one Claude Code surface where color is documented. Model

@@ -200,6 +200,12 @@ it did not. Every skill has cases where it must engage and cases where it must
 not. The quiet cases carry equal weight: trivial edits, keyword traps, low-risk
 changes inside high-risk projects, and explicit opt-outs.
 
+On the last recorded run, the skills alone passed 30 of 38 cases, and with the
+Claude Code standing instruction they passed 37 of 38. No quiet case failed in
+either setup. Every miss was a skill that should have loaded and did not, which
+is the failure a user can fix by naming the skill.
+[Details](evals/activation/README.md#results).
+
 ## Skills considered and not added
 
 Each one was checked against what the existing skills already cover. A skill

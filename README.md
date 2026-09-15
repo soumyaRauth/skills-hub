@@ -71,7 +71,8 @@ the skills considered and deliberately not added.
 [integrations/claude-code](integrations/claude-code/README.md). In the
 activation suite, it is what gets Claude to reach for the skills during
 implementation work, not only when a request sounds like the skill's own name.
-It caused no extra false alarms. The same folder has an optional colored
+The skills alone passed 30 of 38 cases, and with the instruction they passed 37
+of 38. Neither setup loaded a skill where it should have stayed quiet. The same folder has an optional colored
 active-skills status line.
 
 ---

@@ -108,6 +108,34 @@ may read but must not speak · `new-skill` — covers `dependency-guard` and
 | `quiet-internal-helper` | Add a helper in src/services/invoice.js that formats an amount in cents as a dollar string. | — | api-contract-guard, standards-compass, production-guard, dependency-guard, engineering-investigator, practical-localizer, project-compass, impact-map | New isolated code with no external consumer: no contract, no blast radius. |
 | `passive-compass-healthy-project` | Add a notes field to adjustments so an approver can explain a rejection. | — | standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard | An ordinary feature in a healthy project that keeps .project-compass/. Compass may read its state; it must not speak. |
 
+## Results
+
+Recorded 2026-09-15: one run per case, `claude-opus-5`, `max_turns: 6`. A single
+run is noisy, so read these as a snapshot, not a rate.
+
+| Setup | Passed | Quiet, trap and contextual cases |
+| --- | --- | --- |
+| Before this change (the 16 `core` cases, old descriptions) | 10/16 | 7/7 held |
+| Skills only, final descriptions | 30/38 | 15/15 held |
+| Skills plus the standing instruction in [`integrations/claude-code/CLAUDE.md`](../../integrations/claude-code/CLAUDE.md) | 37/38 | 15/15 held |
+
+- **No setup loaded a skill where it should not have.** Every trivial edit,
+  keyword trap, low-risk change in a high-risk file, already-satisfied request
+  and explicit opt-out stayed quiet.
+- **Every failure was under-triggering.** With the skills alone, Claude tends to
+  do implementation work itself. It skipped ProofBuild on feature and bug-fix
+  work, Standards Compass on an admin role and an AI feature, Impact Map on a
+  schema split, and Dependency Guard on a major upgrade.
+- **The standing instruction closes almost all of that, and adds no false
+  alarms.** The one remaining failure, `compose-admin-customer-export`, loads
+  Standards Compass but no second skill.
+- **Late loads don't count.** Turns are capped at 6, so a skill loaded only
+  after the agent has already explored and started writing is not counted.
+  That is deliberate: a skill that arrives after the work isn't activation.
+
+To add the standing instruction to a run, set `append_system_prompt` in each
+case's `execution` block to the contents of that file.
+
 ## What this does not test
 
 - **Sequences.** Engagement that ends when the request changes ("add payment",
