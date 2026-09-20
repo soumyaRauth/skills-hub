@@ -1,0 +1,46 @@
+schema_version: '1.1'
+name: ae-review-layered
+tags:
+- positive
+- new-skill
+description: The README declares inward-pointing layers; the domain imports the ORM, a controller writes the table directly, and two modules write order status. An invited architecture review.
+expected_outcome: 'Must engage: architecture-engineer. Must stay quiet: practical-localizer, engineering-investigator, dependency-guard, api-contract-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: This codebase has gotten hard to change. How should it be structured?
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-architecture-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:architecture-engineer)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0
+- name: quiet-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+  min: 0
+  max: 0

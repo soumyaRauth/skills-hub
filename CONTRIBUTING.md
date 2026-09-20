@@ -421,6 +421,17 @@ Every fixture needs documented expected findings in `tests/README.md`.
   clean verdict. Say in `tests/README.md` which rows must be blocked, which
   must stay unverified, and what the run must refuse to claim about the target.
 
+- **Architecture Engineer fixtures** need a *declared* architecture and an
+  implementation that contradicts it, because the signature finding is the gap
+  between the two. Ship something that states the intended structure — a README,
+  a module layout, a layering convention — and then seed violations that only
+  the code reveals: an inward layer importing an outward one, a rule implemented
+  in two places, several modules writing one table, a mechanism with no
+  consumer. Seed at least one requirement that cannot be established from the
+  repository at all, so the run has to ask rather than assume. Say in
+  `tests/README.md` which findings are expected, which must stay unknown, and
+  what the run must refuse to recommend.
+
 Do not explain the seeded problem inside the fixture — that hands the agent the
 answer.
 

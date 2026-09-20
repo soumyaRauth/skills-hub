@@ -80,3 +80,9 @@ graders:
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:deployment-compatibility)"'
   min: 0
   max: 0
+- name: quiet-architecture-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:architecture-engineer)"'
+  min: 0
+  max: 0

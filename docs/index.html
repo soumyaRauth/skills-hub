@@ -244,6 +244,25 @@
         <span class="more">Read the guide &rarr;</span>
       </a>
 
+      <a class="card" href="architecture-engineer.html">
+        <h3>Architecture Engineer</h3>
+        <p>
+          The architecture is not the first answer &mdash; it is what is left
+          after the reasoning. Discovers what is actually required, reads what
+          an existing system <em>really</em> is rather than what its folders
+          claim, compares genuine options, records the decision with what would
+          reverse it, and plans the migration.
+        </p>
+        <div class="tags">
+          <span class="tag">system design</span>
+          <span class="tag">discovery questions</span>
+          <span class="tag">trade-offs</span>
+          <span class="tag">decision records</span>
+          <span class="tag">migration</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
     </div>
 
     <p style="margin-top:22px;color:var(--text-muted);font-size:14.5px">
@@ -260,7 +279,10 @@
       becomes hard to take back: a dependency arriving, and an interface
       someone else will build against. And
       <code>deployment-compatibility</code> answers the question that only
-      exists once you name a server: does this project fit that machine?
+      exists once you name a server: does this project fit that machine? And
+      <code>architecture-engineer</code> answers the one that comes before any
+      of them &mdash; what shape should this system have, and why &mdash; but
+      only when you ask it.
     </p>
   </div>
 </section>
@@ -367,6 +389,10 @@
       <code>npx skills add soumyaRauth/skills-hub --skill deployment-compatibility</code>
       <button type="button" data-copy>Copy</button>
     </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill architecture-engineer</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
 
     <h3>Claude Code</h3>
     <div class="cmd">
@@ -407,6 +433,10 @@
     </div>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill deployment-compatibility --agent claude-code</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill architecture-engineer --agent claude-code</code>
       <button type="button" data-copy>Copy</button>
     </div>
 

@@ -1,0 +1,40 @@
+schema_version: '1.1'
+name: ae-monolith-or-services
+tags:
+- positive
+- new-skill
+description: A direct architectural trade-off question. Project Compass may also engage on direction, so it is left ungraded; the audit skills have nothing to add.
+expected_outcome: 'Must engage: architecture-engineer. Must stay quiet: practical-localizer, engineering-investigator, dependency-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Should we split this into microservices?
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-architecture-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:architecture-engineer)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0

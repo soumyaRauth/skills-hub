@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture Engineer — Skills Hub</title>
+<meta name="description" content="An interactive architecture and system-design partner: discovers requirements, compares alternatives, records decisions with their trade-offs, reviews existing systems, and guides architectural evolution.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/architecture-engineer/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; before the shape is decided</span>
+    <h1>Architecture Engineer</h1>
+    <p class="lede">The architecture is not the first answer &mdash; it is what is left after the reasoning. An interactive design partner that discovers what is actually required, compares real alternatives, records the decision with what would reverse it, and plans the migration.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill architecture-engineer</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>Unearned architecture</h2>
+    <p>
+      Ask a capable agent to design a system and you get an architecture in the
+      first reply: multi-tenant, event-driven, a queue, a cache, three services.
+      Well presented, internally consistent, and chosen before anything was known
+      about your problem.
+    </p>
+    <p>
+      Nothing in that answer is wrong. Nothing in it is <em>earned</em> &mdash;
+      and unearned architecture looks exactly like the other kind while costing
+      years to undo.
+    </p>
+    <p class="flow mono">
+      what is required &nbsp;&rarr;&nbsp; what the system really is<br>
+      &nbsp;&nbsp;&rarr;&nbsp; the options that fit &nbsp;&rarr;&nbsp; the trade-offs<br>
+      &nbsp;&nbsp;&rarr;&nbsp; <b>a decision, recorded, with what reverses it</b><br>
+      &nbsp;&nbsp;&rarr;&nbsp; the target &middot; the migration &middot; the evidence
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The rule that does the work</h2>
+    <p>
+      Requirements are graded by how they were established, and the grade travels
+      into every decision built on it.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">STATED</td><td>You said it.</td></tr>
+          <tr><td class="klass">OBSERVED</td><td>Read from the repository.</td></tr>
+          <tr><td class="klass">INFERRED</td><td>Concluded, with what would overturn it.</td></tr>
+          <tr><td class="klass">ASSUMED</td><td>Taken to make progress, with what breaks if wrong.</td></tr>
+          <tr><td class="klass">UNKNOWN</td><td>Established as not known, with what would settle it.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      <strong>A decision resting on an assumed or unknown requirement is not a
+      decision.</strong> It is an open question with a leading candidate, and it
+      is recorded that way. That is what stops a design session from quietly
+      becoming a guess with a diagram.
+    </p>
+<pre class="block">You:    ...eventually maybe 500,000 users.
+
+Agent:  Committed, or hoped for? It changes the answer by roughly an order of
+        magnitude of cost, and designing for the hope usually costs more than
+        adding it later.</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The complexity budget</h2>
+    <p>
+      Every moving part is a permanent cost &mdash; another thing to deploy,
+      monitor, secure, back up and be woken by. So each one names the requirement
+      that forces it, or it comes out of the design.
+    </p>
+<pre class="block">Component        Driving requirement                          Grade
+Queue + worker   R-03 payment confirmation must not be lost   STATED
+Read replica     R-11 reporting must not slow checkout        OBSERVED
+Redis cache      —                                            none — removed
+Second service   R-09 unknown scale                           UNKNOWN — deferred</pre>
+    <p>
+      This is the anti-cargo-cult rule, made checkable. Microservices, event
+      sourcing, CQRS, a message bus, Kubernetes &mdash; each is a legitimate
+      answer to a specific problem and a liability without one.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Declared vs implemented</h2>
+    <p>
+      For an existing system, the most useful sentence is usually the gap between
+      what the codebase claims and what it does.
+    </p>
+<pre class="block">Declared                        Implemented
+domain/ application/            domain/ imports the ORM in 14 files
+infrastructure/
+"service layer"                 two controllers write the table directly
+"orders owns orders"            billing and reporting both write order_status
+"events"                        one publisher, no subscriber since March</pre>
+    <p>
+      A <span class="mono">services/</span> directory is not a service
+      architecture. A <span class="mono">domain/</span> directory is not a domain
+      model. Architecture is read from dependency direction, data ownership and
+      call paths &mdash; directory names are a hypothesis at best.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. It engages when architectural work is
+      <em>invited</em> &mdash; and when it shapes the work, one
+      <span class="mono">&#9889;</span> line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>Design a system, structure an application, review or rework an architecture, choose between options such as monolith or services, decide where a responsibility belongs, plan a migration.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>Ordinary features, bug fixes, refactors inside one module, renames, formatting. <strong>A messy codebase is not an invitation.</strong></td></tr>
+          <tr><td class="klass">Modes</td><td>Discover &middot; Design &middot; Review &middot; Migrate &middot; Verify. Only Migrate touches your code, and only when you ask.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="project-compass.html">Project Compass</a>, <a href="impact-map.html">Impact Map</a>, <a href="proof-driven-dev.html">ProofBuild</a>, <a href="standards-compass.html">Standards Compass</a>, <a href="deployment-compatibility.html">Deployment Compatibility</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      <a href="project-compass.html">Project Compass</a> notices, unprompted,
+      that eight reasonable features have become an authorization model nobody
+      defined, and names the decision. This skill is what you call when you want
+      that decision <em>answered</em> &mdash; it is invited, never volunteered,
+      and Compass keeps the interruption budget.
+    </p>
+    <p>
+      Once a boundary is chosen, <a href="impact-map.html">Impact Map</a> says
+      what moving it touches, <a href="proof-driven-dev.html">ProofBuild</a>
+      proves the behavior survived, and
+      <a href="production-guard.html">Production Guard</a> decides whether the
+      result ships.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

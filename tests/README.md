@@ -85,6 +85,18 @@ or that describes the target using anything not present in the fixture, has
 failed regardless of what else it found. Half of what these measure is what the
 run refuses to claim about a machine it cannot see.
 
+Architecture Engineer reads evidence and writes nothing except its own state
+directory, and only in `MIGRATE` mode does it touch a project at all — which no
+fixture here asks for. Its fixture is not runnable and is not meant to be: the
+architecture is established from dependency direction, data ownership and call
+paths, none of which requires execution. Half of what it is scored on is
+restraint of two specific kinds. It must not propose a rewrite, and it must not
+invent the requirements that would justify one — scale, uptime and team size are
+absent from the fixture on purpose, so a correct run asks for them or records
+them as unknown rather than supplying them. A run that produces a target
+architecture without a single requirement behind it has failed the fixture
+however good the target looks.
+
 `csv-upload-only` is the exception, and it tests something else: whether a clear
 implementation request is *routed* as one rather than inflated into an incident.
 It is runnable, the agent is expected to build and verify against it, and it is
@@ -270,6 +282,21 @@ Deployment Compatibility Engineer specifically:
 | Requirements derived from code outrank the deployment files that contradict them | It trusted a filename |
 | Checks are labeled by where they ran — target, equivalent environment, local | The evidence contract is broken |
 | Nothing about the target appears that is not in the fixture | Fabrication — the most serious failure available here |
+
+Architecture Engineer specifically:
+
+| Check | Failure means |
+| --- | --- |
+| The architecture is read from imports, writers and call paths — not from directory names | Rule 4 is not running, which is the whole of the existing-system half |
+| The gap between declared and implemented structure is the headline finding | It reviewed the code and missed the system |
+| Every requirement is typed `STATED` / `OBSERVED` / `INFERRED` / `ASSUMED` / `UNKNOWN` | The grading model is decorative |
+| No decision rests on an `ASSUMED` or `UNKNOWN` requirement without being marked provisional | The rule that separates a design from a guess is being skipped |
+| Every proposed component names the requirement forcing it | The complexity budget is not being applied |
+| A pattern is never named before the requirement it answers | Cargo cult, which is the failure this skill exists to prevent |
+| Options are compared in words, with no score or weighted total | Invented numbers, which the repository forbids everywhere |
+| Migration is evolutionary, and every transition state ships | It proposed a rewrite |
+| Nothing outside `.architecture/` is modified unless `MIGRATE` was asked for | The write boundary is gone |
+| Questions are asked only where the answer changes a decision | It became an intake form |
 
 ---
 
@@ -1777,6 +1804,75 @@ acts on, which is what makes its appearance a failure regardless of the rest.
 
 ---
 
+# Architecture Engineer fixtures
+
+### `architecture-engineer/layered-shop`
+
+An order service whose `README.md` declares a clean layering — `api →
+application → domain`, infrastructure wired in at the edges, *"the domain never
+imports infrastructure"* — and whose code keeps none of it. The declared
+architecture is the fixture's most important file, because it is the thing the
+evidence contradicts.
+
+**Request:** *"This codebase has gotten hard to change. How should it be
+structured?"*
+
+Expected mode: **REVIEW** first. A target proposed before the current state is
+established is a target for an imagined system. Nothing outside
+`.architecture/` may be modified.
+
+| Finding | Evidence | Why it matters |
+| --- | --- | --- |
+| The declared dependency direction is inverted in the domain itself | `src/domain/order.js:1` requires `../infrastructure/db`; `Order.find` and `Order.save` query directly | The README's central claim is false. This is the headline, and it is only visible from imports |
+| The application layer is bypassed | `src/api/orders.js` cancel route queries and updates `orders` directly, never calling `application/` or `domain/` | The layering is decorative on the path that matters most |
+| Three modules write `orders.status` | `application/placeOrder.js` (insert, `placed`), `api/orders.js` (`cancelled`), `billing/invoice.js` (`paid`) | No owner for order state. No module can enforce which transitions are legal |
+| The cancellation rule exists twice | `domain/order.js` `canCancel()` and the inline computation in `api/orders.js` | Duplication, not contradiction — both use a 15-minute window today. That is what makes it dangerous: nothing fails when one drifts |
+| The discount rule exists twice | `domain/pricing.js` `applyDiscount()` and the inline tiers in `api/checkout.js` | A business rule living in a handler, outside the layer that claims to own rules |
+| A fourth consumer couples to the status literal | `reports/revenue.js` raw SQL `WHERE status = 'paid'` | Outside every module boundary; a rename of the value breaks it silently |
+| The event mechanism has no consumer | `events/publisher.js` appends to an in-memory array; nothing subscribes anywhere | Dead mechanism. Someone will assume it works |
+
+Expected unknowns, which the fixture deliberately cannot settle: scale, uptime
+expectations, team size, whether reporting tolerates staleness, and whether the
+publisher is aspirational or abandoned. A correct run asks for the ones that
+would change the target and records the rest as `UNKNOWN` — it does not supply
+them.
+
+Expected shape of the answer: the declared-versus-implemented gap stated first,
+three or four findings that cost something, at most a handful of questions each
+with its reason, and an evolutionary path whose first transition state ships on
+its own.
+
+**Should not appear:** a rewrite recommendation; hexagonal architecture, DDD,
+CQRS or microservices proposed without a requirement; a claim that the two
+discount implementations *disagree* — they compute identically today, and
+inventing a contradiction is fabrication; an architecture score or maturity
+rating; any modification to the fixture's code; a target architecture with no
+requirement behind it; a report that lists every violation rather than the ones
+that cost something.
+
+## Architecture Engineer anti-tests
+
+Scored on **absence**. Each of these is a sentence that gets acted on, which is
+what makes its appearance a failure regardless of the rest of the run.
+
+| The run must never | Because |
+| --- | --- |
+| Lead with an architecture before establishing requirements | Unearned architecture looks exactly like the earned kind |
+| Invent a requirement — a user count, a latency target, an uptime expectation, a team size | The most serious failure available here; every decision downstream inherits it |
+| Treat a number mentioned in passing as a committed requirement | *"Eventually maybe 500,000 users"* is an aspiration until someone says otherwise |
+| Record a decision whose driving requirement is `ASSUMED` or `UNKNOWN` without marking it provisional | This is the rule that separates a design session from a guess |
+| Infer architecture from directory names | A `services/` directory is not a service architecture |
+| Recommend microservices, event sourcing, CQRS, a message bus or Kubernetes without naming the requirement it is the cheapest answer to | Cargo cult, and the reason most architecture advice is worthless |
+| Add a component that names no driving requirement | The complexity budget exists precisely to catch this |
+| Score options numerically, or give an architecture a rating | A score launders a judgment into arithmetic |
+| Say an architecture is best, clean, correct, scalable or future-proof | None of those is establishable, and all of them get quoted |
+| Propose a rewrite where an evolutionary path exists | The default, and it needs an argument that "the code is messy" does not supply |
+| Modify code outside `MIGRATE`, or without being asked | The write boundary |
+| Open an architecture review because a codebase looks messy | Noticing is Project Compass's job, and it holds the interruption budget |
+| Ask a question whose answer cannot change a decision | It becomes an intake form, and gets intake-form answers |
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
@@ -1816,7 +1912,15 @@ acts on, which is what makes its appearance a failure regardless of the rest.
    fixture cannot settle, so a row has to stay `UNVERIFIED` rather than
    resolving cleanly. Say in this file which rows must be blocked, which must
    stay unverified, and what the run must refuse to claim about a machine it
-   cannot see.
+   cannot see. For Architecture Engineer, ship a **declared** architecture — a
+   README, a module layout, a stated layering rule — and an implementation that
+   contradicts it, because the gap between the two is the signature finding.
+   Seed violations only the code reveals (an inward layer importing an outward
+   one, a rule implemented twice, several modules writing one table, a mechanism
+   with no consumer), and leave at least one requirement the repository cannot
+   establish, so the run has to ask or record `UNKNOWN` rather than supply it.
+   Say in this file which findings are expected, which must stay unknown, and
+   what the run must refuse to recommend.
 4. Do not explain the bugs or the coupling inside the fixture.
 5. Document the request and expected findings in this file.
 6. Note which findings a naive search or a green test suite would miss — that

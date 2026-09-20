@@ -1,6 +1,6 @@
 # How the skills work together
 
-Ten skills, each one engineering discipline. None of them needs a slash
+Eleven skills, each one engineering discipline. None of them needs a slash
 command. This document covers how they end up in a task without being named,
 how several of them share one, and how they stay out of the way the rest of the
 time.
@@ -64,6 +64,7 @@ of four depths, and the depth is part of its contract:
 | **Dependency Guard** · `dependency-guard` | Should this dependency come in? | Adding a package, action, image or SDK; a major upgrade; "should we use X?" | Routine patch bumps with no new transitive packages or install scripts | `CONSULT` |
 | **API Contract Guard** · `api-contract-guard` | What does this interface promise, and can it be taken back? | Adding or changing an endpoint, webhook, event, SDK surface or CLI output that consumers deploy separately from | Interfaces whose every consumer ships in the same deploy; UI-only work | `CONSULT` · `ACTIVE` for new public APIs |
 | **Deployment Compatibility Engineer** · `deployment-compatibility` | Does this project fit this server? | A concrete deployment target is named, or a deployment exists and misbehaves | No target environment is in view: generic Docker, Linux or cloud questions, local setup, CI that ships nothing | `ACTIVE` · `GATING` when asked for the readiness decision |
+| **Architecture Engineer** · `architecture-engineer` | What should this system's structure be, and why? | Architectural work is invited: design a system, structure an application, review an architecture, choose between options, plan a migration | Ordinary features, bug fixes, refactors inside one module. A messy codebase is not an invitation | `ACTIVE` · `CONSULT` for one decision inside a feature |
 
 ## How they relate
 
@@ -95,15 +96,22 @@ flowchart LR
   DC -. cause unclear .-> EI
   DC -. remediation needs a package .-> DG
   PG -. a target is named .-> DC
+  PC -. crossing to design .-> AE[Architecture Engineer]
+  AE -- boundary to move --> IM
+  AE -- acceptance criteria --> PB
+  AE -. obligations as requirements .-> SC
+  AE -. deployment constraints .-> DC
+  EI -. cause is structural .-> AE
 ```
 
 What each skill does *not* do matters as much as the edges:
 
 - **Impact Map** maps consequences. It does not judge direction (Project Compass), API semantics (API Contract Guard), or readiness (Production Guard).
-- **Project Compass** decides what should happen next. It does not review architecture on demand, and it never gates.
+- **Project Compass** decides what should happen next. It does not review architecture on demand — that is **Architecture Engineer** — and it never gates.
 - **Standards Compass** is the only authority on standards, frameworks and regulations. Accessibility *implementation* happens inside the work it informs. There is no separate accessibility skill.
 - **Production Guard** owns the ship verdict, and observability is one of its categories. **ProofBuild** owns `VERIFIED`. Neither overrules the other.
 - **Deployment Compatibility Engineer** is the only skill here that takes two operands — a project *and* a named environment. It owns the readiness state; it does not own the ship decision, and a `READY` environment says nothing about whether the change belongs in it.
+- **Architecture Engineer** is the only one that is *invited* rather than volunteered. Project Compass notices, unprompted, that a project has become something nobody designed and names the decision; this one answers it, and only when someone asks. It owns boundaries and the reasoning behind them, never the blast radius of a change (Impact Map), the proof (ProofBuild), or the ship decision (Production Guard).
 
 ## Composition, by example
 
@@ -119,6 +127,7 @@ changes the result.
 | *Split `customer_name` into first and last name* | Impact Map, ProofBuild, Production Guard | Standards Compass stays quiet: it is a rename of personal data, not new personal data |
 | *Rename the button from Save to Submit* | none | Nothing about it changes with a discipline applied. Practical Localizer adds one line only if translated catalogs now hold the old meaning |
 | *Deploy this to my VPS* | Deployment Compatibility Engineer, then ProofBuild for anything that must be proven rather than observed once | Production Guard only if a release decision is also being asked for; Standards Compass only if the environment exposes personal data or weakens a control |
+| *This app has become hard to change — how should it be structured?* | Architecture Engineer, then Impact Map once a boundary is chosen to move, then ProofBuild for the behavior that must survive | Project Compass stays quiet because the question was asked: noticing is its job, answering is not |
 
 The same sentence can go either way depending on the repository. *"Add another
 status"* in a project with a declared state machine gets the status and nothing
@@ -186,6 +195,7 @@ What persists is project state, and each skill keeps its own in the repository:
 | `.proofbuild/` | ProofBuild | Production Guard, for what has been proven |
 | `.agent-investigation/` | Engineering Investigator | ProofBuild, for the established cause |
 | `.deployment-compatibility/` | Deployment Compatibility Engineer | any skill that needs the target environment's established facts and their dates |
+| `.architecture/` | Architecture Engineer | any skill that needs the decided boundaries, the recorded decisions, or what must not be violated |
 
 Reading another skill's state is cheap composition. Writing it is not allowed.
 
@@ -223,7 +233,7 @@ that splits a discipline two ways is worse than one that owns it.
 
 | Candidate | Decision | Why |
 | --- | --- | --- |
-| Architecture Guardian | Not added | Project Compass already detects emerging state machines, authorization models and boundaries getting expensive, and turns them into a next step. Impact Map covers coupling for a given change. A third reviewer would split that authority |
+| **Architecture Guardian** | **Added as `architecture-engineer`** — this reverses the earlier decision, and the earlier reasoning is worth keeping | The original judgment was that Project Compass already covers emerging state machines and authorization models. It does — it *notices* them, unprompted, and names the one decision that would settle it. That is deliberately where it stops: `becoming.md` caps its output at "one decision, not an architecture… a page someone writes, not a refactor someone schedules". Nothing then **answered** that decision. There was no greenfield discovery (a project with no code is `FORMING`, where Compass correctly says work and observe), no option comparison, no recorded trade-off, no target, no migration path, no fitness check. The authority is not split because the trigger is not shared: Compass volunteers and holds the interruption budget; this one is invited and never opens a review because a codebase looks messy |
 | Data Architecture Guardian | Not added | Impact Map owns schema impact and backfills, Production Guard owns constraints, atomicity and destructive operations, Project Compass owns domain-model problems, and Standards Compass owns retention and deletion |
 | Release / Migration Guardian | Not added | Production Guard's migration checks (defaults, batching, locks, deploy ordering, reversibility) and Impact Map's plan (compatibility first, backfill, remove the shim) already cover it |
 | Observability Engineer | Not added | Production Guard's observability category asks exactly *"if this fails at 3 AM, how would anyone know?"*, and Engineering Investigator reports missing instrumentation as a finding |
