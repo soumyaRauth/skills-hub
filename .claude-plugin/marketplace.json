@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "skills-hub",
+  "description": "Engineering skills that engage on their own when they change the result, and stay quiet when they would not.",
+  "owner": {
+    "name": "Soumya Rauth",
+    "url": "https://github.com/soumyaRauth"
+  },
+  "plugins": [
+    {
+      "name": "skills-hub",
+      "description": "Eleven engineering disciplines: impact mapping, outcome proof, production readiness, investigation, project direction, standards, localization, dependency and API-contract decisions, deployment compatibility, and system architecture design.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

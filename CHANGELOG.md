@@ -174,6 +174,15 @@ methodology and documentation.
   they named, a handoff chain from investigation to proof to release, a
   dismissal that survives repetition, context flipping the answer, and manual
   invocation.
+- **One-command installation.** `.claude-plugin/marketplace.json` makes the
+  repository installable as a Claude Code plugin in one step, with
+  `/plugin marketplace add soumyaRauth/skills-hub` followed by
+  `/plugin install skills-hub@skills-hub`, and updatable in one step after
+  that. For every other agent, the documented install collapses from eleven
+  `npx skills add` lines to `npx skills add soumyaRauth/skills-hub --skill '*'
+  -g -y`. The Skills CLI's own `--all` is documented as the one to avoid: it
+  expands the agent list to every agent the CLI supports rather than the ones
+  present, and writes skill directories into all of them.
 
 ### Considered and not added
 

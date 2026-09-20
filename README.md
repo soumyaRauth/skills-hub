@@ -1021,32 +1021,33 @@ interruption budget for it.
 ## Installation
 
 ```bash
-# any Agent Skills-compatible agent
-npx skills add soumyaRauth/skills-hub --skill impact-map
-npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
-npx skills add soumyaRauth/skills-hub --skill production-guard
-npx skills add soumyaRauth/skills-hub --skill practical-localizer
-npx skills add soumyaRauth/skills-hub --skill engineering-investigator
-npx skills add soumyaRauth/skills-hub --skill project-compass
-npx skills add soumyaRauth/skills-hub --skill standards-compass
-npx skills add soumyaRauth/skills-hub --skill dependency-guard
-npx skills add soumyaRauth/skills-hub --skill api-contract-guard
-npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
-npx skills add soumyaRauth/skills-hub --skill architecture-engineer
+# every skill, to whichever agents you already have installed
+npx skills add soumyaRauth/skills-hub --skill '*' -g -y
 
-# Claude Code specifically
-npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill deployment-compatibility --agent claude-code
-npx skills add soumyaRauth/skills-hub --skill architecture-engineer --agent claude-code
+# every skill, Claude Code only
+npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code -g -y
+
+# choose from a list, or name one
+npx skills add soumyaRauth/skills-hub
+npx skills add soumyaRauth/skills-hub --skill impact-map
 ```
+
+`-g` installs globally, into `~/<agent>/skills/`, so the skills are there in
+every project. Drop it to install into the current repository instead. Prefer
+`--skill '*'` over the CLI's `--all`: `--all` also expands the agent list to
+every agent the CLI supports, not the ones you have, and writes skill
+directories into all of them.
+
+Claude Code can also install the whole repository as a plugin, which keeps the
+eleven skills together under one namespace and updates them in one step:
+
+```
+/plugin marketplace add soumyaRauth/skills-hub
+/plugin install skills-hub@skills-hub
+```
+
+Install a skill one way or the other, not both — the same skill installed
+twice shows up twice.
 
 Then work as you normally would. Installed skills are matched by description,
 so the agent brings them in without a slash command. You can also ask for one
@@ -1083,8 +1084,9 @@ Everything Claude Code-specific is kept outside the skills:
 - a ten-line standing instruction for `CLAUDE.md`, which is recommended,
   because the activation suite measures a clear difference with it
 - a status line segment that shows the active skills in color
-- a plugin manifest, so `claude --plugin-dir` can load all ten at once and
-  `claude plugin eval` can test them
+- a plugin manifest and a marketplace manifest, so `/plugin install` or
+  `claude --plugin-dir` can load all eleven at once and `claude plugin eval`
+  can test them
 
 See [integrations/claude-code](integrations/claude-code/README.md).
 
