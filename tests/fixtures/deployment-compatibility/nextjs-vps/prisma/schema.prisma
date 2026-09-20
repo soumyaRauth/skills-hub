@@ -1,0 +1,18 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  reference String   @unique
+  region    String
+  email     String
+  createdAt DateTime @default(now())
+
+  @@index([region, createdAt])
+}

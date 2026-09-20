@@ -1,0 +1,47 @@
+schema_version: '1.1'
+name: dc-crashes-after-restart
+tags:
+- positive
+- composition
+- new-skill
+description: Works locally, fails on the server. The environment is the variable, so either the deployment specialist or the investigator is defensible; the audit skills are not.
+expected_outcome: 'Must engage: deployment-compatibility or engineering-investigator. Must stay quiet: practical-localizer, standards-compass, project-compass, api-contract-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: This API runs fine on my machine but on the server it comes up and then stops responding. Why?
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-deployment-compatibility-or-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:deployment-compatibility|engineering-investigator)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-standards-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:standards-compass)"'
+  min: 0
+  max: 0
+- name: quiet-project-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-compass)"'
+  min: 0
+  max: 0
+- name: quiet-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+  min: 0
+  max: 0

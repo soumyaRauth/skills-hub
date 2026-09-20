@@ -1,0 +1,13 @@
+{
+  "name": "billing-api",
+  "private": true,
+  "engines": { "node": ">=20.0.0" },
+  "scripts": {
+    "start": "node src/app.js",
+    "migrate": "node src/migrate.js"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "pg": "8.13.1"
+  }
+}

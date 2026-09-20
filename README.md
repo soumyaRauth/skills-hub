@@ -16,6 +16,7 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[standards-compass](skills/standards-compass/README.md)** | Works out which standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software — then audits it against them, with evidence | *Whichever* of those you never consciously chose |
 | **[dependency-guard](skills/dependency-guard/README.md)** | Decides whether a dependency should come in — whether it is needed at all, whether the package is the one you meant, what it brings with it | *Before* anything is installed |
 | **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises — the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
+| **[deployment-compatibility](skills/deployment-compatibility/README.md)** | Assesses a project against a specific target server — what it requires, what the server provides, what has to change — and verifies what it can | *Before* you deploy it there |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
@@ -27,6 +28,7 @@ npx skills add soumyaRauth/skills-hub --skill project-compass
 npx skills add soumyaRauth/skills-hub --skill standards-compass
 npx skills add soumyaRauth/skills-hub --skill dependency-guard
 npx skills add soumyaRauth/skills-hub --skill api-contract-guard
+npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
 ```
 
 They compose, and none requires the others:
@@ -38,6 +40,9 @@ ticket   → impact-map → proof-driven-dev → production-guard → ship
                                                             → practical-localizer → ship in another language
 
 incident → engineering-investigator → cause → proof-driven-dev → production-guard → ship
+
+a named server → deployment-compatibility → what it requires vs what the box has
+                                          → remediate → verify → deploy
 
 project-compass sits underneath all of it, and answers a different question:
 given where this project is heading, is this ticket the right next thing at all.
@@ -867,6 +872,76 @@ consumer ships in the same deploy gets nothing.
 
 ---
 
+# Deployment Compatibility Engineer
+
+**Does this project fit this server?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
+```
+
+Every other skill here takes one operand. This one takes two, and the second is
+a machine. Deployment failures are rarely code failures — they are mismatches
+between what a project requires and what an environment provides, and both
+halves are usually available before anyone deploys:
+
+```
+the runtime is a major version behind what the lockfile was built for
+the queue library is installed and no Redis is running
+uploads are written to a local path on an ephemeral filesystem
+the worker process has no supervisor, so it runs once and never again
+a variable lives in .env.example and nowhere on the box
+```
+
+```
+DEPLOYMENT COMPATIBILITY
+TARGET   Ubuntu 24.04 · 4 vCPU · 7.8 GB · Docker 27.1      tier READ-ONLY
+PROJECT  Next.js 15 · Node 22 · PostgreSQL · Redis · 1 worker
+STATE    🔴 BLOCKED
+
+Requirement        Project needs    Target provides           Result
+──────────────────────────────────────────────────────────────────────
+Node               >= 22            20.11.1        MEASURED   BLOCKED
+PostgreSQL         >= 16            16.2           MEASURED   FIT
+Redis              required         not installed  MEASURED   BLOCKED
+Worker process     required         no supervisor  MEASURED   BLOCKED
+uploads/ persists  required         container fs   INFERRED   RISK
+RAM                UNKNOWN          7.8 GB         MEASURED   UNVERIFIED
+```
+
+Ask a capable agent whether an app will run on a server and you get a confident
+yes assembled from a plausible mental model of Ubuntu. This skill is built so
+that answer cannot be produced: **every target fact carries where it came
+from** — `MEASURED`, `SUPPLIED`, `INFERRED`, `UNKNOWN` — and the verdict is
+computed from those provenances. A row that fits on a fact *you* supplied cannot
+produce `READY`; it becomes a numbered condition. A row whose project side is
+`UNKNOWN` is never `FIT`, because not knowing what an app needs is not the same
+as having enough.
+
+So `READY` requires that the server was actually inspected, `READY WITH
+CONDITIONS` is the normal good answer, and `NOT ASSESSED` is a real outcome
+rather than a failure — with no access and no specification, saying so is the
+correct report.
+
+Four worked examples: [a blocked runtime](skills/deployment-compatibility/examples/blocked-runtime.md) ·
+[the honest common case](skills/deployment-compatibility/examples/ready-with-conditions.md) ·
+[no server access at all](skills/deployment-compatibility/examples/no-access.md) ·
+[a deployment that starts and dies](skills/deployment-compatibility/examples/failing-deployment.md)
+
+## What it will not do
+
+Never promise a deployment will work — no "seamless", no "guaranteed", no "100%
+compatible". Never invent a fact about your server; there is no library of
+typical hosts to fall back on. Never change the target on its own: discovery is
+read-only, and server changes are proposed, classified by impact, and applied
+only on authorization for that specific action. Never weaken a control to get a
+deploy through — no exposed database, no disabled TLS, no development mode on a
+server. And never keep a secret: values are `PRESENT`, `MISSING` or redacted.
+
+**[Full documentation →](skills/deployment-compatibility/README.md)**
+
+---
+
 ## Installation
 
 ```bash
@@ -880,6 +955,7 @@ npx skills add soumyaRauth/skills-hub --skill project-compass
 npx skills add soumyaRauth/skills-hub --skill standards-compass
 npx skills add soumyaRauth/skills-hub --skill dependency-guard
 npx skills add soumyaRauth/skills-hub --skill api-contract-guard
+npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
@@ -891,6 +967,7 @@ npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-cod
 npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill deployment-compatibility --agent claude-code
 ```
 
 Then work as you normally would. Installed skills are matched by description,
@@ -928,7 +1005,7 @@ Everything Claude Code-specific is kept outside the skills:
 - a ten-line standing instruction for `CLAUDE.md`, which is recommended,
   because the activation suite measures a clear difference with it
 - a status line segment that shows the active skills in color
-- a plugin manifest, so `claude --plugin-dir` can load all nine at once and
+- a plugin manifest, so `claude --plugin-dir` can load all ten at once and
   `claude plugin eval` can test them
 
 See [integrations/claude-code](integrations/claude-code/README.md).
@@ -979,7 +1056,8 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   │   ├── registry/             ← the standards registry: add a file, add a standard
 │   │   └── examples/             ← eight worked assessments, one that refuses to grade
 │   ├── dependency-guard/         ← two references, four examples, one of them silence
-│   └── api-contract-guard/       ← two references, four examples, one of them silence
+│   ├── api-contract-guard/       ← two references, four examples, one of them silence
+│   └── deployment-compatibility/ ← six references, four examples, one of them a refusal to assess
 ├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
 ├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
 ├── integrations/claude-code/     ← optional: standing instruction, colored status line
@@ -994,7 +1072,8 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   │   ├── project-compass/      ← six projects with a hidden pattern, plus one healthy project where the right answer is silence
 │   │   ├── standards-compass/    ← five projects to assess, including one where most of the honest answer is "unable to verify"
 │   │   ├── dependency-guard/     ← an installed library that covers the need, an unverified name, SHA-pinned CI
-│   │   └── api-contract-guard/   ← a public API with a flaw not to copy, and two services that deploy apart
+│   │   ├── api-contract-guard/   ← a public API with a flaw not to copy, and two services that deploy apart
+│   │   └── deployment-compatibility/  ← a project and the server spec it does not fit, and an image that contradicts its app
 │   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions and skills
 │   └── README.md                 ← expected findings per fixture
 ├── scripts/
@@ -1014,6 +1093,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 - **[Standards Compass](skills/standards-compass/README.md)** · [SKILL.md](skills/standards-compass/SKILL.md)
 - **[Dependency Guard](skills/dependency-guard/README.md)** · [SKILL.md](skills/dependency-guard/SKILL.md)
 - **[API Contract Guard](skills/api-contract-guard/README.md)** · [SKILL.md](skills/api-contract-guard/SKILL.md)
+- **[Deployment Compatibility Engineer](skills/deployment-compatibility/README.md)** · [SKILL.md](skills/deployment-compatibility/SKILL.md)
 - **[How they work together](ECOSYSTEM.md)** — activation, composition, visibility, overrides, and what was not added
 - **[Activation suite](evals/activation/README.md)** — which skill a request should load, and which it must not
 - **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction and status line
@@ -1115,6 +1195,13 @@ completeness, and none can prove it.
   process, contracts and legal applicability are outside it, and it says so
   rather than guessing. Its bundled registry ages, and every entry carries the
   date and method of its last verification
+- Deployment Compatibility Engineer reads a repository and whatever the target
+  lets it read. Behavior under real traffic, real data volume and real
+  concurrency is reproducible from neither; a requirement the repository does
+  not establish stays unknown rather than being estimated; and an external
+  service is reachable or not *from where the check ran*, which is a claim about
+  that place and not about the server. `READY` is deliberately hard to reach,
+  and `NOT ASSESSED` is a real answer rather than a failure
 - An absent finding is not proof of absence
 - Automatic activation is the agent's judgment, steered by descriptions. It is
   not a guarantee. The activation suite measures it on a fixed set of requests

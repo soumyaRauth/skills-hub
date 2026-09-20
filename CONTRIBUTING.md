@@ -410,6 +410,17 @@ Every fixture needs documented expected findings in `tests/README.md`.
   spread across several areas rather than one screen, since a single accumulating
   screen is the easy case and cross-cutting emergence is the one that matters.
 
+- **Deployment Compatibility fixtures** need *both* halves, because a fixture
+  with only a project tests half the skill. Ship the project and something that
+  describes a target — a specification the user would paste, an infrastructure
+  file, or a compose file the deployment actually uses — and make them
+  genuinely mismatched. Seed at least one requirement that is only visible from
+  code rather than from the deployment files (a process type nothing starts, a
+  variable read but never documented), and at least one fact the fixture cannot
+  settle, so the run has to leave a row `UNVERIFIED` rather than reaching a
+  clean verdict. Say in `tests/README.md` which rows must be blocked, which
+  must stay unverified, and what the run must refuse to claim about the target.
+
 Do not explain the seeded problem inside the fixture — that hands the agent the
 answer.
 

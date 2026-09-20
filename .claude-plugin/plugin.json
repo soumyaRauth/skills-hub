@@ -1,10 +1,10 @@
 {
   "name": "skills-hub",
   "displayName": "Skills Hub",
-  "description": "Engineering skills that engage on their own when they change the result, and stay quiet when they would not: impact mapping, outcome proof, production readiness, investigation, project direction, standards, localization, dependency and API-contract decisions.",
+  "description": "Engineering skills that engage on their own when they change the result, and stay quiet when they would not: impact mapping, outcome proof, production readiness, investigation, project direction, standards, localization, dependency and API-contract decisions, and project-to-server deployment compatibility.",
   "author": { "name": "Soumya Rauth" },
   "homepage": "https://soumyaRauth.github.io/skills-hub/",
   "repository": "https://github.com/soumyaRauth/skills-hub",
   "license": "MIT",
-  "keywords": ["engineering", "impact-analysis", "verification", "production-readiness", "standards", "localization"]
+  "keywords": ["engineering", "impact-analysis", "verification", "production-readiness", "standards", "localization", "deployment"]
 }

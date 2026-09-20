@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deployment Compatibility Engineer — Skills Hub</title>
+<meta name="description" content="Assess a project against a specific target server, identify incompatibilities and deployment risks, remediate what can safely be fixed, and verify deployment readiness with evidence.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/deployment-compatibility/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; before you deploy it there</span>
+    <h1>Deployment Compatibility Engineer</h1>
+    <p class="lede">Assess a project against a <em>specific</em> target server, identify the incompatibilities and deployment risks, remediate what can safely be fixed, and verify readiness with evidence &mdash; without ever claiming a deployment will work.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill deployment-compatibility</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>Two operands</h2>
+    <p class="flow mono"><b>target environment &nbsp;+&nbsp; project</b> &nbsp;&rarr;&nbsp; deployment contract &nbsp;&rarr;&nbsp; compatibility matrix &nbsp;&rarr;&nbsp; readiness</p>
+    <p>
+      Every other skill here takes one operand &mdash; the change, the project,
+      the symptom. This one takes two, and the second is a machine.
+    </p>
+    <p>
+      Deployment failures are rarely code failures. They are <em>mismatches</em>,
+      and both halves are usually available before anyone deploys:
+    </p>
+<pre class="block">the runtime is a major version behind what the lockfile was built for
+the queue library is installed and no Redis is running
+uploads are written to a local path on an ephemeral filesystem
+the worker process has no supervisor, so it runs once and never again
+a variable lives in .env.example and nowhere on the box</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. Installed, it is loaded when a request needs it
+      and stays out of the way otherwise &mdash; and when it does shape the work,
+      one <span class="mono">&#9889;</span> line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>A concrete deployment target is in view &mdash; <em>deploy this to my VPS</em>, <em>will this run on my server</em>, <em>here are my server details</em> &mdash; or a deployment already exists and misbehaves.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>Generic Docker, Linux, Kubernetes and cloud questions, local development setup, CI that ships nothing, and ordinary application work. The word <em>deploy</em> in a sentence is not a target environment.</td></tr>
+          <tr><td class="klass">Depth</td><td>Shapes the work. It gates only when you asked for the readiness decision itself.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="production-guard.html">Production Guard</a>, <a href="impact-map.html">Impact Map</a>, <a href="proof-driven-dev.html">ProofBuild</a>, <a href="standards-compass.html">Standards Compass</a>, <a href="engineering-investigator.html">Engineering Investigator</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it produces</h2>
+<pre class="block">DEPLOYMENT COMPATIBILITY
+TARGET   Ubuntu 24.04 &middot; 4 vCPU &middot; 7.8 GB &middot; Docker 27.1      tier READ-ONLY
+PROJECT  Next.js 15 &middot; Node 22 &middot; PostgreSQL &middot; Redis &middot; 1 worker
+STATE    &#128308; BLOCKED
+
+Requirement        Project needs    Target provides           Result
+──────────────────────────────────────────────────────────────────────
+Node               &gt;= 22            20.11.1        MEASURED   BLOCKED
+PostgreSQL         &gt;= 16            16.2           MEASURED   FIT
+Redis              required         not installed  MEASURED   BLOCKED
+Worker process     required         no supervisor  MEASURED   BLOCKED
+uploads/ persists  required         container fs   INFERRED   RISK
+RAM                UNKNOWN          7.8 GB         MEASURED   UNVERIFIED</pre>
+    <p>
+      Each row names what the project requires <em>and</em> the file that
+      establishes it, what the target provides <em>and</em> how that was found
+      out. A row with only one side is a server audit or a wish list, not a
+      compatibility assessment.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Why it cannot tell you it will be fine</h2>
+    <p>
+      Ask a capable agent whether an app will run on a server and you get a
+      confident yes, assembled from a plausible mental model of Ubuntu. This
+      skill is built so that answer cannot be produced. Every target fact carries
+      its provenance, and the verdict is <em>computed</em> from those grades
+      rather than written by hand.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">MEASURED</td><td>A command ran against the target and its output was read.</td></tr>
+          <tr><td class="klass">SUPPLIED</td><td>You or a document said so. Plausible, and unverified here.</td></tr>
+          <tr><td class="klass">INFERRED</td><td>Derived from another observation, which is named.</td></tr>
+          <tr><td class="klass">UNKNOWN</td><td>Nothing establishes it, and the check that would is named.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Two rules follow, and they are the whole design. A <span class="mono">FIT</span>
+      resting on a fact <em>you</em> supplied cannot produce
+      <strong>ready</strong> &mdash; it becomes a numbered condition for someone
+      to confirm. And a row whose project side is
+      <span class="mono">UNKNOWN</span> is never a fit, because not knowing what
+      an application requires is not evidence that the target satisfies it.
+    </p>
+    <p>
+      So <strong>ready</strong> is reachable only when the server was actually
+      inspected, <strong>ready with conditions</strong> is the normal good
+      outcome and its conditions are the deliverable, and
+      <strong>not assessed</strong> is a real result rather than a failure: with
+      no access and no specification, saying so is the correct report.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Access tiers</h2>
+    <p>
+      The tier is established before anything else, stated in the report header,
+      and caps every claim the report can make. Nothing here assumes a tier, and
+      nothing pretends to a capability it does not have.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">NONE</td><td>No access, no specification &mdash; the project contract, and an honest <em>not assessed</em>.</td></tr>
+          <tr><td class="klass">DECLARED</td><td>A spec or your own description. Every fact is supplied, so the ceiling is <em>ready with conditions</em>.</td></tr>
+          <tr><td class="klass">READ-ONLY</td><td>Commands can run; nothing may change. Full assessment, no server changes.</td></tr>
+          <tr><td class="klass">AUTHORIZED</td><td>Named changes permitted &mdash; a list, never a blanket.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Safe by construction</h2>
+    <p>
+      Discovery is read-only. Project changes and server changes are kept in
+      separate lists, so approving the first cannot be read as approving the
+      second. Server changes are classified by impact and applied only on
+      authorization for that specific action, with the previous state captured
+      first so rollback is real.
+    </p>
+    <p>
+      One rule overrides convenience: <strong>never weaken a control to make a
+      deployment work.</strong> No exposed database, no disabled TLS, no loosened
+      authentication, no development mode on a server. A blocked deployment is a
+      finding; a deployed insecure one is an incident. Secrets are reported as
+      present, missing or redacted, and never written to disk.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      <a href="production-guard.html">Production Guard</a> asks whether the
+      change is safe to ship. This asks whether the environment can run it.
+      Different questions, and neither verdict substitutes for the other.
+      Environment exposure and personal data go to
+      <a href="standards-compass.html">Standards Compass</a>; a fix that reaches
+      shared storage goes to <a href="impact-map.html">Impact Map</a> first; a
+      deployment failure whose cause is genuinely unclear goes to
+      <a href="engineering-investigator.html">Engineering Investigator</a>, with
+      this skill supplying the environment evidence.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

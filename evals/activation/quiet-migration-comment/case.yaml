@@ -75,3 +75,9 @@ graders:
   pattern: ⚡
   match: not_contains
   target: last_message
+- name: quiet-deployment-compatibility
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:deployment-compatibility)"'
+  min: 0
+  max: 0
