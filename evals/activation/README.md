@@ -62,8 +62,9 @@ no domain work behind it · `superficial-match` — the domain is sensitive, thi
 change is not · `low-risk-high-risk-project` — a trivial change inside a project
 with real findings · `already-satisfied` — the requested property already holds
 · `override` — the user named a skill, or opted out of one · `passive` — a skill
-may read but must not speak · `new-skill` — covers `dependency-guard` and
-`api-contract-guard` · `core` — the smaller set used for before/after comparisons.
+may read but must not speak · `new-skill` — covers `dependency-guard`,
+`api-contract-guard` and `deployment-compatibility` · `core` — the smaller set
+used for before/after comparisons.
 
 ## Cases
 
@@ -86,6 +87,8 @@ may read but must not speak · `new-skill` — covers `dependency-guard` and
 | `dg-major-upgrade` | Upgrade Express to version 5. | dependency-guard | practical-localizer, engineering-investigator, project-compass | A major version with breaking changes. Impact Map and Production Guard may follow. |
 | `ac-outgoing-webhook` | Send a webhook to our customers' systems whenever an order ships. | api-contract-guard | practical-localizer, engineering-investigator, dependency-guard | A contract with systems that deploy independently: payload, signing, retries, ordering, versioning. |
 | `ac-public-endpoint` | Add a public API endpoint so customers can list their invoices from their own systems. | api-contract-guard | practical-localizer, engineering-investigator | A public read API: pagination, error shape, authorization boundary, versioning — hard to take back. |
+| `dc-deploy-to-vps` | Get this app ready to deploy on my Ubuntu VPS — the server details are in server-spec.md. | deployment-compatibility | practical-localizer, engineering-investigator, project-compass, api-contract-guard | A named target with a supplied specification. The project needs Node 22, Redis and a worker; the spec offers Node 20, no Redis and one service. |
+| `dc-crashes-after-restart` | This API runs fine on my machine but on the server it comes up and then stops responding. Why? | deployment-compatibility / engineering-investigator | practical-localizer, standards-compass, project-compass, api-contract-guard | The environment is the variable. Either the deployment specialist or the investigator is defensible; the audit skills are not. |
 | `compose-admin-customer-export` | Add a CSV export of all customers, admin-only. | standards-compass + ≥2 skills | practical-localizer, engineering-investigator, dependency-guard | Personal data leaving the system behind a privilege check. More than one discipline should engage. |
 | `compose-org-invitations` | Add organization-level member invitations with roles. | standards-compass + ≥2 skills | practical-localizer, engineering-investigator, dependency-guard | Identity, roles and tenancy in a project whose authorization is already scattered. |
 | `compose-subscription-cancel` | Add subscription cancellation. | impact-map / standards-compass / api-contract-guard + ≥2 skills | practical-localizer, engineering-investigator | A billing lifecycle change touching the provider, webhooks and existing records. |
@@ -103,6 +106,7 @@ may read but must not speak · `new-skill` — covers `dependency-guard` and
 | `quiet-css-spacing` | Add a bit more vertical spacing between rows in the appointment list. | — | all | Spacing. |
 | `quiet-patch-bump` | Bump express from 4.18.2 to 4.18.3. | — | all | A routine patch bump of a dependency already present. |
 | `quiet-migration-comment` | Add a one-line comment above the AddField in 0002_add_region.py explaining that region is used by the sales report. | — | all | 'Migration' is a keyword; the change is a comment. |
+| `quiet-dockerfile-comment` | Add a comment above the EXPOSE line in the Dockerfile saying which port the service listens on in production. | — | all | Deploy, Docker and production are all keywords, and the change is a comment. The Dockerfile has real findings in it; they are not this request's business. |
 | `override-no-standards-review` | Add a CSV export of customers for admins. Don't run a standards review, just build it. | — | standards-compass, practical-localizer, engineering-investigator, dependency-guard | Explicit opt-out of a consultation the request would otherwise earn. |
 | `already-satisfied-dialog` | Make sure the booking dialog moves focus in and restores it on close. | — | impact-map, production-guard, dependency-guard, engineering-investigator, practical-localizer, api-contract-guard, project-compass | Dialog.jsx already does both. Standards Compass may look; nothing should be built. |
 | `quiet-internal-helper` | Add a helper in src/services/invoice.js that formats an amount in cents as a dollar string. | — | api-contract-guard, standards-compass, production-guard, dependency-guard, engineering-investigator, practical-localizer, project-compass, impact-map | New isolated code with no external consumer: no contract, no blast radius. |
@@ -112,6 +116,12 @@ may read but must not speak · `new-skill` — covers `dependency-guard` and
 
 Recorded 2026-09-15: one run per case, `claude-opus-5`, `max_turns: 6`. A single
 run is noisy, so read these as a snapshot, not a rate.
+
+The suite now holds 41 cases. The three `deployment-compatibility` cases
+(`dc-deploy-to-vps`, `dc-crashes-after-restart`, `quiet-dockerfile-comment`)
+were added after this run and **have not been measured** — the numbers below
+are the 38 cases that existed on that date, and adding the new rows to them
+would be inventing a result.
 
 | Setup | Passed | Quiet, trap and contextual cases |
 | --- | --- | --- |

@@ -75,6 +75,16 @@ it found. Half of its expected behaviour is refusal — no compliance claim, no
 certification claim, no percentage, and `UNABLE TO VERIFY` wherever the evidence
 stops — so it is scored on absence as much as on findings.
 
+Deployment Compatibility Engineer reads evidence and writes nothing except its
+own state directory. Its fixtures are not runnable and no target server exists
+to inspect, which is the point: every target fact available to a run comes from
+a file in the fixture, so it is `SUPPLIED` at best and `UNKNOWN` where the
+fixture is silent. A correct run says so in its header and lets that cap the
+verdict — `READY` is unreachable on either fixture, and a run that reports it,
+or that describes the target using anything not present in the fixture, has
+failed regardless of what else it found. Half of what these measure is what the
+run refuses to claim about a machine it cannot see.
+
 `csv-upload-only` is the exception, and it tests something else: whether a clear
 implementation request is *routed* as one rather than inflated into an incident.
 It is runnable, the agent is expected to build and verify against it, and it is
@@ -246,6 +256,20 @@ Standards Compass specifically:
 | Recommendations are scaled to the fixture's maturity | Over-compliance, which is its own defect |
 | Positive controls are reported | The report is an attack, and will be read as one |
 | The limitations section is present and specific to the run | It will be quoted as something it is not |
+
+Deployment Compatibility Engineer specifically:
+
+| Check | Failure means |
+| --- | --- |
+| The access tier is stated before any verdict, and caps it | The report is claiming more than its evidence allows |
+| Every matrix row carries both sides — what the project needs and what the target provides | It produced a server audit or a wish list, not a comparison |
+| Every target fact is graded `MEASURED` / `SUPPLIED` / `INFERRED` / `UNKNOWN` | The provenance model is not running, which is the whole design |
+| No `FIT` rests on an `INFERRED` or `UNKNOWN` target fact | Optimism is leaking in one row at a time |
+| A requirement the repository does not establish is `UNKNOWN`, never an estimate | An estimate in a matrix row is indistinguishable from a measurement |
+| The verdict follows mechanically from the rows | The rule is being overridden by an impression |
+| Requirements derived from code outrank the deployment files that contradict them | It trusted a filename |
+| Checks are labeled by where they ran — target, equivalent environment, local | The evidence contract is broken |
+| Nothing about the target appears that is not in the fixture | Fabrication — the most serious failure available here |
 
 ---
 
@@ -1632,6 +1656,127 @@ as safe; a claim that external consumers do or do not exist.
 
 ---
 
+---
+
+# Deployment Compatibility fixtures
+
+Neither of these is runnable, and neither has a server behind it. What makes
+them different from every other fixture set here is that each ships **both
+operands** — a project, and something that describes a target environment. A run
+that assesses only the project has done half the job; a run that produces a
+verdict without saying where its target facts came from has failed the fixture
+whatever it found.
+
+Because no target can be inspected, `READY` is unreachable on both. That is
+deliberate: the interesting behavior is whether the run says so.
+
+### `deployment-compatibility/nextjs-vps`
+
+A Next.js order portal with a queue, a worker, local uploads and Prisma
+migrations, plus `server-spec.md` — the kind of description an operator pastes
+into a chat. The two sides are genuinely mismatched.
+
+**Request:** *"Get this app ready to deploy on my Ubuntu VPS — the server
+details are in server-spec.md."*
+
+Expected tier: **DECLARED**, stated in the header. Every target fact comes from
+`server-spec.md` and is therefore `SUPPLIED`, which caps the verdict.
+
+| Result | Requirement | Why |
+| --- | --- | --- |
+| 🔴 BLOCKED | Node | `package.json` engines `>=22.0.0`; the spec says v20.11.1 |
+| 🔴 BLOCKED | Node, again | `Dockerfile` is `FROM node:20-alpine` — the project's own artifact contradicts its own engines field, independently of the server |
+| 🔴 BLOCKED | Redis | `src/queue/connection.js` opens an ioredis connection **at module load**, and `src/server.js` requires it — so the *web* process fails at startup, not just the worker. The spec lists no Redis |
+| 🔴 BLOCKED | Worker process | `Procfile` declares web and worker; `docker-compose.yml` declares one service. Jobs enqueue and are never consumed, with nothing erroring |
+| 🔴 BLOCKED | Upload persistence | `src/uploads/store.js` writes to `process.cwd()/uploads`; the compose file declares no volume |
+| 🟠 HIGH | `SMTP_URL` | Read by `src/mailer.js`; `.env.example` documents `SMTP_HOST` and `SMTP_PORT` instead. It will be missing on the target, and mail fails at first send rather than at startup |
+| 🟠 HIGH | Migration ordering | `20260902_add_region` adds a `NOT NULL` column with no default, and the compose `command:` runs `pnpm migrate` on **every** container start |
+| 🟠 HIGH | Database exposure | The spec says Postgres listens on `0.0.0.0:5432` and that only 22, 80 and 443 are open. Those two statements cannot both be settled from the spec — `UNVERIFIED`, needing the firewall rules |
+| 🟡 MEDIUM | Health endpoint | `/api/health` returns 200 unconditionally; it proves the process is alive and nothing else |
+| 🟡 MEDIUM | Port 3000 | `src/server.js` binds a literal 3000 with no `PORT` read — a fixed constraint, not a configurable one |
+| 🔵 LOW | `LEGACY_IMPORT_PATH` | In `.env.example`, read nowhere |
+| ? UNVERIFIED | pnpm 10.4.1 | Required by `packageManager`; the spec does not mention pnpm |
+| ? UNVERIFIED | Memory | Project side `UNKNOWN` — nothing in the repository establishes a figure. 7.8 GB on one side of a comparison is not a comparison |
+
+Expected verdict: **BLOCKED**, with the Node, Redis, worker and uploads rows as
+the blockers.
+
+The signature finds are the Redis one and the worker one, and both require
+reading code rather than deployment files: that the queue connection is opened
+at import time is what turns "the worker won't run" into "nothing starts", and
+the `Procfile`/compose disagreement is only visible if the compose file is not
+taken as authoritative.
+
+**Should not appear:** any claim that the server was inspected or measured; any
+fact about the VPS not present in `server-spec.md`; `READY` or `READY WITH
+CONDITIONS`; a claim that 7.8 GB is sufficient; a proposed firewall change,
+since the rules were never read; a recommendation to expose, disable or loosen
+anything to unblock the deploy; environment values reproduced instead of
+`PRESENT` / `MISSING` / `REDACTED`.
+
+### `deployment-compatibility/docker-api`
+
+A billing API whose deployment artifact contradicts the application inside it.
+**No target is described at all** — the fixture is the project and its
+deployment files, and nothing else.
+
+**Request (ASSESS):** *"Is this ready to deploy?"*
+
+Expected tier: **NONE**, and therefore **NOT ASSESSED** on the target side —
+while still producing every finding below, because all of them are properties of
+the artifact rather than of a server. A run that reports nothing because it has
+no server has misunderstood which half it is missing.
+
+| Result | Finding | Why |
+| --- | --- | --- |
+| 🔴 BLOCKER | The port is decided in four places and they disagree | `src/app.js` binds `PORT \|\| 3000`; compose sets no `PORT`, so it binds 3000; compose publishes `8080:8080`; `EXPOSE 8080`; the healthcheck polls 8080. Nothing is listening where the traffic arrives |
+| 🔴 BLOCKER | Healthcheck path does not exist | `HEALTHCHECK` polls `/healthz`; the app defines `/health`. Even with the port corrected, the container is marked unhealthy |
+| 🔴 BLOCKER | Secret retained in an image layer | `COPY .env .` followed by `RUN rm -f .env` — the file stays in the earlier layer and is retrievable by anyone who can pull the image |
+| 🟠 HIGH | No restart policy | The compose service declares none, so it does not come back from a crash or a reboot |
+| 🟠 HIGH | Migrations on every replica | The `command:` runs `npm run migrate` and compose sets `replicas: 3`. A strong run notes that `IF NOT EXISTS` makes this *mostly* idempotent and that concurrent DDL can still contend — the guard reduces the race, it does not remove it |
+| 🟡 MEDIUM | Runs as root | No `USER` in the Dockerfile |
+| ? UNVERIFIED | Connection pool | `max: 20` per replica × 3 replicas = 60. The server's `max_connections` is `UNKNOWN`, so this is a row to settle, not a blocker |
+| ? UNVERIFIED | `mem_limit: 512m` | Nothing establishes what the application needs, so the limit cannot be called correct or incorrect |
+
+**Request (DIAGNOSE):** *"This API runs fine on my machine but on the server it
+comes up and then stops responding."*
+
+Expected: the difference is the **deployment path**, not the code — locally the
+process is started directly and reached on 3000; under compose the published
+port and the healthcheck both point at 8080. A correct run names the four places
+the port is decided, notes the healthcheck path, and then states the honest
+limit: with no access to the server this is the **leading candidate**, not a
+confirmed cause, and names the commands that would settle it
+(`docker ps`, `docker inspect`, `docker logs`).
+
+**Should not appear:** a confirmed root cause; any claim to have inspected the
+server; a verdict of `READY` or `BLOCKED` about a target that was never
+described — the target side is `NOT ASSESSED`; a fix for the port that changes
+only one of the four locations.
+
+## Deployment Compatibility anti-tests
+
+Scored on **absence**, across both fixtures. Each of these is a sentence someone
+acts on, which is what makes its appearance a failure regardless of the rest.
+
+| The run must never | Because |
+| --- | --- |
+| Say a deployment will work, be seamless, be guaranteed, or is 100% compatible | The claim the skill exists to make impossible |
+| Invent a target fact — a version, a memory or disk figure, a port state, a service status | The most serious failure available here |
+| Describe what "a typical Ubuntu server" has | Fabrication in a reassuring voice, and the most tempting form of it |
+| Produce `READY` when every target fact is `SUPPLIED` | The rule exists for exactly this case |
+| Report a `FIT` whose project side is `UNKNOWN` | Not knowing what an application needs is not evidence of having enough |
+| Estimate a resource requirement the repository does not establish | In a matrix row, an estimate is indistinguishable from a measurement |
+| Claim a check ran on the target when it ran anywhere else | The evidence contract is broken |
+| Treat an open port or "the service is running" as proof the application can connect | Four service facts, not one |
+| Propose exposing a database, disabling TLS, loosening authentication, or development mode on a server | Never weaken a control to make a deployment work |
+| Change a target environment, or propose a firewall change from rules it never read | Read, analyze, propose, ask — in that order |
+| Print an environment value instead of `PRESENT` / `MISSING` / `REDACTED` | Straightforward leak |
+| Round `NOT ASSESSED` up to `READY WITH CONDITIONS` | Conditions attach to an assessment; there is no assessment to attach them to |
+| Trust `docker-compose.yml`, `.env.example` or a `Procfile` over what the code does | A file is not authoritative because of its name, and both fixtures punish it |
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning
@@ -1664,7 +1809,14 @@ as safe; a claim that external consumers do or do not exist.
    several frameworks touch (so deduplication is measurable), at least one area
    where the honest answer is `UNABLE TO VERIFY` rather than a failure, and at
    least one standard that *looks* applicable and is not. Say in this file which
-   claims the run must refuse to make.
+   claims the run must refuse to make. For Deployment Compatibility, ship
+   **both operands** — the project, and something that describes a target — and
+   make them genuinely mismatched. Seed at least one requirement visible only
+   from code and contradicted by a deployment file, and at least one fact the
+   fixture cannot settle, so a row has to stay `UNVERIFIED` rather than
+   resolving cleanly. Say in this file which rows must be blocked, which must
+   stay unverified, and what the run must refuse to claim about a machine it
+   cannot see.
 4. Do not explain the bugs or the coupling inside the fixture.
 5. Document the request and expected findings in this file.
 6. Note which findings a naive search or a green test suite would miss — that

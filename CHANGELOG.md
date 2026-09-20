@@ -9,6 +9,56 @@ methodology and documentation.
 
 ### Added
 
+- `deployment-compatibility` v0.1.0 — **does this project fit this server?**
+  Every other skill in this repository takes one operand: the change, the
+  project, the symptom. This one takes two, and the second is a machine. That
+  is the gap it fills — Production Guard decides whether a change is safe to
+  ship and never inspects a host, and Engineering Investigator treats
+  infrastructure as a *suspected cause* rather than as something to assess
+  against a requirement. Nothing derived what a project needs at runtime and
+  compared it against what a named target provides, which is where deployments
+  actually fail.
+
+  It derives a **deployment contract** from the repository — runtime and
+  package-manager versions, services with their floor versions, process types,
+  ports, storage persistence, migrations, environment variables, external
+  integrations — with the file that establishes each line, and two rules that do
+  most of the work: a file is not authoritative because of its name (the
+  `docker-compose.yml` nobody deploys, the `.env.example` three variables behind
+  the code), and a requirement the repository cannot establish is `UNKNOWN`
+  rather than an estimate. Then it compares that contract against the target,
+  row by row, and each row carries **both sides and both provenances**.
+
+  The anti-overclaim mechanism is the part worth reviewing. A target fact is
+  `MEASURED`, `SUPPLIED`, `INFERRED` or `UNKNOWN`, and the readiness state is
+  computed from those grades rather than written by hand: a `FIT` resting on a
+  fact the *user* supplied cannot produce `READY` — it becomes a numbered
+  condition — and a row whose project side is `UNKNOWN` is never `FIT`, because
+  not knowing what an application requires is not evidence that the target
+  satisfies it. So `READY` is reachable only when the target was actually
+  inspected, `READY WITH CONDITIONS` is the normal good outcome, and
+  `NOT ASSESSED` is a real result rather than a failure. An **access tier** —
+  `NONE`, `DECLARED`, `READ-ONLY`, `AUTHORIZED` — is established before anything
+  else, stated in the report header, and caps every claim the report can make.
+  Asked whether an app will run on "a standard Ubuntu VPS", the correct output
+  is the project contract and three commands, not a confident yes assembled from
+  a mental model of Ubuntu.
+
+  Discovery is read-only. Project remediation and server remediation are kept in
+  separate lists so that approving the first cannot be read as approving the
+  second, server changes are classified `SAFE` / `CONFIRM` / `HIGH IMPACT` /
+  `DESTRUCTIVE` / `MANUAL ONLY` and applied only on authorization for that
+  specific action, and one rule overrides convenience: **never weaken a control
+  to make a deployment work** — no exposed database, no disabled TLS, no
+  development mode on a server. Verification separates what ran on the target
+  from what ran in an equivalent environment, insists on application-level
+  checks rather than port probes, and treats restart and recovery as the point,
+  since a deployment that starts once has not been verified. No secret is ever
+  printed or persisted. Six references, four worked examples — one of which
+  refuses to assess anything — two fixtures that ship *both* operands, three
+  activation cases, and a longitudinal scenario for the one claim a single
+  prompt cannot test: that the verdict moves when the evidence grade moves, and
+  never because files were edited.
 - **Automatic activation across the whole set.** The skills no longer depend on
   anyone remembering a slash command, and the fix is not a router. Agents that
   support Agent Skills already show the model each skill's description and let
@@ -72,7 +122,7 @@ methodology and documentation.
   self-check that `validate.sh` runs.
 - `.claude-plugin/plugin.json` — the repository is now also a Claude Code
   plugin, which is what lets `claude plugin eval` run the activation suite and
-  `claude --plugin-dir` load all nine skills at once. `npx skills add` is
+  `claude --plugin-dir` load all ten skills at once. `npx skills add` is
   unaffected.
 - `tests/longitudinal/ecosystem.md` — six multi-request scenarios across
   skills: engagement ending when the request changes, opt-outs scoped to what
@@ -269,7 +319,7 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
 - `CONTRIBUTING.md` gains a fifth hard rule, **activation is earned**: a change
   that makes a skill engage more often comes with a case where it must stay
   quiet.
-- The top-level README, the site, and `tests/README.md` cover nine skills and
+- The top-level README, the site, and `tests/README.md` cover ten skills and
   how they activate. Each skill page on the site gains a *When it activates*
   section.
 

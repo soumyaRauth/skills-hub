@@ -77,7 +77,7 @@ its most recent part. Check it with
 `.claude-plugin/plugin.json` makes this repository a Claude Code plugin. That
 serves two purposes:
 
-- **Trying every skill at once**, without installing anything:
+- **Trying all ten skills at once**, without installing anything:
   `claude --plugin-dir /path/to/skills-hub`. Skills then appear namespaced, as
   `skills-hub:impact-map`.
 - **Testing activation.** `claude plugin eval` needs a plugin to load. See

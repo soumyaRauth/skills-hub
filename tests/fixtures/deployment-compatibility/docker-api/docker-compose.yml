@@ -1,0 +1,11 @@
+services:
+  api:
+    build: .
+    deploy:
+      replicas: 3
+    ports:
+      - "8080:8080"
+    mem_limit: 512m
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    command: sh -c "npm run migrate && npm start"

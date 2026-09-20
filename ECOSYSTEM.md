@@ -1,6 +1,6 @@
 # How the skills work together
 
-Nine skills, each one engineering discipline. None of them needs a slash
+Ten skills, each one engineering discipline. None of them needs a slash
 command. This document covers how they end up in a task without being named,
 how several of them share one, and how they stay out of the way the rest of the
 time.
@@ -63,6 +63,7 @@ of four depths, and the depth is part of its contract:
 | **Standards Compass** · `standards-compass` | Which standards apply, and does the code meet them? | Audits; identity, privilege, money, personal data, uploads, AI, accessibility-relevant UI; a weakened control | Renames, copy, refactors with no boundary change, including in regulated projects | `CONSULT` · `ACTIVE` for audits |
 | **Dependency Guard** · `dependency-guard` | Should this dependency come in? | Adding a package, action, image or SDK; a major upgrade; "should we use X?" | Routine patch bumps with no new transitive packages or install scripts | `CONSULT` |
 | **API Contract Guard** · `api-contract-guard` | What does this interface promise, and can it be taken back? | Adding or changing an endpoint, webhook, event, SDK surface or CLI output that consumers deploy separately from | Interfaces whose every consumer ships in the same deploy; UI-only work | `CONSULT` · `ACTIVE` for new public APIs |
+| **Deployment Compatibility Engineer** · `deployment-compatibility` | Does this project fit this server? | A concrete deployment target is named, or a deployment exists and misbehaves | No target environment is in view: generic Docker, Linux or cloud questions, local setup, CI that ships nothing | `ACTIVE` · `GATING` when asked for the readiness decision |
 
 ## How they relate
 
@@ -88,6 +89,12 @@ flowchart LR
   PG -. manifest changed .-> DG
   PB -- shipped --> PL[Practical Localizer]
   IM -. recurring coupling .-> PC
+  DC[Deployment Compatibility] -- deployment requirement --> PB
+  DC -. environment exposure .-> SC
+  DC -. storage or config change .-> IM
+  DC -. cause unclear .-> EI
+  DC -. remediation needs a package .-> DG
+  PG -. a target is named .-> DC
 ```
 
 What each skill does *not* do matters as much as the edges:
@@ -96,6 +103,7 @@ What each skill does *not* do matters as much as the edges:
 - **Project Compass** decides what should happen next. It does not review architecture on demand, and it never gates.
 - **Standards Compass** is the only authority on standards, frameworks and regulations. Accessibility *implementation* happens inside the work it informs. There is no separate accessibility skill.
 - **Production Guard** owns the ship verdict, and observability is one of its categories. **ProofBuild** owns `VERIFIED`. Neither overrules the other.
+- **Deployment Compatibility Engineer** is the only skill here that takes two operands — a project *and* a named environment. It owns the readiness state; it does not own the ship decision, and a `READY` environment says nothing about whether the change belongs in it.
 
 ## Composition, by example
 
@@ -110,6 +118,7 @@ changes the result.
 | *Add subscription cancellation* | Impact Map, Standards Compass, ProofBuild, Production Guard; API Contract Guard if clients call it | — |
 | *Split `customer_name` into first and last name* | Impact Map, ProofBuild, Production Guard | Standards Compass stays quiet: it is a rename of personal data, not new personal data |
 | *Rename the button from Save to Submit* | none | Nothing about it changes with a discipline applied. Practical Localizer adds one line only if translated catalogs now hold the old meaning |
+| *Deploy this to my VPS* | Deployment Compatibility Engineer, then ProofBuild for anything that must be proven rather than observed once | Production Guard only if a release decision is also being asked for; Standards Compass only if the environment exposes personal data or weakens a control |
 
 The same sentence can go either way depending on the repository. *"Add another
 status"* in a project with a declared state machine gets the status and nothing
@@ -176,6 +185,7 @@ What persists is project state, and each skill keeps its own in the repository:
 | `.project-standards/` | Standards Compass | ProofBuild and Production Guard, for applicable controls |
 | `.proofbuild/` | ProofBuild | Production Guard, for what has been proven |
 | `.agent-investigation/` | Engineering Investigator | ProofBuild, for the established cause |
+| `.deployment-compatibility/` | Deployment Compatibility Engineer | any skill that needs the target environment's established facts and their dates |
 
 Reading another skill's state is cheap composition. Writing it is not allowed.
 
@@ -220,6 +230,7 @@ that splits a discipline two ways is worse than one that owns it.
 | Accessibility Specialist | Not added | Standards Compass guardrail mode already implements accessibility requirements inside the work, for example adding the keyboard alternative while building drag-to-reorder. A second skill would blur which one decides |
 | **Dependency / Supply Chain Guardian** | **Added as `dependency-guard`** | Nothing decided *whether a dependency should come in*: necessity, whether the package is the one intended, install scripts, transitive growth, license. Standards Compass audits dependency management as a control area. Nothing made the per-change call |
 | **API Contract Guardian** | **Added as `api-contract-guard`** | Impact Map maps consequences of changing an existing API, and Production Guard checks idempotency after the fact. Nothing made the *design-time* decisions a consumer later depends on: house conventions, idempotency, pagination, error codes, versioning |
+| **Deployment Compatibility Engineer** | **Added as `deployment-compatibility`** | Every other skill here takes one operand — the change, the project, the symptom. This one takes two, and the second is a machine. Production Guard decides whether a change is safe to ship and never inspects a host; Engineering Investigator treats infrastructure as a *suspected cause* rather than as something to assess against a requirement. Nothing derived what a project needs at runtime and compared it with what a named target provides, which is where deployments actually fail |
 
 ## The shared protocol
 

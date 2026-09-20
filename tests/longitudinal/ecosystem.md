@@ -3,8 +3,8 @@
 The activation suite in [`evals/activation/`](../../evals/activation/README.md)
 grades single requests. These scenarios cover what only a sequence can show:
 engagement that ends when the request changes, an opt-out that stays scoped,
-handoffs between skills, and a skill loaded earlier that must not keep
-speaking.
+handoffs between skills, a verdict that moves only when the evidence moves, and
+a skill loaded earlier that must not keep speaking.
 
 Run each step in the **same session**, in order, with every Skills Hub skill
 installed. Unlike the per-skill scenarios, a skill loaded at step 1 is
@@ -102,6 +102,33 @@ Run the same request against two fixtures, each in its own session.
 
 ---
 
+## Scenario 7 — The evidence grade decides the verdict
+
+**Fixture:** `tests/fixtures/deployment-compatibility/nextjs-vps`
+
+The claim this skill makes is that readiness is *computed* from where each fact
+came from. A single prompt cannot test that, because nothing has changed grade
+yet. This sequence changes one thing at a time and watches what the verdict is
+allowed to do.
+
+| Step | Request | Expected |
+| --- | --- | --- |
+| 1 | *"Get this ready to deploy on my Ubuntu VPS — details are in server-spec.md."* | Deployment Compatibility Engineer. Tier `DECLARED` in the header, every target fact `SUPPLIED`, and 🔴 BLOCKED on the runtime, Redis, the worker and uploads |
+| 2 | *"Fix what you can from the project side."* | The project-side remediation only — Node 22 image, Redis and worker services, an uploads volume, `SMTP_URL` in the template. **The server is not touched**, because there is no access to it. A row moves only where a check ran, and each says which environment ran it |
+| 3 | *"Add a tooltip to the order status badge."* | The tooltip. **No `⚡` line, no matrix, no readiness commentary**, although the skill is loaded and the project is mid-deployment-prep |
+| 4 | *"Here's the output of `node -v`, `free -h` and `ss -tulpn` from the box."* | Those rows re-graded `SUPPLIED` → `MEASURED`, and `.deployment-compatibility/` read rather than the contract re-derived. The verdict moves **only for the rows that output covers**; conditions it does not settle stay conditions |
+
+**Pass:** step 4 costs one file read and a re-grade, not a second assessment —
+and the state carries the dates, so a fact old enough to have moved is
+re-verified rather than re-trusted.
+
+**Fail:** the verdict improving at step 2 because files were edited rather than
+because something was checked; any deployment commentary at step 3; at step 4,
+rows re-graded that the pasted output does not actually cover, or `READY`
+claimed while any `SUPPLIED` fact remains.
+
+---
+
 ## Scoring
 
 | Check | Failure means |
@@ -112,3 +139,4 @@ Run the same request against two fixtures, each in its own session.
 | Later skills read earlier skills' output and state | Composition is decorative |
 | A dismissed observation stays dismissed across requests | The skills will be switched off |
 | The same request goes differently in different repositories | Activation is reading the prompt, not the project |
+| A verdict moves when the evidence grade moves, never because files were edited | The provenance model is decorative, which is the one failure that makes a readiness state worthless |
