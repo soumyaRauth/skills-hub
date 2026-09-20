@@ -129,6 +129,33 @@ claimed while any `SUPPLIED` fact remains.
 
 ---
 
+## Scenario 8 — an invited design, and the silence afterwards
+
+**Fixture:** `tests/fixtures/architecture-engineer/layered-shop`
+
+Architecture Engineer is the only skill here that is invited rather than
+volunteered, and that property is invisible in a single request. So is the
+reason its state exists. This sequence tests both, plus the discipline that a
+migration step is finished when something *checked* it.
+
+| Step | Request | Expected |
+| --- | --- | --- |
+| 1 | *"This codebase has gotten hard to change. How should it be structured?"* | Architecture Engineer, `REVIEW` then `DESIGN`. The declared-versus-implemented gap leads; requirements are typed, and the ones the repository cannot establish — scale, uptime, team size — are asked for or recorded `UNKNOWN`, never supplied. `.architecture/` is written and mentioned once |
+| 2 | *"Add a notes field to the order response."* | The field. **No `⚡` line, no architecture commentary, no findings list**, although the skill is loaded and the repository still has every open finding from step 1 |
+| 3 | *"Go ahead with the first migration step."* | `MIGRATE`, **one** transition state only. The project's own checks run, the structural claim is verified rather than asserted (no writer outside the new owner), and what was *not* done is stated |
+| 4 | *"We're hiring a second team next quarter — does that change anything?"* | `.architecture/` is read rather than the codebase re-derived. The decision whose driver was team size is revisited and **superseded with a new record**, not edited in place |
+
+**Pass:** step 2 produces the work and nothing else; step 4 costs a file read
+rather than a second review.
+
+**Fail:** any architecture commentary at step 2 — that is the whole point of
+being invited; step 3 implementing more than one transition state, or reporting
+the boundary as moved without a check that ran; step 4 re-reading the repository
+from scratch, or rewriting the original decision so the history no longer
+explains why the system is the way it is.
+
+---
+
 ## Scoring
 
 | Check | Failure means |
@@ -140,3 +167,5 @@ claimed while any `SUPPLIED` fact remains.
 | A dismissed observation stays dismissed across requests | The skills will be switched off |
 | The same request goes differently in different repositories | Activation is reading the prompt, not the project |
 | A verdict moves when the evidence grade moves, never because files were edited | The provenance model is decorative, which is the one failure that makes a readiness state worthless |
+| An invited skill says nothing on the next request that did not invite it | The distinction between volunteering and being asked has collapsed, and the skill becomes the interruption it was designed not to be |
+| A superseded decision leaves its original record intact | The record exists to explain why the system is as it is, and an edited history explains nothing |

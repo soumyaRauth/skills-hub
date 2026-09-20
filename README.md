@@ -17,6 +17,7 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[dependency-guard](skills/dependency-guard/README.md)** | Decides whether a dependency should come in — whether it is needed at all, whether the package is the one you meant, what it brings with it | *Before* anything is installed |
 | **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises — the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
 | **[deployment-compatibility](skills/deployment-compatibility/README.md)** | Assesses a project against a specific target server — what it requires, what the server provides, what has to change — and verifies what it can | *Before* you deploy it there |
+| **[architecture-engineer](skills/architecture-engineer/README.md)** | Works out what a system's structure should be, through questions, options and recorded decisions — then plans the migration and verifies the result | *Before* the shape is decided, and when it has to change |
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill impact-map
@@ -29,6 +30,7 @@ npx skills add soumyaRauth/skills-hub --skill standards-compass
 npx skills add soumyaRauth/skills-hub --skill dependency-guard
 npx skills add soumyaRauth/skills-hub --skill api-contract-guard
 npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
+npx skills add soumyaRauth/skills-hub --skill architecture-engineer
 ```
 
 They compose, and none requires the others:
@@ -43,6 +45,11 @@ incident → engineering-investigator → cause → proof-driven-dev → product
 
 a named server → deployment-compatibility → what it requires vs what the box has
                                           → remediate → verify → deploy
+
+a design question → architecture-engineer → what it must actually do
+                                          → the options → the decision
+                                          → target → migration → verify
+                    (invited only — it never opens a review uninvited)
 
 project-compass sits underneath all of it, and answers a different question:
 given where this project is heading, is this ticket the right next thing at all.
@@ -942,6 +949,75 @@ server. And never keep a secret: values are `PRESENT`, `MISSING` or redacted.
 
 ---
 
+# Architecture Engineer
+
+**The architecture is not the first answer. It is what is left after the
+reasoning.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill architecture-engineer
+```
+
+Ask a capable agent to design a system and you get an architecture in the first
+reply — multi-tenant, event-driven, a queue, a cache, three services. Well
+presented, internally consistent, and chosen before anything was known about
+your problem. Nothing in it is wrong. Nothing in it is *earned*.
+
+```
+what is actually required   →  what the system really is today
+        ↓                              ↓
+   the options that fit        the gap between them
+        ↓                              ↓
+   the trade-offs             →  a decision, recorded, with what reverses it
+        ↓
+   the target, the migration, and evidence the result matches
+```
+
+Requirements are graded by how they were established — `STATED`, `OBSERVED`,
+`INFERRED`, `ASSUMED`, `UNKNOWN` — and then one rule does most of the work:
+
+> **A decision resting on an `ASSUMED` or `UNKNOWN` requirement is not a
+> decision. It is an open question with a leading candidate.**
+
+So *"eventually maybe 500,000 users"* gets one question — committed, or hoped
+for? — because the answer changes the design by an order of magnitude of cost.
+And every moving part names the requirement forcing it, or it comes out:
+
+```
+Component        Driving requirement                          Grade
+Queue + worker   R-03 payment confirmation must not be lost   STATED
+Redis cache      —                                            none — removed
+Second service   R-09 unknown scale                           UNKNOWN — deferred
+```
+
+For an existing system, the most useful sentence is usually the gap between
+what the codebase claims and what it does — a `services/` directory is not a
+service architecture, and a `domain/` directory that imports the ORM is not a
+domain model.
+
+Four worked examples: [greenfield discovery](skills/architecture-engineer/examples/greenfield-discovery.md) ·
+[declared vs implemented](skills/architecture-engineer/examples/existing-review.md) ·
+[monolith or services](skills/architecture-engineer/examples/monolith-or-services.md) ·
+[the request that only sounds architectural](skills/architecture-engineer/examples/quiet-feature.md)
+
+## What it will not do
+
+Never lead with an architecture, invent a requirement, or recommend
+microservices, event sourcing, CQRS or Kubernetes by default — each needs a
+requirement it is the cheapest answer to. Never score options out of ten. Never
+call an architecture best, clean or future-proof. `DISCOVER`, `DESIGN` and
+`REVIEW` write nothing but `.architecture/`; only `MIGRATE` touches your code,
+only when you ask, and only against a plan where every transition state ships.
+
+And it does not volunteer. A large or messy codebase is not an invitation —
+noticing that a project has become something nobody designed is
+[Project Compass](skills/project-compass/README.md)'s job, and it holds the
+interruption budget for it.
+
+**[Full documentation →](skills/architecture-engineer/README.md)**
+
+---
+
 ## Installation
 
 ```bash
@@ -956,6 +1032,7 @@ npx skills add soumyaRauth/skills-hub --skill standards-compass
 npx skills add soumyaRauth/skills-hub --skill dependency-guard
 npx skills add soumyaRauth/skills-hub --skill api-contract-guard
 npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
+npx skills add soumyaRauth/skills-hub --skill architecture-engineer
 
 # Claude Code specifically
 npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
@@ -968,6 +1045,7 @@ npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-c
 npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code
 npx skills add soumyaRauth/skills-hub --skill deployment-compatibility --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill architecture-engineer --agent claude-code
 ```
 
 Then work as you normally would. Installed skills are matched by description,
@@ -1057,7 +1135,8 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   │   └── examples/             ← eight worked assessments, one that refuses to grade
 │   ├── dependency-guard/         ← two references, four examples, one of them silence
 │   ├── api-contract-guard/       ← two references, four examples, one of them silence
-│   └── deployment-compatibility/ ← six references, four examples, one of them a refusal to assess
+│   ├── deployment-compatibility/ ← six references, four examples, one of them a refusal to assess
+│   └── architecture-engineer/    ← seven references, four examples, one of them a refusal to engage
 ├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
 ├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
 ├── integrations/claude-code/     ← optional: standing instruction, colored status line
@@ -1073,7 +1152,8 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   │   ├── standards-compass/    ← five projects to assess, including one where most of the honest answer is "unable to verify"
 │   │   ├── dependency-guard/     ← an installed library that covers the need, an unverified name, SHA-pinned CI
 │   │   ├── api-contract-guard/   ← a public API with a flaw not to copy, and two services that deploy apart
-│   │   └── deployment-compatibility/  ← a project and the server spec it does not fit, and an image that contradicts its app
+│   │   ├── deployment-compatibility/  ← a project and the server spec it does not fit, and an image that contradicts its app
+│   │   └── architecture-engineer/     ← a codebase whose README declares layers its code does not keep
 │   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions and skills
 │   └── README.md                 ← expected findings per fixture
 ├── scripts/
@@ -1094,6 +1174,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 - **[Dependency Guard](skills/dependency-guard/README.md)** · [SKILL.md](skills/dependency-guard/SKILL.md)
 - **[API Contract Guard](skills/api-contract-guard/README.md)** · [SKILL.md](skills/api-contract-guard/SKILL.md)
 - **[Deployment Compatibility Engineer](skills/deployment-compatibility/README.md)** · [SKILL.md](skills/deployment-compatibility/SKILL.md)
+- **[Architecture Engineer](skills/architecture-engineer/README.md)** · [SKILL.md](skills/architecture-engineer/SKILL.md)
 - **[How they work together](ECOSYSTEM.md)** — activation, composition, visibility, overrides, and what was not added
 - **[Activation suite](evals/activation/README.md)** — which skill a request should load, and which it must not
 - **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction and status line
@@ -1202,6 +1283,12 @@ completeness, and none can prove it.
   service is reachable or not *from where the check ran*, which is a claim about
   that place and not about the server. `READY` is deliberately hard to reach,
   and `NOT ASSESSED` is a real answer rather than a failure
+- Architecture Engineer reasons from the repository and from what you tell it.
+  Business strategy, budget, team skill and roadmap are things you supply — it
+  asks rather than inventing them, and scale requirements cannot be derived from
+  source code at all. Its fitness checks verify structure, never behavior: that
+  a module no longer imports the ORM says nothing about whether the feature
+  still works
 - An absent finding is not proof of absence
 - Automatic activation is the agent's judgment, steered by descriptions. It is
   not a guarantee. The activation suite measures it on a fixed set of requests

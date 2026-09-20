@@ -69,8 +69,10 @@ build it as asked.
 
 **Composes with** `impact-map` (before the refactor a crossing calls for) ·
 `standards-compass` (a crossing into identity, billing or personal data) ·
-`api-contract-guard` (a request that fixes a public contract). Architecture
-review stays here: there is no separate architecture skill to hand it to.
+`api-contract-guard` (a request that fixes a public contract) ·
+`architecture-engineer` (when the user wants a named crossing actually
+designed). This skill notices the missing model and names the decision; that
+one is what answers it, and only when asked.
 
 <!-- skills-hub:protocol -->
 ### Working with the other Skills Hub skills

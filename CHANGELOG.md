@@ -9,6 +9,51 @@ methodology and documentation.
 
 ### Added
 
+- `architecture-engineer` v0.1.0 — **the architecture is not the first answer;
+  it is what is left after the reasoning.** Ask a capable agent to design a
+  system and it produces an architecture in the first reply, assembled from
+  patterns rather than from anything about the problem, because nothing about
+  the problem had been established. The failure is not bad architecture but
+  *unearned* architecture, which looks identical to the earned kind and costs
+  years to undo.
+
+  So the deliverable is a chain where every link carries its provenance.
+  Requirements are graded `STATED` / `OBSERVED` / `INFERRED` / `ASSUMED` /
+  `UNKNOWN`, and one rule does most of the work: **a decision resting on an
+  `ASSUMED` or `UNKNOWN` requirement is not a decision, it is an open question
+  with a leading candidate.** *"Eventually maybe 500,000 users"* therefore earns
+  one question — committed, or hoped for — because the answer changes the design
+  by an order of magnitude of cost. Two further constraints keep it
+  proportionate: **reversibility sets the discovery threshold**, so cheap
+  decisions are made and expensive ones are checked in on first; and a
+  **complexity budget** where every moving part names the requirement forcing it
+  or comes out of the design, which is the anti-cargo-cult rule made checkable.
+
+  For existing systems it reads the architecture that is *implemented*, not the
+  one that is declared — a `services/` directory is not a service architecture
+  and a `domain/` directory that imports the ORM is not a domain model — and the
+  gap between the two is usually the most useful sentence available. Migration
+  is evolutionary by default, in transition states that each ship, and a
+  migration step is complete when something *checked* the structure, not when
+  code was edited. Five modes: `DISCOVER`, `DESIGN`, `REVIEW`, `MIGRATE`,
+  `VERIFY`, of which only `MIGRATE` touches the project and only when asked.
+
+  It is also the first skill here that is **invited rather than volunteered**. A
+  messy codebase is not an invitation: noticing that a project has become
+  something nobody designed stays with Project Compass, which holds the
+  interruption budget for it. Seven references, four worked examples — one of
+  which is entirely about not engaging — one fixture whose README declares
+  layers its code does not keep, and three activation cases.
+
+  This **reverses** the "Architecture Guardian — not added" entry in
+  [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and-not-added), and the
+  original reasoning is kept there alongside the reversal. Project Compass does
+  detect emerging state machines and authorization models — it *notices* them
+  and names the one decision that would settle it, which is deliberately where
+  it stops. Nothing then answered that decision: no greenfield discovery, no
+  option comparison, no recorded trade-off, no target, no migration, no fitness
+  check.
+
 - `deployment-compatibility` v0.1.0 — **does this project fit this server?**
   Every other skill in this repository takes one operand: the change, the
   project, the symptom. This one takes two, and the second is a machine. That
