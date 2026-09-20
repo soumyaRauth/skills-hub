@@ -74,8 +74,17 @@ its most recent part. Check it with
 
 ## 3. The repository as a plugin
 
-`.claude-plugin/plugin.json` makes this repository a Claude Code plugin. That
-serves two purposes:
+`.claude-plugin/plugin.json` makes this repository a Claude Code plugin, and
+`.claude-plugin/marketplace.json` makes it installable as one. That serves
+three purposes:
+
+- **Installing all eleven skills in one step**, and updating them in one step
+  later:
+
+  ```
+  /plugin marketplace add soumyaRauth/skills-hub
+  /plugin install skills-hub@skills-hub
+  ```
 
 - **Trying all eleven skills at once**, without installing anything:
   `claude --plugin-dir /path/to/skills-hub`. Skills then appear namespaced, as
@@ -83,8 +92,9 @@ serves two purposes:
 - **Testing activation.** `claude plugin eval` needs a plugin to load. See
   [`evals/activation/`](../../evals/activation/README.md).
 
-It does not change `npx skills add`, which still installs single skills from
-`skills/`. Installing the same skill both ways shows it twice.
+None of this changes `npx skills add`, which installs the skills from `skills/`
+individually or all at once with `--skill '*'`. Install a skill one way or the
+other, not both — the same skill installed twice shows up twice.
 
 ## What is not here, and why
 
