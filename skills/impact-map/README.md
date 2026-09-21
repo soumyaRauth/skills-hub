@@ -93,7 +93,7 @@ npx skills add soumyaRauth/skills-hub --skill impact-map
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code --copy
 ```
 
 The CLI writes the skill into your agent's skills directory; no other setup,

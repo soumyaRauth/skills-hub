@@ -101,7 +101,7 @@ npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code --copy
 ```
 
 Skills are selected by their description, so there is nothing to memorize —

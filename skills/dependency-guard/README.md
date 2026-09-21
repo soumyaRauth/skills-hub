@@ -11,7 +11,7 @@ npx skills add soumyaRauth/skills-hub --skill dependency-guard
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code --copy
 ```
 
 ---

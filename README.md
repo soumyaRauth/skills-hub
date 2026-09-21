@@ -1034,7 +1034,7 @@ interruption budget for it.
 npx skills add soumyaRauth/skills-hub --skill '*' -g -y
 
 # every skill, Claude Code only
-npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code -g -y
+npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code --copy -g -y
 
 # choose from a list, or name one
 npx skills add soumyaRauth/skills-hub
@@ -1045,7 +1045,10 @@ npx skills add soumyaRauth/skills-hub --skill impact-map
 every project. Drop it to install into the current repository instead. Prefer
 `--skill '*'` over the CLI's `--all`: `--all` also expands the agent list to
 every agent the CLI supports, not the ones you have, and writes skill
-directories into all of them.
+directories into all of them. For Claude Code only, keep `--copy`. Without it
+the CLI stores the skills in `~/.agents/skills` and links Claude Code to them,
+and Codex, Cursor, Gemini CLI and the other agents that read that folder pick
+them up too.
 
 Claude Code can also install the whole repository as a plugin, which keeps the
 eleven skills together under one namespace and updates them in one step:

@@ -380,6 +380,14 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
 
 ### Changed
 
+- **Claude Code-only installs use `--copy`.** Without it, the Skills CLI stores a
+  skill in `~/.agents/skills` (or `.agents/skills` in a project) and links Claude
+  Code to it. Codex, Cursor, Gemini CLI and the other agents that read that
+  folder then pick the skill up too, so "Claude Code only" was not. Every Claude
+  Code install command now adds `--copy`: the all-skills command in the README
+  and on the site, and the single-skill command in each skill's README and site
+  page. Checked in a sandbox, globally and per project: plain folders under
+  `.claude/skills` and nothing under `.agents`.
 - **Impact Map and Production Guard run in their own context in Claude Code.**
   Both read a lot and end in a report, and everything they read used to land in
   the conversation. Now `context: fork` and `background: false` run each one as

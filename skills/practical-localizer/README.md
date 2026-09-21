@@ -216,7 +216,7 @@ npx skills add soumyaRauth/skills-hub --skill practical-localizer
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code --copy
 ```
 
 Then ask for what it does — skills are selected by description, so there is no
