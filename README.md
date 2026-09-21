@@ -337,6 +337,10 @@ unless you explicitly ask for that operation.
 > AI can write the code. Production Guard asks whether the resulting behavior is
 > safe to ship.
 
+```bash
+npx skills add soumyaRauth/skills-hub --skill production-guard
+```
+
 ## The problem
 
 ```
@@ -429,6 +433,10 @@ document.**
 > Traditional translation asks: *"what does this sentence translate to?"*
 > Practical Localizer asks: *"what would a real user expect this application to
 > say here?"*
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill practical-localizer
+```
 
 ## The problem
 
