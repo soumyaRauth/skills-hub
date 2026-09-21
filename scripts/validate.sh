@@ -420,21 +420,23 @@ else
   fail ".claude-plugin/plugin.json is missing, not JSON, or has no name"
 fi
 
-# The uninstall command names every skill, because `--skill '*'` would remove
-# other people's skills too. A skill added here and not there is left behind.
+# `npx github:soumyaRauth/skills-hub uninstall` must name every skill, and only
+# names: `--skill '*'` would remove other people's skills too.
 head_ "Uninstall command"
-want=$(printf '%s\n' "${SKILLS[@]}" | sort | tr '\n' ' ')
+want="npx --yes skills remove $(printf '%s\n' "${SKILLS[@]}" | LC_ALL=C sort | tr '\n' ' ')-g -y"
+if ! command -v node >/dev/null 2>&1; then
+  skip "node unavailable; uninstall command not checked"
+elif [ "$(node scripts/skills-hub.mjs uninstall --dry-run 2>&1)" = "$want" ]; then
+  pass "uninstall removes exactly the ${#SKILLS[@]} skills, by name"
+else
+  fail "scripts/skills-hub.mjs uninstall --dry-run does not print: $want"
+fi
 for doc in README.md docs/index.html; do
-  cmds=$(grep -oE 'npx skills remove [a-z0-9 -]+' "$doc" || true)
-  if [ -z "$cmds" ]; then fail "$doc has no uninstall command"; continue; fi
-  while IFS= read -r cmd; do
-    got=$(printf '%s\n' $cmd | grep -vE '^(npx|skills|remove|-.*)$' | sort | tr '\n' ' ')
-    if [ "$got" = "$want" ]; then
-      pass "$doc: uninstall names exactly the ${#SKILLS[@]} skills"
-    else
-      fail "$doc: uninstall names [$got], skills are [$want]"
-    fi
-  done <<< "$cmds"
+  if grep -q 'npx github:soumyaRauth/skills-hub uninstall' "$doc"; then
+    pass "$doc documents the uninstall command"
+  else
+    fail "$doc does not document npx github:soumyaRauth/skills-hub uninstall"
+  fi
 done
 
 # ------------------------------------------------------------ link checking --

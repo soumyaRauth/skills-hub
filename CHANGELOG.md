@@ -22,14 +22,18 @@ methodology and documentation.
   `SKILL.md` only by hand, through the usual review.
 - **Uninstalling takes one command, and the documentation says it is your
   right.** The README and the site now have an *Uninstalling* section, marked as
-  important and linked from the top of the README. It gives one `npx skills
-  remove` command that removes the eleven skills from every agent. It names
-  them, because `--skill '*'` would take every other skill on the machine with
-  them, and names that are not installed are skipped. The section also covers
-  the plugin route and lists what stays behind (lessons, project state, the
-  optional Claude Code extras) with how to remove each. `scripts/validate.sh`
-  fails if either command stops naming exactly the skills in `skills/`, so a
-  twelfth skill cannot be left out of the uninstall.
+  important and linked from the top of the README. The command is `npx
+  github:soumyaRauth/skills-hub uninstall`, where `skills-hub` stands for all
+  eleven skills. `scripts/skills-hub.mjs` reads the list from `skills/` and
+  hands it to the Skills CLI's `npx skills remove`, one name per skill. It never
+  uses `--skill '*'`, which would take every other skill on the machine with
+  them. The CLI skips names that are not installed. `--dry-run` prints the exact
+  command and removes nothing, and `--project` removes a repository-level
+  install. A root `package.json`, never published, is what lets npx run the
+  script straight from GitHub. The section also covers the plugin route and
+  lists what stays behind (lessons, project state, the optional Claude Code
+  extras) with how to remove each. `scripts/validate.sh` checks the dry run
+  against `skills/` and checks that both documents show the command.
 
 - `architecture-engineer` v0.1.0 — **the architecture is not the first answer;
   it is what is left after the reasoning.** Ask a capable agent to design a

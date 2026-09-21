@@ -463,15 +463,16 @@
 
     <h3>Any compatible agent</h3>
     <div class="cmd">
-      <code>npx skills remove api-contract-guard architecture-engineer dependency-guard deployment-compatibility engineering-investigator impact-map practical-localizer production-guard project-compass proof-driven-dev standards-compass -g -y</code>
+      <code>npx github:soumyaRauth/skills-hub uninstall</code>
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
-      It names the eleven skills instead of using <code>--skill '*'</code>,
-      which would remove every skill on the machine. A name that is not
-      installed is skipped, so it works whether you installed one skill or all
-      of them. Drop <code>-g</code> and run it inside a repository to remove a
-      project-level install.
+      <code>skills-hub</code> stands for all eleven skills. The command removes
+      each one by name through the Skills CLI, and never uses
+      <code>--skill '*'</code>, which would remove every skill on the machine.
+      Skills that are not installed are skipped. Add <code>--dry-run</code> to
+      see exactly what it would remove, or <code>--project</code> to remove a
+      project-level install instead of a global one.
     </p>
 
     <h3>Claude Code plugin</h3>

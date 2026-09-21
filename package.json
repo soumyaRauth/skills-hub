@@ -1,0 +1,8 @@
+{
+  "name": "skills-hub",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Uninstalls every Skills Hub skill in one command: npx github:soumyaRauth/skills-hub uninstall",
+  "license": "MIT",
+  "bin": { "skills-hub": "scripts/skills-hub.mjs" }
+}
