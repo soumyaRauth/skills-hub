@@ -186,6 +186,16 @@ does not re-read it, and it does not unload it. So every skill says it
 explicitly: **loaded is not engaged.** Relevance to the payment feature an hour
 ago gives the skill nothing to say about the button rename now.
 
+Two skills are the exception in Claude Code. `impact-map` and `production-guard`
+run as their own subagent (`context: fork`, `background: false`). Each starts
+fresh with its `SKILL.md` and the task Claude hands it, reads and runs what it
+needs in its own context window, and returns only the map or the verdict. Both
+are read-heavy and end in a report, so the files they read would otherwise fill
+the conversation. The price is that neither sees the conversation. What they know
+of the request is what Claude passes them, and when nothing is passed they fall
+back to the diff. The other nine shape work as it happens, or need the history of
+requests, so they stay in the conversation.
+
 What persists is project state, and each skill keeps its own in the repository:
 
 | Directory | Written by | Read by |
@@ -221,6 +231,7 @@ activation suite check (see *Improve a methodology* in `CONTRIBUTING.md`).
 | Descriptions: the `name` and `description` frontmatter fields, which [`skills-ref`](https://github.com/agentskills/agentskills) accepts | `integrations/claude-code/CLAUDE.md`, a standing instruction to consider the skills without being asked. Recommended, because descriptions alone leave Claude doing most implementation work without them |
 | Activation sections and the shared protocol | `integrations/claude-code/statusline-skills.py`, colored active-skill indicator |
 | The ⚡ line and handoffs, which are plain text | `.claude-plugin/plugin.json`, which makes the repository loadable as a plugin and runnable by `claude plugin eval` |
+| Everything in `impact-map` and `production-guard` except two frontmatter fields | `context: fork` and `background: false` in those two, which run them as a subagent. They are outside the Agent Skills spec, so `validate.sh` gives `skills-ref` a copy without them. Other agents load both skills inline, as before |
 
 `npx skills add soumyaRauth/skills-hub --skill <name>` is unchanged: skills are
 still discovered under `skills/`, each is still self-contained, and each carries

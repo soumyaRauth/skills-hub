@@ -1,6 +1,8 @@
 ---
 name: impact-map
 description: Before changing anything other code depends on, find everything the change touches — renaming or removing a status, enum, field, table, column, route or shared concept, or changing a schema, API response, event, configuration or cross-module behavior. Traces callers, jobs, reports, raw SQL, string comparisons, fixtures, permissions and tests, including hidden couplings no import shows, and returns that surface with evidence and confidence so the change lands on all of it. Use when asked what the blast radius is, or what a change or PR missed. Read-only analysis. Not for new isolated code, copy or typo edits, formatting, comments, local renames the compiler resolves, or dependency bumps.
+context: fork
+background: false
 ---
 
 # Impact Map
@@ -36,6 +38,13 @@ regression requirements) · `production-guard` (the hidden-coupling findings are
 its regression surface) · `api-contract-guard` (an external consumer shows up in
 the map) · `project-compass` (the same coupling surfacing in a third change) ·
 `engineering-investigator` (a cause that crosses systems comes back for a map).
+
+**In Claude Code** it runs as its own subagent (`context: fork`), so the files
+it reads stay out of the conversation. It sees this file and the task it is
+handed, which arrives as `ARGUMENTS:` at the end, and not the conversation.
+With no task, map the uncommitted diff. With a clean tree, return one line
+naming what to pass. It returns the map. The change happens back in the
+conversation, and a plan needs the map passed back in with the request.
 
 <!-- skills-hub:protocol -->
 ### Working with the other Skills Hub skills

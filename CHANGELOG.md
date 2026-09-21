@@ -380,6 +380,21 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
 
 ### Changed
 
+- **Impact Map and Production Guard run in their own context in Claude Code.**
+  Both read a lot and end in a report, and everything they read used to land in
+  the conversation. Now `context: fork` and `background: false` run each one as
+  a `general-purpose` subagent. It starts from its `SKILL.md` and the task Claude
+  hands it, and returns only the map or the verdict. `general-purpose` rather
+  than `Explore`, because Explore cannot write files, which would stop lessons
+  from being recorded, and it skips `CLAUDE.md`. Each skill's Activation section
+  now says what the fork sees. With no task handed over, it falls back to the
+  diff. Edits and plans happen back in the conversation. Checked in live
+  sessions: Claude passed the request both times it chose a skill on its own,
+  the fork was told its base directory and read its own references, and on a
+  change request the map ran first and the conversation stopped for the one
+  decision it needed. `skills-ref` rejects fields outside the spec, so
+  `validate.sh` validates a copy without these two. Other agents load both
+  skills inline, as before.
 - **The install-all command is where people look.** The one-command install had
   reached only the *Installation* section near the bottom of the README. The top
   of the README still listed eleven `npx skills add` lines, and the site listed

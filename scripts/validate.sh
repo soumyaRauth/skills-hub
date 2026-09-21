@@ -125,7 +125,7 @@ for skill in "${SKILLS[@]}"; do
       fi
 
       unknown=$(printf '%s\n' "$frontmatter" | grep -E '^[a-zA-Z-]+:' \
-        | grep -vE '^(name|description|license|allowed-tools|metadata):' || true)
+        | grep -vE '^(name|description|license|allowed-tools|metadata|context|background):' || true)
       if [ -z "$unknown" ]; then
         pass "no unexpected frontmatter keys"
       else
@@ -512,13 +512,21 @@ fi
 
 head_ "External validator"
 if command -v skills-ref >/dev/null 2>&1; then
+  # `context` and `background` are Claude Code extensions that run a skill as a
+  # subagent. skills-ref rejects any field outside the spec, so it validates a
+  # copy without them: the portable rest of the skill.
+  sr_tmp=$(mktemp -d)
   for skill in "${SKILLS[@]}"; do
-    if skills-ref validate "skills/$skill"; then
+    cp -R "skills/$skill" "$sr_tmp/$skill"
+    awk 'NR == 1 { fm = 1 } fm && NR > 1 && /^---$/ { fm = 0 }
+         !(fm && /^(context|background):/)' "skills/$skill/SKILL.md" > "$sr_tmp/$skill/SKILL.md"
+    if skills-ref validate "$sr_tmp/$skill"; then
       pass "skills-ref: $skill"
     else
       fail "skills-ref validation failed for $skill"
     fi
   done
+  rm -rf "$sr_tmp"
 else
   skip "skills-ref not installed; built-in checks used instead"
 fi
