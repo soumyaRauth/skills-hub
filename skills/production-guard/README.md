@@ -100,7 +100,7 @@ npx skills add soumyaRauth/skills-hub --skill production-guard
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code --copy
 ```
 
 No MCP server, no CLI, no hosted service. The skill uses the repository

@@ -13,7 +13,7 @@ npx skills add soumyaRauth/skills-hub --skill architecture-engineer
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill architecture-engineer --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill architecture-engineer --agent claude-code --copy
 ```
 
 ---

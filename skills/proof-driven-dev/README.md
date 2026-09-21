@@ -116,7 +116,7 @@ npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code --copy
 ```
 
 Skills are selected by their description, so there is no command to remember.

@@ -12,7 +12,7 @@ npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill deployment-compatibility --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill deployment-compatibility --agent claude-code --copy
 ```
 
 ---

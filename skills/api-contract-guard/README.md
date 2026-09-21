@@ -13,7 +13,7 @@ npx skills add soumyaRauth/skills-hub --skill api-contract-guard
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code --copy
 ```
 
 ---

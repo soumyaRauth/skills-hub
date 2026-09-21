@@ -364,9 +364,13 @@
 
     <h3>Claude Code only</h3>
     <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code -g -y</code>
+      <code>npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code --copy -g -y</code>
       <button type="button" data-copy>Copy</button>
     </div>
+    <p>
+      <code>--copy</code> keeps the skills out of <code>~/.agents/skills</code>,
+      a folder Codex, Cursor and other agents also read.
+    </p>
     <p>Or as a plugin, which keeps the eleven together and updates them in one step:</p>
     <div class="cmd">
       <code>/plugin marketplace add soumyaRauth/skills-hub</code>

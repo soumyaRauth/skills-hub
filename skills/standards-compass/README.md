@@ -137,7 +137,7 @@ npx skills add soumyaRauth/skills-hub --skill standards-compass
 For Claude Code specifically:
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code
+npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code --copy
 ```
 
 No slash command required — installed skills are matched by description. It
