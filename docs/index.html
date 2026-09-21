@@ -17,6 +17,7 @@
       <a href="#skills">Skills</a>
       <a href="#activation">Activation</a>
       <a href="#install">Install</a>
+      <a href="#uninstall">Uninstall</a>
       <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
     </nav>
   </div>
@@ -447,6 +448,48 @@
       &mdash; it is what gets Claude to reach for the skills during implementation
       work &mdash; and, optionally, a colored active-skills status line:
       <a href="https://github.com/soumyaRauth/skills-hub/tree/main/integrations/claude-code">integrations/claude-code</a>.
+    </p>
+  </div>
+</section>
+
+<section id="uninstall">
+  <div class="wrap">
+    <h2>Uninstalling</h2>
+    <p class="note">
+      <strong>Uninstalling should be as easy as installing. It is your right.</strong>
+      One command removes every Skills Hub skill from every agent it went into,
+      and nothing else. Your other skills stay exactly where they are.
+    </p>
+
+    <h3>Any compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills remove api-contract-guard architecture-engineer dependency-guard deployment-compatibility engineering-investigator impact-map practical-localizer production-guard project-compass proof-driven-dev standards-compass -g -y</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>
+      It names the eleven skills instead of using <code>--skill '*'</code>,
+      which would remove every skill on the machine. A name that is not
+      installed is skipped, so it works whether you installed one skill or all
+      of them. Drop <code>-g</code> and run it inside a repository to remove a
+      project-level install.
+    </p>
+
+    <h3>Claude Code plugin</h3>
+    <div class="cmd">
+      <code>/plugin uninstall skills-hub@skills-hub</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>/plugin marketplace remove skills-hub</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <p style="margin-top:20px">
+      Nothing is left running. What stays is yours: lessons in
+      <code>~/.skills-hub/</code> (<code>rm -rf ~/.skills-hub</code>), and
+      project notes such as <code>.project-compass/</code> in your repositories,
+      which you can delete or keep.
+      <a href="https://github.com/soumyaRauth/skills-hub#uninstalling">Full list</a>.
     </p>
   </div>
 </section>

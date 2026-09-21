@@ -33,6 +33,10 @@ npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
 npx skills add soumyaRauth/skills-hub --skill architecture-engineer
 ```
 
+> [!IMPORTANT]
+> **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all
+> eleven skills from every agent, and leaves your other skills alone.
+
 They compose, and none requires the others:
 
 ```
@@ -1064,6 +1068,45 @@ What do you think I'm missing here?
 Which standards actually apply to this project?
 Audit this application against the standards that matter.
 ```
+
+## Uninstalling
+
+> [!IMPORTANT]
+> **Uninstalling should be as easy as installing. It is your right.** One command
+> removes every Skills Hub skill from every agent it went into, and nothing else.
+> Your other skills stay exactly where they are. The skills are plain files and
+> nothing of theirs runs in the background, so there is nothing else to stop.
+
+```bash
+# every Skills Hub skill, from every agent, installed with -g
+npx skills remove api-contract-guard architecture-engineer dependency-guard deployment-compatibility engineering-investigator impact-map practical-localizer production-guard project-compass proof-driven-dev standards-compass -g -y
+```
+
+The command names the eleven skills rather than using `--skill '*'`, because
+`--skill '*'` removes every skill on the machine, including ones that have
+nothing to do with this repository. A name that is not installed is skipped, so
+the same command works whether you installed one skill or all eleven, and
+running it twice is harmless. Drop `-y` to see the list and confirm first. Drop
+`-g` and run it inside a repository to remove skills installed into that
+repository only. It removes by name, so a different skill you installed under
+one of these exact names goes too.
+
+Installed as a Claude Code plugin instead:
+
+```
+/plugin uninstall skills-hub@skills-hub
+/plugin marketplace remove skills-hub
+```
+
+Nothing is left running, but a few files stay behind, because they are yours
+and not the skills'. Here is where each one lives:
+
+| What | Where | To remove it |
+| --- | --- | --- |
+| Lessons the skills learned | `~/.skills-hub/` | `rm -rf ~/.skills-hub` |
+| Project state | `.project-compass/`, `.project-standards/`, `.proofbuild/`, `.agent-investigation/`, `.deployment-compatibility/`, `.architecture/` in each repository | Delete the folders, or keep them. They are plain notes and still readable without the skills |
+| The standing instruction, if you added it | a line or `@` import in a `CLAUDE.md` | Delete that line |
+| The status line, if you added it | `statusLine` in `~/.claude/settings.json` | Delete that entry |
 
 ## Supported agents
 
