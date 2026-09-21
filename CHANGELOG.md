@@ -9,6 +9,28 @@ methodology and documentation.
 
 ### Added
 
+- **Lessons: every skill now keeps what it learns from being corrected.** Until
+  now a skill was the same file on its hundredth project as on its first. Project
+  state made it smarter about one repository, and nothing made it better at its
+  own discipline. A new `Lessons` rule in the shared protocol has each skill read
+  `~/.skills-hub/lessons/<skill>.md` when it engages. When a person corrects a
+  miss, a false alarm or a wrong verdict, the skill appends one dated rule there.
+  The file lives outside the installed skill, so updates do not wipe it, and
+  outside the repository, so a lesson from a private project is never committed
+  here. Lessons are general rules, never project facts. They are capped at twenty
+  lines and never override a skill's rules or a person's instruction. They reach
+  `SKILL.md` only by hand, through the usual review.
+- **Uninstalling takes one command, and the documentation says it is your
+  right.** The README and the site now have an *Uninstalling* section, marked as
+  important and linked from the top of the README. It gives one `npx skills
+  remove` command that removes the eleven skills from every agent. It names
+  them, because `--skill '*'` would take every other skill on the machine with
+  them, and names that are not installed are skipped. The section also covers
+  the plugin route and lists what stays behind (lessons, project state, the
+  optional Claude Code extras) with how to remove each. `scripts/validate.sh`
+  fails if either command stops naming exactly the skills in `skills/`, so a
+  twelfth skill cannot be left out of the uninstall.
+
 - `architecture-engineer` v0.1.0 — **the architecture is not the first answer;
   it is what is left after the reasoning.** Ask a capable agent to design a
   system and it produces an architecture in the first reply, assembled from

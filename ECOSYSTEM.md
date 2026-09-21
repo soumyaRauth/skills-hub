@@ -30,7 +30,7 @@ request ──▶ model reads every installed description ──▶ Skill tool l
 | Model reasoning | Decides which disciplines are relevant, from the request, the repository and what it has already seen | the agent, not this repository |
 | Description | The only text the model sees before it loads a skill. Says what the skill is for, when to use it, and when not to | `skills/<name>/SKILL.md` frontmatter |
 | Activation section | Read once the skill is loaded. Covers when it engages, when it stays quiet, how deep it goes, and what it hands to whom | `skills/<name>/SKILL.md`, `## Activation` |
-| Shared protocol | Covers announcing, handoffs, conflicts, overrides and state. The text is identical in every skill so each skill still works when installed alone | the marked block below, copied into every `SKILL.md` |
+| Shared protocol | Covers announcing, handoffs, conflicts, overrides, state and lessons. The text is identical in every skill so each skill still works when installed alone | the marked block below, copied into every `SKILL.md` |
 | Claude Code extras | A standing instruction, recommended because it measurably raises how often skills load when they should, and an optional colored status line segment | `integrations/claude-code/` |
 | Tests | Deterministic graders on which skills a real session invoked, and which it did not | `evals/activation/` |
 
@@ -199,6 +199,21 @@ What persists is project state, and each skill keeps its own in the repository:
 
 Reading another skill's state is cheap composition. Writing it is not allowed.
 
+Project state makes a skill smarter about one repository, and it never makes the
+skill itself better. Lessons do that. Each skill keeps a short file of rules it
+learned from being corrected, one file per skill on each machine:
+
+| File | Written by | Read by |
+| --- | --- | --- |
+| `~/.skills-hub/lessons/<skill>.md` | that skill, when corrected or when it finds a gap in its own checks | that skill, on engaging, in every project |
+
+It lives outside the installed skill, because an update or reinstall replaces
+that directory, and outside the repository, because this repository is public and
+a lesson learned in a private project must not be committed from it. Lessons are
+rules for any project, never facts about one, and are capped at twenty lines.
+They reach `SKILL.md` only by hand, through a pull request the validator and the
+activation suite check (see *Improve a methodology* in `CONTRIBUTING.md`).
+
 ## Portability
 
 | Portable (every Agent Skills agent) | Claude Code only |
@@ -276,4 +291,15 @@ installed alone. `scripts/validate.sh` fails if any copy drifts from this one.
 - **State.** Read what sibling skills recorded (`.project-compass/`,
   `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
   re-deriving it. Write only your own.
+- **Lessons.** On engaging, read `~/.skills-hub/lessons/<this skill's name>.md`
+  if it exists. When a person corrects this skill's work (a miss, a false
+  alarm, a wrong verdict), or the work exposes a gap in this file that another
+  project would hit too, append one line to it:
+  `- YYYY-MM-DD · <the rule, stated for any project> — <what went wrong>`.
+  Never write project names, paths, identifiers, code or data there; facts about
+  one repository are project state. Keep at most 20 lines, merging or replacing
+  one to add another. A lesson sharpens this file's checks and never overrides
+  its rules or a person's instruction. The file sits outside every project, so
+  no read-only rule covers it. Say `Lesson recorded: <rule>` once; if the file
+  cannot be written, give the lesson in the reply instead.
 <!-- /skills-hub:protocol -->

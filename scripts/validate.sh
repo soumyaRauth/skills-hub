@@ -420,6 +420,23 @@ else
   fail ".claude-plugin/plugin.json is missing, not JSON, or has no name"
 fi
 
+# The uninstall command names every skill, because `--skill '*'` would remove
+# other people's skills too. A skill added here and not there is left behind.
+head_ "Uninstall command"
+want=$(printf '%s\n' "${SKILLS[@]}" | sort | tr '\n' ' ')
+for doc in README.md docs/index.html; do
+  cmds=$(grep -oE 'npx skills remove [a-z0-9 -]+' "$doc" || true)
+  if [ -z "$cmds" ]; then fail "$doc has no uninstall command"; continue; fi
+  while IFS= read -r cmd; do
+    got=$(printf '%s\n' $cmd | grep -vE '^(npx|skills|remove|-.*)$' | sort | tr '\n' ' ')
+    if [ "$got" = "$want" ]; then
+      pass "$doc: uninstall names exactly the ${#SKILLS[@]} skills"
+    else
+      fail "$doc: uninstall names [$got], skills are [$want]"
+    fi
+  done <<< "$cmds"
+done
+
 # ------------------------------------------------------------ link checking --
 
 head_ "Internal markdown links"
