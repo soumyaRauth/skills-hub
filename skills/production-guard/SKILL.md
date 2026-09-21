@@ -1,6 +1,8 @@
 ---
 name: production-guard
 description: Decide whether a change is safe to ship. Checks behavior, regressions, failure modes, retries and idempotency, security and tenancy, data integrity and migrations, performance at volume, observability and recovery, running the project's own checks where possible, and ends in SHIP, CONDITIONAL SHIP or DO NOT SHIP derived from explicit rules. Use when someone asks whether a change is ready to merge, release or deploy, and when meaningful work on money, authentication, authorization, migrations, bulk or destructive operations, multi-tenancy or external integrations is being wrapped up. Not for work still in progress, low-risk changes, or prototypes not headed to production.
+context: fork
+background: false
 ---
 
 # Production Guard
@@ -35,6 +37,13 @@ checks back) · `impact-map` (the hidden-coupling findings are the regression
 surface) · `standards-compass` (applicable controls feed the security category)
 · `dependency-guard` (a manifest change in the diff). Observability is one of
 this skill's own categories, not another skill's.
+
+**In Claude Code** it runs as its own subagent (`context: fork`), so what it
+reads and runs stays out of the conversation. It sees this file and the task it
+is handed, which arrives as `ARGUMENTS:` at the end, and not the conversation.
+With no task, assess the current branch's diff against its base. With nothing to
+assess, return one line naming what to pass. It returns the report, and fixes
+happen back in the conversation.
 
 <!-- skills-hub:protocol -->
 ### Working with the other Skills Hub skills
