@@ -380,6 +380,13 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
 
 ### Changed
 
+- **The install-all command is where people look.** The one-command install had
+  reached only the *Installation* section near the bottom of the README. The top
+  of the README still listed eleven `npx skills add` lines, and the site listed
+  twenty-two and never showed the single command. Both now lead with `npx skills
+  add soumyaRauth/skills-hub --skill '*' -g -y`. The README puts the uninstall
+  command right beside it. The site adds the Claude Code-only form and the
+  plugin route, and keeps a single-skill install as one line.
 - **All seven existing skills: rewritten descriptions, plus an `## Activation`
   section.** The methodology of each skill is unchanged, with one behavioral
   change. **Impact Map**, loaded on a request to *make* a change rather than to
