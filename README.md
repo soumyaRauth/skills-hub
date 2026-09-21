@@ -20,18 +20,15 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[architecture-engineer](skills/architecture-engineer/README.md)** | Works out what a system's structure should be, through questions, options and recorded decisions — then plans the migration and verifies the result | *Before* the shape is decided, and when it has to change |
 
 ```bash
-npx skills add soumyaRauth/skills-hub --skill impact-map
-npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
-npx skills add soumyaRauth/skills-hub --skill production-guard
-npx skills add soumyaRauth/skills-hub --skill practical-localizer
-npx skills add soumyaRauth/skills-hub --skill engineering-investigator
-npx skills add soumyaRauth/skills-hub --skill project-compass
-npx skills add soumyaRauth/skills-hub --skill standards-compass
-npx skills add soumyaRauth/skills-hub --skill dependency-guard
-npx skills add soumyaRauth/skills-hub --skill api-contract-guard
-npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
-npx skills add soumyaRauth/skills-hub --skill architecture-engineer
+# install all eleven skills, to whichever agents you already have
+npx skills add soumyaRauth/skills-hub --skill '*' -g -y
+
+# uninstall all eleven, and nothing else
+npx github:soumyaRauth/skills-hub uninstall
 ```
+
+One skill only: `npx skills add soumyaRauth/skills-hub --skill impact-map`.
+Claude Code only, or as a plugin: see [Installation](#installation).
 
 > [!IMPORTANT]
 > **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all

@@ -46,7 +46,7 @@
         </span>
       </div>
       <div class="cmd">
-        <code>npx skills add soumyaRauth/skills-hub --skill impact-map</code>
+        <code>npx skills add soumyaRauth/skills-hub --skill '*' -g -y</code>
         <button type="button" data-copy>Copy</button>
       </div>
     </div>
@@ -349,95 +349,38 @@
     <h2>Installing</h2>
     <p>Skills install through the Skills CLI and work with any Agent Skills-compatible agent.</p>
 
-    <h3>Any compatible agent</h3>
+    <h3>All eleven skills, any compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill '*' -g -y</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>
+      <code>--skill '*'</code> selects every skill in this repository, and
+      <code>-g</code> installs them globally, so they are there in every
+      project. With no <code>-a</code>, the CLI installs to the agents it finds
+      on your machine. Prefer this over the CLI's <code>--all</code>, which
+      writes into every agent the CLI supports, not just the ones you have.
+    </p>
+
+    <h3>Claude Code only</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code -g -y</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>Or as a plugin, which keeps the eleven together and updates them in one step:</p>
+    <div class="cmd">
+      <code>/plugin marketplace add soumyaRauth/skills-hub</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>/plugin install skills-hub@skills-hub</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>Install one way or the other, not both, or each skill shows up twice.</p>
+
+    <h3>One skill</h3>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill impact-map</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill proof-driven-dev</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill production-guard</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill practical-localizer</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill engineering-investigator</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill project-compass</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill standards-compass</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill dependency-guard</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill api-contract-guard</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill deployment-compatibility</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill architecture-engineer</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-
-    <h3>Claude Code</h3>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill impact-map --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill proof-driven-dev --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill production-guard --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill practical-localizer --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill engineering-investigator --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill project-compass --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill standards-compass --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill dependency-guard --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill api-contract-guard --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill deployment-compatibility --agent claude-code</code>
-      <button type="button" data-copy>Copy</button>
-    </div>
-    <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill architecture-engineer --agent claude-code</code>
       <button type="button" data-copy>Copy</button>
     </div>
 
