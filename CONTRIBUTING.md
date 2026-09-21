@@ -126,6 +126,10 @@ Edits to `skills/<skill>/SKILL.md`. Highest-value and highest-risk, so:
   effect on the output is decoration.
 - Test the change against at least two fixtures before opening a PR, and say in
   the PR what the output looked like before and after.
+- Skills record lessons in `~/.skills-hub/lessons/<skill>.md` when they are
+  corrected. That file is the best source of rules worth promoting here. Promote
+  a lesson only after rewriting it so that nothing from the project it came from
+  survives, then remove it from the lessons file so it is not carried twice.
 
 ### Add framework guidance
 

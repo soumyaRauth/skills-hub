@@ -9,6 +9,18 @@ methodology and documentation.
 
 ### Added
 
+- **Lessons: every skill now keeps what it learns from being corrected.** Until
+  now a skill was the same file on its hundredth project as on its first. Project
+  state made it smarter about one repository, and nothing made it better at its
+  own discipline. A new `Lessons` rule in the shared protocol has each skill read
+  `~/.skills-hub/lessons/<skill>.md` when it engages. When a person corrects a
+  miss, a false alarm or a wrong verdict, the skill appends one dated rule there.
+  The file lives outside the installed skill, so updates do not wipe it, and
+  outside the repository, so a lesson from a private project is never committed
+  here. Lessons are general rules, never project facts. They are capped at twenty
+  lines and never override a skill's rules or a person's instruction. They reach
+  `SKILL.md` only by hand, through the usual review.
+
 - `architecture-engineer` v0.1.0 — **the architecture is not the first answer;
   it is what is left after the reasoning.** Ask a capable agent to design a
   system and it produces an architecture in the first reply, assembled from

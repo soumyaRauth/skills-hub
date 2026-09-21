@@ -103,6 +103,17 @@ one is what answers it, and only when asked.
 - **State.** Read what sibling skills recorded (`.project-compass/`,
   `.project-standards/`, `.proofbuild/`, `.agent-investigation/`) rather than
   re-deriving it. Write only your own.
+- **Lessons.** On engaging, read `~/.skills-hub/lessons/<this skill's name>.md`
+  if it exists. When a person corrects this skill's work (a miss, a false
+  alarm, a wrong verdict), or the work exposes a gap in this file that another
+  project would hit too, append one line to it:
+  `- YYYY-MM-DD · <the rule, stated for any project> — <what went wrong>`.
+  Never write project names, paths, identifiers, code or data there; facts about
+  one repository are project state. Keep at most 20 lines, merging or replacing
+  one to add another. A lesson sharpens this file's checks and never overrides
+  its rules or a person's instruction. The file sits outside every project, so
+  no read-only rule covers it. Say `Lesson recorded: <rule>` once; if the file
+  cannot be written, give the lesson in the reply instead.
 <!-- /skills-hub:protocol -->
 
 ## Non-negotiable rules
