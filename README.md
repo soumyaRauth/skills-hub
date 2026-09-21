@@ -1078,18 +1078,24 @@ Audit this application against the standards that matter.
 > nothing of theirs runs in the background, so there is nothing else to stop.
 
 ```bash
-# every Skills Hub skill, from every agent, installed with -g
-npx skills remove api-contract-guard architecture-engineer dependency-guard deployment-compatibility engineering-investigator impact-map practical-localizer production-guard project-compass proof-driven-dev standards-compass -g -y
+npx github:soumyaRauth/skills-hub uninstall
 ```
 
-The command names the eleven skills rather than using `--skill '*'`, because
-`--skill '*'` removes every skill on the machine, including ones that have
-nothing to do with this repository. A name that is not installed is skipped, so
-the same command works whether you installed one skill or all eleven, and
-running it twice is harmless. Drop `-y` to see the list and confirm first. Drop
-`-g` and run it inside a repository to remove skills installed into that
-repository only. It removes by name, so a different skill you installed under
-one of these exact names goes too.
+`skills-hub` stands for all eleven skills. The command reads the list from this
+repository and passes it to the Skills CLI's own `npx skills remove`, one name
+per skill, for every agent. It never uses `--skill '*'`, which would remove
+every skill on the machine, including ones that have nothing to do with this
+repository. A skill that is not installed is skipped, so the same command works
+whether you installed one skill or all eleven, and running it twice is harmless.
+Skills added to this repository later are covered without a new command.
+
+| Option | Does |
+| --- | --- |
+| `--dry-run` | Prints the exact `npx skills remove` command it would run, and removes nothing |
+| `--project` | Removes skills installed into the current repository instead of globally (`-g`) |
+
+Skills are matched by name, so a different skill you installed under one of
+these exact names goes too. Check with `--dry-run` if that could be you.
 
 Installed as a Claude Code plugin instead:
 
@@ -1201,7 +1207,9 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   │   └── architecture-engineer/     ← a codebase whose README declares layers its code does not keep
 │   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions and skills
 │   └── README.md                 ← expected findings per fixture
+├── package.json                  ← lets npx run the uninstall command from GitHub; never published
 ├── scripts/
+│   ├── skills-hub.mjs            ← npx github:soumyaRauth/skills-hub uninstall
 │   ├── validate.sh               ← structure + frontmatter validation, all skills
 │   └── validate-registry.sh      ← standards registry schema, ids, sources, dates
 └── .github/workflows/validate.yml
