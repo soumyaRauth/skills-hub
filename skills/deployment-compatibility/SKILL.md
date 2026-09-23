@@ -1,6 +1,6 @@
 ---
 name: deployment-compatibility
-description: Assess whether a specific project can run on a specific target environment — a VPS, a cloud or bare-metal VM, a Docker host, a staging or production server — and prepare it to. Derives what the project actually requires from its own code (runtime versions, services, environment variables, ports, worker and cron processes, storage persistence, migrations, external integrations), establishes what the target actually provides at whatever access level exists, compares the two, and answers READY, READY WITH CONDITIONS, BLOCKED or NOT ASSESSED with the evidence behind each line. Remediates the project side, proposes server changes rather than making them, and verifies start, restart and recovery where it can. Use when a deployment target is named, when asked whether a server can host this application, or when something works locally and fails on the server. Not for generic Docker, Linux, cloud-provider or CI questions, local development setup, or work with no target environment in view.
+description: Use when a deployment target is named or declared in the repository (a server spec, fly.toml, render, railway or vercel config, a compose or Kubernetes file for a named host), when asked whether the app can be deployed or run on a server, a VPS, a cloud or Docker host, staging or production, or when something works locally and fails on the server. Compares what the project requires with what the target provides, answers READY, READY WITH CONDITIONS, BLOCKED or NOT ASSESSED with evidence, fixes the project side and proposes server changes. Not for generic Docker, Linux, cloud-provider or CI questions, local development setup, or work with no target environment in view.
 ---
 
 # Deployment Compatibility Engineer
@@ -81,11 +81,16 @@ remediation that would install something new).
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

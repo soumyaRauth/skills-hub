@@ -1,6 +1,6 @@
 ---
 name: project-compass
-description: Work out what a software project is becoming and what the developer should do next, from the repository and the sequence of requests. Notices when isolated features have quietly become a system nobody defined — a lifecycle, an authorization model, an admin console — when a request rests on an undecided business rule, or when work drifts from its goal, and turns that into one concrete next step. Mostly silent. Each request becomes build it, build it and flag one thing, or pause and guide, and the first is the default. Use when asked what to build next, whether to add something, or what is being missed; when a request adds another instance of a recurring pattern (another status, permission exception, option or workaround); when it locks in a data model or public contract; or when the repository keeps .project-compass/. Not for renames, copy, formatting, dependency bumps, or questions unrelated to direction.
+description: "Use when asked what to build next, whether to add something, or what is being missed; when a request adds another instance of a recurring pattern (another status, permission exception, option or workaround); when it locks in a data model or public contract; or when the repository keeps .project-compass/. Works out what the project is becoming, notices systems nobody defined and undecided business rules, and turns that into one next step. Mostly silent: build it is the default. Not for renames, copy, formatting, dependency bumps, or questions unrelated to direction."
 ---
 
 # Project Compass
@@ -88,11 +88,16 @@ one is what answers it, and only when asked.
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

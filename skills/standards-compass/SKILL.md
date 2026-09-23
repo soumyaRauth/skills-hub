@@ -1,6 +1,6 @@
 ---
 name: standards-compass
-description: Build security, privacy and accessibility requirements into features as they are written, and audit a project against the standards that actually apply. Use when implementing or changing sign-in, sign-up, password reset, sessions, roles or permissions, admin actions, payments or refunds, personal or sensitive data (including exports and new fields that hold it), file uploads, AI or LLM features, or accessibility-relevant UI; when a change weakens an existing control; and when asked which standards apply or for an audit. Names what the feature must account for in a few lines, builds it in, and checks it afterwards; audits decide applicability with reasons and report evidence-backed gaps. Covers OWASP ASVS and Top 10, WCAG, GDPR and other privacy law, PCI DSS, AI governance, ISO and NIST frameworks. Not for renames, copy, formatting, or refactors that move no boundary, even in regulated projects. Never claims compliance or certification.
+description: Use when implementing or changing sign-in, sign-up, password reset, sessions, roles, permissions or admin actions, payments or refunds, personal or sensitive data (including exports and new fields that hold it), file uploads, AI or LLM features, or accessibility-relevant UI; when a change weakens an existing control; and when asked which standards apply, for a security review, or for an audit. Names what the feature must account for, builds it in and checks it; audits report evidence-backed gaps against OWASP, WCAG, privacy law, PCI DSS, AI governance, ISO and NIST. Not for renames, copy, formatting, or refactors that move no boundary, even in regulated projects. Never claims compliance or certification.
 ---
 
 # Standards Compass
@@ -67,11 +67,16 @@ inside the work: there is no separate accessibility skill.
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

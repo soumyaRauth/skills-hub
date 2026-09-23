@@ -1,6 +1,6 @@
 ---
 name: architecture-engineer
-description: Design a system's architecture, or work out what an existing one should become — through questions, options and explicit decisions rather than a pattern chosen up front. Runs the design session a senior architect would run. Separates what is actually required from what is merely assumed, reconstructs how an existing system is really built from its dependency directions and data ownership rather than its directory names, generates genuine alternatives with their trade-offs, records each decision with what would reverse it, and turns the gap between current and target into a staged migration it can then implement and verify. Use when asked to design a system, structure an application, review or rework an architecture, choose between architectural options such as monolith or services, decide where a responsibility belongs, or plan an architectural migration. Not for ordinary features, bug fixes, refactors inside one module, or questions a single file answers.
+description: Use when asked to design a system or a new application's structure, review or rework an architecture, choose between architectural options such as monolith or services, decide where a responsibility belongs, or plan an architectural migration. Separates what is required from what is assumed, reads how an existing system is really built, compares genuine options, records each decision with what would reverse it, and stages the migration. Not for ordinary features, bug fixes, refactors inside one module, or questions a single file answers.
 ---
 
 # Architecture Engineer
@@ -78,11 +78,16 @@ makes to consumers).
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

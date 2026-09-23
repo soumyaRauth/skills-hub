@@ -1,6 +1,6 @@
 ---
 name: api-contract-guard
-description: Settle what a new or changed interface promises before consumers depend on it — HTTP and GraphQL APIs, webhooks, events and queue messages, public SDK or library APIs, CLI output other tools parse. Reads the project's existing conventions (naming, error shape, pagination, auth, idempotency, versioning, money and time formats) so the new surface matches them; writes down the decisions that cannot be taken back once someone integrates (identifiers, field types and nullability, enum openness, error codes, idempotency and retry safety, pagination stability, webhook delivery and signing); and classifies a change as additive, behavioral or breaking, with a migration path. Use when adding or changing an interface that consumers deploy separately from — mobile apps, partners, other services, public API users, webhook receivers. Not for internal functions, UI-only work, or endpoints whose every consumer ships in the same deploy.
+description: "Use when adding or changing an interface that consumers deploy separately from: an HTTP or GraphQL API endpoint, a webhook, an event or queue message, a public SDK or library API, or CLI output other tools parse, for mobile apps, partners, other services or public API users. Matches the project's existing conventions, settles the decisions that cannot be taken back once someone integrates, and classifies a change as additive, behavioral or breaking, with a migration path. Not for internal functions, UI-only work, or endpoints whose every consumer ships in the same deploy."
 ---
 
 # API Contract Guard
@@ -70,11 +70,16 @@ rate limiting and data exposure: the security half of an API stays there).
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

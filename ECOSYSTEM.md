@@ -1,7 +1,7 @@
 # How the skills work together
 
-Eleven skills, each one engineering discipline. None of them needs a slash
-command. This document covers how they end up in a task without being named,
+Eleven skills, each one engineering discipline, plus one opt-in pipeline that
+runs them in an order you choose. None of the eleven needs a slash command. This document covers how they end up in a task without being named,
 how several of them share one, and how they stay out of the way the rest of the
 time.
 
@@ -31,12 +31,14 @@ request ──▶ model reads every installed description ──▶ Skill tool l
 | Description | The only text the model sees before it loads a skill. Says what the skill is for, when to use it, and when not to | `skills/<name>/SKILL.md` frontmatter |
 | Activation section | Read once the skill is loaded. Covers when it engages, when it stays quiet, how deep it goes, and what it hands to whom | `skills/<name>/SKILL.md`, `## Activation` |
 | Shared protocol | Covers announcing, handoffs, conflicts, overrides, state and lessons. The text is identical in every skill so each skill still works when installed alone | the marked block below, copied into every `SKILL.md` |
-| Claude Code extras | A standing instruction, recommended because it measurably raises how often skills load when they should, and an optional colored status line segment | `integrations/claude-code/` |
+| Claude Code extras | A standing instruction, recommended because it measurably raises how often skills load when they should; a Stop hook that makes every skill named in the ⚡ line actually load; and an optional colored status line segment | `integrations/claude-code/` |
 | Tests | Deterministic graders on which skills a real session invoked, and which it did not | `evals/activation/` |
 
 Hooks are not involved in the decision. Deciding which discipline matters is
-semantic work, and a hook can only match strings. The status line segment is
-the one deterministic piece, and it only displays what already happened.
+semantic work, and a hook can only match strings. Two pieces are deterministic,
+and neither chooses anything. The status line displays what already loaded.
+The Stop hook holds a turn to its own ⚡ line: a skill the model announced must
+load, or be dropped in one line, before the turn can end.
 
 ## Depth
 
@@ -65,6 +67,7 @@ of four depths, and the depth is part of its contract:
 | **API Contract Guard** · `api-contract-guard` | What does this interface promise, and can it be taken back? | Adding or changing an endpoint, webhook, event, SDK surface or CLI output that consumers deploy separately from | Interfaces whose every consumer ships in the same deploy; UI-only work | `CONSULT` · `ACTIVE` for new public APIs |
 | **Deployment Compatibility Engineer** · `deployment-compatibility` | Does this project fit this server? | A concrete deployment target is named, or a deployment exists and misbehaves | No target environment is in view: generic Docker, Linux or cloud questions, local setup, CI that ships nothing | `ACTIVE` · `GATING` when asked for the readiness decision |
 | **Architecture Engineer** · `architecture-engineer` | What should this system's structure be, and why? | Architectural work is invited: design a system, structure an application, review an architecture, choose between options, plan a migration | Ordinary features, bug fixes, refactors inside one module. A messy codebase is not an invitation | `ACTIVE` · `CONSULT` for one decision inside a feature |
+| **Skills Pipeline** · `skills-pipeline` | Which disciplines, in what order, when I want all of them? | The user types `/skills-pipeline` or asks for the skills pipeline by name | Every other request, however large or risky, and a request that names one skill | `ACTIVE`, only when invoked |
 
 ## How they relate
 
@@ -165,6 +168,20 @@ requests there is no line at all.
   - a live hazard: a reachable security hole, a path that loses data, money at risk
 
   A live hazard is said once, in one line, and the work continues. ProofBuild asked to skip verification still builds, and reports the change as *not verified* instead of *verified*.
+
+## The pipeline, on request
+
+Everything above is per request: each skill decides for itself. `skills-pipeline`
+is the one exception, and it exists only because someone asked for it. It shows
+a numbered menu ([`references/pipeline.md`](skills/skills-pipeline/references/pipeline.md)).
+The user picks a sequence, such as `1,6,7,10` or `all`, and each chosen skill
+runs in that order, fed what the earlier stages decided. Picking a skill is its
+"use X" override, so it runs even when it would have stayed quiet.
+
+It is still not a router. It never engages without being named, its evals
+include thirteen cases where it must stay out, and it adds no verdict of its own.
+Every stage's result is that skill's verdict, and the run ends in a ledger with
+one status per stage, so nothing is dropped silently.
 
 ## When skills disagree
 
@@ -287,11 +304,16 @@ installed alone. `scripts/validate.sh` fails if any copy drifts from this one.
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

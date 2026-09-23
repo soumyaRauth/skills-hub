@@ -1,6 +1,6 @@
 ---
 name: dependency-guard
-description: Decide whether a dependency should come into a project before it is installed — a package, SDK, framework, build tool, GitHub Action or container base image, or a major-version upgrade. Checks whether the need is already met by the codebase, the standard library, the platform or an installed dependency; whether the package is the one intended (a name that resolves, the expected publisher, no typosquat or invented name); what it brings in (transitive packages, install scripts, native builds, license); and whether it is maintained, from observed evidence only. Answers USE EXISTING, ADD, ADD WITH CONDITIONS or DON'T ADD in a few lines. Use when a request would install or replace a dependency, upgrade one across a major version, or asks which library to use. Not for routine patch or minor bumps of an existing dependency that add no transitive packages or install scripts, and not for removing one.
+description: Use when a request would install, add, replace or switch a dependency (package, SDK, framework, build tool, GitHub Action, container base image), upgrade one to a new major version, or asks which library to use or whether to add one. Checks whether the need is already met, whether the package is the one intended (no typosquat or invented name), what it brings in, and whether it is maintained, and answers USE EXISTING, ADD, ADD WITH CONDITIONS or DON'T ADD. Not for routine patch or minor bumps of an existing dependency that add no transitive packages or install scripts, and not for removing one.
 ---
 
 # Dependency Guard
@@ -63,11 +63,16 @@ release).
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

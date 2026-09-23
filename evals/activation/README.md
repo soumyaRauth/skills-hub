@@ -71,7 +71,8 @@ may read but must not speak · `new-skill` — covers `dependency-guard`,
 | Case | Request | Must engage | Must stay quiet | Why |
 | --- | --- | --- | --- | --- |
 | `im-rename-shared-status` | Rename the COMPLETED enrollment status to APPROVED. | impact-map | standards-compass, practical-localizer, engineering-investigator, dependency-guard | The stored value is read by raw SQL, a nightly job and two UI comparisons that share no symbol with the enum. |
-| `im-explicit-invocation` | Use Impact Map before doing this: extend the order cancellation window from 15 to 30 minutes. | impact-map | standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard | The user named the skill. A small change, but an explicit request engages it regardless. |
+| `im-explicit-invocation` | Use Impact Map before doing this: extend the order cancellation window from 15 to 30 minutes. | impact-map | standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard, skills-pipeline | The user named the skill. A small change, but an explicit request engages it regardless. |
+| `sp-explicit-invocation` | Run adding tags to notes through the skills pipeline. | skills-pipeline | all others | The pipeline was named without a sequence. It shows the menu and waits, so no stage may start yet. |
 | `pb-feature-archiving` | Add archiving to notes. | proof-driven-dev | standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard, production-guard | Meaningful behavior change with an unstated requirement (archived notes leave the default list). Nothing security-, locale- or contract-shaped. |
 | `pb-bug-missing-records` | Customers say some records never appear in the list. Fix it. | proof-driven-dev / engineering-investigator | standards-compass, practical-localizer, dependency-guard, api-contract-guard | A symptom with a reproducible cause. Either proving the fix or investigating first is defensible; the audit skills are not. |
 | `pg-release-refunds` | We're releasing tomorrow. Is the refund flow safe to ship? | production-guard | practical-localizer, project-compass, engineering-investigator, dependency-guard | An explicit ship decision on a money path. Production Guard gates; Standards Compass may contribute controls. |
@@ -93,7 +94,8 @@ may read but must not speak · `new-skill` — covers `dependency-guard`,
 | `ae-monolith-or-services` | Should we split this into microservices? | architecture-engineer | practical-localizer, engineering-investigator, dependency-guard | A direct trade-off question. Project Compass may also engage on direction, so it is left ungraded. |
 | `compose-admin-customer-export` | Add a CSV export of all customers, admin-only. | standards-compass + ≥2 skills | practical-localizer, engineering-investigator, dependency-guard | Personal data leaving the system behind a privilege check. More than one discipline should engage. |
 | `compose-org-invitations` | Add organization-level member invitations with roles. | standards-compass + ≥2 skills | practical-localizer, engineering-investigator, dependency-guard | Identity, roles and tenancy in a project whose authorization is already scattered. |
-| `compose-subscription-cancel` | Add subscription cancellation. | impact-map / standards-compass / api-contract-guard + ≥2 skills | practical-localizer, engineering-investigator | A billing lifecycle change touching the provider, webhooks and existing records. |
+| `compose-subscription-cancel` | Add subscription cancellation. | impact-map / standards-compass / api-contract-guard + ≥2 skills | practical-localizer, engineering-investigator, skills-pipeline | A billing lifecycle change touching the provider, webhooks and existing records. |
+| `compose-app-deploy-ready` | Is this application production deployment ready? | deployment-compatibility + production-guard | practical-localizer, engineering-investigator, skills-pipeline | Whole-app readiness with a target in the repository. Environment fit and the ship decision are separate verdicts; a HANDOFF line to Production Guard without loading it fails. |
 | `compose-split-customer-name` | Split the customer name field into firstName and lastName. | impact-map | standards-compass, practical-localizer, engineering-investigator, dependency-guard | A schema change with every reader in scope. It restructures personal data but adds none, so Standards Compass stays quiet. |
 | `compose-duplicate-orders` | Users sometimes see duplicate orders after retrying checkout. | engineering-investigator | practical-localizer, dependency-guard, project-compass | An intermittent symptom first. Impact Map and ProofBuild may follow once a cause exists. |
 | `compose-keyboard-table` | Make the customer table usable with a keyboard and a screen reader. | standards-compass | impact-map, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard, production-guard | Accessibility implementation. Standards Compass owns it; there is no separate accessibility skill to compete. |
@@ -120,12 +122,14 @@ may read but must not speak · `new-skill` — covers `dependency-guard`,
 Recorded 2026-09-15: one run per case, `claude-opus-5`, `max_turns: 6`. A single
 run is noisy, so read these as a snapshot, not a rate.
 
-The suite now holds 44 cases. The three `deployment-compatibility` cases
+The suite now holds 46 cases. The three `deployment-compatibility` cases
 (`dc-deploy-to-vps`, `dc-crashes-after-restart`, `quiet-dockerfile-comment`) and
 the three `architecture-engineer` cases (`ae-review-layered`,
-`ae-monolith-or-services`, `quiet-where-helper-goes`) were added after this run
-and **have not been measured** — the numbers below are the 38 cases that existed
-on that date, and folding the new rows into them would be inventing a result.
+`ae-monolith-or-services`, `quiet-where-helper-goes`) were added after this run,
+as were `sp-explicit-invocation`, `compose-app-deploy-ready` and the `quiet-skills-pipeline` graders on
+thirteen existing cases. None of them **has been measured** — the numbers
+below are the 38 cases that existed on that date, and folding the new rows into
+them would be inventing a result.
 
 | Setup | Passed | Quiet, trap and contextual cases |
 | --- | --- | --- |

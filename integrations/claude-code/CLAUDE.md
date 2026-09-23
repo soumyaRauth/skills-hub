@@ -11,6 +11,7 @@ Bring them in on your own judgment. The user should not have to name them.
   `## Activation` section decide how deep it goes.
 - When any of them engages beyond silent background use, open the reply with one
   line: `⚡ <Skill> · <Skill> — <a few words of reason each>`. Otherwise, no line.
+  Every skill the line names is loaded in that turn, not only handed off.
 - Engagement is per request. A skill that mattered on the last request is not
   active on this one unless this request earns it.
 - An explicit "use X" or "skip X" from the user wins. The exception is a live

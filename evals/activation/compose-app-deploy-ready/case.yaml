@@ -1,0 +1,48 @@
+schema_version: '1.1'
+name: compose-app-deploy-ready
+tags:
+- composition
+description: Whole-application readiness with a target declared in the repository
+  (server-spec.md). Environment fit and the ship decision are two skills' verdicts,
+  and both must load. Announcing Production Guard and only writing a HANDOFF to it
+  is the failure this case exists for.
+expected_outcome: 'Must engage: deployment-compatibility and production-guard. Must
+  stay quiet: practical-localizer, engineering-investigator, skills-pipeline.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Is this application production deployment ready?
+  max_turns: 8
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Skill
+graders:
+- name: engages-deployment-compatibility
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:deployment-compatibility)"'
+- name: engages-production-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:production-guard)"'
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
+  min: 0
+  max: 0

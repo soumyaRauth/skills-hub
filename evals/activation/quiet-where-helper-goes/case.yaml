@@ -88,3 +88,9 @@ graders:
   pattern: ⚡
   match: not_contains
   target: last_message
+- name: quiet-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
+  min: 0
+  max: 0

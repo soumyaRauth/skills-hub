@@ -87,3 +87,9 @@ graders:
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:architecture-engineer)"'
   min: 0
   max: 0
+- name: quiet-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
+  min: 0
+  max: 0

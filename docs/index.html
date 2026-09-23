@@ -264,6 +264,23 @@
         <span class="more">Read the guide &rarr;</span>
       </a>
 
+      <a class="card" href="https://github.com/soumyaRauth/skills-hub/tree/main/skills/skills-pipeline">
+        <h3>Skills Pipeline</h3>
+        <p>
+          Every discipline you pick, in the order you pick, and only when you
+          ask. Type <code>/skills-pipeline</code>, choose a sequence from a
+          numbered menu, and each skill runs in turn &mdash; stopping where you
+          must decide, and ending in a ledger with one status per stage.
+        </p>
+        <div class="tags">
+          <span class="tag">opt-in only</span>
+          <span class="tag">your sequence</span>
+          <span class="tag">no silent gaps</span>
+          <span class="tag">ledger</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
     </div>
 
     <p style="margin-top:22px;color:var(--text-muted);font-size:14.5px">
@@ -283,7 +300,8 @@
       exists once you name a server: does this project fit that machine? And
       <code>architecture-engineer</code> answers the one that comes before any
       of them &mdash; what shape should this system have, and why &mdash; but
-      only when you ask it.
+      only when you ask it. <code>skills-pipeline</code> runs whichever of
+      them you pick, in your order &mdash; also only when you ask.
     </p>
   </div>
 </section>
@@ -349,7 +367,7 @@
     <h2>Installing</h2>
     <p>Skills install through the Skills CLI and work with any Agent Skills-compatible agent.</p>
 
-    <h3>All eleven skills, any compatible agent</h3>
+    <h3>All twelve skills, any compatible agent</h3>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill '*' -g -y</code>
       <button type="button" data-copy>Copy</button>
@@ -371,7 +389,7 @@
       <code>--copy</code> keeps the skills out of <code>~/.agents/skills</code>,
       a folder Codex, Cursor and other agents also read.
     </p>
-    <p>Or as a plugin, which keeps the eleven together and updates them in one step:</p>
+    <p>Or as a plugin, which keeps the twelve together and updates them in one step:</p>
     <div class="cmd">
       <code>/plugin marketplace add soumyaRauth/skills-hub</code>
       <button type="button" data-copy>Copy</button>
@@ -414,7 +432,7 @@
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
-      <code>skills-hub</code> stands for all eleven skills. The command removes
+      <code>skills-hub</code> stands for all twelve skills. The command removes
       each one by name through the Skills CLI, and never uses
       <code>--skill '*'</code>, which would remove every skill on the machine.
       Skills that are not installed are skipped. Add <code>--dry-run</code> to

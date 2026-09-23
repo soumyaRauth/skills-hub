@@ -1,6 +1,6 @@
 ---
 name: impact-map
-description: Before changing anything other code depends on, find everything the change touches — renaming or removing a status, enum, field, table, column, route or shared concept, or changing a schema, API response, event, configuration or cross-module behavior. Traces callers, jobs, reports, raw SQL, string comparisons, fixtures, permissions and tests, including hidden couplings no import shows, and returns that surface with evidence and confidence so the change lands on all of it. Use when asked what the blast radius is, or what a change or PR missed. Read-only analysis. Not for new isolated code, copy or typo edits, formatting, comments, local renames the compiler resolves, or dependency bumps.
+description: "Use before changing anything other code depends on: renaming, splitting, merging or removing a status, enum, field, table, column, route or shared concept, or changing a schema, API response, event, configuration or cross-module behavior; and when asked for the blast radius, or what a change or PR missed. Traces callers, jobs, reports, raw SQL, string comparisons, fixtures, permissions and tests, including couplings no import shows, and returns the surface with evidence and confidence. Read-only. Not for new isolated code, copy or typo edits, formatting, comments, local renames the compiler resolves, or dependency bumps."
 context: fork
 background: false
 ---
@@ -60,11 +60,16 @@ conversation, and a plan needs the map passed back in with the request.
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

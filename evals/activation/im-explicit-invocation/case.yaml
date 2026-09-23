@@ -3,7 +3,7 @@ name: im-explicit-invocation
 tags:
 - override
 description: The user named the skill. A small change, but an explicit request engages it regardless.
-expected_outcome: 'Must engage: impact-map. Must stay quiet: standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard.'
+expected_outcome: 'Must engage: impact-map. Must stay quiet: standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard, skills-pipeline.'
 context:
   scaffold_script: scaffold.sh
 execution:
@@ -47,5 +47,11 @@ graders:
   type: tool_used
   tool: Skill
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+  min: 0
+  max: 0
+- name: quiet-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
   min: 0
   max: 0
