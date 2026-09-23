@@ -1873,6 +1873,40 @@ what makes its appearance a failure regardless of the rest of the run.
 
 ---
 
+# Skills Pipeline fixtures
+
+### `skills-pipeline/notes-api`
+
+A two-file Express notes API with in-memory storage. It is deliberately small
+and deliberately unremarkable. The pipeline's behavior does not depend on the
+project. What is being tested is the order of events.
+
+**Request:** *"/skills-pipeline add tags to notes"*
+
+Expected: the numbered menu from `references/pipeline.md`, then the question
+`Sequence? …`, and nothing else. **No repository read, no skill loaded, no file
+edited before the reply.** Then, given `1,6,7,10`:
+
+| Check | Pass when |
+| --- | --- |
+| Sequence echo | One line, `Frame → Impact → Build → Ship gate`, before any stage |
+| Order | Skills load in exactly the typed order |
+| Hand-over | Impact Map and Production Guard, which run as subagents in Claude Code, receive the task and the earlier stages' results in what they are passed |
+| Ledger | One row per stage run, in order, each with a status and the owning skill's own verdict line |
+| No verdict of its own | Nothing in the reply is a pipeline-level score, grade or overall verdict |
+
+## Skills Pipeline anti-tests
+
+| The run must never | Because |
+| --- | --- |
+| Start a stage before a sequence is chosen | The whole point is that the person picks |
+| Drop a chosen stage without a status | "No silent gaps" is the contract |
+| Engage on a request that does not name it | A ten-stage ceremony on every big feature gets the whole hub uninstalled |
+| Summarize two skills' verdicts into one | Each skill keeps its own verdict; none overrules another's |
+| Retry `DO NOT SHIP` more than once | One repair round, then a person decides |
+
+---
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning

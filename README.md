@@ -18,12 +18,13 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises — the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
 | **[deployment-compatibility](skills/deployment-compatibility/README.md)** | Assesses a project against a specific target server — what it requires, what the server provides, what has to change — and verifies what it can | *Before* you deploy it there |
 | **[architecture-engineer](skills/architecture-engineer/README.md)** | Works out what a system's structure should be, through questions, options and recorded decisions — then plans the migration and verifies the result | *Before* the shape is decided, and when it has to change |
+| **[skills-pipeline](skills/skills-pipeline/README.md)** | Runs the skills you pick from a numbered menu, in the order you pick, and ends in a ledger with one status per stage | *Only* when you type `/skills-pipeline` |
 
 ```bash
-# install all eleven skills, to whichever agents you already have
+# install all twelve skills, to whichever agents you already have
 npx skills add soumyaRauth/skills-hub --skill '*' -g -y
 
-# uninstall all eleven, and nothing else
+# uninstall all twelve, and nothing else
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
@@ -32,7 +33,7 @@ Claude Code only, or as a plugin: see [Installation](#installation).
 
 > [!IMPORTANT]
 > **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all
-> eleven skills from every agent, and leaves your other skills alone.
+> twelve skills from every agent, and leaves your other skills alone.
 
 They compose, and none requires the others:
 
@@ -51,6 +52,9 @@ a design question → architecture-engineer → what it must actually do
                                           → the options → the decision
                                           → target → migration → verify
                     (invited only — it never opens a review uninvited)
+
+want every discipline, in your order → /skills-pipeline → pick 1,3,6,7,10 → each runs → ledger
+                    (opt-in only — it never runs unless named)
 
 project-compass sits underneath all of it, and answers a different question:
 given where this project is heading, is this ticket the right next thing at all.
@@ -72,7 +76,7 @@ from the request and from what the repository shows.
 | **Composed** | Several skills can share one task. Impact Map maps the surface, Standards Compass names the controls, ProofBuild proves the result, and each hands the rest on in a one-line `HANDOFF` |
 | **Quiet** | A button label, a typo, a patch bump: nothing loads. A skill loaded for the last request says nothing on this one unless this one earns it |
 | **Visible** | When skills shape the work, one line says which: `⚡ Impact Map · Standards Compass — rename reaches report SQL; export carries personal data` |
-| **Still manual** | Name one (*"use Impact Map first"*) or type `/impact-map`. *"Skip the standards review"* is honored. A live hazard (a reachable security hole, data loss, money at risk) is still said, once |
+| **Still manual** | Name one (*"use Impact Map first"*) or type `/impact-map`. Type `/skills-pipeline` to pick a sequence of them yourself. *"Skip the standards review"* is honored. A live hazard (a reachable security hole, data loss, money at risk) is still said, once |
 
 This is the agent's judgment steered by the descriptions, not a keyword router,
 and it is measured, not promised. [`evals/activation/`](evals/activation/README.md)
@@ -1027,6 +1031,43 @@ interruption budget for it.
 
 ---
 
+# Skills Pipeline
+
+**Every discipline you pick, in the order you pick, and only when you ask.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill skills-pipeline
+```
+
+The other skills choose themselves, one request at a time, and that stays the
+default. Sometimes you want the opposite. A new app, or a feature you care
+about, should go through every discipline you choose, in order, with nothing
+dropped along the way.
+
+```
+/skills-pipeline add team invitations with roles
+
+1. Frame · project-compass          7. Build · proof-driven-dev
+2. Design · architecture-engineer   8. Localize · practical-localizer
+3. Standards · standards-compass    9. Deploy target · deployment-compatibility
+4. Contract · api-contract-guard   10. Ship gate · production-guard
+5. Dependencies · dependency-guard 11. Investigate · engineering-investigator
+6. Impact · impact-map
+
+Sequence? e.g. 1,6,7,10 · all
+```
+
+Reply `1,3,6,7,10` and each skill runs in turn, fed what the earlier ones
+decided. The run stops where you must decide: an undecided business rule, an
+architecture choice, `BLOCKED`, or `DO NOT SHIP`, which goes back to Build once.
+It ends in a ledger with one status per stage. Every verdict in it is the owning
+skill's own. The pipeline adds none. Edit the menu in
+[`references/pipeline.md`](skills/skills-pipeline/references/pipeline.md).
+
+**[Full documentation →](skills/skills-pipeline/README.md)**
+
+---
+
 ## Installation
 
 ```bash
@@ -1051,7 +1092,7 @@ and Codex, Cursor, Gemini CLI and the other agents that read that folder pick
 them up too.
 
 Claude Code can also install the whole repository as a plugin, which keeps the
-eleven skills together under one namespace and updates them in one step:
+twelve skills together under one namespace and updates them in one step:
 
 ```
 /plugin marketplace add soumyaRauth/skills-hub
@@ -1089,12 +1130,12 @@ Audit this application against the standards that matter.
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
-`skills-hub` stands for all eleven skills. The command reads the list from this
+`skills-hub` stands for all twelve skills. The command reads the list from this
 repository and passes it to the Skills CLI's own `npx skills remove`, one name
 per skill, for every agent. It never uses `--skill '*'`, which would remove
 every skill on the machine, including ones that have nothing to do with this
 repository. A skill that is not installed is skipped, so the same command works
-whether you installed one skill or all eleven, and running it twice is harmless.
+whether you installed one skill or all twelve, and running it twice is harmless.
 Skills added to this repository later are covered without a new command.
 
 | Option | Does |
@@ -1121,6 +1162,7 @@ and not the skills'. Here is where each one lives:
 | Project state | `.project-compass/`, `.project-standards/`, `.proofbuild/`, `.agent-investigation/`, `.deployment-compatibility/`, `.architecture/` in each repository | Delete the folders, or keep them. They are plain notes and still readable without the skills |
 | The standing instruction, if you added it | a line or `@` import in a `CLAUDE.md` | Delete that line |
 | The status line, if you added it | `statusLine` in `~/.claude/settings.json` | Delete that entry |
+| The Stop hook, if you added it | `hooks.Stop` in `~/.claude/settings.json` | Delete that entry |
 
 ## Supported agents
 
@@ -1140,9 +1182,11 @@ Everything Claude Code-specific is kept outside the skills:
 
 - a ten-line standing instruction for `CLAUDE.md`, which is recommended,
   because the activation suite measures a clear difference with it
+- a Stop hook that makes every skill named in the ⚡ line actually load, or be
+  dropped in one line, before the turn ends
 - a status line segment that shows the active skills in color
 - a plugin manifest and a marketplace manifest, so `/plugin install` or
-  `claude --plugin-dir` can load all eleven at once and `claude plugin eval`
+  `claude --plugin-dir` can load all twelve at once and `claude plugin eval`
   can test them
 
 See [integrations/claude-code](integrations/claude-code/README.md).
@@ -1195,7 +1239,8 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   ├── dependency-guard/         ← two references, four examples, one of them silence
 │   ├── api-contract-guard/       ← two references, four examples, one of them silence
 │   ├── deployment-compatibility/ ← six references, four examples, one of them a refusal to assess
-│   └── architecture-engineer/    ← seven references, four examples, one of them a refusal to engage
+│   ├── architecture-engineer/    ← seven references, four examples, one of them a refusal to engage
+│   └── skills-pipeline/          ← the menu, three examples, one of them staying out
 ├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
 ├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
 ├── integrations/claude-code/     ← optional: standing instruction, colored status line

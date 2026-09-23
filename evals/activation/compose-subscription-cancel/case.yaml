@@ -3,7 +3,7 @@ name: compose-subscription-cancel
 tags:
 - composition
 description: A billing lifecycle change touching the provider, webhooks and existing records.
-expected_outcome: 'Must engage: impact-map or standards-compass or api-contract-guard. Must stay quiet: practical-localizer, engineering-investigator.'
+expected_outcome: 'Must engage: impact-map or standards-compass or api-contract-guard. Must stay quiet: practical-localizer, engineering-investigator, skills-pipeline.'
 context:
   scaffold_script: scaffold.sh
 execution:
@@ -36,3 +36,9 @@ graders:
   tool: Skill
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:impact-map|proof-driven-dev|production-guard|practical-localizer|engineering-investigator|project-compass|standards-compass|dependency-guard|api-contract-guard)"'
   min: 2
+- name: quiet-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
+  min: 0
+  max: 0

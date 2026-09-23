@@ -1,6 +1,6 @@
 ---
 name: proof-driven-dev
-description: Implement a feature, bug fix or behavior change with proof that it works. Before coding, turns the request into numbered, observable requirements, including the ones nobody stated (negative cases, boundaries, behavior that must not change); then implements, runs the checks that prove each requirement, repairs failures within a budget, and reports VERIFIED, REVIEW REQUIRED or BLOCKED instead of narrating edits. Use when asked to add, build, implement or fix something whose success is not obvious from the diff — features, bug fixes, refactors that must preserve behavior, migrations, performance or security changes. Not for copy, typo, comment or formatting edits, local renames, questions, analysis-only requests, or declared throwaway prototypes.
+description: "Use for any request to add, build, implement or fix behavior whose success is not obvious from the diff: features, bug fixes, refactors that must preserve behavior, migrations, performance or security changes. Turns the request into numbered observable requirements, including unstated negative cases and boundaries, implements, runs the checks that prove each one, and reports VERIFIED, REVIEW REQUIRED or BLOCKED instead of narrating edits. Not for copy, typo, comment or formatting edits, local renames, questions, analysis-only requests, or declared throwaway prototypes."
 ---
 
 # Proof-Driven Development
@@ -67,11 +67,16 @@ line. It never reports `VERIFIED` without evidence.
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

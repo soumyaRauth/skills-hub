@@ -78,7 +78,7 @@ its most recent part. Check it with
 `.claude-plugin/marketplace.json` makes it installable as one. That serves
 three purposes:
 
-- **Installing all eleven skills in one step**, and updating them in one step
+- **Installing all twelve skills in one step**, and updating them in one step
   later:
 
   ```
@@ -86,7 +86,7 @@ three purposes:
   /plugin install skills-hub@skills-hub
   ```
 
-- **Trying all eleven skills at once**, without installing anything:
+- **Trying all twelve skills at once**, without installing anything:
   `claude --plugin-dir /path/to/skills-hub`. Skills then appear namespaced, as
   `skills-hub:impact-map`.
 - **Testing activation.** `claude plugin eval` needs a plugin to load. See
@@ -95,6 +95,44 @@ three purposes:
 None of this changes `npx skills add`, which installs the skills from `skills/`
 individually or all at once with `--skill '*'`. Install a skill one way or the
 other, not both — the same skill installed twice shows up twice.
+
+## 4. Hold the ⚡ line to its word (recommended)
+
+The ⚡ line is written before the work, so it is a promise. Claude can break it:
+it announces `⚡ Deployment Compatibility · Production Guard`, runs the first,
+writes `HANDOFF → production-guard` and stops, and the ship verdict never
+arrives. The shared protocol says an announced skill must load. This hook makes
+that deterministic.
+
+[`stop-announced-skills.py`](stop-announced-skills.py) runs when Claude tries to
+end a turn. It reads the turn from the transcript, collects the Skills Hub
+skills named in any ⚡ line, and compares them with the skills that actually
+loaded. If one is missing, it exits with code 2, which blocks the stop and
+tells Claude to load it, or to drop it in one line (`<Skill> dropped:
+<reason>`). It never blocks twice in a row, so it cannot loop.
+
+In `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python3 /path/to/skills-hub/integrations/claude-code/stop-announced-skills.py" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+It reads skill names from this repository's `skills/`, so run it from a clone.
+Check it with `python3 integrations/claude-code/test_stop_announced_skills.py`.
+
+This does not make selection deterministic, and nothing here tries to. The
+model still decides which skills a request needs. The hook enforces only what
+the model already announced.
 
 ## What is not here, and why
 

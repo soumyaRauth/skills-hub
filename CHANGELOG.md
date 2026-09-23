@@ -9,6 +9,49 @@ methodology and documentation.
 
 ### Added
 
+- **Skills load more predictably, and an announced skill always loads.** In one
+  session Claude announced `⚡ Deployment Compatibility · Production Guard` for
+  *"is this application production deployment ready?"*. It ran the first, wrote
+  `HANDOFF → production-guard`, gave its own read of the ship decision, and
+  stopped. Production Guard never ran. Three changes answer it:
+  - **The shared protocol.** The ⚡ line is now a promise: every skill it names
+    loads before the reply ends, or is dropped in one line (`<Skill> dropped:
+    <reason>`). When a request asked for another skill's decision, the handoff
+    loads that skill in the same turn. A HANDOFF line alone no longer answers
+    it, and no skill states another's verdict. The standing instruction says the
+    same.
+  - **`integrations/claude-code/stop-announced-skills.py`**, a Stop hook that
+    enforces this. It compares the skills named in the turn's ⚡ lines with the
+    skills actually loaded, and exits 2 to block the stop once when one is
+    missing. It never chooses a skill. Replayed on the transcript of that
+    session, it flags `production-guard`. `validate.sh` runs its self-check.
+  - **All twelve descriptions rewritten trigger-first**, following Claude
+    Code's guidance to lead with the use case. Methodology detail moved out,
+    since each skill's body already carries it, and the total length fell from
+    9,629 to 6,997 characters. "Not for" clauses are unchanged, because every
+    quiet case held on the last run. Triggers were widened only where a miss was
+    recorded: whole-application readiness (Production Guard), a target declared
+    in the repository such as `fly.toml` (Deployment Compatibility), splitting
+    or merging fields (Impact Map), any add, build, implement or fix request
+    (ProofBuild). Standards Compass also names "a security review", a synonym
+    of the audit it already covered.
+    `compose-app-deploy-ready` is the new case for the incident. Neither it nor
+    the new descriptions have been measured yet.
+- `skills-pipeline` v0.1.0 — **every discipline you pick, in the order you pick,
+  and only when you ask.** The eleven skills engage per request, and that stays
+  the default. This twelfth skill is the manual override for a new app or a
+  feature you want run through everything you choose. `/skills-pipeline`, or
+  asking for the skills pipeline by name, prints a numbered menu from
+  `references/pipeline.md` and waits for a sequence (`1,6,7,10` or `all`). A
+  sequence typed with the command skips the menu. Each chosen skill runs in turn
+  and is fed what earlier stages decided. The run stops where a person decides.
+  `DO NOT SHIP` goes back to Build once. The run ends in a ledger where every
+  stage is `RAN`, `INLINE`, `SKIPPED (by you)` or `STOPPED`, and every verdict is
+  the owning skill's own. It never engages unnamed. `sp-explicit-invocation`
+  checks that it shows the menu without starting any stage, and a
+  `quiet-skills-pipeline` grader on thirteen cases checks that it stays out of
+  large features, single-skill overrides and trivial edits. None of these cases
+  has been measured yet.
 - **Lessons: every skill now keeps what it learns from being corrected.** Until
   now a skill was the same file on its hundredth project as on its first. Project
   state made it smarter about one repository, and nothing made it better at its

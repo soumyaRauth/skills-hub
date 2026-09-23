@@ -1,6 +1,6 @@
 ---
 name: practical-localizer
-description: Localize application UI into natural, context-aware target-language product copy rather than literal translation, and keep it technically intact — placeholders, ICU plurals, locale formatting, right-to-left layout, consistent terminology. Three modes — analyze, localize (writes locale resources only), and review. Use when adding a locale or language, translating or reviewing locale files, fixing plural, date, number or currency formatting, or asking whether translated copy sounds natural. Not for English-only copy changes in an app with no translation catalogs.
+description: "Use when adding a locale or language, translating or reviewing locale files, fixing plural, date, number or currency formatting, right-to-left layout, or asking whether translated copy sounds natural. Writes natural, context-aware product copy rather than literal translation, and keeps placeholders, ICU plurals, locale formatting and terminology intact. Modes: analyze, localize (locale resources only), review. Not for English-only copy changes in an app with no translation catalogs."
 ---
 
 # Practical Localizer
@@ -48,11 +48,16 @@ and formatter bugs are source changes, handed over rather than fixed here) ·
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.

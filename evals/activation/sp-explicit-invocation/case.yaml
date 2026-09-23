@@ -1,14 +1,15 @@
 schema_version: '1.1'
-name: quiet-migration-comment
+name: sp-explicit-invocation
 tags:
-- quiet
-- keyword-trap
-description: '''Migration'' is a keyword; the change is a comment.'
-expected_outcome: 'Must engage: none required. Must stay quiet: every Skills Hub skill.'
+- override
+description: The user asked for the pipeline by name with no sequence. It shows the
+  menu and waits, so no other skill may load yet.
+expected_outcome: 'Must engage: skills-pipeline. Must stay quiet: every other skill,
+  until a sequence is chosen.'
 context:
   scaffold_script: scaffold.sh
 execution:
-  prompt: Add a one-line comment above the AddField in 0002_add_region.py explaining that region is used by the sales report.
+  prompt: Run adding tags to notes through the skills pipeline.
   max_turns: 6
   allowed_tools:
   - Read
@@ -16,6 +17,10 @@ execution:
   - Grep
   - Skill
 graders:
+- name: engages-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
 - name: quiet-impact-map
   type: tool_used
   tool: Skill
@@ -70,11 +75,6 @@ graders:
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
   min: 0
   max: 0
-- name: no-activation-line
-  type: regex
-  pattern: ⚡
-  match: not_contains
-  target: last_message
 - name: quiet-deployment-compatibility
   type: tool_used
   tool: Skill
@@ -85,11 +85,5 @@ graders:
   type: tool_used
   tool: Skill
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:architecture-engineer)"'
-  min: 0
-  max: 0
-- name: quiet-skills-pipeline
-  type: tool_used
-  tool: Skill
-  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
   min: 0
   max: 0

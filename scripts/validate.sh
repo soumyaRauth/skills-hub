@@ -414,6 +414,11 @@ if python3 integrations/claude-code/test_statusline_skills.py >/dev/null 2>&1; t
 else
   fail "integrations/claude-code/test_statusline_skills.py failed"
 fi
+if python3 integrations/claude-code/test_stop_announced_skills.py >/dev/null 2>&1; then
+  pass "announced-skills Stop hook self-check"
+else
+  fail "integrations/claude-code/test_stop_announced_skills.py failed"
+fi
 if python3 -c 'import json, sys; m = json.load(open(".claude-plugin/plugin.json")); sys.exit(0 if m.get("name") else 1)' 2>/dev/null; then
   pass ".claude-plugin/plugin.json parses and names the plugin"
 else

@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "skills-hub",
-      "description": "Eleven engineering disciplines: impact mapping, outcome proof, production readiness, investigation, project direction, standards, localization, dependency and API-contract decisions, deployment compatibility, and system architecture design.",
+      "description": "Eleven engineering disciplines: impact mapping, outcome proof, production readiness, investigation, project direction, standards, localization, dependency and API-contract decisions, deployment compatibility, and system architecture design, plus an opt-in pipeline that runs them in the order you pick.",
       "source": "./",
       "category": "productivity"
     }

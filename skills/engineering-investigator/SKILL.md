@@ -1,6 +1,6 @@
 ---
 name: engineering-investigator
-description: Investigate a symptom whose cause is unclear, by evidence instead of guesswork — slowness, intermittent failures, wrong data, production incidents, works locally but fails in production, a regression to tie to a deploy, or a fix that did not hold. Normalizes the symptom, scopes it by contrast, forms competing hypotheses with kill conditions, runs the smallest experiment that discriminates, and says whether the application, a dependency, the infrastructure or the client's own network is responsible, as a short conclusion with a confidence level rather than a debugging transcript. Use when someone asks why something is happening, reports a vague or intermittent problem, or asks to resume an investigation. Not for requests that name their own change, or a defect whose stack trace already names the line.
+description: Use when someone asks why something is happening, reports a vague, intermittent or unexplained problem (slowness, random failures, wrong or missing data, a production incident, works locally but fails on the server, a regression after a deploy, a fix that did not hold), or asks to resume an investigation. Forms competing hypotheses, runs the smallest discriminating experiment, and says whether the application, a dependency, the infrastructure or the client's network is responsible, with a confidence level. Not for requests that name their own change, or a defect whose stack trace already names the line.
 ---
 
 # Engineering Investigator
@@ -63,11 +63,16 @@ security or privacy exposure).
   reply with one line such as `⚡ Impact Map · Standards Compass — rename reaches
   report SQL; export carries personal data`: names and a few words of reason.
   Never include reasoning. Add no line for `PASSIVE`, and none on a trivial request.
+  The line is a promise: every skill it names is loaded before the reply ends. If
+  one turns out not to apply, say so in one line: `<Skill> dropped: <reason>`.
 - **One interruption per request.** Skills that must speak before the work share
   one short block. Everything else arrives with the work.
 - **Hand off; don't absorb.** When another discipline is needed, write
-  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. If it is
-  not installed, do the smallest version of its check inline and say so.
+  `HANDOFF → <skill>: <reason> [<ids>]` and let that skill do its part. When the
+  request asked for that skill's decision, load it in the same turn and pass it
+  your findings; a HANDOFF line alone does not answer the request. Never state
+  another skill's verdict yourself. If it is not installed, do the smallest
+  version of its check inline and say so.
 - **Conflicts.** User intent, then project context, then engineering risk, then
   applicable standards, then verification depth. Each skill keeps its own
   verdict, and none overrules another's.
