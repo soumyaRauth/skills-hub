@@ -245,6 +245,8 @@ Five full worked examples: [simple](skills/impact-map/examples/simple-change.md)
 
 </details>
 
+**[Full documentation →](skills/impact-map/README.md)**
+
 <br>
 
 ### ✅ ProofBuild
