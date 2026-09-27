@@ -1,24 +1,34 @@
-# Skills Hub
+<div align="center">
 
-Agent Skills for real engineering work — installable with the Skills CLI,
-usable with Claude Code and other Agent Skills-compatible agents.
+<a href="https://soumyarauth.github.io/skills-hub/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.svg">
+    <img alt="Skills Hub: engineering disciplines your agent brings in on its own" src=".github/assets/banner-light.svg" width="100%">
+  </picture>
+</a>
 
-**[Browse the skills →](https://soumyaRauth.github.io/skills-hub/)**
+<br>
 
-| Skill | What it does | When |
-| --- | --- | --- |
-| **[impact-map](skills/impact-map/README.md)** | Maps the blast radius of a proposed change — what it affects, why, and how confident the analysis is | *Before* you write the code |
-| **[proof-driven-dev](skills/proof-driven-dev/README.md)** | Turns a request into an outcome contract, implements it, and proves each requirement with evidence — you get VERIFIED / REVIEW / BLOCKED, not an essay | *While* you write it |
-| **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
-| **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
-| **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence — competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
-| **[project-compass](skills/project-compass/README.md)** | Works out what the project is becoming and what you are actually trying to accomplish, then tells you what to do next — usually by just building what you asked for, and saying nothing | *Across* everything, quietly |
-| **[standards-compass](skills/standards-compass/README.md)** | Works out which standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software — then audits it against them, with evidence | *Whichever* of those you never consciously chose |
-| **[dependency-guard](skills/dependency-guard/README.md)** | Decides whether a dependency should come in — whether it is needed at all, whether the package is the one you meant, what it brings with it | *Before* anything is installed |
-| **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises — the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
-| **[deployment-compatibility](skills/deployment-compatibility/README.md)** | Assesses a project against a specific target server — what it requires, what the server provides, what has to change — and verifies what it can | *Before* you deploy it there |
-| **[architecture-engineer](skills/architecture-engineer/README.md)** | Works out what a system's structure should be, through questions, options and recorded decisions — then plans the migration and verifies the result | *Before* the shape is decided, and when it has to change |
-| **[skills-pipeline](skills/skills-pipeline/README.md)** | Runs the skills you pick from a numbered menu, in the order you pick, and ends in a ledger with one status per stage | *Only* when you type `/skills-pipeline` |
+[![Validate](https://img.shields.io/github/actions/workflow/status/soumyaRauth/skills-hub/validate.yml?branch=main&style=for-the-badge&label=validate&logo=githubactions&logoColor=white)](https://github.com/soumyaRauth/skills-hub/actions/workflows/validate.yml)
+[![Skills](https://img.shields.io/badge/skills-12-ea580c?style=for-the-badge&logo=bookstack&logoColor=white)](#-the-skills)
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-compatible-1c1917?style=for-the-badge&logo=markdown&logoColor=white)](https://code.claude.com/docs/en/skills)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=for-the-badge&logo=claude&logoColor=white)](integrations/claude-code/README.md)
+[![License: MIT](https://img.shields.io/github/license/soumyaRauth/skills-hub?style=for-the-badge&color=16a34a)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/soumyaRauth/skills-hub?style=for-the-badge&logo=github&color=eab308)](https://github.com/soumyaRauth/skills-hub/stargazers)
+
+**Agent Skills for real engineering work.** Installable with the Skills CLI, and usable with<br>
+Claude Code and other agents that support Agent Skills. No MCP server, no hosted service, only markdown.
+
+[**🌐 Website**](https://soumyaRauth.github.io/skills-hub/) &nbsp;·&nbsp;
+[**⚡ Install**](#installation) &nbsp;·&nbsp;
+[**🧰 Skills**](#-the-skills) &nbsp;·&nbsp;
+[**🔀 How they compose**](#-how-they-compose) &nbsp;·&nbsp;
+[**🧹 Uninstall**](#uninstalling) &nbsp;·&nbsp;
+[**📖 Ecosystem**](ECOSYSTEM.md)
+
+</div>
+
+<br>
 
 ```bash
 # install all twelve skills; asks which agents, and project or global
@@ -35,35 +45,51 @@ Claude Code only, or as a plugin: see [Installation](#installation).
 > **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all
 > twelve skills from every agent, and leaves your other skills alone.
 
-They compose, and none requires the others:
+## 🧰 The skills
 
+| | Skill | What it does | When |
+| :-: | --- | --- | --- |
+| 🗺️ | **[impact-map](skills/impact-map/README.md)** | Maps the blast radius of a proposed change: what it affects, why, and how confident the analysis is | *Before* you write the code |
+| ✅ | **[proof-driven-dev](skills/proof-driven-dev/README.md)** | Turns a request into an outcome contract, implements it, and proves each requirement with evidence. You get VERIFIED / REVIEW / BLOCKED, not an essay | *While* you write it |
+| 🛡️ | **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
+| 🌐 | **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
+| 🔎 | **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence: competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
+| 🧭 | **[project-compass](skills/project-compass/README.md)** | Works out what the project is becoming and what you are actually trying to accomplish, then tells you what to do next. Usually that means building what you asked for and saying nothing | *Across* everything, quietly |
+| 📐 | **[standards-compass](skills/standards-compass/README.md)** | Works out which standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software, then audits it against them with evidence | *Whichever* of those you never consciously chose |
+| 📦 | **[dependency-guard](skills/dependency-guard/README.md)** | Decides whether a dependency should come in: whether it is needed at all, whether the package is the one you meant, what it brings with it | *Before* anything is installed |
+| 🤝 | **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises: the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
+| 🚀 | **[deployment-compatibility](skills/deployment-compatibility/README.md)** | Assesses a project against a specific target server: what it requires, what the server provides, what has to change. Then it verifies what it can | *Before* you deploy it there |
+| 🏛️ | **[architecture-engineer](skills/architecture-engineer/README.md)** | Works out what a system's structure should be, through questions, options and recorded decisions. Then it plans the migration and verifies the result | *Before* the shape is decided, and when it has to change |
+| 🔗 | **[skills-pipeline](skills/skills-pipeline/README.md)** | Runs the skills you pick from a numbered menu, in the order you pick, and ends in a ledger with one status per stage | *Only* when you type `/skills-pipeline` |
+
+## 🔀 How they compose
+
+They compose, and none requires the others.
+
+```mermaid
+flowchart LR
+    ticket([🎫 ticket]) --> IM[🗺️ impact-map] --> PD[✅ proof-driven-dev] --> PG[🛡️ production-guard] --> ship([🚢 ship])
+    AC[🤝 api-contract-guard] -. interface others deploy against .-> PD
+    DG[📦 dependency-guard] -. brings in a dependency .-> PD
+    PG --> PL[🌐 practical-localizer] --> ship2([🚢 ship in another language])
+    incident([🔥 incident]) --> EI[🔎 engineering-investigator] -- cause --> PD
+    server([🖥️ a named server]) --> DC[🚀 deployment-compatibility] -- remediate · verify --> deploy([📦 deploy])
+    design([💭 a design question]) --> AE[🏛️ architecture-engineer] -- options · decision · migration --> target([🎯 target])
+
+    classDef skill fill:#fff7ed,stroke:#ea580c,color:#7c2d12
+    classDef io fill:#f5f5f4,stroke:#a8a29e,color:#1c1917
+    class IM,PD,PG,PL,EI,DC,AE,AC,DG skill
+    class ticket,ship,ship2,incident,server,deploy,design,target io
 ```
-ticket   → impact-map → proof-driven-dev → production-guard → ship
-                        ↑ api-contract-guard  when the change is an interface others deploy against
-                        ↑ dependency-guard    when the change brings in a dependency
-                                                            → practical-localizer → ship in another language
 
-incident → engineering-investigator → cause → proof-driven-dev → production-guard → ship
+| | |
+| --- | --- |
+| 🏛️ **architecture-engineer** | Invited only. It never opens a review uninvited |
+| 🔗 **skills-pipeline** | Opt-in only. `/skills-pipeline` → pick `1,3,6,7,10` → each runs → ledger |
+| 🧭 **project-compass** | Sits underneath all of it, and answers a different question: given where this project is heading, is this ticket the right next thing at all |
+| 📐 **standards-compass** | Sits underneath it too, and answers another one: what this software should have been measured against all along |
 
-a named server → deployment-compatibility → what it requires vs what the box has
-                                          → remediate → verify → deploy
-
-a design question → architecture-engineer → what it must actually do
-                                          → the options → the decision
-                                          → target → migration → verify
-                    (invited only — it never opens a review uninvited)
-
-want every discipline, in your order → /skills-pipeline → pick 1,3,6,7,10 → each runs → ledger
-                    (opt-in only — it never runs unless named)
-
-project-compass sits underneath all of it, and answers a different question:
-given where this project is heading, is this ticket the right next thing at all.
-
-standards-compass sits underneath it too, and answers another one:
-what this software should have been measured against all along.
-```
-
-## You don't call them — they show up
+## ✨ You don't call them. They show up
 
 There are no slash commands to remember. The agent sees every installed
 skill's description, and each description says when that skill applies *and
@@ -72,11 +98,11 @@ from the request and from what the repository shows.
 
 | | |
 | --- | --- |
-| **Automatic** | *"Add password reset"* is a Standards Compass and ProofBuild request. *"Why does checkout randomly fail?"* is an Engineering Investigator one. You don't have to say so |
-| **Composed** | Several skills can share one task. Impact Map maps the surface, Standards Compass names the controls, ProofBuild proves the result, and each hands the rest on in a one-line `HANDOFF` |
-| **Quiet** | A button label, a typo, a patch bump: nothing loads. A skill loaded for the last request says nothing on this one unless this one earns it |
-| **Visible** | When skills shape the work, one line says which: `⚡ Impact Map · Standards Compass — rename reaches report SQL; export carries personal data` |
-| **Still manual** | Name one (*"use Impact Map first"*) or type `/impact-map`. Type `/skills-pipeline` to pick a sequence of them yourself. *"Skip the standards review"* is honored. A live hazard (a reachable security hole, data loss, money at risk) is still said, once |
+| 🤖 **Automatic** | *"Add password reset"* is a Standards Compass and ProofBuild request. *"Why does checkout randomly fail?"* is an Engineering Investigator one. You don't have to say so |
+| 🧩 **Composed** | Several skills can share one task. Impact Map maps the surface, Standards Compass names the controls, ProofBuild proves the result, and each hands the rest on in a one-line `HANDOFF` |
+| 🤫 **Quiet** | A button label, a typo, a patch bump: nothing loads. A skill loaded for the last request says nothing on this one unless this one earns it |
+| 👁️ **Visible** | When skills shape the work, one line says which: `⚡ Impact Map · Standards Compass — rename reaches report SQL; export carries personal data` |
+| 🎛️ **Still manual** | Name one (*"use Impact Map first"*) or type `/impact-map`. Type `/skills-pipeline` to pick a sequence of them yourself. *"Skip the standards review"* is honored. A live hazard (a reachable security hole, data loss, money at risk) is still said, once |
 
 This is the agent's judgment steered by the descriptions, not a keyword router,
 and it is measured, not promised. [`evals/activation/`](evals/activation/README.md)
@@ -84,17 +110,20 @@ runs real sessions against the fixtures and checks which skills load, and which
 must not. [ECOSYSTEM.md](ECOSYSTEM.md) explains how the pieces fit, including
 the skills considered and deliberately not added.
 
-**In Claude Code, also add the ten-line standing instruction** from
-[integrations/claude-code](integrations/claude-code/README.md). In the
-activation suite, it is what gets Claude to reach for the skills during
-implementation work, not only when a request sounds like the skill's own name.
-The skills alone passed 30 of 38 cases, and with the instruction they passed 37
-of 38. Neither setup loaded a skill where it should have stayed quiet. The same folder has an optional colored
-active-skills status line.
+> [!TIP]
+> **In Claude Code, also add the ten-line standing instruction** from
+> [integrations/claude-code](integrations/claude-code/README.md). In the
+> activation suite, it is what gets Claude to reach for the skills during
+> implementation work, not only when a request sounds like the skill's own name.
+> The skills alone passed 30 of 38 cases, and with the instruction they passed 37
+> of 38. Neither setup loaded a skill where it should have stayed quiet. The same
+> folder has an optional colored active-skills status line.
 
----
+## 📚 Meet the skills
 
-# Impact Map
+Each skill below has a short pitch and its install command. Open **Deep dive** for the problem it solves, a worked example, and what it will not do.
+
+### 🗺️ Impact Map
 
 **A reusable AI engineering skill for understanding the blast radius of software
 changes.**
@@ -108,9 +137,10 @@ analysis is, and what to do next — without touching a single file.
 npx skills add soumyaRauth/skills-hub --skill impact-map
 ```
 
----
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
-## The problem
+#### The problem
 
 ```
 ticket → find the obvious file → change it → discover later what broke
@@ -130,7 +160,7 @@ File C
 
 — with no explanation of why any of it matters.
 
-## The solution
+#### The solution
 
 Impact Map inserts a read-only analysis step and returns findings that carry
 their reasoning:
@@ -154,9 +184,8 @@ Confidence is tracked separately (High / Medium / Low), and a low-confidence
 finding is never promoted to MUST CHANGE. Speculation is never presented as
 fact, and counts are never invented.
 
----
 
-## Example
+#### Example
 
 ```
 You:  Rename the COMPLETED enrollment status to APPROVED. Deep analysis please.
@@ -214,11 +243,13 @@ Five full worked examples: [simple](skills/impact-map/examples/simple-change.md)
 [cross-module](skills/impact-map/examples/cross-module-change.md) ·
 [implementation plan](skills/impact-map/examples/implementation-plan.md)
 
----
+</details>
 
----
+**[Full documentation →](skills/impact-map/README.md)**
 
-# ProofBuild
+<br>
+
+### ✅ ProofBuild
 
 **Don't read what the AI did. See whether it actually works.**
 
@@ -226,7 +257,10 @@ Five full worked examples: [simple](skills/impact-map/examples/simple-change.md)
 npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
 ```
 
-## The problem
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+#### The problem
 
 ```
 prompt → code → explanation → you read all of it → you decide whether it works
@@ -240,7 +274,7 @@ The failure is structural, not a matter of the agent trying harder: **"code was
 written" and "the outcome happened" are different claims**, and one is being
 reported as the other.
 
-## The solution
+#### The solution
 
 An outcome contract, written *before* the code, and evidence for every
 requirement in it:
@@ -265,7 +299,7 @@ risk: high
 
 Five of those eight were never in the request. That is where the defects live.
 
-## Example
+#### Example
 
 ```
 ✓ VERIFIED
@@ -296,7 +330,7 @@ Detail is one question away — *show the contract*, *show evidence*, *explain t
 proof for AUTH-005*, *show failed attempts*. What you never get is a green
 checkmark meaning "I wrote some code and it looked right to me."
 
-## The rule that matters most
+#### The rule that matters most
 
 When the agent's model of the code and the executed output disagree, the output
 wins:
@@ -320,7 +354,7 @@ Six worked examples: [feature development](skills/proof-driven-dev/examples/feat
 [security](skills/proof-driven-dev/examples/security.md) ·
 [ambiguous request](skills/proof-driven-dev/examples/ambiguous-request.md)
 
-## Safety
+#### Safety
 
 It runs your project's own checks — its framework, its commands, its
 conventions — and does not install a testing stack you did not ask for. It will
@@ -328,13 +362,13 @@ not `git reset --hard`, `git clean -fd`, check out over your uncommitted work,
 force push, commit or push automatically, drop databases, or touch production,
 unless you explicitly ask for that operation.
 
+</details>
+
 **[Full documentation →](skills/proof-driven-dev/README.md)**
 
----
+<br>
 
----
-
-# Production Guard
+### 🛡️ Production Guard
 
 **An AI-assisted production-readiness gate for software changes.**
 
@@ -345,7 +379,10 @@ unless you explicitly ask for that operation.
 npx skills add soumyaRauth/skills-hub --skill production-guard
 ```
 
-## The problem
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+#### The problem
 
 ```
 code generation ≠ production correctness
@@ -356,7 +393,7 @@ still break an existing workflow, expose another tenant's data, corrupt records
 under concurrency, double-charge on retry, time out at real data volumes,
 silently swallow errors, or leave no trace of what it did at 3 AM.
 
-## The solution
+#### The solution
 
 ```
 CODE CHANGE → behavior model → regression model → failure model
@@ -389,7 +426,7 @@ actually exercised.
 | 🟠 **CONDITIONAL SHIP** | No blockers, but a HIGH finding or a required category left unverified |
 | 🔴 **DO NOT SHIP** | At least one BLOCKER |
 
-## Example
+#### Example
 
 ```
 CHANGE    Add bulk deletion to user management.
@@ -416,20 +453,20 @@ Five full worked reports: [payment](skills/production-guard/examples/payment.md)
 One ends in 🟢 SHIP deliberately — a gate that never passes anything is not a
 gate.
 
-## Safety
+#### Safety
 
 Production Guard runs your project's own checks where it can. It will not drop
 databases, reset environments, delete data, destroy containers, rewrite git
 history, force push, deploy, or touch production-like systems. It reads git
 state and never modifies it.
 
+</details>
+
 **[Full documentation →](skills/production-guard/README.md)**
 
----
+<br>
 
----
-
-# Practical Localizer
+### 🌐 Practical Localizer
 
 **Make your application speak like a local product — not like a translated
 document.**
@@ -442,7 +479,10 @@ document.**
 npx skills add soumyaRauth/skills-hub --skill practical-localizer
 ```
 
-## The problem
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+#### The problem
 
 A technically correct translation is not necessarily a natural one.
 
@@ -466,7 +506,7 @@ one concept        →  three target words, one per translation batch
 {count, plural,…}  →  a single fixed form in a locale that needs six
 ```
 
-## The solution
+#### The solution
 
 ```
 source application → localization architecture → language usage profile
@@ -483,7 +523,7 @@ Three modes: **analyze** (read-only inventory and plan), **localize** (writes
 locale resources and nothing else), **review** (findings with source, current,
 recommended, reason and confidence).
 
-## Example
+#### Example
 
 ```
 You:  Review the Bengali localization for naturalness and consistency.
@@ -514,7 +554,7 @@ Five worked language examples: [Bengali](skills/practical-localizer/examples/ben
 [Arabic](skills/practical-localizer/examples/arabic.md) ·
 [European](skills/practical-localizer/examples/european-language.md)
 
-## What it will not do
+#### What it will not do
 
 Never claim native authority — "this is the more common software convention",
 not "native speakers say this". Never guess grammatical gender the source hides.
@@ -522,11 +562,13 @@ Never encode "language X always …". Never invent counts or claim a validation 
 did not run. Never touch application source: hardcoded strings, concatenated
 sentences and formatter bugs are reported, not silently refactored.
 
+</details>
+
 **[Full documentation →](skills/practical-localizer/README.md)**
 
----
+<br>
 
-# Engineering Investigator
+### 🔎 Engineering Investigator
 
 **Don't ask the agent to find an explanation. Make it find out whether the
 explanation is true.**
@@ -534,6 +576,9 @@ explanation is true.**
 ```bash
 npx skills add soumyaRauth/skills-hub --skill engineering-investigator
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 Ask a coding agent why the app is slow and it will read the code, find something
 genuinely suspicious, and tell you about it. That is the problem: *finding an
@@ -547,7 +592,7 @@ each with a kill condition → the experiment that eliminates the most → what
 survived, at its real confidence → verify → four lines
 ```
 
-## Example
+#### Example
 
 ```
 You:  The portal is unusably slow for one customer. They're threatening to churn.
@@ -597,7 +642,7 @@ Six worked investigations: [client network](skills/engineering-investigator/exam
 [resuming a case](skills/engineering-investigator/examples/resumed-investigation.md) ·
 [a clear feature request](skills/engineering-investigator/examples/implementation-request.md)
 
-## What it will not do
+#### What it will not do
 
 Never invent a log line, a metric, a trace, a tool, or a customer's network
 conditions — unavailable evidence is reported as unavailable. Never report
@@ -607,11 +652,13 @@ blame the application without one either. Read-only by default: production data,
 configuration, infrastructure and deployments are never touched without explicit
 authorization for that specific action.
 
+</details>
+
 **[Full documentation →](skills/engineering-investigator/README.md)**
 
----
+<br>
 
-# Project Compass
+### 🧭 Project Compass
 
 **Your agent knows how to build things. This helps it work out what to build
 next.**
@@ -619,6 +666,9 @@ next.**
 ```bash
 npx skills add soumyaRauth/skills-hub --skill project-compass
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 One question, asked before every non-trivial request and answered from your
 project rather than from general advice:
@@ -650,14 +700,14 @@ system and nobody has defined the administration workflow* — a sentence no
 single request could produce, and one the person making them cannot see, because
 they see one request at a time.
 
-## Three modes, and the first one is the default
+#### Three modes, and the first one is the default
 
 **Mode A — build it.** The overwhelming majority. No manufactured concerns, no
 *"this looks fine from a project perspective"*. **Mode B — build it, flag one
 thing**, in a paragraph delivered with the work. **Mode C — pause and guide**,
 which is rare and always ends with the offer to build it as asked.
 
-## Example
+#### Example
 
 ```
 You:    Add another status to orders.
@@ -681,7 +731,7 @@ Nothing was refused. The alternative is smaller than the work it replaces, it is
 startable today, and the evidence is three file names you can check in thirty
 seconds.
 
-## Every finding ends in an action
+#### Every finding ends in an action
 
 | Not this | This |
 | --- | --- |
@@ -695,7 +745,7 @@ problems, then boundaries getting expensive, then security and data integrity,
 and only then debt, performance and polish. Technical issues do not
 automatically outrank product and workflow ones.
 
-## The harder half: knowing when to shut up
+#### The harder half: knowing when to shut up
 
 An agent that comments on direction four times a week gets uninstalled in week
 two, and the one real observation it would have made in week nine never arrives.
@@ -714,7 +764,7 @@ never raised again. Say *"this is a throwaway prototype"* and that becomes the
 frame every later recommendation is measured against, because you know the goal
 and it does not.
 
-## What it remembers
+#### What it remembers
 
 ```
 .project-compass/
@@ -744,7 +794,7 @@ Nine worked sessions: [no intervention](skills/project-compass/examples/no-inter
 [beginner](skills/project-compass/examples/beginner.md) ·
 [senior](skills/project-compass/examples/senior.md)
 
-## What it will not do
+#### What it will not do
 
 Never invent the project's purpose, users, market, deadlines, metrics, or
 history — when the objective is undocumented, *"there is no documented
@@ -755,11 +805,13 @@ again. Never produce a health score, a percentage, or a generic backlog. Most of
 the time it says nothing at all, and its most common spoken answer is *keep
 going*.
 
+</details>
+
 **[Full documentation →](skills/project-compass/README.md)**
 
----
+<br>
 
-# Standards Compass
+### 📐 Standards Compass
 
 **Which standards actually apply to this software — and does it meet them?**
 
@@ -770,6 +822,9 @@ point nobody can say what "compliant" would mean for this product.
 ```bash
 npx skills add soumyaRauth/skills-hub --skill standards-compass
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 The instinct is a checklist. Five hundred requirements produce five hundred
 shallow answers, most of them irrelevant, and a team that now believes standards
@@ -825,17 +880,22 @@ State in `.project-standards/` makes the second assessment cheaper than the
 first, keeps a dismissed finding dismissed, and turns a control that used to
 pass into a **regression** rather than a rediscovery.
 
+</details>
+
 [Read the full guide →](skills/standards-compass/README.md)
 
----
+<br>
 
-# Dependency Guard
+### 📦 Dependency Guard
 
 **Should this dependency come in — and is it the one you think it is?**
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill dependency-guard
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 Most dependencies are never decided. A request's obvious implementation is
 `npm install x`, and that is the whole review. Agents make it worse: they reach
@@ -856,11 +916,13 @@ Install scripts and transitive growth are measured from a dry run or the
 lockfile diff. Registry facts it did not read are marked `UNVERIFIED`, never
 supplied from memory. A routine patch bump gets no comment at all.
 
+</details>
+
 [Read the full guide →](skills/dependency-guard/README.md)
 
----
+<br>
 
-# API Contract Guard
+### 🤝 API Contract Guard
 
 **What does this interface promise — and which of those promises can never be
 taken back?**
@@ -868,6 +930,9 @@ taken back?**
 ```bash
 npx skills add soumyaRauth/skills-hub --skill api-contract-guard
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 Code is cheap to change. A promise to someone who deploys on their own schedule
 is not. Before an endpoint, webhook or event ships, this reads how the rest of
@@ -888,17 +953,22 @@ and the label describes consumers rather than the diff. A breaking change gets a
 migration path in which every step deploys safely. An endpoint whose every
 consumer ships in the same deploy gets nothing.
 
+</details>
+
 [Read the full guide →](skills/api-contract-guard/README.md)
 
----
+<br>
 
-# Deployment Compatibility Engineer
+### 🚀 Deployment Compatibility Engineer
 
 **Does this project fit this server?**
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 Every other skill here takes one operand. This one takes two, and the second is
 a machine. Deployment failures are rarely code failures — they are mismatches
@@ -948,7 +1018,7 @@ Four worked examples: [a blocked runtime](skills/deployment-compatibility/exampl
 [no server access at all](skills/deployment-compatibility/examples/no-access.md) ·
 [a deployment that starts and dies](skills/deployment-compatibility/examples/failing-deployment.md)
 
-## What it will not do
+#### What it will not do
 
 Never promise a deployment will work — no "seamless", no "guaranteed", no "100%
 compatible". Never invent a fact about your server; there is no library of
@@ -958,11 +1028,13 @@ only on authorization for that specific action. Never weaken a control to get a
 deploy through — no exposed database, no disabled TLS, no development mode on a
 server. And never keep a secret: values are `PRESENT`, `MISSING` or redacted.
 
+</details>
+
 **[Full documentation →](skills/deployment-compatibility/README.md)**
 
----
+<br>
 
-# Architecture Engineer
+### 🏛️ Architecture Engineer
 
 **The architecture is not the first answer. It is what is left after the
 reasoning.**
@@ -970,6 +1042,9 @@ reasoning.**
 ```bash
 npx skills add soumyaRauth/skills-hub --skill architecture-engineer
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 Ask a capable agent to design a system and you get an architecture in the first
 reply — multi-tenant, event-driven, a queue, a cache, three services. Well
@@ -1013,7 +1088,7 @@ Four worked examples: [greenfield discovery](skills/architecture-engineer/exampl
 [monolith or services](skills/architecture-engineer/examples/monolith-or-services.md) ·
 [the request that only sounds architectural](skills/architecture-engineer/examples/quiet-feature.md)
 
-## What it will not do
+#### What it will not do
 
 Never lead with an architecture, invent a requirement, or recommend
 microservices, event sourcing, CQRS or Kubernetes by default — each needs a
@@ -1027,17 +1102,22 @@ noticing that a project has become something nobody designed is
 [Project Compass](skills/project-compass/README.md)'s job, and it holds the
 interruption budget for it.
 
+</details>
+
 **[Full documentation →](skills/architecture-engineer/README.md)**
 
----
+<br>
 
-# Skills Pipeline
+### 🔗 Skills Pipeline
 
 **Every discipline you pick, in the order you pick, and only when you ask.**
 
 ```bash
 npx skills add soumyaRauth/skills-hub --skill skills-pipeline
 ```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
 
 The other skills choose themselves, one request at a time, and that stays the
 default. Sometimes you want the opposite. A new app, or a feature you care
@@ -1064,9 +1144,11 @@ It ends in a ledger with one status per stage. Every verdict in it is the owning
 skill's own. The pipeline adds none. Edit the menu in
 [`references/pipeline.md`](skills/skills-pipeline/references/pipeline.md).
 
+</details>
+
 **[Full documentation →](skills/skills-pipeline/README.md)**
 
----
+<br>
 
 ## Installation
 
@@ -1196,9 +1278,10 @@ Everything Claude Code-specific is kept outside the skills:
 
 See [integrations/claude-code](integrations/claude-code/README.md).
 
----
-
 ## Repository structure
+
+<details>
+<summary>Show the tree</summary>
 
 ```
 .
@@ -1273,6 +1356,8 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 └── .github/workflows/validate.yml
 ```
 
+</details>
+
 ## Documentation
 
 - **[Impact Map](skills/impact-map/README.md)** · [SKILL.md](skills/impact-map/SKILL.md)
@@ -1292,8 +1377,6 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 
----
-
 ## Contributing
 
 Improvements to the methodologies, framework guidance, examples, and fixtures
@@ -1310,7 +1393,8 @@ opening a pull request.
 
 ## Roadmap
 
-Ideas, not commitments.
+<details>
+<summary>Ideas, not commitments</summary>
 
 **Impact Map**
 
@@ -1366,6 +1450,8 @@ identified surface and resolved the identified risks. Where ProofBuild proves
 the outcome it defined, `change-guard` would check that outcome against a
 *separately* derived surface — a different question, and a useful cross-check.
 
+</details>
+
 ## Limitations
 
 These skills are instruction-driven, not static analyzers. None claims
@@ -1412,3 +1498,8 @@ guarantee production safety, and a human owns the release decision.
 ## License
 
 [MIT](LICENSE)
+
+<div align="center">
+<br>
+<sub>Built for agents that should prove things, not narrate them. <a href="#readme">Back to top ↑</a></sub>
+</div>

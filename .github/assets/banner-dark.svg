@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" role="img" aria-label="Skills Hub: Agent Skills for real engineering work">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c0a09"/>
+      <stop offset="1" stop-color="#1c1917"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.15" r="0.6">
+      <stop offset="0" stop-color="#ea580c" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ea580c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fafaf9"/>
+      <stop offset="1" stop-color="#fdba74"/>
+    </linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#fafaf9" fill-opacity="0.06"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="340" rx="24" fill="url(#bg)"/>
+  <rect width="1280" height="340" rx="24" fill="url(#dots)"/>
+  <rect width="1280" height="340" rx="24" fill="url(#glow)"/>
+  <rect x="0.5" y="0.5" width="1279" height="339" rx="23.5" fill="none" stroke="#fafaf9" stroke-opacity="0.08"/>
+
+  <g font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <text x="80" y="112" font-size="20" font-weight="600" letter-spacing="4" fill="#fb923c">AGENT SKILLS · CLAUDE CODE &amp; BEYOND</text>
+    <text x="76" y="190" font-size="84" font-weight="800" letter-spacing="-2" fill="url(#title)">Skills Hub</text>
+    <text x="80" y="238" font-size="26" fill="#a8a29e">Engineering disciplines your agent brings in on its own.</text>
+
+    <g font-size="17" font-weight="600">
+      <rect x="80" y="266" width="116" height="36" rx="18" fill="#ea580c" fill-opacity="0.16" stroke="#ea580c" stroke-opacity="0.5"/>
+      <text x="138" y="289" text-anchor="middle" fill="#fdba74">map impact</text>
+      <rect x="208" y="266" width="84" height="36" rx="18" fill="#fafaf9" fill-opacity="0.05" stroke="#fafaf9" stroke-opacity="0.15"/>
+      <text x="250" y="289" text-anchor="middle" fill="#d6d3d1">prove it</text>
+      <rect x="304" y="266" width="132" height="36" rx="18" fill="#fafaf9" fill-opacity="0.05" stroke="#fafaf9" stroke-opacity="0.15"/>
+      <text x="370" y="289" text-anchor="middle" fill="#d6d3d1">gate the ship</text>
+      <rect x="448" y="266" width="116" height="36" rx="18" fill="#fafaf9" fill-opacity="0.05" stroke="#fafaf9" stroke-opacity="0.15"/>
+      <text x="506" y="289" text-anchor="middle" fill="#d6d3d1">investigate</text>
+      <rect x="576" y="266" width="188" height="36" rx="18" fill="#fafaf9" fill-opacity="0.05" stroke="#fafaf9" stroke-opacity="0.15"/>
+      <text x="670" y="289" text-anchor="middle" fill="#d6d3d1">+ 8 more disciplines</text>
+    </g>
+  </g>
+
+  <!-- blast-radius mark -->
+  <g transform="translate(1040 170)" fill="none">
+    <circle r="120" stroke="#ea580c" stroke-opacity="0.12" stroke-width="2"/>
+    <circle r="84" stroke="#ea580c" stroke-opacity="0.25" stroke-width="2"/>
+    <circle r="48" stroke="#ea580c" stroke-opacity="0.5" stroke-width="2"/>
+    <circle r="14" fill="#ea580c"/>
+    <path d="M14 0 L84 0 M-10 -10 L-60 -60 M0 14 L0 120 M-14 0 L-120 0 M10 -10 L60 -60" stroke="#fb923c" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="4 6"/>
+    <circle cx="84" cy="0" r="7" fill="#fb923c"/>
+    <circle cx="-60" cy="-60" r="7" fill="#fdba74"/>
+    <circle cx="0" cy="120" r="6" fill="#fed7aa" fill-opacity="0.7"/>
+    <circle cx="-120" cy="0" r="6" fill="#fed7aa" fill-opacity="0.5"/>
+    <circle cx="60" cy="-60" r="7" fill="#fb923c"/>
+  </g>
+</svg>
