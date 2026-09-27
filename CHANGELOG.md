@@ -435,8 +435,8 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
   table of where things go, and the five hard rules in one line each, each
   linking to its reasoning. The full guide moved, unchanged apart from its
   opening and changelog note, to `.github/CONTRIBUTING-GUIDE.md`. A pull request
-  template asks what
-  changed and how it was checked, and the changelog is now the maintainer's job.
+  template asks what changed and how it was checked, and the changelog is now
+  the maintainer's job.
 - **The README is redesigned.** A light and dark banner, badges, a Mermaid
   diagram of how the skills compose, and each skill's long section folded into
   a *Deep dive*. No content was removed.
