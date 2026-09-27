@@ -46,7 +46,7 @@
         </span>
       </div>
       <div class="cmd">
-        <code>npx skills add soumyaRauth/skills-hub --skill '*' -g -y</code>
+        <code>npx skills add soumyaRauth/skills-hub --skill '*'</code>
         <button type="button" data-copy>Copy</button>
       </div>
     </div>
@@ -369,20 +369,21 @@
 
     <h3>All twelve skills, any compatible agent</h3>
     <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill '*' -g -y</code>
+      <code>npx skills add soumyaRauth/skills-hub --skill '*'</code>
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
-      <code>--skill '*'</code> selects every skill in this repository, and
-      <code>-g</code> installs them globally, so they are there in every
-      project. With no <code>-a</code>, the CLI installs to the agents it finds
+      <code>--skill '*'</code> selects every skill in this repository, and the
+      CLI asks whether to install them into the current project or globally.
+      Add <code>-g -y</code> to skip the prompts and install globally, or
+      <code>-y</code> alone to install into the current project. With no <code>-a</code>, the CLI installs to the agents it finds
       on your machine. Prefer this over the CLI's <code>--all</code>, which
       writes into every agent the CLI supports, not just the ones you have.
     </p>
 
     <h3>Claude Code only</h3>
     <div class="cmd">
-      <code>npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code --copy -g -y</code>
+      <code>npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code --copy</code>
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
