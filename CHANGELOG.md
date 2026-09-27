@@ -431,6 +431,16 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
 
 ### Changed
 
+- **Contributing is a one-page read.** `CONTRIBUTING.md` is now five steps, a
+  table of where things go, and the five hard rules in one line each, each
+  linking to its reasoning. The full guide moved, unchanged apart from its
+  opening and changelog note, to `.github/CONTRIBUTING-GUIDE.md`. A pull request
+  template asks what
+  changed and how it was checked, and the changelog is now the maintainer's job.
+- **The README is redesigned.** A light and dark banner, badges, a Mermaid
+  diagram of how the skills compose, and each skill's long section folded into
+  a *Deep dive*. No content was removed.
+
 - **Installing every skill asks for project or global scope.** The documented
   command, `npx skills add soumyaRauth/skills-hub --skill '*' -g -y`, forced a
   global install and skipped the Skills CLI's prompts, so the scope question

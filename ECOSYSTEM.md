@@ -239,7 +239,7 @@ that directory, and outside the repository, because this repository is public an
 a lesson learned in a private project must not be committed from it. Lessons are
 rules for any project, never facts about one, and are capped at twenty lines.
 They reach `SKILL.md` only by hand, through a pull request the validator and the
-activation suite check (see *Improve a methodology* in `CONTRIBUTING.md`).
+activation suite check (see *Improve a methodology* in `.github/CONTRIBUTING-GUIDE.md`).
 
 ## Portability
 
