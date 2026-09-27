@@ -9,6 +9,14 @@ methodology and documentation.
 
 ### Added
 
+- **Dependency Guard stops before installing a package with a known
+  vulnerability.** Advisories for the resolved version and for every package it
+  would add are checked before the install, using the npm bulk advisory endpoint
+  and a lockfile-only audit in a throwaway copy, minus what the project already
+  reports. Any advisory, or a check that could not run, gives the new decision
+  `ASK BEFORE INSTALL`. It lists the advisories, offers a patched version when
+  there is one, and installs only on an explicit yes. This is the skill's one
+  `GATING` case.
 - **Skills load more predictably, and an announced skill always loads.** In one
   session Claude announced `⚡ Deployment Compatibility · Production Guard` for
   *"is this application production deployment ready?"*. It ran the first, wrote

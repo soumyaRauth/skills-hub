@@ -34,7 +34,8 @@ need → is it already here? (codebase · standard library · installed · a few
      → is the package the one intended? (resolves · publisher · repository)
      → what comes with it? (install scripts · transitive growth · license)
      → is it maintained? (observed signals only)
-     → USE EXISTING · ADD · ADD WITH CONDITIONS · DON'T ADD
+     → any known vulnerability? (the version and everything it adds, checked before install)
+     → USE EXISTING · ADD · ADD WITH CONDITIONS · DON'T ADD · ASK BEFORE INSTALL
 ```
 
 ```
@@ -64,8 +65,14 @@ removals. See [Activation](SKILL.md#activation).
 - **Trust a name because it sounds right.** A name that does not resolve is
   `DON'T ADD`, and no similar name is substituted silently.
 - **Install to try it.** Registry queries and dry runs only, until the decision.
-- **Replace a scanner or a lawyer.** Audit output is evidence, and license
-  combinations that might conflict go to a person.
+- **Install a package with a known vulnerability without asking.** Advisories
+  for the version and everything it brings in are checked before the install.
+  If there are any, it lists them, offers a patched version when one exists, and
+  waits for your explicit yes. It also stops and asks when the check could not
+  run.
+- **Replace a scanner or a lawyer.** It checks only what is arriving, not the
+  tree already installed. License combinations that might conflict go to a
+  person.
 
 Standards Compass audits dependency management across the whole project. This
 skill decides one dependency at a time, as it arrives.

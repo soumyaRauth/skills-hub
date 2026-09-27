@@ -40,8 +40,11 @@ changelog; when a dependency is removed (what still imports it is Impact Map's
 question); and when dev tooling is aligned to versions already in use.
 
 **Depth** `CONSULT`: a decision of three to six lines before the install, then
-the work. `ACTIVE` for a major upgrade or a choice between candidates. Never
-`GATING`: `DON'T ADD` is advice, and the user decides.
+the work. `ACTIVE` for a major upgrade or a choice between candidates.
+`GATING` in one case only: the version about to be installed, or a package it
+brings in, has a known vulnerability, or the advisory check could not run. The
+install stops until the developer answers (rule 9). Otherwise `DON'T ADD` is
+advice, and the user decides.
 
 **Composes with** `standards-compass` (audits dependency management and supply
 chain as control areas; this skill makes the per-change call) · `impact-map`
@@ -127,6 +130,16 @@ release).
    install globally. The install is the requested work. It happens after the
    decision, and not after a `DON'T ADD` unless the user says so.
 8. **Short.** The decision fits on a screen. Detail is available when asked for.
+9. **A known vulnerability stops the install.** Before anything installs, check
+   advisories for the exact version that would resolve and for every package it
+   would add (`references/ecosystem-commands.md`, *Advisories before install*).
+   Any advisory, at any severity, means `ASK BEFORE INSTALL`: list each one, name
+   the patched version if there is one, and ask. Install only on an explicit yes
+   to that list. Silence, a general "go ahead" given before the advisories were
+   shown, or an earlier yes for another package is not a yes. Advisories that
+   were already in the project before this change are not counted. When the
+   check cannot run (no network, no audit tool), treat it the same way: say
+   the check did not run, and ask.
 
 ## Workflow
 
@@ -177,11 +190,16 @@ expected repository before installing.
   and how it ships. A combination that might not fit is a question for a human,
   never legal advice.
 
-### 5. Read health from evidence
+### 5. Check advisories, then read health
 
-Last release, deprecation notices, an archived repository, the number of
-maintainers, advisories reported by the ecosystem's audit tool, a major line the
-ecosystem has moved past. Each is a signal with a source, not a score. *Last
+**Advisories come first, and before any install** (rule 9). Query the exact
+version that would resolve, then audit a lockfile-only resolution in a
+throwaway copy so transitive packages are covered. Subtract what the project's
+current audit already reports. Anything left is `ASK BEFORE INSTALL`.
+
+For health, look at the last release, deprecation notices, an archived
+repository, the number of maintainers, and a major line the ecosystem has moved
+past. Each is a signal with a source, not a score. *Last
 published in 2019* is a fact. *Abandoned* is an inference, and it is labeled as
 one.
 
@@ -193,6 +211,20 @@ one.
 | **ADD** | The need is real, identity verified, the install surface clean or justified, and health acceptable |
 | **ADD WITH CONDITIONS** | Acceptable once stated conditions are met: pin the version, allow its install script explicitly, confirm identity, keep it a dev dependency, vendor it |
 | **DON'T ADD** | The name is unresolved or suspicious; the install surface isn't justified by the need; the license conflicts; or a smaller existing option clearly wins |
+| **ASK BEFORE INSTALL** | A known advisory affects the resolved version or a package it adds, or the advisory check could not run. The install waits for an explicit yes (rule 9) |
+
+`ASK BEFORE INSTALL` overrides `ADD` and `ADD WITH CONDITIONS`. When a patched
+version is itself free of advisories, offer it as the alternative:
+`ADD WITH CONDITIONS · pin >= <patched>`.
+
+```
+DEPENDENCY  lodash@4.17.15 — debounce for the customer search box
+DECISION    ASK BEFORE INSTALL
+ADVISORIES  high · GHSA-35jh-r3h4-6jhm · Command Injection · <4.17.21
+            high · GHSA-p6mc-m468-83gw · Prototype Pollution · >=3.7.0 <4.17.19
+PATCHED     4.17.21 (no advisories)
+ASK         Install 4.17.15 anyway, use 4.17.21, or skip?
+```
 
 ```
 DEPENDENCY  <name@range> — <the need>
@@ -231,8 +263,10 @@ HANDOFF → impact-map: express 4 → 5 breaks 6 call sites across 3 route files
 
 ## What this skill is not
 
-- **Not a vulnerability scanner.** It runs the ecosystem's audit tool when one
-  is available, and treats the output as evidence, not as the decision.
+- **Not a vulnerability scanner.** It checks advisories only for what is about
+  to arrive, not for the tree already installed. A known advisory stops that
+  install until the developer answers. It does not scan for anything beyond
+  what the ecosystem's advisory database reports.
 - **Not a license lawyer.** It reports license facts and flags combinations
   that need a person.
 - **Not a supply-chain audit.** Standards Compass assesses dependency management
