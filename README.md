@@ -21,8 +21,8 @@ usable with Claude Code and other Agent Skills-compatible agents.
 | **[skills-pipeline](skills/skills-pipeline/README.md)** | Runs the skills you pick from a numbered menu, in the order you pick, and ends in a ledger with one status per stage | *Only* when you type `/skills-pipeline` |
 
 ```bash
-# install all twelve skills, to whichever agents you already have
-npx skills add soumyaRauth/skills-hub --skill '*' -g -y
+# install all twelve skills; asks which agents, and project or global
+npx skills add soumyaRauth/skills-hub --skill '*'
 
 # uninstall all twelve, and nothing else
 npx github:soumyaRauth/skills-hub uninstall
@@ -1071,19 +1071,24 @@ skill's own. The pipeline adds none. Edit the menu in
 ## Installation
 
 ```bash
-# every skill, to whichever agents you already have installed
+# every skill; asks which agents, and project or global
+npx skills add soumyaRauth/skills-hub --skill '*'
+
+# every skill, no prompts: add -g for global, leave it out for this project
 npx skills add soumyaRauth/skills-hub --skill '*' -g -y
 
 # every skill, Claude Code only
-npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code --copy -g -y
+npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code --copy
 
 # choose from a list, or name one
 npx skills add soumyaRauth/skills-hub
 npx skills add soumyaRauth/skills-hub --skill impact-map
 ```
 
-`-g` installs globally, into `~/<agent>/skills/`, so the skills are there in
-every project. Drop it to install into the current repository instead. Prefer
+Without `-g` or `-y` the CLI asks whether to install into the current project
+or globally. `-g` answers globally, into `~/<agent>/skills/`, so the skills are
+there in every project; `-y` skips the prompts, and without `-g` installs into
+the current repository. Prefer
 `--skill '*'` over the CLI's `--all`: `--all` also expands the agent list to
 every agent the CLI supports, not the ones you have, and writes skill
 directories into all of them. For Claude Code only, keep `--copy`. Without it
