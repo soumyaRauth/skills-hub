@@ -431,6 +431,14 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
 
 ### Changed
 
+- **Installing every skill asks for project or global scope.** The documented
+  command, `npx skills add soumyaRauth/skills-hub --skill '*' -g -y`, forced a
+  global install and skipped the Skills CLI's prompts, so the scope question
+  that single-skill installs ask never came up. The default command in the
+  README and on the site is now `--skill '*'` without flags, and the CLI asks
+  which agents and which scope. `-g -y` stays documented as the no-prompt
+  global install, and `-y` alone installs into the current project. The Claude
+  Code-only command drops `-g -y` too.
 - **Claude Code-only installs use `--copy`.** Without it, the Skills CLI stores a
   skill in `~/.agents/skills` (or `.agents/skills` in a project) and links Claude
   Code to it. Codex, Cursor, Gemini CLI and the other agents that read that
