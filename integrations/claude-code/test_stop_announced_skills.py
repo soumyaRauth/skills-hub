@@ -57,6 +57,23 @@ assert check(typed, say("⚡ Skills Pipeline — Frame → Impact → Ship gate"
 # Engagement is per request: an earlier turn's announcement does not carry over.
 assert check(prompt("a"), say("⚡ Impact Map — rename reaches SQL"), prompt("b"), say("done")) == []
 
+# A finished background task or an agent's report is not a new prompt: skills
+# loaded before it arrived still count for the turn's ⚡ line.
+notice = {"type": "user", "origin": {"kind": "task-notification"}, "promptSource": "system",
+          "message": {"role": "user", "content": "<task-notification>\n<task-id>a1</task-id>"}}
+old_notice = prompt("<task-notification>\n<task-id>a1</task-id>")
+peer = {"type": "user", "origin": {"kind": "peer"},
+        "message": {"role": "user", "content": "Another Claude session sent a message: <agent-message from=\"a1\">"}}
+pb = "⚡ ProofBuild · Project Compass — build and record direction"
+for arrived in (notice, old_notice, peer):
+    # As it happened: skills loaded, a notice arrived, then the final reply's ⚡ line.
+    assert check(prompt("finish these"), skill("proof-driven-dev"), skill("project-compass"),
+                 arrived, say(pb + "\nall five skills are in")) == [], arrived
+# A real prompt from the human still starts a new turn.
+human = {"type": "user", "origin": {"kind": "human"}, "promptSource": "typed",
+         "message": {"role": "user", "content": "next"}}
+assert check(prompt("a"), skill("impact-map"), human, say("⚡ Impact Map — x")) == ["impact-map"]
+
 # Non-hub names in the line are ignored.
 assert check(prompt("x"), say("⚡ Ponytail — lazy mode")) == []
 

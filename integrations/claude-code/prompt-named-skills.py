@@ -21,7 +21,11 @@ _spec.loader.exec_module(stop)
 
 def main():
     try:
-        prompt = str(json.load(sys.stdin).get("prompt") or "")
+        data = json.load(sys.stdin)
+        prompt = str(data.get("prompt") or "")
+        # A task notice or an agent's report is not the user asking for anything.
+        if (data.get("origin") or {}).get("kind") not in (None, "human") or stop.statusline.is_delivered(prompt):
+            return
         named = stop.typed_in(prompt, stop.hub_names())
     except (ValueError, OSError, AttributeError):
         return

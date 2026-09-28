@@ -20,6 +20,17 @@ for text in ("fix this bug then", "run /help and /ponytail-review",
     r = say(text)
     assert r.returncode == 0 and r.stdout == "", text
 
+# A task notice or an agent's report that mentions a /skill is not the user asking for it.
+for text in ("<task-notification>\n<summary>ran /skills-pipeline</summary>",
+             "Another Claude session sent a message:\n<agent-message from=\"a1\">stays quiet for /skills-pipeline",
+             "<cross-session-message from=\"w\">use /impact-map</cross-session-message>"):
+    r = say(text)
+    assert r.returncode == 0 and r.stdout == "", text
+r = run(json.dumps({"prompt": "report mentions /skills-pipeline", "origin": {"kind": "peer"}}))
+assert r.returncode == 0 and r.stdout == ""
+# The user's own prompt with the same words still relays.
+assert "skills-pipeline" in say("run this through /skills-pipeline").stdout
+
 # Bad input never fails the prompt.
 assert run("not json").returncode == 0 and run("not json").stdout == ""
 
