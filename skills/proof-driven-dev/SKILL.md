@@ -1,6 +1,6 @@
 ---
 name: proof-driven-dev
-description: "Use for any request to add, build, implement or fix behavior whose success is not obvious from the diff: features, bug fixes, refactors that must preserve behavior, migrations, performance or security changes. Turns the request into numbered observable requirements, including unstated negative cases and boundaries, implements, runs the checks that prove each one, and reports VERIFIED, REVIEW REQUIRED or BLOCKED instead of narrating edits. Not for copy, typo, comment or formatting edits, local renames, questions, analysis-only requests, or declared throwaway prototypes."
+description: "Use for any request to add, build, implement or fix behavior whose success is not obvious from the diff: a new app, tool or CLI built from a spec, features, bug fixes, refactors that must preserve behavior, migrations, performance or security changes. Turns the request into numbered observable requirements, including unstated negative cases and boundaries, implements, runs the checks that prove each one, and reports VERIFIED, REVIEW REQUIRED or BLOCKED instead of narrating edits. Not for copy, typo, comment or formatting edits, local renames, questions, analysis-only requests, or declared throwaway prototypes."
 ---
 
 # Proof-Driven Development

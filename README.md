@@ -139,7 +139,7 @@ must not. [ECOSYSTEM.md](ECOSYSTEM.md) explains how the pieces fit, including
 the skills considered and deliberately not added.
 
 > [!TIP]
-> **In Claude Code, also add the ten-line standing instruction** from
+> **In Claude Code, also add the short standing instruction** from
 > [integrations/claude-code](integrations/claude-code/README.md). In the
 > activation suite, it is what gets Claude to reach for the skills during
 > implementation work, not only when a request sounds like the skill's own name.
@@ -1497,7 +1497,7 @@ repository, it can run these skills.
 
 Everything Claude Code-specific is kept outside the skills:
 
-- a ten-line standing instruction for `CLAUDE.md`, which is recommended,
+- a short standing instruction for `CLAUDE.md`, which is recommended,
   because the activation suite measures a clear difference with it
 - a Stop hook that makes every skill named in the ⚡ line actually load, or be
   dropped in one line, before the turn ends

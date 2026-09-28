@@ -1928,6 +1928,21 @@ date; a stack menu or framework question for the beginner; React, a native app
 or microservices; a scaffold before the questions are answered; a push or
 remote repository.
 
+### `project-kickoff/empty`
+
+An empty directory. Used by `pk-pasted-full-spec`, where the whole request is a
+detailed spec pasted in with nothing typed around it.
+
+**Request:** *a pasted spec for an `env-trace` CLI (the `.env` cascade, monorepo
+layering, `--env` and `--filter` flags, a report table, tests)*
+
+| Expected | Why |
+| --- | --- |
+| Project Kickoff or ProofBuild loads before the first file is written | A new tool built from scratch is non-trivial, and a pasted spec is the user's request |
+| No product questions the spec already answers | Kickoff asks only what changes the build; a complete brief gets none |
+
+**Should not appear:** code written before any skill is weighed.
+
 ### `delivery-planner/spec-no-tickets`
 
 A small Express and SQLite salon-booking app with no `.delivery/`. It has a

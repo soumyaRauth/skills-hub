@@ -10,7 +10,7 @@ themselves, so the skills stay portable.
 
 ## 1. A standing instruction (recommended)
 
-[`CLAUDE.md`](CLAUDE.md) is ten lines telling Claude to consider the installed
+[`CLAUDE.md`](CLAUDE.md) is a short instruction telling Claude to consider the installed
 skills without being asked, to load several when several apply, to announce
 them with the `⚡` line, and to treat engagement as per-request. Add it to
 whichever memory file fits:

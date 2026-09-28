@@ -338,6 +338,22 @@ methodology and documentation.
 
 ### Fixed
 
+- **A pasted spec for a new project loaded no skill.** A real session was given a
+  detailed spec for a Node CLI, pasted into an empty directory with nothing
+  typed around it. It built and tested the whole tool without loading Project
+  Kickoff or ProofBuild, although both were installed and listed and the
+  standing instruction was loaded. The cause is not isolated. Three changes
+  each close one candidate:
+  - **The standing instruction** now says to weigh skills before the first tool
+    call, and that a pasted spec is the user's request, however detailed. It
+    also says a style or brevity instruction from another plugin or hook
+    governs the output and never means skipping a skill that applies.
+  - **Descriptions.** ProofBuild names "a new app, tool or CLI built from a
+    spec"; Project Kickoff names "a detailed spec pasted in to build from
+    scratch".
+  - **`pk-pasted-full-spec`** reproduces the session as an activation case.
+    It passes when either skill loads, and it has not been run yet.
+
 - **The Claude Code hooks no longer mistake a background agent for the user.**
   - The Stop hook counted a finished background task's notice as a new user
     prompt. Skills loaded before the notice arrived were then reported as
