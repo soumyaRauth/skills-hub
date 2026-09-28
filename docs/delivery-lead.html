@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery Lead — Skills Hub</title>
+<meta name="description" content="Takes the next ready ticket and drives it to done, then the next, until the milestone ships or a human is needed. Done means proven and merged.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/delivery-lead/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; when you ask for the loop</span>
+    <h1>Delivery Lead</h1>
+    <p class="lede">What a team adds to a plan is the loop: someone takes the next ticket, makes sure it is really finished, moves the board, and picks up the one after. This is that loop for one developer &mdash; and it never calls a ticket done that was not proven and merged.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill delivery-lead</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>plan &nbsp;&rarr;&nbsp; tickets</b> &nbsp;&rarr;&nbsp; &hellip; who picks the next one, and who says it is done?</p>
+    <p>
+      Working alone, the gap between tickets is where projects stall. And
+      without someone whose job is to check, &ldquo;done&rdquo; slides into
+      &ldquo;the code was written&rdquo;: a PR opened, tests assumed, the board
+      moved on a feeling.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      Only when you ask for the loop. A single request stays a single request,
+      however large &mdash; and when it does run, one <span class="mono">&#9889;</span>
+      line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>&ldquo;Work through the backlog&rdquo;, &ldquo;take the next ticket&rdquo;, &ldquo;keep going until the milestone is done&rdquo;, &ldquo;build the whole thing&rdquo;, or by name. Also to resume an unfinished run.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>One ordinary request, even a large one; a request naming one skill; <span class="mono">/skills-pipeline</span>; planning or re-ordering tickets.</td></tr>
+          <tr><td class="klass">Depth</td><td>Sequences the whole run. Owns one judgment only: whether a ticket met the definition of done. Never states another skill&rsquo;s verdict.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="proof-driven-dev.html">ProofBuild</a> on every ticket, <a href="production-guard.html">Production Guard</a> when a milestone completes, and every other discipline when a ticket earns it</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="flow mono">
+      next ready ticket &nbsp;&rarr;&nbsp; <b>branch</b> t/&lt;id&gt;-&lt;slug&gt;<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>build</b> ProofBuild always &middot; the others when earned<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>VERIFIED?</b> review &middot; PR &middot; merge &middot; done<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; milestone complete? Production Guard &middot; staging &middot; production if allowed
+    </p>
+<pre class="block">You:    Work through the backlog.
+
+Agent:  [1/5] T-002 Class list page  &mdash; done &middot; VERIFIED &middot; PR #12 merged
+        [2/5] T-003 Book a class     &mdash; done &middot; VERIFIED &middot; PR #13 merged
+        [3/5] T-004 Cancel a booking &mdash; blocked &middot; REVIEW REQUIRED &middot; refund rule undecided
+
+        STOPPED  nothing ready &middot; 1 decision
+        1. T-004 &mdash; a member cancels &lt;24h before class: refund?
+           [full refund]  [no refund]  [class credit]</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>You set what it may do</h2>
+    <p>
+      Merging to the default branch, deploying production, and anything
+      irreversible happen only when <span class="mono">.delivery/config.yml</span>
+      says <span class="mono">auto</span> for that action, or you said yes in the
+      session. A missing setting means ask. It never force-pushes, rewrites
+      history, or mixes two tickets on one branch, and a run stops after five
+      tickets unless you raise the budget.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>It picks up where it stopped</h2>
+    <p>
+      Every ticket writes a checkpoint to a run ledger in
+      <span class="mono">.delivery/runs/</span>. A new session reads it and the
+      tracker, and continues &mdash; keeping a crashed session&rsquo;s work, but
+      proving it again before anything is called done.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      <span class="mono">delivery-planner</span> owns the plan, the tickets and
+      the tracker; this runs the loop over them.
+      <a href="proof-driven-dev.html">ProofBuild</a> owns
+      <span class="mono">VERIFIED</span>, <a href="production-guard.html">Production Guard</a>
+      owns the ship decision, and <span class="mono">release-engineer</span>
+      performs the deploy. The lead only refuses to call anything done without
+      them.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

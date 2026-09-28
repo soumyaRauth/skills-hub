@@ -1,0 +1,46 @@
+schema_version: '1.1'
+name: dl-work-backlog
+tags:
+- positive
+- new-skill
+description: A planned backlog in .delivery/ and a request to work through it without driving each ticket.
+expected_outcome: 'Must engage: delivery-lead. Must stay quiet: skills-pipeline, practical-localizer, engineering-investigator, api-contract-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Work through the backlog.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-delivery-lead
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-lead)"'
+- name: quiet-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+  min: 0
+  max: 0

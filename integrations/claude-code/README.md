@@ -78,7 +78,7 @@ its most recent part. Check it with
 `.claude-plugin/marketplace.json` makes it installable as one. That serves
 three purposes:
 
-- **Installing all twelve skills in one step**, and updating them in one step
+- **Installing all seventeen skills in one step**, and updating them in one step
   later:
 
   ```
@@ -86,7 +86,7 @@ three purposes:
   /plugin install skills-hub@skills-hub
   ```
 
-- **Trying all twelve skills at once**, without installing anything:
+- **Trying all seventeen skills at once**, without installing anything:
   `claude --plugin-dir /path/to/skills-hub`. Skills then appear namespaced, as
   `skills-hub:impact-map`.
 - **Testing activation.** `claude plugin eval` needs a plugin to load. See

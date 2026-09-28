@@ -9,6 +9,66 @@ methodology and documentation.
 
 ### Added
 
+- **Five skills that take one developer from an idea to production.** The
+  eleven disciplines assumed a codebase that already exists and a developer
+  who knows what to do next. A beginner has neither. The new skills fill the
+  gaps: a starting point, a plan, a release path, operations, and a loop that
+  keeps the work moving. Every discipline still decides for itself.
+  - **`project-kickoff`** is the entry point for a new project. It asks at most
+    five plain product questions in one block, or none when the brief is
+    complete. It writes `docs/spec.md` with every line labelled `[you said]`
+    or `[assumed]` and picks a boring stack the developer already knows. It
+    then scaffolds a skeleton whose install, test, lint and run commands were
+    actually executed.
+  - **`delivery-planner`** turns a spec into milestones and vertical-slice
+    tickets. Milestone 1 is always a deployed walking skeleton. Acceptance
+    criteria are numbered and observable so they become ProofBuild's
+    requirements, and an undecided rule blocks its ticket instead of being
+    guessed.
+    - **Trackers.** Tickets live in `.delivery/` and sync to Jira, Trello,
+      Nextcloud Deck, GitHub, GitLab or Linear, or stay in local files. Each
+      tracker is reached through its MCP server, official CLI or REST API, and
+      every endpoint was checked against official docs.
+    - **Automatic moves.** Tickets move at fixed moments, within the autonomy
+      the human sets once. The tracker is read before every write, a person's
+      edit wins, and nothing is duplicated or deleted.
+    - **Guided setup.** The first run connects the tracker for you, one
+      question at a time. It lists the account's real boards to pick from, or
+      creates one. It maps the existing columns and creates the missing ones
+      on a yes, then proves the connection with `CONNECTED` before creating
+      anything.
+      - Where an official MCP server signs in with OAuth, the agent adds it
+        and the human only finishes the sign-in.
+      - Otherwise, `scripts/tracker.py secret` takes the token as hidden input
+        in the human's terminal and writes it to a git-ignored, mode-600
+        `.delivery/.env`, so it never passes through the chat.
+      - `test_tracker.py` checks the helper against mock servers for every
+        tracker, and `validate.sh` runs it.
+  - **`release-engineer`** builds and runs the path to users. That means PR
+    checks and one artifact built once. Staging deploys on merge and rolls back
+    if its smoke check fails, and production is an authorized promotion of the
+    same digest. The rollback is run on staging before the first production
+    deploy. It never states a ship verdict.
+  - **`observability-baseline`** puts a seven-item baseline in place before the
+    first launch: logs, health checks, error tracking, an uptime check, one
+    alert, a restore-tested backup and a runbook. It reports each item only
+    after it fired, and stays quiet during a live incident.
+  - **`delivery-lead`** is opt-in, like the pipeline. Asked to work through the
+    backlog, it takes the next ready ticket on its own branch, runs ProofBuild,
+    and lets each other discipline engage when the ticket earns it. It moves the
+    ticket through the planner and calls it done only when it is `VERIFIED` and
+    merged. It stops after five tickets by default, or at a decision only a
+    human can make, and leaves a run ledger a new session resumes from.
+  - Merging to the default branch and deploying production follow the
+    `autonomy` block in `.delivery/config.yml`, or a yes in the session. Both
+    default to asking.
+  - This reverses two "not added" entries in `ECOSYSTEM.md`: Release / Migration
+    Guardian and Observability Engineer. They come back as builders, not
+    reviewers. The reasoning that kept a second reviewer out still holds.
+  - Each skill has a fixture and an activation case where it must engage.
+    Every `quiet-*` case now also requires all five to stay quiet. The
+    pipeline menu gains stages 12–15. None of the new cases has been measured
+    yet.
 - **Dependency Guard stops before installing a package with a known
   vulnerability.** Advisories for the resolved version and for every package it
   would add are checked before the install, using the npm bulk advisory endpoint

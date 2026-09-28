@@ -1,0 +1,40 @@
+# .delivery/config.yml — written by the agent at the end of guided setup; nobody edits it by hand.
+# No secrets, ever: auth_env holds env var NAMES. The values live in auth_file
+# (git-ignored, mode 600), the shell environment, a CLI's own login, or the MCP
+# server's own sign-in. This file is meant to be committed.
+
+tracker:
+  type: jira            # jira | trello | deck | github | gitlab | linear | local
+  via: rest             # mcp | cli | rest  (first that works: mcp → cli → rest → local)
+  project: PROJ         # Jira key · Trello board id · Deck board id · owner/repo · GitLab path · Linear team key
+  url: https://example.atlassian.net   # site or self-hosted base URL; omit for github.com, gitlab.com, linear, trello
+  auth_env: [JIRA_EMAIL, JIRA_API_TOKEN]   # env var NAMES only; the environment overrides auth_file
+  auth_file: .delivery/.env   # written by scripts/tracker.py secret; omit for mcp or a CLI login
+  flavor: cloud         # jira only: cloud | datacenter (different API version, auth and comment format)
+  # github_project: 3   # github only, optional: a Projects board number whose Status field carries the column
+
+# Neutral status → the tracker's column, list, stack or workflow state, by name.
+# Built at setup by matching the tracker's own names; unmatched ones are shown to
+# the human, never created without a yes. A status with no column at all can be
+# null: it is then a label of the same name plus a comment, and the column stays.
+status_map:
+  backlog: "Backlog"
+  ready: "To Do"
+  in_progress: "In Progress"
+  in_review: "In Review"
+  blocked: "Blocked"
+  done: "Done"
+  dropped: "Done"       # plus the label "dropped" and a comment, when there is no Won't Do state
+
+# What may happen without asking. Set once, by the human. ask = state it in one line and wait.
+autonomy:
+  create_tickets: auto
+  move_tickets: auto
+  open_pr: auto
+  merge: ask            # ask | auto
+  deploy_staging: auto
+  deploy_production: ask
+
+# Used by delivery-lead; the planner only reads it.
+run:
+  max_tickets: 5

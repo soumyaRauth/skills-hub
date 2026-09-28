@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Release Engineer — Skills Hub</title>
+<meta name="description" content="Builds the path from a verified change to users and back: CI on every pull request, one artifact built once, staging on merge, a gated production promotion, smoke checks and a rollback tried before it is needed.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/release-engineer/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; from merge to users, and back</span>
+    <h1>Release Engineer</h1>
+    <p class="lede">A change that passes on a laptop is not yet a change users have. This builds the path in between &mdash; checks on every pull request, one artifact, staging on merge, a production step someone authorized &mdash; and a way back that was tried before it was needed.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill release-engineer</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>merge &nbsp;&rarr;&nbsp; ssh in, rebuild, paste a secret</b> &nbsp;&rarr;&nbsp; no way back</p>
+    <p>
+      Without a pipeline, every deploy is a hand-typed ritual. The server
+      rebuilds what the laptop tested, so production runs something nobody
+      checked. Secrets end up in files. And when the new version answers 503,
+      the only rollback is remembering what was there before.
+    </p>
+    <p>
+      Coding agents make it faster to ship and no easier to undo. A deploy that
+      &ldquo;went fine&rdquo; is only as true as the output someone read.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. Installed, it is loaded when a request needs it
+      and stays out of the way otherwise &mdash; and when it does shape the work,
+      one <span class="mono">&#9889;</span> line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>Setting up or fixing CI/CD, automated deploys, staging or production environments, secrets in CI, rollback, a migration-safe deploy &mdash; or &ldquo;deploy this&rdquo; when no repeatable path exists.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>Comments or formatting in CI and Docker files, generic questions about CI products, local setup, and whether a change is safe to ship.</td></tr>
+          <tr><td class="klass">Depth</td><td>Shapes the work: it writes the pipeline and runs the deploys. It gates only the production deploy it performs itself.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="production-guard.html">Production Guard</a>, <a href="deployment-compatibility.html">Deployment Compatibility</a>, <a href="dependency-guard.html">Dependency Guard</a>, <a href="impact-map.html">Impact Map</a>, <a href="engineering-investigator.html">Engineering Investigator</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="flow mono">
+      pull request &nbsp;&rarr;&nbsp; <b>checks</b> install &middot; lint &middot; test &middot; build<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>main</b> build the artifact once &middot; staging &middot; smoke &middot; roll back on failure<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>production</b> the same artifact &middot; only with a ship verdict and authorization
+    </p>
+<pre class="block">You:    Set up CI/CD so every merge to main runs the tests and deploys to staging.
+
+Agent:  PIPELINE    GitHub Actions &middot; .github/workflows/ci.yml
+        PR CHECKS   install &#10003; &middot; lint ABSENT (no script) &middot; test &#10003; &middot; build &#10003;
+        STAGING     on merge to main &rarr; VPS over SSH, docker compose
+        ROLLBACK    ./deploy/rollback.sh staging &middot; NOT RUN
+        STATUS      WRITTEN, NOT RUN &mdash; set STAGING_SSH_KEY, STAGING_HOST,
+                    STAGING_KNOWN_HOSTS, then open a PR</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Never its own ship verdict</h2>
+<pre class="block">RELEASE     production &middot; ghcr.io/acme/shop@sha256:7ac3&hellip;
+BLOCKED     production-guard returned DO NOT SHIP for 5e81d0a
+RAN         nothing in production</pre>
+    <p>
+      Whether a change is safe to ship is Production Guard&rsquo;s decision. A
+      production deploy waits for its SHIP &mdash; or your explicit go-ahead
+      &mdash; and for authorization, even when autonomy says deploys are
+      automatic.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>A rollback tried before it is needed</h2>
+    <p>
+      Before the first production deploy, the rollback command is run on
+      staging: deploy, roll back, smoke-check, roll forward. Migrations are
+      expand-then-contract, so the old version can still run after a rollback.
+      When a smoke check fails, the rollback runs at once and the report shows
+      both results &mdash; quoted from real output, never assumed.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      <a href="deployment-compatibility.html">Deployment Compatibility</a> says
+      whether a server can run the app; this builds the path to it.
+      <a href="production-guard.html">Production Guard</a> says whether a
+      change is safe to ship; this carries it there. New CI actions and images
+      go through <a href="dependency-guard.html">Dependency Guard</a>, and a
+      deploy that fails for no visible reason goes to
+      <a href="engineering-investigator.html">Engineering Investigator</a>.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

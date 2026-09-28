@@ -1,0 +1,52 @@
+schema_version: '1.1'
+name: dp-plan-into-tickets
+tags:
+- positive
+- new-skill
+description: A written spec, no .delivery/ yet, and a request to break it into tickets on a named tracker.
+expected_outcome: 'Must engage: delivery-planner. Must stay quiet: impact-map, engineering-investigator, practical-localizer, production-guard, dependency-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Break the spec into tickets on our Trello board.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-delivery-planner
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-planner)"'
+- name: quiet-impact-map
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:impact-map)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-production-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:production-guard)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0

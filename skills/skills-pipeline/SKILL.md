@@ -26,7 +26,8 @@ Every gate belongs to the skill that owns it.
 `project-compass` · `architecture-engineer` · `standards-compass` ·
 `api-contract-guard` · `dependency-guard` · `impact-map` · `proof-driven-dev` ·
 `practical-localizer` · `deployment-compatibility` · `production-guard` ·
-`engineering-investigator`.
+`engineering-investigator` · `project-kickoff` · `delivery-planner` ·
+`release-engineer` · `observability-baseline`.
 
 <!-- skills-hub:protocol -->
 ### Working with the other Skills Hub skills

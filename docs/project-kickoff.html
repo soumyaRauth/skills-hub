@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Kickoff — Skills Hub</title>
+<meta name="description" content="Turns an idea into a written spec, a boring stack the developer already knows, and a proven runnable skeleton, before the first feature is built.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/project-kickoff/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; the first session of a new project</span>
+    <h1>Project Kickoff</h1>
+    <p class="lede">New projects go wrong before the first feature: the idea is never pinned down, and the repository starts with nothing that runs. This asks only the product questions that change what gets built, writes them down, and leaves a skeleton that is proven to install, test and run.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill project-kickoff</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>idea &nbsp;&rarr;&nbsp; forty generated files</b> &nbsp;&rarr;&nbsp; nobody knows what was decided</p>
+    <p>
+      Handed <em>&ldquo;an app where members book classes&rdquo;</em>, a coding
+      agent invents the business&rsquo;s rules, picks a stack from a blog post,
+      and generates a login system before anyone has written down what a
+      booking is. A beginner cannot tell which parts came from them and which
+      were made up.
+    </p>
+    <p>
+      The other failure is quieter: nothing runs a test, nothing says how to
+      start the app, and a real key sits in a committed file. The first deploy
+      becomes a research project.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. Installed, it is loaded when a request needs it
+      and stays out of the way otherwise &mdash; and when it does shape the work,
+      one <span class="mono">&#9889;</span> line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>Someone wants to start a new app or product from an idea, or the repository is empty or holds only notes and the request is to build something whole.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>Features in an existing codebase, declared throwaway spikes, and questions about an idea with no intent to build it.</td></tr>
+          <tr><td class="klass">Depth</td><td>Shapes the whole first session. Stops only to ask its product questions, or before overwriting a file. Never a gate.</td></tr>
+          <tr><td class="klass">Works with</td><td>Delivery Planner, <a href="dependency-guard.html">Dependency Guard</a>, <a href="standards-compass.html">Standards Compass</a>, <a href="proof-driven-dev.html">ProofBuild</a>, <a href="architecture-engineer.html">Architecture Engineer</a>, Release Engineer</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="flow mono">
+      idea &nbsp;&rarr;&nbsp; <b>product frame</b> at most five plain questions, one block<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>docs/spec.md</b> every line [you said] or [assumed]<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>stack</b> a boring default you already know<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>scaffold</b> install &middot; test &middot; run, actually executed<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; planning: milestone 1 = walking skeleton deployed
+    </p>
+<pre class="block">You:    I want to build an app where our climbing gym&rsquo;s members can book
+        classes. I&rsquo;ve never built a full app before &mdash; where do I start?
+
+Agent:  1. Does each class have a maximum number of people? If it is full,
+           what should happen: nothing, or a waiting list?
+        2. Should members pay inside the app in the first version, or not yet?
+        3. What do you already know how to program in, if anything?
+        4. Is there a date this needs to be working by?
+
+        Meanwhile I am assuming: a website that works on phones, one gym
+        location, the front desk adds classes. Say so if that is wrong.</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Proven, not generated</h2>
+<pre class="block">SCAFFOLD PROOF
+install   pip install -r requirements.txt                  exit 0
+lint      ruff check . &amp;&amp; ruff format --check .            exit 0
+test      python manage.py test                            1 passed
+run       python manage.py runserver &rarr; GET / returned 200  checked, then stopped
+CI        .github/workflows/ci.yml written                 not run here</pre>
+    <p>
+      The skeleton is done when its commands ran here and their output was
+      read. A step that could not run is reported as not run, and the result
+      is <span class="mono">SCAFFOLD UNPROVEN</span>. A beginner gets one plain
+      sentence per command; the bar is the same for everyone.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Never your world, invented</h2>
+    <p>
+      Users, prices, schedules and deadlines come from you, or they are written
+      into the spec as <span class="mono">[assumed]</span> with what would change
+      them. &ldquo;By spring, no pressure&rdquo; stays your words; it never
+      becomes a date.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      <a href="project-compass.html">Project Compass</a> notices direction in a
+      project that exists; this defines one that does not yet, and Compass
+      reads its spec afterwards. Every package goes through
+      <a href="dependency-guard.html">Dependency Guard</a>, sign-in and personal
+      data through <a href="standards-compass.html">Standards Compass</a>, and a
+      requirement that genuinely forces an unusual stack to
+      <a href="architecture-engineer.html">Architecture Engineer</a>. The spec
+      goes to Delivery Planner, which makes it milestones and tickets.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

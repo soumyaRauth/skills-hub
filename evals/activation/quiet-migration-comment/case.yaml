@@ -93,3 +93,33 @@ graders:
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
   min: 0
   max: 0
+- name: quiet-project-kickoff
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-kickoff)"'
+  min: 0
+  max: 0
+- name: quiet-delivery-planner
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-planner)"'
+  min: 0
+  max: 0
+- name: quiet-release-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:release-engineer)"'
+  min: 0
+  max: 0
+- name: quiet-observability-baseline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:observability-baseline)"'
+  min: 0
+  max: 0
+- name: quiet-delivery-lead
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-lead)"'
+  min: 0
+  max: 0
