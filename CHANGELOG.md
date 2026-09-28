@@ -336,6 +336,20 @@ methodology and documentation.
   expands the agent list to every agent the CLI supports rather than the ones
   present, and writes skill directories into all of them.
 
+### Fixed
+
+- **The Claude Code hooks no longer mistake a background agent for the user.**
+  - The Stop hook counted a finished background task's notice as a new user
+    prompt. Skills loaded before the notice arrived were then reported as
+    never loaded, and a correct reply was blocked.
+  - The prompt hook read an agent's report that mentioned `/skills-pipeline` as
+    the user asking for it.
+  - Both now skip entries that Claude Code marks as coming from a task or an
+    agent (`origin.kind`), and recognise the text of older transcripts that
+    lack the mark. The two new tests fail on the previous code. Replayed on
+    the session that hit both bugs, only the 18 prompts the human typed count
+    as prompts.
+
 ### Considered and not added
 
 Architecture, data-architecture, release and migration, observability, and

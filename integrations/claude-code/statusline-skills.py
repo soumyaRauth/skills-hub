@@ -20,6 +20,14 @@ import sys
 TAIL_BYTES = 4 * 1024 * 1024  # ponytail: tail window; a turn larger than this shows its latest part only
 
 
+DELIVERED = ("<task-notification>", "Another Claude session sent a message:", "<agent-message", "<cross-session-message")
+
+
+def is_delivered(text):
+    """Text Claude Code delivered on someone else's behalf: a task notice or an agent's message."""
+    return text.lstrip().startswith(DELIVERED)
+
+
 def is_human_prompt(entry):
     # A skill's body arrives as a user text entry right after the Skill call,
     # flagged isMeta or isSynthetic depending on the transcript writer.
@@ -27,10 +35,16 @@ def is_human_prompt(entry):
         return False
     if "toolUseResult" in entry or "tool_use_result" in entry or entry.get("isCompactSummary"):
         return False
+    # A finished background task or an agent's report arrives as a user entry
+    # too. Newer transcripts mark who sent it; older ones only show the text.
+    kind = (entry.get("origin") or {}).get("kind")
+    if kind not in (None, "human"):
+        return False
     content = (entry.get("message") or {}).get("content")
     if isinstance(content, str):
-        return True
-    return isinstance(content, list) and all(b.get("type") == "text" for b in content)
+        return not is_delivered(content)
+    return (isinstance(content, list) and all(b.get("type") == "text" for b in content)
+            and not is_delivered("".join(b.get("text", "") for b in content)))
 
 
 def turn_skills(lines):
