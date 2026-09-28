@@ -33,6 +33,21 @@ methodology and documentation.
     skills actually loaded, and exits 2 to block the stop once when one is
     missing. It never chooses a skill. Replayed on the transcript of that
     session, it flags `production-guard`. `validate.sh` runs its self-check.
+  - **The Stop hook now catches what it missed in use.** An audit of nine
+    project sessions found four turns whose ⚡ line named a skill that never
+    loaded, and the hook blocked none of them. It ran in time, but the final
+    reply was not yet in the transcript file, so it now also reads the
+    reply from the hook input. It also accepts a colon after the names
+    (`⚡ A · B: reason`). A `/skill` typed mid-prompt or in a command's
+    arguments, which Claude Code never expands, now counts as announced.
+    Replayed on those four turns, it blocks each one.
+  - **`integrations/claude-code/prompt-named-skills.py`**, a UserPromptSubmit
+    hook that tells Claude which Skills Hub skills the prompt names as `/name`,
+    so it loads them.
+  - **The standing instruction treats "fix it" as a new request.** In the same
+    audit, every code change made without a skill came from a short follow-up
+    such as "okay trace and fix" or "yes do it". Skills were weighed on the
+    prompt that described the problem, not on the one that changed code.
   - **All twelve descriptions rewritten trigger-first**, following Claude
     Code's guidance to lead with the use case. Methodology detail moved out,
     since each skill's body already carries it, and the total length fell from

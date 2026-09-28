@@ -60,6 +60,19 @@ assert check(prompt("a"), say("⚡ Impact Map — rename reaches SQL"), prompt("
 # Non-hub names in the line are ignored.
 assert check(prompt("x"), say("⚡ Ponytail — lazy mode")) == []
 
+# A colon also ends the names: "⚡ A · B: reason" names both.
+assert check(prompt("x"), say("⚡ Standards Compass · Proof Driven Dev: the timeout needs proof"),
+             skill("standards-compass")) == ["proof-driven-dev"]
+
+# A /name typed mid-prompt is never expanded, so it must load; paths and URLs are not names.
+assert check(prompt("two taps? /engineering-investigator"), say("⚡ Engineering Investigator — tracing")) \
+    == ["engineering-investigator"]
+assert check(prompt("two taps? /engineering-investigator"), skill("engineering-investigator")) == []
+assert check(prompt("see skills/impact-map/SKILL.md and https://x.io/impact-map"), say("ok")) == []
+# A second /name in a command's arguments must load too; the command itself counts as loaded.
+cmd = prompt("<command-name>/standards-compass</command-name>\n<command-args>add a modal /proof-driven-dev</command-args>")
+assert check(cmd, say("done")) == ["proof-driven-dev"]
+
 # End to end: blocks once with a reason, never when stop_hook_active, tolerates bad input.
 with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as t:
     t.write("\n".join(json.dumps(e) for e in (prompt("x"), say(line), skill("deployment-compatibility"))) + "\n")
@@ -67,6 +80,11 @@ run = lambda stdin: subprocess.run([sys.executable, SCRIPT], input=stdin, captur
 blocked = run(json.dumps({"transcript_path": t.name}))
 assert blocked.returncode == 2 and "production-guard" in blocked.stderr
 assert run(json.dumps({"transcript_path": t.name, "stop_hook_active": True})).returncode == 0
+# The final reply may not be in the file yet; the hook input carries it.
+with open(t.name, "w") as f:
+    f.write(json.dumps(prompt("x")) + "\n")
+late = run(json.dumps({"transcript_path": t.name, "last_assistant_message": "⚡ Impact Map — rename reaches SQL"}))
+assert late.returncode == 2 and "impact-map" in late.stderr
 assert run("not json").returncode == 0
 assert run(json.dumps({"transcript_path": "/nonexistent"})).returncode == 0
 os.unlink(t.name)
