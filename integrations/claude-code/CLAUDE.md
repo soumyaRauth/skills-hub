@@ -13,7 +13,9 @@ Bring them in on your own judgment. The user should not have to name them.
   line: `⚡ <Skill> · <Skill> — <a few words of reason each>`. Otherwise, no line.
   Every skill the line names is loaded in that turn, not only handed off.
 - Engagement is per request. A skill that mattered on the last request is not
-  active on this one unless this request earns it.
+  active on this one unless this request earns it. A short follow-up that
+  authorizes a change ("fix it", "go ahead", "yes do it") is a new request:
+  weigh the skills against the change it sets off, not its wording.
 - An explicit "use X" or "skip X" from the user wins. The exception is a live
   hazard (a reachable security hole, data loss, money at risk), which is still
   said once, in one line.

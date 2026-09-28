@@ -130,6 +130,43 @@ In `~/.claude/settings.json`:
 It reads skill names from this repository's `skills/`, so run it from a clone.
 Check it with `python3 integrations/claude-code/test_stop_announced_skills.py`.
 
+It reads the final reply from the hook input as well as the transcript, because
+the reply can reach the hook a moment before it reaches the transcript file.
+Without that, the hook ran on the turns that needed it and found no ⚡ line to
+check.
+
+### A /skill typed anywhere in the prompt
+
+Claude Code expands a slash command only at the start of a prompt. In *"does QC
+need two taps? /engineering-investigator"* the skill never loads, and Claude
+may announce it anyway. [`prompt-named-skills.py`](prompt-named-skills.py), a
+UserPromptSubmit hook, tells Claude which Skills Hub skills the prompt names so
+it loads them. The Stop hook above treats those names as announced, so a turn
+cannot end without them. A path or URL that contains a skill's name does not
+count.
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python3 /path/to/skills-hub/integrations/claude-code/prompt-named-skills.py || true" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`|| true` matters. Python exits with code 2 when the script is missing (the
+clone moved, or an older commit is checked out), and a UserPromptSubmit hook
+that exits 2 blocks every prompt. The hook never needs to block, so nothing is
+lost. For the Stop hook, whose exit 2 is its signal, guard with
+`test -f <path> && python3 <path>` instead.
+
+Check it with `python3 integrations/claude-code/test_prompt_named_skills.py`.
+
 This does not make selection deterministic, and nothing here tries to. The
 model still decides which skills a request needs. The hook enforces only what
 the model already announced.

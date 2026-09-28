@@ -5,7 +5,9 @@ The ⚡ line is written before the work, so it is a promise. This hook holds the
 turn to it. When Claude tries to stop, it reads the transcript since the user's
 last prompt, collects the Skills Hub skills named in any ⚡ line, and compares
 them with the skills actually loaded (Skill tool calls, or a /name the user
-typed). If one is missing, it exits 2, which blocks the stop and tells Claude
+typed as the command). A /name typed anywhere else in the prompt counts as
+announced: Claude Code expands only a leading one, so the rest never load unless
+Claude loads them. If one is missing, it exits 2, which blocks the stop and tells Claude
 to load it, or to drop it in one line: `<Skill> dropped: <reason>`.
 
 It never chooses a skill. It only enforces the choice Claude already announced.
@@ -59,11 +61,21 @@ def announced_in(text, names):
         line = line.strip().strip("`*>").strip()
         if not line.startswith("⚡"):
             continue
-        head = re.split(r"\s[—–-]\s", line[1:], maxsplit=1)[0]
+        head = re.split(r"\s[—–-]\s|:\s", line[1:], maxsplit=1)[0]
         for part in head.split("·"):
             slug = resolve(part, names)
             if slug and slug not in out:
                 out.append(slug)
+    return out
+
+
+def typed_in(text, names):
+    """Hub skills the user named as /name anywhere in the text, not inside a path or URL."""
+    out = []
+    for m in re.findall(r"(?<![\w/.~-])/([\w:-]+)", text):
+        slug = names.get(norm(m.split(":")[-1]))
+        if slug and slug not in out:
+            out.append(slug)
     return out
 
 
@@ -82,6 +94,7 @@ def check(lines, names):
             announced, loaded, texts = [], set(), []
             raw = content if isinstance(content, str) else " ".join(b.get("text", "") for b in content)
             loaded |= {m.split(":")[-1] for m in re.findall(r"<command-name>/?([\w:-]+)</command-name>", raw)}
+            announced = typed_in(raw, names)
             continue
         if entry.get("type") != "assistant" or entry.get("isSidechain"):
             continue
@@ -107,12 +120,16 @@ def main():
         with open(path, "rb") as f:
             f.seek(max(0, os.path.getsize(path) - statusline.TAIL_BYTES))
             lines = f.read().decode("utf-8", "replace").splitlines()
+        # The final reply can reach the hook before it reaches the transcript file.
+        if data.get("last_assistant_message"):
+            lines.append(json.dumps({"type": "assistant", "message": {"content": [
+                {"type": "text", "text": str(data["last_assistant_message"])}]}}))
         missing = check(lines, hub_names())
     except (ValueError, OSError, AttributeError):
         return  # no transcript or no skills directory: allow the stop
     if missing:
         # Exit 2 blocks the stop and hands stderr to Claude as the reason.
-        print("The ⚡ line announced " + ", ".join(missing) + " but this turn never loaded "
+        print("The ⚡ line or the prompt named " + ", ".join(missing) + " but this turn never loaded "
               + ("it" if len(missing) == 1 else "them") + ". Load each with the Skill tool and "
               "pass it what it needs, or, if it no longer applies, write one line: "
               "`<Skill> dropped: <reason>`.", file=sys.stderr)
