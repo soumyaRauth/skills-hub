@@ -1,6 +1,6 @@
 ---
 name: project-kickoff
-description: "Use when someone wants to start a new app, project or product from an idea, or when the repository is empty or holds only a README or notes and the request is to build something whole: \"I want to build an app where...\", \"start a new project for...\", \"where do I start?\". Asks only the product questions that change what gets built, writes docs/spec.md with every claim labelled, picks a boring stack the developer already knows, scaffolds a proven runnable skeleton, and hands the spec to planning. Not for features in an existing codebase, declared throwaway spikes, or talk about an idea with no intent to build."
+description: "Use when someone wants to start a new app, project or product from an idea, or when the repository is empty or holds only a README or notes and the request is to build something whole: \"I want to build an app where...\", \"start a new project for...\", \"where do I start?\", or a detailed spec pasted in to build from scratch. Asks only the product questions that change what gets built, writes docs/spec.md with every claim labelled, picks a boring stack the developer already knows, scaffolds a proven runnable skeleton, and hands the spec to planning. Not for features in an existing codebase, declared throwaway spikes, or talk about an idea with no intent to build."
 ---
 
 # Project Kickoff

@@ -1,0 +1,79 @@
+schema_version: '1.1'
+name: pk-pasted-full-spec
+tags:
+- positive
+- new-skill
+- core
+description: A detailed spec pasted into an empty directory, with nothing typed outside the paste. Reproduces a real session that built the whole tool without loading any skill.
+expected_outcome: 'Must engage: project-kickoff or proof-driven-dev. Must stay quiet: impact-map, engineering-investigator, practical-localizer, production-guard, delivery-lead.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '<pasted_content id="a1f3">
+
+    Act as a Principal Developer Tooling Engineer. Build a global CLI tool called `env-trace` in Node.js and TypeScript.
+
+
+    It scans the working directory for .env files and reports which variables are active and which file each came from, using the cascade modern frameworks use:
+
+    1. `.env.${NODE_ENV}.local` (highest)
+
+    2. `.env.local` (skipped when NODE_ENV is test)
+
+    3. `.env.${NODE_ENV}`
+
+    4. `.env` (lowest)
+
+
+    Requirements:
+
+    - Detect monorepos (turbo.json, pnpm-workspace.yaml, lerna.json, or a root package.json with workspaces) and layer root and workspace files.
+
+    - `--env=development|production|test` (default development) and `--filter=<workspace>` / `--cwd=<path>`.
+
+    - Print a table: key, active value, source file, overwritten files.
+
+    - Include tests.
+
+    </pasted_content id="a1f3">'
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-project-kickoff-or-proof-driven-dev
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-kickoff|proof-driven-dev)"'
+- name: quiet-impact-map
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:impact-map)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-production-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:production-guard)"'
+  min: 0
+  max: 0
+- name: quiet-delivery-lead
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-lead)"'
+  min: 0
+  max: 0

@@ -7,6 +7,11 @@ Bring them in on your own judgment. The user should not have to name them.
   request *and* what the repository shows. Load every skill that would change
   the result. Load none for trivial edits: copy, typos, formatting, comments,
   local renames, routine patch bumps.
+- Weigh them before the first tool call, not after the work has started. A spec
+  or brief the user pastes is their request, however detailed. Building a new
+  project or tool from it, especially in an empty directory, is non-trivial.
+- Instructions about style or brevity, from any plugin or hook, govern how you
+  write and how much you build. They never mean skipping a skill that applies.
 - Several can apply to one request. Load them together, and let each one's
   `## Activation` section decide how deep it goes.
 - When any of them engages beyond silent background use, open the reply with one
