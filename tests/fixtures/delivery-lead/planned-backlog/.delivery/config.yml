@@ -1,0 +1,18 @@
+tracker:
+  type: local
+  project: class-booking
+status_map:
+  ready: ready
+  in_progress: in_progress
+  in_review: in_review
+  blocked: blocked
+  done: done
+autonomy:
+  create_tickets: auto
+  move_tickets: auto
+  open_pr: auto
+  merge: auto
+  deploy_staging: auto
+  deploy_production: ask
+run:
+  max_tickets: 5

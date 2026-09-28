@@ -10,7 +10,7 @@
 <br>
 
 [![Validate](https://img.shields.io/github/actions/workflow/status/soumyaRauth/skills-hub/validate.yml?branch=main&style=for-the-badge&label=validate&logo=githubactions&logoColor=white)](https://github.com/soumyaRauth/skills-hub/actions/workflows/validate.yml)
-[![Skills](https://img.shields.io/badge/skills-12-ea580c?style=for-the-badge&logo=bookstack&logoColor=white)](#-the-skills)
+[![Skills](https://img.shields.io/badge/skills-17-ea580c?style=for-the-badge&logo=bookstack&logoColor=white)](#-the-skills)
 [![Agent Skills](https://img.shields.io/badge/Agent_Skills-compatible-1c1917?style=for-the-badge&logo=markdown&logoColor=white)](https://code.claude.com/docs/en/skills)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=for-the-badge&logo=claude&logoColor=white)](integrations/claude-code/README.md)
 [![License: MIT](https://img.shields.io/github/license/soumyaRauth/skills-hub?style=for-the-badge&color=16a34a)](LICENSE)
@@ -31,10 +31,10 @@ Claude Code and other agents that support Agent Skills. No MCP server, no hosted
 <br>
 
 ```bash
-# install all twelve skills; asks which agents, and project or global
+# install all seventeen skills; asks which agents, and project or global
 npx skills add soumyaRauth/skills-hub --skill '*'
 
-# uninstall all twelve, and nothing else
+# uninstall all seventeen, and nothing else
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
@@ -43,7 +43,7 @@ Claude Code only, or as a plugin: see [Installation](#installation).
 
 > [!IMPORTANT]
 > **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all
-> twelve skills from every agent, and leaves your other skills alone.
+> seventeen skills from every agent, and leaves your other skills alone.
 
 ## 🧰 The skills
 
@@ -60,7 +60,12 @@ Claude Code only, or as a plugin: see [Installation](#installation).
 | 🤝 | **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises: the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
 | 🚀 | **[deployment-compatibility](skills/deployment-compatibility/README.md)** | Assesses a project against a specific target server: what it requires, what the server provides, what has to change. Then it verifies what it can | *Before* you deploy it there |
 | 🏛️ | **[architecture-engineer](skills/architecture-engineer/README.md)** | Works out what a system's structure should be, through questions, options and recorded decisions. Then it plans the migration and verifies the result | *Before* the shape is decided, and when it has to change |
+| 🌱 | **[project-kickoff](skills/project-kickoff/README.md)** | Turns an idea into a written spec, a boring stack you already know, and a skeleton whose install, test and run commands actually ran | *Before* there is any code |
+| 🗂️ | **[delivery-planner](skills/delivery-planner/README.md)** | Turns a spec into milestones and vertical-slice tickets, and keeps Jira, Trello, Nextcloud Deck, GitHub, GitLab, Linear or plain files in sync as work moves | *Before* the building starts, and whenever a ticket moves |
+| 🚢 | **[release-engineer](skills/release-engineer/README.md)** | Builds and runs the path to users: PR checks, one artifact, staging on merge, an authorized production promotion, a smoke check, a rollback tried before it is needed | *When* a verified change has to reach users |
+| 📡 | **[observability-baseline](skills/observability-baseline/README.md)** | Puts logs, health checks, error tracking, an uptime check, one alert, a restore-tested backup and a runbook in place, each proven by making it fire | *Before* the first production launch |
 | 🔗 | **[skills-pipeline](skills/skills-pipeline/README.md)** | Runs the skills you pick from a numbered menu, in the order you pick, and ends in a ledger with one status per stage | *Only* when you type `/skills-pipeline` |
+| 🏁 | **[delivery-lead](skills/delivery-lead/README.md)** | Takes the next ready ticket and drives it to done (proven, merged, tracker moved), then the next, until the milestone ships or only you can decide | *Only* when you ask it to work through the tickets |
 
 ## 🔀 How they compose
 
@@ -85,9 +90,32 @@ flowchart LR
 | | |
 | --- | --- |
 | 🏛️ **architecture-engineer** | Invited only. It never opens a review uninvited |
+| 🏁 **delivery-lead** | Opt-in only. *"Work through the backlog"* → next ticket → proven → merged → tracker moved → next |
 | 🔗 **skills-pipeline** | Opt-in only. `/skills-pipeline` → pick `1,3,6,7,10` → each runs → ledger |
 | 🧭 **project-compass** | Sits underneath all of it, and answers a different question: given where this project is heading, is this ticket the right next thing at all |
 | 📐 **standards-compass** | Sits underneath it too, and answers another one: what this software should have been measured against all along |
+
+## 🧑‍🚀 From idea to production, alone
+
+The goal: one developer, even a first-timer, takes a project from an idea to a
+monitored production app and works like a team of specialists.
+
+```
+💭 idea ─▶ 🌱 project-kickoff ─▶ 🗂️ delivery-planner ─▶ 🏁 delivery-lead ─┐
+            spec · stack · skeleton   milestones · tickets     next ticket    │
+                                      any tracker                             ▼
+     ┌──────────── per ticket: the disciplines that ticket earns ────────────┐
+     │ 🗺️ impact · 📐 standards · 🤝 contract · 📦 dependency · ✅ proof      │
+     └───────────────────────────────────┬──────────────────────────────────┘
+                                         ▼
+       🛡️ production-guard ─▶ 🚢 release-engineer ─▶ 📡 observability-baseline ─▶ 🌍 users
+```
+
+Tickets live wherever you already keep them (Jira, Trello, Nextcloud Deck,
+GitHub, GitLab, Linear) or in plain files. They move on their own as work
+happens, within the autonomy you set once in `.delivery/config.yml`. Merging to
+the main branch and deploying to production wait for your yes unless you say
+otherwise. The lead stops for a product decision only you can make.
 
 ## ✨ You don't call them. They show up
 
@@ -1108,6 +1136,168 @@ interruption budget for it.
 
 <br>
 
+### 🌱 Project Kickoff
+
+**What exactly are we building first, on what, and is the empty repo ready to build in?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill project-kickoff
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+New projects go wrong before the first feature. The idea is never pinned down,
+or the repository starts with nothing that runs. Agents make it worse: given
+*"an app where members book classes"*, they invent the business's rules, pick
+a stack from a blog post, and generate dozens of files a beginner cannot tell
+apart from decisions.
+
+```
+READY TO BUILD
+
+Spec      docs/spec.md · 8 [you said] · 5 [assumed] · 2 open decisions
+Stack     Python · Django · SQLite (PostgreSQL when deployed)
+Scaffold  install ✓ · lint ✓ · 1/1 tests ✓ · runs ✓ · CI written
+Next      HANDOFF → delivery-planner: milestone 1 = walking skeleton deployed
+```
+
+It asks at most five product questions in one block, and none if you already
+said everything. Technical choices get safe defaults instead of questions. It
+writes `docs/spec.md` with every line labelled `[you said]` or `[assumed]`,
+picks a boring stack you already know, and scaffolds the smallest skeleton:
+one passing test, lint, `.env.example`, README commands and a first CI check.
+The skeleton counts as done only when its install, test and run commands have
+actually been executed. It never scaffolds over existing code, overwrites a
+file without asking, or invents your users, prices or deadlines.
+
+</details>
+
+**[Full documentation →](skills/project-kickoff/README.md)**
+
+<br>
+
+### 🗂️ Delivery Planner
+
+**What is the work, in what order — and does the tracker say what is really true?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill delivery-planner
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+Work cut into layers can't be shown working until the last layer lands, and
+boards drift: cards sit in *To Do* while the code ships, a retried script
+duplicates a ticket, an automation overwrites a column a person just changed.
+
+```
+PLAN     docs/spec.md → 3 milestones · 10 tickets · 2 open decisions
+M1       Walking skeleton deployed        T-001 T-002
+M2       Customers book and cancel        T-003 T-004 T-005 T-006
+BLOCKED  T-006 on D1: can a customer cancel on the day of the appointment?
+TRACKER  jira · via rest · SAL · 10 created · 0 already there
+```
+
+Milestone 1 is always a walking skeleton, deployed. Tickets are vertical slices
+one session can build and prove, with numbered acceptance criteria that become
+ProofBuild's requirements. An undecided business rule blocks its ticket with the
+question instead of being guessed.
+
+It works with Jira, Trello, Nextcloud Deck, GitHub, GitLab or Linear, or with
+plain files in `.delivery/`. It reaches each through an MCP server, the official
+CLI or REST, and says which.
+
+Tickets move at fixed moments, each with a comment carrying its evidence. The
+tracker is read before every write, and a person's change wins. Nothing is
+deleted. Credentials never leave the environment.
+
+</details>
+
+**[Full documentation →](skills/delivery-planner/README.md)**
+
+<br>
+
+### 🚢 Release Engineer
+
+**How does a verified change get to users — repeatably — and back out again?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill release-engineer
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+A change that passes on a laptop is not yet a change users have. Without a
+pipeline, every deploy is a hand-typed ritual: a rebuild on the server, a secret
+pasted into a file, and no way back when the new version answers 503.
+
+```
+RELEASE     staging · ghcr.io/acme/shop@sha256:4be1…c09a  (commit 3f2a91c)
+RAN         ci.yml #41: install ✓ lint ✓ test ✓ (38 passed) build ✓ · deploy-staging ✓
+MIGRATIONS  1 applied (0007_add_order_note — expand only)
+SMOKE       GET https://staging.shop.example/health → 200 in 3 attempts
+ROLLBACK    ./deploy/rollback.sh staging sha256:91d0…7e2b   (tested on staging 2026-09-28)
+```
+
+It builds the minimum: install, lint, test and build on every pull request; one
+artifact built once; staging on merge with a smoke check that rolls back on
+failure; production as an explicit promotion of the digest staging ran. Before
+the first production deploy, the rollback is run on staging, and migrations
+follow expand-then-contract so a rollback stays possible. It never states
+whether a change is safe to ship. A production deploy waits for Production
+Guard's SHIP, or your explicit go-ahead, plus authorization. Secrets are named,
+never handled, and a pipeline nobody has run yet is reported as `WRITTEN, NOT RUN`.
+
+</details>
+
+**[Full documentation →](skills/release-engineer/README.md)**
+
+<br>
+
+### 📡 Observability Baseline
+
+**When this breaks in production, who finds out first — you or a user?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill observability-baseline
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+First launches usually go out with `console.log` and a plan to "check the logs
+if something happens". Then something breaks at night, a user emails in the
+morning, and the logs say `error` with nothing to search for. Nothing was set
+up to tell a human, and nothing that was set up was ever tried.
+
+```
+OBSERVABILITY  bookshelf — first production deploy next week
+LOGS           ADDED       JSON lines with request_id; test request found by id in the host logs
+HEALTH         ADDED       /livez 200, /readyz 503 with the database stopped
+ERRORS         ADDED       test error arrived in the tracker
+UPTIME         MISSING     next: external HTTP check on /readyz
+ALERT          MISSING     needs UPTIME; then stop staging and watch it arrive
+BACKUPS        MISSING     never restored; next: restore into a scratch database
+RUNBOOK        ADDED       docs/runbook.md
+```
+
+The baseline has seven items, sized for one developer: structured logs with
+request ids and no secrets, liveness and readiness endpoints, error tracking,
+an external uptime check, one alert to a channel someone reads, a
+restore-tested backup, and `docs/runbook.md`. Each is marked done only after it
+fires. Stopping staging to test the alert needs your yes, and production is
+never stopped. It says nothing during an incident and adds the missing signal
+afterwards. It never states the ship verdict.
+
+</details>
+
+**[Full documentation →](skills/observability-baseline/README.md)**
+
+<br>
+
 ### 🔗 Skills Pipeline
 
 **Every discipline you pick, in the order you pick, and only when you ask.**
@@ -1150,6 +1340,46 @@ skill's own. The pipeline adds none. Edit the menu in
 
 <br>
 
+### 🏁 Delivery Lead
+
+**What is the next ticket — and has it actually reached done?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill delivery-lead
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+A plan and a set of tickets do not build anything. What a team adds is the
+loop: someone takes the next ticket, makes sure it is really finished, moves the
+board, and picks up the one after. Working alone, that loop is where projects
+stall, and where "done" quietly comes to mean "the code was written".
+
+```
+RUN 2026-09-28 · milestone M1 · 4 of 5 tickets
+T-003  Class list page            done         VERIFIED · PR #12 merged
+T-004  Book a class               done         VERIFIED · PR #13 merged
+T-005  Cancel a booking           blocked      REVIEW REQUIRED — refund rule undecided (question below)
+T-006  Staging deploy             done         release-engineer: staging smoke ok
+Tracker  Trello · in sync
+Next     T-007 (ready) · answer the T-005 question to unblock it
+```
+
+It engages only when you ask for the loop. Each ticket gets its own
+`t/<id>-<slug>` branch, and ProofBuild runs on every ticket. The other disciplines
+engage when a ticket earns them. A ticket is done only when it is `VERIFIED`
+and merged. Merges and production deploys follow the `autonomy` settings in
+`.delivery/config.yml` or your yes in the session. A run stops after five
+tickets by default, or at a decision only you can make, and asks one
+compressed question. A new session resumes from the run ledger.
+
+</details>
+
+**[Full documentation →](skills/delivery-lead/README.md)**
+
+<br>
+
 ## Installation
 
 ```bash
@@ -1179,7 +1409,7 @@ and Codex, Cursor, Gemini CLI and the other agents that read that folder pick
 them up too.
 
 Claude Code can also install the whole repository as a plugin, which keeps the
-twelve skills together under one namespace and updates them in one step:
+seventeen skills together under one namespace and updates them in one step:
 
 ```
 /plugin marketplace add soumyaRauth/skills-hub
@@ -1217,12 +1447,12 @@ Audit this application against the standards that matter.
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
-`skills-hub` stands for all twelve skills. The command reads the list from this
+`skills-hub` stands for all seventeen skills. The command reads the list from this
 repository and passes it to the Skills CLI's own `npx skills remove`, one name
 per skill, for every agent. It never uses `--skill '*'`, which would remove
 every skill on the machine, including ones that have nothing to do with this
 repository. A skill that is not installed is skipped, so the same command works
-whether you installed one skill or all twelve, and running it twice is harmless.
+whether you installed one skill or all seventeen, and running it twice is harmless.
 Skills added to this repository later are covered without a new command.
 
 | Option | Does |
@@ -1273,7 +1503,7 @@ Everything Claude Code-specific is kept outside the skills:
   dropped in one line, before the turn ends
 - a status line segment that shows the active skills in color
 - a plugin manifest and a marketplace manifest, so `/plugin install` or
-  `claude --plugin-dir` can load all twelve at once and `claude plugin eval`
+  `claude --plugin-dir` can load all seventeen at once and `claude plugin eval`
   can test them
 
 See [integrations/claude-code](integrations/claude-code/README.md).

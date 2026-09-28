@@ -408,6 +408,15 @@ else
   skip "PyYAML unavailable; activation contracts not checked"
 fi
 
+head_ "Skill helper scripts"
+if ! command -v git >/dev/null 2>&1; then
+  skip "git unavailable; delivery-planner tracker.py self-check not run"
+elif python3 -B skills/delivery-planner/scripts/test_tracker.py >/dev/null 2>&1; then
+  pass "delivery-planner tracker.py self-check (mock trackers)"
+else
+  fail "skills/delivery-planner/scripts/test_tracker.py failed"
+fi
+
 head_ "Claude Code integration"
 if python3 integrations/claude-code/test_statusline_skills.py >/dev/null 2>&1; then
   pass "status line segment self-check"

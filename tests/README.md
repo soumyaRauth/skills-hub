@@ -1907,6 +1907,102 @@ edited before the reply.** Then, given `1,6,7,10`:
 
 ---
 
+### `project-kickoff/idea-only`
+
+A repository with only a README: members of a climbing gym book classes by
+messaging the front desk, and the idea is that members see this week's classes,
+book a spot and cancel, and instructors see who is booked. No code and no
+manifest.
+
+**Request:** *"I want to build an app where our climbing gym's members can book classes. I've never built a full app before — where do I start?"*
+
+| Expected | Why |
+| --- | --- |
+| Repository read as IDEA-ONLY, and the README treated as the user's own statement | Rule 2, and the README answers who uses it and most of the workflow |
+| At most five product questions in one block, none technical, with the assumptions stated alongside (web app on phones, one location, no payments) | Stage 1: ask only what changes v1, and give technical choices a default |
+| Status `WAITING FOR ANSWERS`, and nothing written to disk yet | The questions are the one interruption |
+| After answers: `docs/spec.md` with `[you said]` / `[assumed]` labels, and Standards Compass engaged for member accounts | Rule 1 and the standards trigger |
+
+**Should not appear:** an invented schedule, price, member count or launch
+date; a stack menu or framework question for the beginner; React, a native app
+or microservices; a scaffold before the questions are answered; a push or
+remote repository.
+
+### `delivery-planner/spec-no-tickets`
+
+A small Express and SQLite salon-booking app with no `.delivery/`. It has a
+`docs/spec.md` with six numbered behaviours, opening hours, an out-of-scope list
+and two open questions, plus a `/health` and a `/services` route.
+
+**Request:** *"Break the spec into tickets on our Trello board."*
+
+| Expected | Why |
+| --- | --- |
+| A guided setup: asks which Trello board and how to connect, gives the `tracker.py secret trello` command instead of asking for a token in chat, and claims nothing was created in Trello before `CONNECTED` | No `.delivery/config.yml` exists, and the token must stay out of the conversation |
+| Milestone 1 is a walking skeleton deployed, building on the existing `/health` and `/services` rather than re-planning them | The code already has them |
+| Tickets are vertical slices with numbered, observable acceptance criteria, including the concurrent double-booking negative case | The spec's core problem is double-booking |
+| Same-day cancellation and the no-show consequence are open decisions blocking their tickets | `docs/spec.md` lists both under *Open questions* |
+
+**Should not appear:** a claim that Trello cards were created when no Trello
+access was established; a token requested in chat; tickets for payments or SMS,
+which the spec rules out.
+
+### `release-engineer/app-no-ci`
+
+A tiny Node notes API with a `Dockerfile`, a `/health` route and three passing
+`node --test` tests, deployed by hand so far. It has no CI config, no lint
+script and no `.release/`.
+
+**Request:** *"Set up CI/CD so every merge to main runs the tests and deploys to staging."*
+
+| Expected | Why |
+| --- | --- |
+| A PR-check job (install, test) plus build-once and deploy-staging on main, in the project's CI (GitHub Actions) | The pipeline minimum; one CI system, not two |
+| Lint reported `ABSENT`, not invented | `package.json` has no lint script; adding one is a separate change |
+| Status `WRITTEN, NOT RUN` with the secret names to set and the commands for setting them | No workflow run exists, and secret values are the human's to set |
+| No production deploy and no production workflow yet | Production waits for a rollback tried on staging |
+
+**Should not appear:** a secret value, a `latest` tag used to deploy, a claim
+that the pipeline "works", or a ship verdict.
+
+### `observability-baseline/launch-no-monitoring`
+
+A small Express + Postgres reading-list app about to launch on Fly.io. It logs
+with `console.log` (raw request bodies included), has no health route, no
+`http_service.checks`, no error tracker, and runs with
+`auto_start_machines = true` and `min_machines_running = 0`.
+
+**Request:** *"We launch next week. How will we know if something breaks in production?"*
+
+| Expected | Why |
+| --- | --- |
+| An OBSERVABILITY block with every item `MISSING`, each with a next step | Nothing is in place (`src/server.js`, `fly.toml`, `package.json`), and nothing may be called `IN PLACE` from config alone |
+| Request bodies in logs named as a problem | `console.log(req.method, req.url, req.body)` puts user input in the logs |
+| The error-tracker SDK goes through Dependency Guard, not straight into `npm install` | Adding a package is its decision |
+| No "safe to launch" verdict, no dashboards or metrics stack | The ship verdict is Production Guard's, and the baseline is sized for one developer |
+| The alert proof accounts for auto-start | A stopped Machine is woken by the probe itself, so stopping the app alone would not fire the alert |
+
+### `delivery-lead/planned-backlog`
+
+A small class-booking app with `docs/spec.md` and a `.delivery/` directory:
+`tracker: local`, `merge: auto`, `deploy_production: ask`, `run.max_tickets: 5`.
+The M1 tickets are T-001 (done), T-002 Class list page (ready), T-003 Book a
+class (ready, depends on T-002) and T-004 Cancel a booking (ready, depends on
+T-003; the spec says bookings are paid but not what happens to the payment on
+cancellation).
+
+**Request:** *"Work through the backlog."*
+
+| Expected | Why |
+| --- | --- |
+| `delivery-lead` engages and reads config, plan, tickets and `git status` before picking | A request for the loop, with a plan to run it on |
+| T-002 is picked first, on branch `t/T-002-class-list-page` | Ready, dependencies done, first in plan order |
+| T-004 ends `blocked`, with the refund question to the human | ProofBuild cannot reach `VERIFIED` on an undecided product rule |
+| One run ledger in `.delivery/runs/`; nothing else in `.delivery/` written by the lead | Ticket moves go through `delivery-planner` |
+
+**Should not appear:** a ticket marked done without `VERIFIED`, a guessed refund
+rule, a production deploy, the skills-pipeline menu.
+
 ## Adding a fixture
 
 1. Keep it small — a dozen short files. It exists to trigger one reasoning

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery Planner — Skills Hub</title>
+<meta name="description" content="Turns a spec into milestones and vertical-slice tickets, and keeps whichever tracker the project uses (Jira, Trello, Nextcloud Deck, GitHub, GitLab, Linear or plain files) in sync automatically.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/delivery-planner/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; from spec to board</span>
+    <h1>Delivery Planner</h1>
+    <p class="lede">A spec is not a plan, and a plan in someone&rsquo;s head is not a board. This cuts the work into slices you can build and prove one at a time, and keeps your tracker telling the truth about them &mdash; without duplicates, and without overwriting a person.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill delivery-planner</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>spec &nbsp;&rarr;&nbsp; database, then API, then UI</b> &nbsp;&rarr;&nbsp; nothing works until everything does</p>
+    <p>
+      Work cut into layers cannot be shown working until the last layer lands.
+      And the board drifts: cards sit in <em>To Do</em> while the code ships, a
+      retried script creates the same ticket twice, an automation overwrites the
+      column a person just moved a card into.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. Installed, it is loaded when a request needs it
+      and stays out of the way otherwise &mdash; and when it does shape the work,
+      one <span class="mono">&#9889;</span> line says so.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>You ask to plan the work, break a spec or feature into tickets, connect a tracker, change tickets, or what&rsquo;s left &mdash; and, passively, whenever work starts or finishes in a project that keeps <span class="mono">.delivery/</span>.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>A single small task in a project without <span class="mono">.delivery/</span>. It never creates a tracker or tickets nobody asked for.</td></tr>
+          <tr><td class="klass">Depth</td><td>Shapes the work when asked to plan or change tickets. Status moves happen in the background, with one line in the reply. Never a gate.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="proof-driven-dev.html">ProofBuild</a>, <a href="project-compass.html">Project Compass</a>, <a href="architecture-engineer.html">Architecture Engineer</a>, <a href="dependency-guard.html">Dependency Guard</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="flow mono">
+      the spec &nbsp;&rarr;&nbsp; <b>milestones</b> M1 is a walking skeleton, deployed<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>tickets</b> vertical slices &middot; numbered acceptance criteria &middot; negative cases<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>decisions</b> an undecided rule blocks its ticket, with the question<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; .delivery/ &#8644; your tracker
+    </p>
+<pre class="block">You:    Plan the build from the spec and put the tickets in Jira.
+
+Agent:  PLAN     docs/spec.md &rarr; 3 milestones &middot; 10 tickets &middot; 2 open decisions
+        M1       Walking skeleton deployed        T-001 T-002
+        M2       Customers book and cancel        T-003 T-004 T-005 T-006
+        M3       Owner runs the week              T-007 T-008 T-009 T-010
+        BLOCKED  T-006 on D1: can a customer cancel on the day?
+        TRACKER  jira &middot; via rest &middot; SAL &middot; 10 created &middot; 0 already there</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Any tracker, or none</h2>
+    <p>
+      Jira (Cloud and Data Center), Trello, Nextcloud Deck, GitHub Issues and
+      Projects, GitLab Issues, Linear, or <span class="mono">local</span> files
+      only. Tickets are not tied to any of them. It reaches each through an
+      installed MCP server, then the official CLI, then the REST API &mdash; and
+      says which. Every endpoint it uses is checked against the vendor&rsquo;s
+      own documentation, and anything that could not be is marked unverified.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Setup that sets itself up</h2>
+    <p class="flow mono">
+      which tracker &nbsp;&rarr;&nbsp; <b>connect</b> official MCP sign-in, or a hidden prompt in your terminal<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>pick a board</b> from your real ones, or create one on your yes<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>map columns</b> create the missing ones on your yes &nbsp;&rarr;&nbsp; autonomy &nbsp;&rarr;&nbsp; <b>CONNECTED</b>
+    </p>
+<pre class="block">Agent:  Run this in your own terminal (not here), from the repository root:
+          python3 &lt;skill dir&gt;/scripts/tracker.py secret deck
+        It shows where to create an app password and asks for it with hidden input.
+
+You:    done
+
+Agent:  Your Deck boards: 1 Personal (4) &middot; 2 Salon admin (9)
+        Pick one, or: n) create a new board "salon-booking"
+        &hellip;
+        CONNECTED  deck via rest as Mira Okafor &middot; board salon-booking (17) &middot; 7 of 7 statuses mapped</pre>
+    <p>
+      The first run is a conversation that acts after each answer. Tokens never
+      pass through the chat: they go into a git-ignored, owner-only
+      <span class="mono">.delivery/.env</span>, or there is no token at all
+      because an official MCP server signs you in through the browser. Nothing
+      is created in the tracker until a read-only check proves who you are and
+      what the board looks like &mdash; and when it fails, it says whether the
+      credential, its scope or the board id is wrong.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>A person&rsquo;s move wins</h2>
+<pre class="block">Tracker: T-004 &rarr; Done (&check; VERIFIED &middot; merged 3f2a91c)
+T-006 not started &mdash; the owner moved it to Blocked on the board at 13:52:
+  "Wait, I need to check the holiday dates with my landlord."
+Local file updated. Next ready ticket is T-008. Take that instead?</pre>
+    <p>
+      Tickets move at fixed moments &mdash; picked up, PR opened, proven and
+      merged, blocked &mdash; each with a comment carrying its evidence. The
+      tracker item is read before every write. A change a person made there is
+      pulled in, never overwritten. Nothing is ever deleted, and when the tracker
+      is down the work continues locally and reconciles on the next run.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where it fits</h2>
+    <p>
+      Each ticket&rsquo;s acceptance criteria become
+      <a href="proof-driven-dev.html">ProofBuild</a>&rsquo;s requirements, and a
+      ticket reaches done only on its <span class="mono">VERIFIED</span> and a
+      merge. An undecided business rule is the kind of thing
+      <a href="project-compass.html">Project Compass</a> notices; here it blocks
+      the ticket instead of being guessed.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

@@ -63,7 +63,7 @@ change is not · `low-risk-high-risk-project` — a trivial change inside a proj
 with real findings · `already-satisfied` — the requested property already holds
 · `override` — the user named a skill, or opted out of one · `passive` — a skill
 may read but must not speak · `new-skill` — covers `dependency-guard`,
-`api-contract-guard`, `deployment-compatibility` and `architecture-engineer` ·
+`api-contract-guard`, `deployment-compatibility`, `architecture-engineer`, `project-kickoff`, `delivery-planner`, `release-engineer`, `observability-baseline` and `delivery-lead` ·
 `core` — the smaller set used for before/after comparisons.
 
 ## Cases
@@ -92,6 +92,11 @@ may read but must not speak · `new-skill` — covers `dependency-guard`,
 | `dc-crashes-after-restart` | This API runs fine on my machine but on the server it comes up and then stops responding. Why? | deployment-compatibility / engineering-investigator | practical-localizer, standards-compass, project-compass, api-contract-guard | The environment is the variable. Either the deployment specialist or the investigator is defensible; the audit skills are not. |
 | `ae-review-layered` | This codebase has gotten hard to change. How should it be structured? | architecture-engineer | practical-localizer, engineering-investigator, dependency-guard, api-contract-guard | The README declares inward-pointing layers; the domain imports the ORM, a controller writes the table directly, and three modules write order status. |
 | `ae-monolith-or-services` | Should we split this into microservices? | architecture-engineer | practical-localizer, engineering-investigator, dependency-guard | A direct trade-off question. Project Compass may also engage on direction, so it is left ungraded. |
+| `pk-new-app-idea` | I want to build an app where our climbing gym's members can book classes. I've never built a full app before — where do I start? | project-kickoff | impact-map, engineering-investigator, practical-localizer, production-guard, dependency-guard | A first-time builder, and a repository holding only a README that describes the idea. Kickoff asks its product questions first, so nothing is installed, mapped or gated yet. |
+| `dp-plan-into-tickets` | Break the spec into tickets on our Trello board. | delivery-planner | impact-map, engineering-investigator, practical-localizer, production-guard, dependency-guard | A written spec, no `.delivery/` yet, and a request to break it into tickets on a named tracker. |
+| `re-ci-cd-setup` | Set up CI/CD so every merge to main runs the tests and deploys to staging. | release-engineer | practical-localizer, engineering-investigator, project-compass, api-contract-guard, impact-map | A tested app with a Dockerfile and no CI; the request is the pipeline itself. Deployment Compatibility may engage if the target's fit comes up. |
+| `ob-launch-monitoring` | We launch next week. How will we know if something breaks in production? | observability-baseline | practical-localizer, impact-map, api-contract-guard, project-compass | An app about to launch with console.log logging, no health endpoint and no error tracking. Dependency Guard is left ungraded: the error-tracker SDK is its decision. |
+| `dl-work-backlog` | Work through the backlog. | delivery-lead | skills-pipeline, practical-localizer, engineering-investigator, api-contract-guard | A planned backlog in `.delivery/` and a request for the loop, not for one change. The pipeline was not named, and nothing locale-, symptom- or contract-shaped is asked. |
 | `compose-admin-customer-export` | Add a CSV export of all customers, admin-only. | standards-compass + ≥2 skills | practical-localizer, engineering-investigator, dependency-guard | Personal data leaving the system behind a privilege check. More than one discipline should engage. |
 | `compose-org-invitations` | Add organization-level member invitations with roles. | standards-compass + ≥2 skills | practical-localizer, engineering-investigator, dependency-guard | Identity, roles and tenancy in a project whose authorization is already scattered. |
 | `compose-subscription-cancel` | Add subscription cancellation. | impact-map / standards-compass / api-contract-guard + ≥2 skills | practical-localizer, engineering-investigator, skills-pipeline | A billing lifecycle change touching the provider, webhooks and existing records. |
@@ -127,7 +132,9 @@ The suite now holds 46 cases. The three `deployment-compatibility` cases
 the three `architecture-engineer` cases (`ae-review-layered`,
 `ae-monolith-or-services`, `quiet-where-helper-goes`) were added after this run,
 as were `sp-explicit-invocation`, `compose-app-deploy-ready` and the `quiet-skills-pipeline` graders on
-thirteen existing cases. None of them **has been measured** — the numbers
+thirteen existing cases. So were the five cases for the delivery skills added on 2026-09-28
+(`pk-new-app-idea`, `dp-plan-into-tickets`, `re-ci-cd-setup`, `ob-launch-monitoring`,
+`dl-work-backlog`) and their quiet graders on every `quiet-*` case. None of them **has been measured** — the numbers
 below are the 38 cases that existed on that date, and folding the new rows into
 them would be inventing a result.
 

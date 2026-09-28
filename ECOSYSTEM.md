@@ -1,7 +1,8 @@
 # How the skills work together
 
-Eleven skills, each one engineering discipline, plus one opt-in pipeline that
-runs them in an order you choose. None of the eleven needs a slash command. This document covers how they end up in a task without being named,
+Fifteen skills, each one engineering discipline, plus two opt-in conductors: a
+pipeline that runs them in an order you choose, and a delivery lead that works
+through a project's tickets. None of the fifteen needs a slash command. This document covers how they end up in a task without being named,
 how several of them share one, and how they stay out of the way the rest of the
 time.
 
@@ -67,7 +68,12 @@ of four depths, and the depth is part of its contract:
 | **API Contract Guard** · `api-contract-guard` | What does this interface promise, and can it be taken back? | Adding or changing an endpoint, webhook, event, SDK surface or CLI output that consumers deploy separately from | Interfaces whose every consumer ships in the same deploy; UI-only work | `CONSULT` · `ACTIVE` for new public APIs |
 | **Deployment Compatibility Engineer** · `deployment-compatibility` | Does this project fit this server? | A concrete deployment target is named, or a deployment exists and misbehaves | No target environment is in view: generic Docker, Linux or cloud questions, local setup, CI that ships nothing | `ACTIVE` · `GATING` when asked for the readiness decision |
 | **Architecture Engineer** · `architecture-engineer` | What should this system's structure be, and why? | Architectural work is invited: design a system, structure an application, review an architecture, choose between options, plan a migration | Ordinary features, bug fixes, refactors inside one module. A messy codebase is not an invitation | `ACTIVE` · `CONSULT` for one decision inside a feature |
+| **Project Kickoff** · `project-kickoff` | What exactly are we building first, on what, and is the empty repo ready to build in? | Someone wants to start a new app or product from an idea; the repository is empty or holds only notes and the request is to build something whole | An existing codebase (a "new module" there is a feature), declared throwaway spikes, talk about an idea with no intent to build | `ACTIVE` |
+| **Delivery Planner** · `delivery-planner` | What is the work, in what order, and does the tracker say what is really true? | Asked to plan the work, break a spec or feature into tickets, connect a tracker, change tickets, or what's left; passively when work starts or finishes in a repository with `.delivery/` | A single small task in a project without `.delivery/`; questions unrelated to planning. It never creates a tracker or tickets nobody asked for | `ACTIVE` · `PASSIVE` for sync moves · `CONSULT` for "what's left?" |
+| **Release Engineer** · `release-engineer` | How does a verified change get to users, repeatably, and back out again? | Setting up or fixing CI/CD, automated deploys, staging or production environments, secrets in CI, rollback, a migration-safe deploy; "deploy this" when no repeatable path exists; a milestone release from delivery-lead | Comments or formatting in CI or Docker files, generic CI product questions, local setup, deciding whether a change is safe to ship | `ACTIVE` · `GATING` only for the production deploy step it performs |
+| **Observability Baseline** · `observability-baseline` | When this breaks in production, who finds out first — us or a user? | A first production deploy with no monitoring; a request for logging, monitoring, alerting, error tracking, uptime checks, backups or a runbook; "how will we know if it breaks?"; a postmortem where nobody knew | Prototypes, libraries, a live incident being diagnosed (Engineering Investigator), a log-line edit, dashboard tuning nobody asked about | `ACTIVE` · `CONSULT` before a first production deploy |
 | **Skills Pipeline** · `skills-pipeline` | Which disciplines, in what order, when I want all of them? | The user types `/skills-pipeline` or asks for the skills pipeline by name | Every other request, however large or risky, and a request that names one skill | `ACTIVE`, only when invoked |
+| **Delivery Lead** · `delivery-lead` | What is the next ticket, and has it actually reached done? | The user asks for the loop: work through the backlog, take the next ticket, keep going until the milestone is done, build the whole thing; or resuming an unfinished run | A single request however large, a request naming one skill, `/skills-pipeline`, planning or re-ordering tickets | `ACTIVE`, opt-in by request shape |
 
 ## How they relate
 
@@ -105,6 +111,16 @@ flowchart LR
   AE -. obligations as requirements .-> SC
   AE -. deployment constraints .-> DC
   EI -. cause is structural .-> AE
+  PK[Project Kickoff] -- spec --> DP[Delivery Planner]
+  PK -. forced stack choice .-> AE
+  DP -- acceptance criteria --> PB
+  DL[Delivery Lead] -- next ticket --> PB
+  DL -- ticket moves --> DP
+  DL -- milestone --> PG
+  PG -- SHIP --> RE[Release Engineer]
+  RE -. target fit unknown .-> DC
+  RE -. first production deploy .-> OB[Observability Baseline]
+  OB -. incident .-> EI
 ```
 
 What each skill does *not* do matters as much as the edges:
@@ -114,7 +130,12 @@ What each skill does *not* do matters as much as the edges:
 - **Standards Compass** is the only authority on standards, frameworks and regulations. Accessibility *implementation* happens inside the work it informs. There is no separate accessibility skill.
 - **Production Guard** owns the ship verdict, and observability is one of its categories. **ProofBuild** owns `VERIFIED`. Neither overrules the other.
 - **Deployment Compatibility Engineer** is the only skill here that takes two operands — a project *and* a named environment. It owns the readiness state; it does not own the ship decision, and a `READY` environment says nothing about whether the change belongs in it.
-- **Architecture Engineer** is the only one that is *invited* rather than volunteered. Project Compass notices, unprompted, that a project has become something nobody designed and names the decision; this one answers it, and only when someone asks. It owns boundaries and the reasoning behind them, never the blast radius of a change (Impact Map), the proof (ProofBuild), or the ship decision (Production Guard).
+- **Project Kickoff** starts a project that does not exist yet. Project Compass reads an existing one; Kickoff writes the `docs/spec.md` that Compass later reads.
+- **Delivery Planner** owns the tickets and the tracker. Every other skill that moves a ticket does it through the planner, and no skill but the planner writes to a tracker.
+- **Release Engineer** builds and runs the pipeline. It never states the ship verdict (Production Guard) or the environment's fit (Deployment Compatibility Engineer); a production deploy waits for the one and hands the other what it does not know.
+- **Observability Baseline** puts in the signal before it is needed. Production Guard's observability category checks a change against it; Engineering Investigator uses it during an incident, while the baseline stays quiet.
+- **Delivery Lead** is the only skill that runs a loop. It picks the next ticket and drives it to done, and every verdict on the way belongs to the skill that owns it. Like the pipeline, it runs only when asked.
+- **Architecture Engineer** is the only discipline that is *invited* rather than volunteered. Project Compass notices, unprompted, that a project has become something nobody designed and names the decision; this one answers it, and only when someone asks. It owns boundaries and the reasoning behind them, never the blast radius of a change (Impact Map), the proof (ProofBuild), or the ship decision (Production Guard).
 
 ## Composition, by example
 
@@ -130,6 +151,9 @@ changes the result.
 | *Split `customer_name` into first and last name* | Impact Map, ProofBuild, Production Guard | Standards Compass stays quiet: it is a rename of personal data, not new personal data |
 | *Rename the button from Save to Submit* | none | Nothing about it changes with a discipline applied. Practical Localizer adds one line only if translated catalogs now hold the old meaning |
 | *Deploy this to my VPS* | Deployment Compatibility Engineer, then ProofBuild for anything that must be proven rather than observed once | Production Guard only if a release decision is also being asked for; Standards Compass only if the environment exposes personal data or weakens a control |
+| *I want to build an app where our gym's members can book classes. Where do I start?* | Project Kickoff, then Delivery Planner once the spec exists; Standards Compass when the spec has member accounts | Everything that reads existing code stays quiet: there is none yet |
+| *Work through the backlog* | Delivery Lead, which runs ProofBuild on every ticket and lets each other discipline engage when a ticket earns it; Delivery Planner moves the tickets | Skills Pipeline stays quiet: it was not named |
+| *Set up CI/CD so merges deploy to staging* | Release Engineer; Dependency Guard for any new action or image | Production Guard only when a production deploy is next; Deployment Compatibility only if the staging host's fit is unknown |
 | *This app has become hard to change — how should it be structured?* | Architecture Engineer, then Impact Map once a boundary is chosen to move, then ProofBuild for the behavior that must survive | Project Compass stays quiet because the question was asked: noticing is its job, answering is not |
 
 The same sentence can go either way depending on the repository. *"Add another
@@ -179,7 +203,7 @@ runs in that order, fed what the earlier stages decided. Picking a skill is its
 "use X" override, so it runs even when it would have stayed quiet.
 
 It is still not a router. It never engages without being named, its evals
-include thirteen cases where it must stay out, and it adds no verdict of its own.
+include fifteen cases where it must stay out, and it adds no verdict of its own.
 Every stage's result is that skill's verdict, and the run ends in a ledger with
 one status per stage, so nothing is dropped silently.
 
@@ -210,7 +234,7 @@ needs in its own context window, and returns only the map or the verdict. Both
 are read-heavy and end in a report, so the files they read would otherwise fill
 the conversation. The price is that neither sees the conversation. What they know
 of the request is what Claude passes them, and when nothing is passed they fall
-back to the diff. The other nine shape work as it happens, or need the history of
+back to the diff. The others shape work as it happens, or need the history of
 requests, so they stay in the conversation.
 
 What persists is project state, and each skill keeps its own in the repository:
@@ -222,6 +246,9 @@ What persists is project state, and each skill keeps its own in the repository:
 | `.proofbuild/` | ProofBuild | Production Guard, for what has been proven |
 | `.agent-investigation/` | Engineering Investigator | ProofBuild, for the established cause |
 | `.deployment-compatibility/` | Deployment Compatibility Engineer | any skill that needs the target environment's established facts and their dates |
+| `.delivery/` (+ `docs/spec.md` from Project Kickoff) | Delivery Planner; Delivery Lead writes only `.delivery/runs/` | ProofBuild, for acceptance criteria; Project Compass, for what is planned; every skill a run loads, for the ticket in hand |
+| `.release/` | Release Engineer | Production Guard, for what is deployed where; Delivery Lead, for the last release |
+| `.observability/` (+ `docs/runbook.md`) | Observability Baseline | Production Guard, as baseline evidence; Release Engineer and Delivery Lead, before a first production deploy |
 | `.architecture/` | Architecture Engineer | any skill that needs the decided boundaries, the recorded decisions, or what must not be violated |
 
 Reading another skill's state is cheap composition. Writing it is not allowed.
@@ -278,8 +305,8 @@ that splits a discipline two ways is worse than one that owns it.
 | --- | --- | --- |
 | **Architecture Guardian** | **Added as `architecture-engineer`** — this reverses the earlier decision, and the earlier reasoning is worth keeping | The original judgment was that Project Compass already covers emerging state machines and authorization models. It does — it *notices* them, unprompted, and names the one decision that would settle it. That is deliberately where it stops: `becoming.md` caps its output at "one decision, not an architecture… a page someone writes, not a refactor someone schedules". Nothing then **answered** that decision. There was no greenfield discovery (a project with no code is `FORMING`, where Compass correctly says work and observe), no option comparison, no recorded trade-off, no target, no migration path, no fitness check. The authority is not split because the trigger is not shared: Compass volunteers and holds the interruption budget; this one is invited and never opens a review because a codebase looks messy |
 | Data Architecture Guardian | Not added | Impact Map owns schema impact and backfills, Production Guard owns constraints, atomicity and destructive operations, Project Compass owns domain-model problems, and Standards Compass owns retention and deletion |
-| Release / Migration Guardian | Not added | Production Guard's migration checks (defaults, batching, locks, deploy ordering, reversibility) and Impact Map's plan (compatibility first, backfill, remove the shim) already cover it |
-| Observability Engineer | Not added | Production Guard's observability category asks exactly *"if this fails at 3 AM, how would anyone know?"*, and Engineering Investigator reports missing instrumentation as a finding |
+| **Release / Migration Guardian** | **Added as `release-engineer`**, as a builder rather than a guardian. The reasoning that kept a *guardian* out still holds | Production Guard's migration checks and Impact Map's plan already *review* a release. What was missing, once the goal became one developer taking a project to production alone (2026-09-28), is someone who *builds and runs* the pipeline: CI, environments, secrets, promotion, rollback tried before it is needed. Release Engineer never reviews and never states the ship verdict. Earlier reasoning: Production Guard's migration checks (defaults, batching, locks, deploy ordering, reversibility) and Impact Map's plan (compatibility first, backfill, remove the shim) already cover it |
+| **Observability Engineer** | **Added as `observability-baseline`**, as a builder with a fixed seven-item scope | Production Guard still asks *"if this fails at 3 AM, how would anyone know?"* and Engineering Investigator still reports missing instrumentation. Neither puts the signal in. A beginner shipping alone needs the logs, health checks, error tracking, uptime check, alert, restore-tested backup and runbook in place before launch, each proven by making it fire. Earlier reasoning: Production Guard's observability category asks exactly *"if this fails at 3 AM, how would anyone know?"*, and Engineering Investigator reports missing instrumentation as a finding |
 | Accessibility Specialist | Not added | Standards Compass guardrail mode already implements accessibility requirements inside the work, for example adding the keyboard alternative while building drag-to-reorder. A second skill would blur which one decides |
 | **Dependency / Supply Chain Guardian** | **Added as `dependency-guard`** | Nothing decided *whether a dependency should come in*: necessity, whether the package is the one intended, install scripts, transitive growth, license. Standards Compass audits dependency management as a control area. Nothing made the per-change call |
 | **API Contract Guardian** | **Added as `api-contract-guard`** | Impact Map maps consequences of changing an existing API, and Production Guard checks idempotency after the fact. Nothing made the *design-time* decisions a consumer later depends on: house conventions, idempotency, pagination, error codes, versioning |

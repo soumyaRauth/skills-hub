@@ -3,6 +3,10 @@
 `SKILL.md` shows this list when the pipeline starts, and you pick the sequence
 by number. The numbers are in the recommended build order, so `all` runs 1 to
 10. Number 11 is for a bug or symptom, not a build, so pick it by number.
+Numbers 12 to 15 cover the rest of a project's life: 12 before 1 on a new
+project, 13 before a build that needs tickets, 14 and 15 after the ship gate.
+Pick them by number. For working through a whole backlog, ask for the delivery
+lead instead of the pipeline.
 Edit this file to add, remove or renumber skills.
 
 | # | Stage | Skill | Stops when |
@@ -18,3 +22,7 @@ Edit this file to add, remove or renumber skills.
 | 9 | Deploy target | `deployment-compatibility` | BLOCKED |
 | 10 | Ship gate | `production-guard` | DO NOT SHIP |
 | 11 | Investigate | `engineering-investigator` | The cause is found and the fix is a decision a person has to make |
+| 12 | Kickoff | `project-kickoff` | The repository already holds code (not a kickoff), or product questions are waiting for answers |
+| 13 | Plan | `delivery-planner` | A ticket depends on a business rule nobody has decided |
+| 14 | Release | `release-engineer` | A production deploy lacks a ship verdict or authorization, a rollback is untested, or a smoke check fails and rolls back |
+| 15 | Observe | `observability-baseline` | Never. MISSING items carry into the ledger with their next step; it is not a gate |

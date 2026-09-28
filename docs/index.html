@@ -264,6 +264,92 @@
         <span class="more">Read the guide &rarr;</span>
       </a>
 
+      <a class="card" href="project-kickoff.html">
+        <h3>Project Kickoff</h3>
+        <p>
+          Turns an idea into a written spec and a proven starting point: only
+          the product questions that change what gets built, every claim
+          labelled as yours or assumed, a boring stack you already know, and a
+          skeleton whose install, test and run commands actually ran.
+        </p>
+        <div class="tags">
+          <span class="tag">new project</span>
+          <span class="tag">spec</span>
+          <span class="tag">beginner-friendly</span>
+          <span class="tag">scaffold</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+      <a class="card" href="delivery-planner.html">
+        <h3>Delivery Planner</h3>
+        <p>
+          Turns a spec into milestones and vertical-slice tickets &mdash; the
+          first milestone a walking skeleton, deployed &mdash; and keeps your
+          tracker in sync as work moves: Jira, Trello, Nextcloud Deck, GitHub,
+          GitLab, Linear, or plain files. A person&rsquo;s change on the board
+          always wins.
+        </p>
+        <div class="tags">
+          <span class="tag">planning</span>
+          <span class="tag">tickets</span>
+          <span class="tag">tracker sync</span>
+          <span class="tag">any tracker</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+      <a class="card" href="release-engineer.html">
+        <h3>Release Engineer</h3>
+        <p>
+          Builds the path from a verified change to users &mdash; and back.
+          Checks on every pull request, one artifact built once, staging on
+          merge, a production promotion someone authorized, a smoke check, and
+          a <strong>rollback tried before it is needed</strong>.
+        </p>
+        <div class="tags">
+          <span class="tag">CI/CD</span>
+          <span class="tag">deploys</span>
+          <span class="tag">rollback</span>
+          <span class="tag">secrets</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+      <a class="card" href="observability-baseline.html">
+        <h3>Observability Baseline</h3>
+        <p>
+          When this breaks in production, who finds out first &mdash; you or a
+          user? Puts a one-developer baseline in place (logs, health checks,
+          error tracking, an uptime check, one alert, a restore-tested backup and
+          a runbook) and proves each item by making it fire.
+        </p>
+        <div class="tags">
+          <span class="tag">monitoring</span>
+          <span class="tag">alerting</span>
+          <span class="tag">backups</span>
+          <span class="tag">runbook</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+      <a class="card" href="delivery-lead.html">
+        <h3>Delivery Lead</h3>
+        <p>
+          Lets one developer work like a team: takes the next ready ticket and
+          drives it to done &mdash; proven by ProofBuild and merged &mdash; then
+          the next, until the milestone ships or a decision only you can make
+          comes up.
+        </p>
+        <div class="tags">
+          <span class="tag">tickets</span>
+          <span class="tag">definition of done</span>
+          <span class="tag">autonomy</span>
+          <span class="tag">resumable runs</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
       <a class="card" href="https://github.com/soumyaRauth/skills-hub/tree/main/skills/skills-pipeline">
         <h3>Skills Pipeline</h3>
         <p>
@@ -301,7 +387,10 @@
       <code>architecture-engineer</code> answers the one that comes before any
       of them &mdash; what shape should this system have, and why &mdash; but
       only when you ask it. <code>skills-pipeline</code> runs whichever of
-      them you pick, in your order &mdash; also only when you ask.
+      them you pick, in your order &mdash; also only when you ask. And for a
+      whole project: <code>idea &rarr; project-kickoff &rarr; delivery-planner &rarr;
+      delivery-lead &rarr; release-engineer &rarr; observability-baseline</code>,
+      with your tickets in whatever tracker you already use.
     </p>
   </div>
 </section>
@@ -367,7 +456,7 @@
     <h2>Installing</h2>
     <p>Skills install through the Skills CLI and work with any Agent Skills-compatible agent.</p>
 
-    <h3>All twelve skills, any compatible agent</h3>
+    <h3>All seventeen skills, any compatible agent</h3>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill '*'</code>
       <button type="button" data-copy>Copy</button>
@@ -390,7 +479,7 @@
       <code>--copy</code> keeps the skills out of <code>~/.agents/skills</code>,
       a folder Codex, Cursor and other agents also read.
     </p>
-    <p>Or as a plugin, which keeps the twelve together and updates them in one step:</p>
+    <p>Or as a plugin, which keeps the seventeen together and updates them in one step:</p>
     <div class="cmd">
       <code>/plugin marketplace add soumyaRauth/skills-hub</code>
       <button type="button" data-copy>Copy</button>
@@ -433,7 +522,7 @@
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
-      <code>skills-hub</code> stands for all twelve skills. The command removes
+      <code>skills-hub</code> stands for all seventeen skills. The command removes
       each one by name through the Skills CLI, and never uses
       <code>--skill '*'</code>, which would remove every skill on the machine.
       Skills that are not installed are skipped. Add <code>--dry-run</code> to
