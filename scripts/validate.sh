@@ -138,6 +138,15 @@ for skill in "${SKILLS[@]}"; do
       else
         fail "skill body looks empty or truncated ($body_lines non-blank lines)"
       fi
+
+      # Anthropic's skill authoring guidance: keep the SKILL.md body under 500
+      # lines and move detail into references/.
+      all_body=$(awk -v end="$fm_end" 'NR>end' "$skill_file" | wc -l | tr -d ' ')
+      if [ "$all_body" -lt 500 ]; then
+        pass "skill body is under 500 lines ($all_body)"
+      else
+        fail "skill body is $all_body lines; move detail into references/ to stay under 500"
+      fi
     fi
   fi
 
@@ -161,6 +170,20 @@ for skill in "${SKILLS[@]}"; do
       fi
     done
     [ "$orphans" -eq 0 ] && pass "no orphan reference files"
+
+    # Claude may preview a long file with head -100; a contents list near the
+    # top shows it the whole file's scope.
+    no_toc=0
+    for doc in "$dir"/references/*.md "$dir"/examples/*.md; do
+      [ -e "$doc" ] || continue
+      [ "$(wc -l < "$doc")" -gt 101 ] || continue
+      head -20 "$doc" | grep -qx '## Contents' && continue
+      # A single worked sample with no sections has nothing to list.
+      [ "$(grep -c '^## ' "$doc")" -ge 2 ] || continue
+      warn "$doc is over 100 lines with no '## Contents' list near the top"
+      no_toc=$((no_toc + 1))
+    done
+    [ "$no_toc" -eq 0 ] && pass "long reference files open with a contents list"
 
     missing=0
     while IFS= read -r target; do

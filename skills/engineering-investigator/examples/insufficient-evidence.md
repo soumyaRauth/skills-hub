@@ -1,5 +1,15 @@
 # Example — No telemetry, no invented cause
 
+## Contents
+
+- Phase 0 — Access, honestly
+- Phase 1 — Normalize
+- Phase 2 — What the repository *can* answer
+- Phase 3 — Hypotheses, all untestable here
+- Phase 4 — The minimal ask
+- The answer
+- What this example demonstrates
+
 The most common real environment: a repository, a vague complaint, and no
 production access at all. The failure mode is producing a confident answer
 anyway.

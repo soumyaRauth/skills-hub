@@ -1,5 +1,15 @@
 # Regression Windows
 
+## Contents
+
+- Establish the window independently
+- Enumerate what changed inside it
+- Rank the candidates by mechanism, not by suspicion
+- Promoting correlation to cause
+- Deploy-shaped confounders
+- Works locally, fails in production
+- Recording history evidence
+
 "It started on Tuesday" is the most useful sentence in a bug report and the most
 frequently over-read. This is how to turn a time window into causal evidence
 without skipping the step where you prove it.

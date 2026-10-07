@@ -1,5 +1,14 @@
 # Translation strategy
 
+## Contents
+
+- TRANSLATE
+- TRANSLITERATE
+- PRESERVE
+- ADAPT
+- Choosing between them
+- Tone
+
 Every meaningful term gets exactly one of four strategies, chosen from evidence,
 not habit.
 

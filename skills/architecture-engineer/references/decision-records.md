@@ -1,5 +1,14 @@
 # Decision records
 
+## Contents
+
+- Format
+- Statuses
+- The rule that decides whether this is a decision at all
+- The reversibility gate
+- Linking decisions to requirements
+- What not to record
+
 One file per decision, in `.architecture/decisions/`. Individual files rather
 than one growing document, because rewriting an architecture document on every
 change is how architecture documentation stops being written.

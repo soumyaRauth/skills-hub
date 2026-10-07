@@ -1,5 +1,13 @@
 # Example — Six controls and no workflow
 
+## Contents
+
+- The trajectory, over five weeks
+- Against the four gates
+- The response
+- Why it reads that way
+- Afterwards
+
 The one this skill exists for. Each request is reasonable. The sequence is the
 finding, and the person making the requests cannot see it, because they are
 making them one at a time.

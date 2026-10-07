@@ -387,101 +387,16 @@ complete — a decision the user has to make, a check that could not be run, a
 second contributing cause — runs longer. **Compression never removes something
 the user needs in order to act.**
 
-### The shape
+### The shape, audience and detail on demand
 
-```markdown
-## Result
-
-[One-sentence conclusion.]
-
-**Cause:** [short cause]
-**Confidence:** [High / Medium / Low]
-
-**Why:** [one or two sentences of the evidence that decided it]
-
-**Action:** [what should happen next]
-```
-
-The confidence word comes from Phase 7: `CONFIRMED` and `HIGHLY LIKELY` →
-**High** · `LIKELY` → **Medium** · `POSSIBLE` → **Low** · `UNKNOWN` → no cause
-line at all, use the form below. Say the stronger word in the body when it earns
-it — "reproduced on both versions" is worth more to an engineer than the label.
-
-Adapt the shape to the lane. A DIRECT result leads with what now works and what
-it was verified against; `Cause` shrinks to a clause about what was missing, or
-drops entirely. Never leave a section standing with nothing in it, and never pad
-one to make the work look larger.
-
-When nothing is established:
-
-```markdown
-## Result
-
-We cannot reliably determine the cause yet.
-
-**What we know:** …
-**What is missing:** …
-**Next step:** …
-```
-
-### Audience
-
-Read the audience from the request, and add a section only when someone is
-actually waiting on it:
-
-| The request | What it gets |
-| --- | --- |
-| An engineer asking for a change, or for a cause | The result in concise technical language. No client paragraph. |
-| A customer complaint, support escalation, or a stakeholder waiting | The result **plus** `### Client response` — two or three plain sentences, sendable as written |
-| *"How exactly did you implement it?"* | The mechanism, at the depth asked for |
-| *"Write it up"* / *"I need a report"* | A report |
-
-`### Client response` is not ceremony every invocation earns. *"Why is this API
-returning 500?"* does not need one; *"the customer says the app is slow"* does;
-*"add XLSX upload"* does not, unless a customer is waiting on the answer. When in
-doubt, leave it out — it is one question away.
-
-### Detail on demand
-
-The compression is only honest because the detail is retrievable. Answer these
-fully, reading from the workspace and the evidence rather than re-deriving:
-
-```
-show the evidence        show the hypotheses      what did you rule out?
-how do you know?         what would change this?  show the experiments
-what did you not check?  how exactly did you implement it?
-```
-
-An expanded answer is the same case at higher resolution — evidence,
-eliminations, mechanism, code. It is never a replay of internal deliberation,
-and never a restatement of the short answer at greater length. Never include the
-transcript, the ledger, or the commands you ran unless they were asked for.
-Translate every technical term for a non-technical reader. See
-`references/communication.md`.
+Read `references/answer-shape.md` before writing the final answer: the result
+template, per-audience sections, and the detail-on-demand questions. Tone and
+wording: `references/communication.md`.
 
 ## Workspace and resume
 
-For STANDARD and INCIDENT work, persist state so the investigation survives the
-session:
-
-```
-.agent-investigation/
-├── incident.md      report, normalized symptom, scope, capabilities, status
-├── hypotheses.md    the ledger: kill conditions, evidence, statuses
-├── evidence.md      numbered observations, each typed and sourced
-├── experiments.md   question, method, observation, what it eliminated
-├── timeline.md      only when the sequence of events is itself evidence
-└── conclusion.md    cause, confidence, verification, recommendation
-```
-
-Create the **smallest set that carries the state** — two files is a complete
-workspace for most STANDARD investigations, and QUICK creates none. Write facts
-and decisions, not narration, and never internal reasoning.
-
-**If `.agent-investigation/` already exists, read it before doing anything
-else.** Continue the case: honor disproven hypotheses, skip completed
-experiments, pick up the highest-value open question. "Continue the
-investigation" means resume, not restart. See
+For STANDARD and INCIDENT work, read `references/workspace-and-resume.md` before
+creating or resuming `.agent-investigation/`. Layout and file formats:
 `references/investigation-workspace.md`.
 
 ## Safety

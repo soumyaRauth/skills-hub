@@ -1,5 +1,14 @@
 # Planning: milestones, tickets, decisions
 
+## Contents
+
+- The ticket file
+- Acceptance criteria
+- Slicing
+- Milestones
+- Decisions
+- Re-planning
+
 How a spec becomes `plan.md` and `tickets/T-nnn.md`. Everything here serves one
 test: can a single session pick up this ticket, build it, and prove it, without
 asking what it means?

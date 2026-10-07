@@ -1,5 +1,14 @@
 # Monorepos
 
+## Contents
+
+- Detect the workspace
+- Build the package graph before searching
+- Scope the analysis, then say so
+- Where cross-package coupling hides
+- Large repositories
+- Published packages
+
 In a monorepo the blast radius stops being "which files" and starts being
 "which packages, and who consumes them". Scope the analysis before searching it,
 and state the scope in the report — an unscoped monorepo analysis is either

@@ -1,5 +1,12 @@
 # Risk Model
 
+## Contents
+
+- Levels
+- Signals that raise the level
+- What each level changes
+- Checklists by change type
+
 Risk decides three things: how deep verification goes, how many repair attempts
 are allowed, and how early the loop stops for a human. Getting it wrong in
 either direction is expensive — over-verifying a copy change wastes the

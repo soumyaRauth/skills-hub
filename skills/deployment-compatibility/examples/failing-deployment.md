@@ -1,5 +1,15 @@
 # Example — DIAGNOSE: it starts, then dies
 
+## Contents
+
+- Phase 1 — The symptom, as an observation
+- Phase 2 — Both sides
+- Phase 3 — Difference classes
+- Phase 4 — Confirm the difference is the cause
+- Phase 5 — Classification and close
+- The answer
+- Where this stopped
+
 The mode that gets confused with debugging. The discipline is comparison, and
 the discipline about *when to stop* matters as much.
 

@@ -1,5 +1,17 @@
 # The next action
 
+## Contents
+
+- The chain
+- The reads that produce an answer
+- Ranking, when several things could be done
+- Concreteness
+- Answers that are frequently right and rarely given
+- Sequencing: when the interface is ahead of the workflow
+- Recommendations change with maturity
+- When the developer has stated a goal
+- What this can never know
+
 The output of this skill is not an observation. It is a specific thing to do
 next, chosen because it improves the project's trajectory more than the
 alternatives, and stated concretely enough that someone could start it in the

@@ -1,5 +1,13 @@
 # Example — Five solutions to an unmeasured problem
 
+## Contents
+
+- The trajectory
+- The search that decides the response
+- Mode C, and the shape of it
+- The response
+- Why this is Mode C rather than Mode B
+
 The escalation pattern: each change is a larger mechanism aimed at the same
 problem, and none of the changes is preceded by a measurement. It is the easiest
 drift to see from the outside and the hardest to see from inside, because every

@@ -1,5 +1,13 @@
 # Worked example — Hindi (hi-IN)
 
+## Contents
+
+- The contrast with Bengali
+- Strategy table for this module
+- The finding that needed a human
+- Other findings
+- Report excerpt
+
 A B2B logistics dashboard, English source, no Hindi locale yet. The user asks:
 
 > Localize the shipment tracking module to Hindi.

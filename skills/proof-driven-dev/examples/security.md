@@ -1,5 +1,14 @@
 # Example — Security-sensitive change
 
+## Contents
+
+- 1. Investigate
+- 2. Contract
+- 3. Verify — and find the hole
+- 4. Re-verify
+- 5. What the developer sees
+- What this example demonstrates
+
 For a permission change, the positive cases prove the feature exists. Only the
 **negative** cases prove it is a boundary.
 

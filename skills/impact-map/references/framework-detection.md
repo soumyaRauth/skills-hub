@@ -1,5 +1,17 @@
 # Framework Detection
 
+## Contents
+
+- Establishing the ecosystem
+- JavaScript / TypeScript
+- PHP / Laravel
+- Python
+- Java / Kotlin
+- Ruby on Rails
+- Go / Rust / .NET
+- Cross-cutting locations worth checking in any stack
+- When the stack is unfamiliar
+
 Reconnaissance cues per ecosystem. These are *hints for where to look first*,
 never a substitute for reading the actual tree. When convention and repository
 disagree, the repository wins.

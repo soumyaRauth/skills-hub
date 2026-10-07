@@ -1,5 +1,18 @@
 # Project state
 
+## Contents
+
+- Rules
+- profile.md
+- applicable-standards.yaml
+- findings.md
+- accepted-risks.md
+- exceptions.md
+- assessment-history.md
+- Regression detection
+- Staleness
+- Baseline comparison
+
 Without state, every audit starts from zero, re-derives the same profile,
 re-reports findings the team already rejected, and cannot tell a new problem from
 an old one. State is what turns this from a report generator into something that

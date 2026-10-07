@@ -1,5 +1,16 @@
 # Existing project audit — eight months, no standards, one question
 
+## Contents
+
+- The opening
+- The report
+- 3. Applicable standards
+- 5. Critical and high findings
+- 9. Unable to verify
+- 10. What is already working
+- 13. Limitations
+- What the engineer got
+
 **Request:** *"We've been building this for eight months. We never consciously
 followed any software standards. Tell me how bad the situation is."*
 

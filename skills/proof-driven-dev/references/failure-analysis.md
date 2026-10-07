@@ -1,5 +1,12 @@
 # Failure Analysis
 
+## Contents
+
+- Classifications
+- The diagnostic sequence
+- Cascades
+- Reporting failure
+
 A failing check is information, not an instruction to edit code. Classify first;
 the classification decides whether code should change at all — and which code.
 

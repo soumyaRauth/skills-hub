@@ -1,5 +1,17 @@
 # The registry, and keeping it current
 
+## Contents
+
+- Layout
+- Adding a standard
+- Copyright
+- Status and version discipline
+- Reassessing against a new edition
+- Currentness
+- When to go to the web
+- Offline
+- Keeping it alive
+
 The registry is the part of this skill that ages. Everything else is method;
 this is facts about the world, and the world revises its standards without
 telling anyone.

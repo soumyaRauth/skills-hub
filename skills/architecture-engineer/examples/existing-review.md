@@ -1,5 +1,15 @@
 # Example — when the declared architecture and the real one disagree
 
+## Contents
+
+- Phase 1 — Mode
+- Phase 4 — Declared versus implemented
+- Findings
+- What was deliberately not reported
+- Phase 5 — The question that decides the target
+- The target, and the path
+- What this run did not do
+
 Illustrative. The repository is invented; the reasoning is the point.
 
 ---

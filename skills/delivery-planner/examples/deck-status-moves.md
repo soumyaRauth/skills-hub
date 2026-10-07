@@ -1,5 +1,13 @@
 # Example — automatic moves on a Nextcloud Deck board, and a human's move wins
 
+## Contents
+
+- The project
+- 1. The developer starts a ticket
+- 2. The PR is opened
+- 3. Meanwhile, the owner moves a card
+- What it did not do
+
 Illustrative. The repository, board and ids are invented; the sequence is the
 point.
 

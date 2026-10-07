@@ -1,5 +1,12 @@
 # Stack defaults and scaffold commands
 
+## Contents
+
+- Choosing
+- Scaffold commands, by stack
+- First CI check (GitHub Actions)
+- Sources
+
 The stack is chosen in this order: **what the developer already knows**, then
 **where it must run**, then the boring default for that pair. A language the
 developer knows beats a language that is theoretically better for the job.

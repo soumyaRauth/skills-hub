@@ -1,5 +1,16 @@
 # What the project is becoming
 
+## Contents
+
+- The question that produces it
+- The blind-spot request
+- Crossings worth recognizing
+- Evidence a crossing actually needs
+- Product crossing
+- Saying it well
+- Do not force structure early
+- Recording it
+
 Software changes category without anyone deciding that it should. A task list
 becomes a task management system. A collection of user screens becomes an
 administration system. Three payment features become a billing lifecycle. Each

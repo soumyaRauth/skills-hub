@@ -1,5 +1,16 @@
 # Discovery questions
 
+## Contents
+
+- The one test every question must pass
+- Order by impact, not by category
+- Batch size
+- The aspiration trap
+- Do not ask what the repository answers
+- Follow the system, not a checklist
+- Conflicting requirements
+- Knowing when to stop
+
 The questions are the work. An architecture produced without them is a pattern
 applied to a stranger's problem.
 

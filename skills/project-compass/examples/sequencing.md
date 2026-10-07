@@ -1,5 +1,15 @@
 # Example — The interface is ahead of the workflow
 
+## Contents
+
+- The project
+- The trajectory
+- Request four — and the silence it gets
+- Request five
+- The response
+- Why this shape
+- What this must never become
+
 Sequencing problems do not look like problems. They look like a productive
 month. Screens improve, commits land, and the thing the product is actually for
 still does not work end to end.

@@ -1,5 +1,14 @@
 # Response Compression
 
+## Contents
+
+- What the final message must answer
+- The three shapes
+- Not in the default response
+- Numbers must be real
+- Detail on demand
+- Compression is not omission
+
 The developer's attention is the scarce resource. Every sentence in the final
 message competes with the work they were doing before they asked.
 

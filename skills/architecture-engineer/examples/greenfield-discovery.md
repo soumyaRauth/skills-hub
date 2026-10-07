@@ -1,5 +1,18 @@
 # Example — an idea, taken to a decided architecture
 
+## Contents
+
+- What this is not
+- Phase 1 — Is this architectural?
+- Phase 3 — The first block
+- The answers
+- Phase 3 continued — the aspiration trap
+- Requirements
+- Phase 5 — Options, and the complexity budget
+- Phase 6 — The decision, and the check-in
+- The result
+- What this run did not do
+
 Illustrative. The product is invented; the shape of the session is the point.
 
 ---

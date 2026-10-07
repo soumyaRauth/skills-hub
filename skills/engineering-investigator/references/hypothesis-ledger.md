@@ -1,5 +1,14 @@
 # The Hypothesis Ledger
 
+## Contents
+
+- Generating hypotheses
+- Ledger entry
+- Statuses
+- Elimination discipline
+- Working against confirmation bias
+- Multiple causes
+
 A hypothesis is not a guess about what is wrong. It is a **claim that can be
 killed**, paired with the observation that would kill it. The ledger is where
 those claims live, how they die, and why nobody re-tests them next session.

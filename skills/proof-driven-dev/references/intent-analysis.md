@@ -1,5 +1,14 @@
 # Intent Analysis
 
+## Contents
+
+- The intent compiler
+- Investigate before asking
+- Ambiguity classes
+- Asking well
+- Root-cause reading
+- Scope discipline
+
 The gap between what a developer types and what they want is filled by the
 repository, not by a questionnaire. Read first. Ask last. Ask little.
 

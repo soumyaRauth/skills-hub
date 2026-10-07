@@ -1,5 +1,13 @@
 # Target discovery
 
+## Contents
+
+- Establish the tier before anything else
+- Order of inspection
+- Recording a target fact
+- When the tier is `NONE`
+- Safety
+
 Establishing what the target environment actually is, at whatever access level
 exists, without changing it and without filling gaps from imagination.
 

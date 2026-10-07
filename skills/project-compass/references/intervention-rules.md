@@ -1,5 +1,18 @@
 # When to speak, and when not to
 
+## Contents
+
+- The four gates
+- Two single-instance exceptions
+- Choosing the mode
+- The budget
+- Stated intent settles it
+- Dismissal is permanent
+- Timing
+- Do not intervene when
+- The anti-pattern this exists to prevent
+- The self-check
+
 The skill's job is to guide toward the right next action. Most of the time the
 right next action is the thing that was asked for, and guidance means building
 it — silently, well, and without a paragraph explaining that no concerns were

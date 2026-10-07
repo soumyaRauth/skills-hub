@@ -1,5 +1,15 @@
 # Example — "Should we split this service?"
 
+## Contents
+
+- The request
+- What is actually asked
+- Evidence
+- The answer
+- What is absent, deliberately
+- The move worth stealing
+- If they disagree
+
 A staff engineer asking an architecture question does not need a definition of a
 microservice. They need the parts of the answer that live in *this* repository
 and that they have not had time to go read.

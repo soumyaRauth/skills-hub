@@ -1,5 +1,12 @@
 # Example — no target, and the report that says so
 
+## Contents
+
+- Phase 1 — Target and tier
+- Phase 2 — The contract
+- The answer
+- What this run refused to do
+
 The shortest example here, and the one that matters most. A capable agent asked
 this question will produce a fluent, plausible, entirely invented answer.
 

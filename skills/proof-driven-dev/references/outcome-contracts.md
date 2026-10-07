@@ -1,5 +1,15 @@
 # Outcome Contracts
 
+## Contents
+
+- What a contract is
+- Writing an observable requirement
+- Requirement ids
+- Deriving the requirements the developer did not state
+- Assumptions
+- When to persist, when to keep it inline
+- Amending a contract
+
 The contract is the artifact that makes everything else possible. Without it
 there is no definition of success, so "verified" would mean whatever the
 implementation happens to do.

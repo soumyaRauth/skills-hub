@@ -1,5 +1,14 @@
 # Example — "I don't know what to work on"
 
+## Contents
+
+- The request
+- What gets read, in order
+- The answer
+- Why this shape
+- What gets recorded
+- What this answer must never be
+
 The question this skill exists to answer, asked out loud for once. The answer
 must come from the project. A generic backlog — *add tests, improve error
 handling, write documentation* — is worse than saying nothing, because it looks

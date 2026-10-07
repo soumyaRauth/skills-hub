@@ -1,5 +1,15 @@
 # Options and trade-offs
 
+## Contents
+
+- Two genuine options, or an explanation
+- Compare on what the requirements make relevant
+- No scores
+- The complexity budget
+- Patterns need a requirement
+- Reversibility changes the process, not just the answer
+- Presenting a comparison
+
 Generating real alternatives, comparing them on the dimensions that matter here,
 and refusing to hide a judgment inside a number.
 

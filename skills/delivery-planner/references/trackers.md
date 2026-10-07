@@ -1,5 +1,18 @@
 # Trackers
 
+## Contents
+
+- Access order
+- Statuses, across trackers
+- Jira (Cloud; Data Center differences noted)
+- Trello
+- Nextcloud Deck
+- GitHub Issues (and Projects)
+- GitLab Issues
+- Linear
+- local
+- Adding another tracker
+
 For each supported tracker: how to reach it, the seven operations sync needs,
 how statuses work, and what goes wrong. Every endpoint and command below was
 checked against the official documentation cited next to it, **checked

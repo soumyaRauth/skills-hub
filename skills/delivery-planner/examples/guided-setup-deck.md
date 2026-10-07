@@ -1,5 +1,17 @@
 # Example — first run, guided end to end (Nextcloud Deck)
 
+## Contents
+
+- Request
+- Step 1 · Which tracker
+- Step 2 · Connect
+- Step 3 · Which board
+- Step 4 · Columns
+- Step 5 · Autonomy
+- Step 6 · Config, proof, and the tickets
+- If it had failed
+- What it did not do
+
 Illustrative. The repository is `tests/fixtures/delivery-planner/spec-no-tickets`;
 the Nextcloud server, user and ids are invented. The shape of the conversation
 is the point: one question at a time, an action after each answer, no token in

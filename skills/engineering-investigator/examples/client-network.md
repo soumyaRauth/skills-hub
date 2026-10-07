@@ -1,5 +1,18 @@
 # Example — The application is not the problem
 
+## Contents
+
+- Phase 0 — What can be seen
+- Phase 1 — Normalize
+- Phase 2 — Scope, by contrast
+- Phase 3 — Layers
+- Phase 4 — Hypotheses
+- Phase 5 — One experiment, four predictions
+- Phase 6 — Try to kill the survivor
+- Phase 7 — Cause
+- The answer
+- What this example demonstrates
+
 The hardest conclusion to reach honestly, because it is the one everybody
 suspects the engineer of wanting.
 

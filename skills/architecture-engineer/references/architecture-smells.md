@@ -1,5 +1,17 @@
 # Architecture smells
 
+## Contents
+
+- Boundaries
+- Business logic
+- Data
+- Distribution and asynchrony
+- Scale and reliability
+- Security boundaries
+- Operations
+- Two anti-smells
+- Naming a smell without moralizing
+
 A catalog of what to look for, each entry with the evidence it requires before
 it may be said and the consequence that makes it worth saying.
 

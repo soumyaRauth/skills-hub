@@ -1,5 +1,12 @@
 # Worked example — Bengali (bn-BD)
 
+## Contents
+
+- Why Bengali is a good demonstration
+- Findings, abbreviated
+- Locale mechanics reported, not changed
+- What this example does not claim
+
 A consumer marketplace app, English source, existing partial Bengali locale of
 uneven quality. The user asks:
 

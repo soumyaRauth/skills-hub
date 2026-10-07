@@ -1,5 +1,16 @@
 # The compatibility matrix
 
+## Contents
+
+- The row
+- Results
+- Promotion rules
+- Categories
+- Severity
+- The finding
+- The verdict
+- Conditions
+
 The comparison itself: one row per contract line, both sides carrying their
 provenance, one result each, and a verdict computed from the results rather than
 written by hand.

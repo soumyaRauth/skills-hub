@@ -1,5 +1,15 @@
 # Migration
 
+## Contents
+
+- The default is not a rewrite
+- Transition states
+- Patterns, and when each is the right one
+- Data migrations are the irreversible part
+- Sequencing
+- Before moving a boundary
+- Implementing
+
 Getting from the architecture that exists to the one that was decided, in states
 that each work.
 

@@ -1,5 +1,13 @@
 # The Investigation Workspace
 
+## Contents
+
+- Create the smallest set that carries the state
+- What goes in, what stays out
+- File formats
+- Resuming
+- Closing a case
+
 State exists so that a second session — or a second engineer — can pick the case
 up without re-deriving it, and so that no experiment is run twice. It is not a
 report, and it is not a diary.

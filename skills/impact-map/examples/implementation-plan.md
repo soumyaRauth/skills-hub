@@ -1,5 +1,13 @@
 # Example 5 — Implementation plan handoff
 
+## Contents
+
+- Request
+- Prerequisites
+- Steps
+- Coverage
+- Handoff
+
 The plan produced *after* [example 4](cross-module-change.md), on an explicit
 "turn this into an implementation plan". Same finding ids (F1–F10), no code, and
 written so a session that never saw the analysis can execute it.

@@ -1,5 +1,17 @@
 # Example — a first-time builder with an idea
 
+## Contents
+
+- Repository
+- Request
+- Stage 1 — the one interruption
+- The user answers
+- Stage 2 — spec (excerpt)
+- Stage 3 — stack
+- Stage 4 — scaffold, and what it says to a beginner
+- Stage 5
+- What it did not do
+
 Illustrative. The gym is invented; the shape of the exchange is the point.
 
 ## Repository

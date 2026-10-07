@@ -1,5 +1,15 @@
 # Remediation
 
+## Contents
+
+- Prioritized roadmap
+- Writing a recommendation
+- Smallest safe change
+- `fix` mode
+- Verification after a fix
+- What not to fix in code
+- Regression prevention
+
 A finding that nobody acts on was not worth writing. The measure of this phase
 is whether an engineer can start work from the report without a meeting.
 

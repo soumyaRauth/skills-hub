@@ -1,5 +1,15 @@
 # The project state directory
 
+## Contents
+
+- Files
+- Formats
+- Size
+- Staleness
+- What never goes in
+- Committing it
+- Resuming
+
 `.project-compass/` is what makes this skill longitudinal instead of a clever
 prompt. It is also the thing most likely to rot into bureaucracy, so the rules
 are mostly about restraint.

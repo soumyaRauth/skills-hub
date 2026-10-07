@@ -1,5 +1,17 @@
 # Example — When the failure belongs to a vendor
 
+## Contents
+
+- Phase 0 — Access
+- Phase 1 — Normalize
+- Phase 2 — Scope and shape
+- Phase 3 — Hypotheses
+- Phase 4 — The discriminating experiment
+- Phase 5 — Attack the survivor
+- Phase 6 — Cause
+- The answer
+- What this example demonstrates
+
 "Payments are randomly failing" is a report about our system. The evidence may
 not be.
 

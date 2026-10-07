@@ -1,5 +1,13 @@
 # Remediation
 
+## Contents
+
+- The two lists never merge
+- Project side
+- Server side
+- Order
+- After remediating
+
 Fixing what can be fixed, proposing what must not be fixed unilaterally, and
 never buying a successful deployment with a weakened control.
 

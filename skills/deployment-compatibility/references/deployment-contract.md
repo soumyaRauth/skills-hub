@@ -1,5 +1,11 @@
 # The deployment contract
 
+## Contents
+
+- The two rules that do most of the work
+- Deriving each class
+- Shape
+
 What this project requires in order to run, derived from the project itself.
 Every line names the file that establishes it. A contract without provenance is
 a guess with a table around it.

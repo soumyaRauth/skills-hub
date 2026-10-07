@@ -1,5 +1,15 @@
 # Example — Bug fix
 
+## Contents
+
+- 1. Compile the intent
+- 2. Reproduce before fixing
+- 3. Contract
+- 4. Fix the cause, not the symptom
+- 5. Verify
+- 6. What the developer sees
+- What this example demonstrates
+
 A bug fix has a stricter proof obligation than a feature: the first requirement
 is that the bug **reproduces**. Without that, a passing test at the end may be
 passing for reasons that have nothing to do with the fix.

@@ -1,5 +1,15 @@
 # Decision debt
 
+## Contents
+
+- What it looks like
+- Detecting it
+- Pricing it
+- Asking it well
+- Recording it
+- Requirement debt
+- What this is not
+
 Technical debt is code that is expensive to change. Decision debt is a question
 nobody answered, which every implementation then answers on its own, differently.
 

@@ -1,5 +1,17 @@
 # Example 1 — Simple business logic change
 
+## Contents
+
+- Request
+- Change surface
+- 🟥 MUST CHANGE
+- ⚠️ HIDDEN COUPLING
+- Dependency paths
+- Test impact
+- Risk
+- Recommended implementation order
+- Open questions
+
 A single-layer change in a small Node/TypeScript service. Shows what a *short*
 impact map looks like: the value here is confirming the surface is small, and
 catching the one place that would have been missed.

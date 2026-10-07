@@ -1,5 +1,14 @@
 # Human Judgment
 
+## Contents
+
+- Proof levels
+- Level D is a real answer
+- Surfacing a judgment call
+- Decisions versus judgments
+- Batch them
+- Never fake Level A
+
 Some requirements cannot be settled by any check available here. Naming them
 honestly is what keeps every other "verified" worth reading.
 

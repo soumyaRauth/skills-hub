@@ -1,5 +1,16 @@
 # Deploy targets
 
+## Contents
+
+- Choosing, for a beginner with no target yet
+- VPS over SSH, Docker Compose
+- Fly.io
+- Render
+- Railway
+- Vercel (frontends)
+- Netlify (frontends)
+- Kubernetes (only if already present)
+
 The common targets for a first deployment, and for each: how the pipeline
 deploys, where secrets go, and the rollback. Every flag here was checked against
 the provider's official documentation on 2026-09-28, with the URL beside it.

@@ -1,5 +1,22 @@
 # Example 3 — Database / schema change
 
+## Contents
+
+- Request
+- Change surface
+- 🟥 MUST CHANGE
+- 🟧 LIKELY AFFECTED
+- 🟨 NEEDS VERIFICATION
+- ⚠️ HIDDEN COUPLING
+- Dependency paths
+- Database impact
+- API impact
+- Authorization impact
+- Test impact
+- Risk
+- Recommended implementation order
+- Open questions
+
 A Laravel application gaining a new column that participates in a workflow.
 Shows how a schema change pulls in authorization, jobs, serialization, and
 existing-row semantics.

@@ -1,5 +1,15 @@
 # Data Integrity
 
+## Contents
+
+- Transactions and atomicity
+- Constraints
+- Concurrent writes
+- Orphans and cascades
+- Migrations
+- State machines
+- Reporting
+
 The question behind every check here:
 
 > Can this operation leave the database in an invalid or surprising state?

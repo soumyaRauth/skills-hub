@@ -1,5 +1,13 @@
 # Localization workflow
 
+## Contents
+
+- The shape of the work
+- Detecting the mechanism
+- What counts as a localization file
+- Scoping a large application
+- Git safety
+
 The detail behind Phases 1–2 of `SKILL.md`: how to find out what the application
 actually does before changing any of it.
 

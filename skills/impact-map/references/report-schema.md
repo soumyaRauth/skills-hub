@@ -1,5 +1,16 @@
 # Report Schema
 
+## Contents
+
+- Skeleton
+- Finding fields
+- REPOSITORY SCOPE rules
+- HISTORY & OWNERSHIP rules
+- CHANGE SURFACE rules
+- ARCHITECTURE GRAPH rules
+- RISK rules
+- Anti-patterns
+
 The exact structure of an Impact Map report. Section order is fixed. Sections
 with nothing relevant to say are omitted — an empty `AUTHORIZATION IMPACT`
 heading is noise, not thoroughness.

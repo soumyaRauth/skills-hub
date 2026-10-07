@@ -1,5 +1,14 @@
 # Pluralization
 
+## Contents
+
+- Two things to establish first
+- Mechanisms
+- Validation checklist
+- Counters and classifiers
+- When gender or case interacts with number
+- Reporting
+
 Plural handling is where a confident translation quietly breaks. English has two
 forms; the number of forms a language needs ranges from one to six, and the rule
 that selects them is not "is n equal to 1".

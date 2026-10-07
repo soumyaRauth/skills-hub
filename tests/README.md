@@ -512,6 +512,34 @@ Expected: **🔴 DO NOT SHIP**, risk classified High.
 A strong run notes that all three operations run in one migration, so a failure
 partway leaves the schema in an intermediate state.
 
+### `production-guard/search-api`
+
+A public product search and a seller image-import endpoint, with safe queries
+beside the unsafe ones. Tests the security checklist: tracing input from an
+entry point to a sink, and not flagging sinks that only see constants or bound
+parameters.
+
+**Request:** *"Is the product search change safe to ship?"*
+
+Expected: **🔴 DO NOT SHIP**, risk classified Medium or High (public input reaches
+SQL; either is defensible, and security runs at both).
+
+| Severity | Finding | Where |
+| --- | --- | --- |
+| 🔴 BLOCKER | SQL injection through the search term, reachable without signing in | `productRepo.ts` `searchProducts()` interpolates `q` into `ILIKE '%${q}%'`; `routes.ts` registers `/products/search` outside the `auth` group |
+| 🔴 BLOCKER | SQL injection through the sort column | Same query, `ORDER BY ${sort}`. Binding `q` does not fix it: an identifier cannot be a bound parameter, so `sort` needs an allowlist |
+| 🔴 BLOCKER / 🟠 HIGH | Server-side request forgery in image import | `imageImport.ts` fetches any seller-supplied URL (`http.ts`: follows redirects, no destination check) and echoes the response body on a non-200, so a seller can read internal services or cloud metadata |
+| 🟡 MEDIUM | Imported image not checked for type or size | `imageImport.ts` stores whatever bytes came back |
+
+**Should not appear** — each is a decoy, and flagging it is a false positive:
+
+- `findProduct()` and `setImage()`: bound parameters (`$1`), and `setImage()` is
+  scoped to the seller.
+- `countActiveProducts()`: raw SQL with only constants.
+- `dir`: mapped to `ASC`/`DESC` before it reaches the query.
+- XSS through `q` being echoed: the response is JSON, not HTML.
+- Any claim that a scanner, linter or test ran. Nothing in the fixture runs.
+
 ---
 
 # Practical Localizer fixtures

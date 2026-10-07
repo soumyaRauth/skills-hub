@@ -1,5 +1,15 @@
 # Fitness checks
 
+## Contents
+
+- Why assertion is not enough
+- What is checkable
+- Add a check only where a violation matters
+- Brittle checks are worse than none
+- Where the rules live
+- Reporting a verification
+- Drift
+
 Verifying that the architecture which was decided is the architecture that
 exists — and keeping it that way without building a cage nobody wants to live
 in.

@@ -1,5 +1,13 @@
 # Example — a spec planned into milestones and synced to Jira Cloud
 
+## Contents
+
+- Request
+- 1. Guided setup, short because most of it was already there
+- 2. Plan
+- 3. Sync
+- What it did not do
+
 Illustrative. The repository is `tests/fixtures/delivery-planner/spec-no-tickets`
 (a salon booking app); the Jira site, keys and ids are invented.
 

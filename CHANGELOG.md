@@ -9,6 +9,18 @@ methodology and documentation.
 
 ### Added
 
+- **Production Guard covers every common vulnerability class.** Its security
+  checks named authorization, tenancy, exposure and input manipulation, and
+  nothing asked about string-built SQL. `security-validation.md` now traces
+  each new entry point to its sinks across injection (SQL, NoSQL, command,
+  template, code), XSS, CSRF and CORS, SSRF, files and uploads,
+  deserialization, business-logic abuse, rate limits, secrets and config,
+  cryptography, dependencies and AI input and output. Severity follows
+  reachability, and the project's own scanners run first. The
+  `production-guard/search-api` fixture plants SQL injection (including an
+  `ORDER BY` column) and SSRF beside safe decoys, and `pg-search-injection`
+  grades the reply.
+
 - **Five skills that take one developer from an idea to production.** The
   eleven disciplines assumed a codebase that already exists and a developer
   who knows what to do next. A beginner has neither. The new skills fill the
@@ -535,6 +547,12 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
   observation is failed as firmly as inventing one.
 
 ### Changed
+
+- **Skills follow Anthropic's length guidance.** SKILL.md bodies stay under
+  500 lines: Project Compass, Engineering Investigator and Architecture Engineer
+  moved formats, samples and state layouts verbatim into new reference files.
+  Every reference or example over 100 lines opens with a `## Contents` list,
+  since Claude may preview it with `head -100`. `validate.sh` enforces both.
 
 - **Contributing is a one-page read.** `CONTRIBUTING.md` is now five steps, a
   table of where things go, and the five hard rules in one line each, each

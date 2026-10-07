@@ -1,5 +1,22 @@
 # Hidden Coupling
 
+## Contents
+
+- Raw strings shadowing a typed value
+- Raw SQL
+- Temporal coupling
+- Direct data access bypassing the domain
+- Duplicated business logic
+- Configuration
+- Events and listeners
+- Jobs, workers, and schedules
+- Serialization and contracts
+- Tests, factories, and fixtures
+- Generated code
+- Documentation and runbooks
+- Search discipline
+- Reporting
+
 Dependencies that no import graph will show. This is the phase that separates an
 impact map from a code search, and the source of most "we didn't expect that to
 break" incidents.

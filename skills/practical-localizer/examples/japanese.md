@@ -1,5 +1,12 @@
 # Worked example — Japanese (ja-JP)
 
+## Contents
+
+- Why "reads like a translation" is diagnosable
+- Findings, abbreviated
+- Locale mechanics
+- What this example does not claim
+
 A cross-platform note-taking app, English source, machine-assisted Japanese
 locale already shipped. The user asks:
 

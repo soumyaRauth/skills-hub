@@ -1,5 +1,14 @@
 # Architecture Graph
 
+## Contents
+
+- When to draw it
+- Node identity
+- Mermaid form
+- ASCII form
+- Reading the graph
+- Honesty rules
+
 The dependency chains say how one path works. The graph says what the whole
 change surface looks like at once — which layers it spans, where the paths
 converge, and which edges are the quiet ones.

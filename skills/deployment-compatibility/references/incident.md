@@ -1,5 +1,11 @@
 # DIAGNOSE — it works here and fails there
 
+## Contents
+
+- What this mode is, and is not
+- Method
+- Two patterns worth recognizing on sight
+
 A deployment that exists and misbehaves. The method is comparison, not
 inspection: two environments, one of which works, and the difference between
 them is the answer.

@@ -1,5 +1,12 @@
 # Blind spots
 
+## Contents
+
+- Detectors
+- Prioritizing
+- Reporting
+- Never do this
+
 A blind spot is not something the developer does not know. Everyone is missing
 most things, all the time, and saying so is worthless.
 

@@ -1,5 +1,17 @@
 # AI assessment
 
+## Contents
+
+- The data boundary
+- Prompt injection and input integrity
+- Output handling
+- Human oversight
+- Evaluation and monitoring
+- Supply chain
+- Cost and availability
+- Frameworks
+- What to say
+
 The `/standards ai` focus. Two questions, and confusing them produces either
 paranoia or negligence:
 

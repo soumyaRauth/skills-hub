@@ -1,5 +1,14 @@
 # Example — Performance
 
+## Contents
+
+- 1. Measure before believing the mechanism
+- 2. Contract
+- 3. Verify
+- 4. What could not be measured
+- 5. What the developer sees
+- What this example demonstrates
+
 Performance requests are where invented numbers are most tempting and most
 damaging. The rule is simple: **measure, change, measure again** — or say what
 could not be measured.
