@@ -9,6 +9,18 @@ methodology and documentation.
 
 ### Added
 
+- **Production Guard covers every common vulnerability class.** Its security
+  checks named authorization, tenancy, exposure and input manipulation, and
+  nothing asked about string-built SQL. `security-validation.md` now traces
+  each new entry point to its sinks across injection (SQL, NoSQL, command,
+  template, code), XSS, CSRF and CORS, SSRF, files and uploads,
+  deserialization, business-logic abuse, rate limits, secrets and config,
+  cryptography, dependencies and AI input and output. Severity follows
+  reachability, and the project's own scanners run first. The
+  `production-guard/search-api` fixture plants SQL injection (including an
+  `ORDER BY` column) and SSRF beside safe decoys, and `pg-search-injection`
+  grades the reply.
+
 - **Five skills that take one developer from an idea to production.** The
   eleven disciplines assumed a codebase that already exists and a developer
   who knows what to do next. A beginner has neither. The new skills fill the

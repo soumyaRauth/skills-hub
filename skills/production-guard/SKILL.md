@@ -201,9 +201,13 @@ external mutations, answer explicitly: **what happens if this runs twice?**
 
 Run the categories the risk level requires:
 
-- **Security** — authentication, authorization, object-level access, input
-  manipulation, data exposure, tenancy isolation. Frontend filtering is not
-  security; verify backend enforcement. → `references/security-validation.md`
+- **Security** — trace each new entry point to its sinks: authentication,
+  authorization, injection (SQL, NoSQL, command, template, code), XSS, CSRF and
+  CORS, SSRF, path traversal and uploads, deserialization, business-logic abuse,
+  rate limits, secrets and config, crypto, dependencies, AI input and output,
+  data exposure, tenancy isolation. Run the project's scanners first. Frontend
+  filtering is not security; verify backend enforcement.
+  → `references/security-validation.md`
 - **Data integrity** — transactions, atomicity, constraints, concurrent writes,
   partial updates, orphans, cascades, destructive-operation semantics, legal
   state transitions. → `references/data-integrity.md`
@@ -286,7 +290,7 @@ and report the new counts rather than asserting the problem is resolved.
 
 - `references/behavioral-validation.md` — behavioral contracts and regression matrices
 - `references/failure-analysis.md` — failure taxonomy, idempotency, partial failure, recovery
-- `references/security-validation.md` — authorization, tenancy, exposure, input manipulation
+- `references/security-validation.md` — entry points to sinks: auth, injection, XSS, SSRF, files, logic abuse, secrets, supply chain, AI, tenancy
 - `references/data-integrity.md` — transactions, constraints, destructive operations, state machines
 - `references/performance.md` — scale reasoning, N+1, memory, indexes
 - `references/observability.md` — logging, metrics, audit trails, alerting
