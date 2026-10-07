@@ -1,5 +1,15 @@
 # Reconstructing the current architecture
 
+## Contents
+
+- The core distinction
+- Read order
+- Evidence discipline
+- What the shapes usually mean
+- Sizing the report
+- Recording it
+- Reporting a finding
+
 What the system *is*, established from evidence — as opposed to what its
 directory layout, its README, or its original design document claims.
 
@@ -191,3 +201,19 @@ passes if you miss one"* is a finding.
 
 That last line matters as much as the others. It is the question the next
 session starts from instead of re-deriving the whole system.
+
+## Reporting a finding
+
+Findings carry ids and evidence:
+
+```
+A-014   Order rules implemented in two places       INFERRED (High)
+
+Evidence    app/Http/Controllers/OrderController.php:88 recomputes the
+            cancellation window; app/Services/OrderService.php:42 is the
+            other implementation, and they disagree above 15 minutes
+Consequence Business-rule ownership is ambiguous. Changing the rule requires
+            finding both, and nothing fails if one is missed
+Question    Which is intended to be authoritative?
+Direction   One owner for the lifecycle rule; the other becomes a caller
+```

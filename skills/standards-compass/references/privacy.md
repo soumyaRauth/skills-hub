@@ -1,5 +1,16 @@
 # Privacy assessment
 
+## Contents
+
+- Map the data first
+- The lifecycle
+- Deletion is where the real findings are
+- Consent, tracking and the client
+- Logs
+- Automated decisions
+- What to say about law
+- Organizational versus technical
+
 The `/standards privacy` focus. The rule that governs everything here: **the
 repository shows what happens to data; it does not establish what law applies.**
 

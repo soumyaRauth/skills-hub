@@ -1,5 +1,17 @@
 # Project profiling
 
+## Contents
+
+- What the profile records
+- Application type
+- Interfaces and boundaries
+- Data categories
+- Money, privilege and automated decisions
+- Maturity
+- Context that code cannot give you
+- Systems made of more than one repository
+- Safety-critical detection
+
 Applicability is a function of what the software *is*. Get the profile wrong and
 every downstream conclusion is confidently misdirected — which is worse than no
 assessment, because it looks like work.

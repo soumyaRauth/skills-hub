@@ -1,5 +1,16 @@
 # Limitations, and the claims that must never be made
 
+## Contents
+
+- What this is
+- What this is not
+- Claims that are never available
+- The standing limitations block
+- Technical versus organizational
+- Inherited controls
+- Uncertainty is an output
+- Where to stop
+
 This is the part that keeps the skill honest, and it is not decoration. A
 standards report is read by people making decisions about risk, contracts and
 customers, and an overclaim in it does more damage than a missed finding.

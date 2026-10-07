@@ -1,5 +1,15 @@
 # Drift detection
 
+## Contents
+
+- What drift is not
+- Signals that actually indicate drift
+- Product drift is not drift
+- Architectural drift
+- Scope expansion
+- Exploration
+- Reporting drift
+
 Drift is implementation activity becoming disconnected from any coherent
 objective. It is not the same as moving fast, changing your mind, working on
 several things, or having an untidy repository.

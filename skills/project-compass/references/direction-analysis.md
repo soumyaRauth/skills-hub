@@ -1,5 +1,14 @@
 # Direction
 
+## Contents
+
+- Three directions, and what their disagreement means
+- Writing it down
+- `direction.md`
+- Direction on a project with no stated objective
+- Recommendations follow direction, not the other way round
+- What direction can never tell you
+
 Two questions live here: *what is this project actually doing?* and *what is it
 turning into?* The answers are the input to every recommendation the skill
 makes, which is why they get their own file and their own evidence standard.

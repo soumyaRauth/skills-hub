@@ -1,5 +1,14 @@
 # Example — Resuming a case
 
+## Contents
+
+- Read the state first
+- What resuming means
+- Continue: the open question
+- Cause
+- The answer
+- What this example demonstrates
+
 A second session, days later, with a workspace on disk. The job is to continue
 the case, not to reopen it.
 

@@ -1,5 +1,14 @@
 # Example — "should this be microservices?"
 
+## Contents
+
+- The two bad answers
+- What actually decides it
+- The answers
+- The trade-off, stated plainly
+- The decision
+- What this run did not do
+
 The question that most reliably produces a fashionable answer instead of a
 correct one. Illustrative.
 

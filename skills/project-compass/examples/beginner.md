@@ -1,5 +1,13 @@
 # Example — Docker, Redis, Kafka and microservices, for eleven users
 
+## Contents
+
+- The request
+- The project
+- The answer
+- What the answer does
+- What it must never do
+
 Someone reaching for heavy infrastructure early is not being foolish. They have
 read that serious systems use these things, which is true, and nobody has told
 them what problem each one solves. The failure mode here is not being unhelpful.

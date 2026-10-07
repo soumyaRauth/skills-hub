@@ -1,5 +1,15 @@
 # Sync: local files and the tracker
 
+## Contents
+
+- The `synced` block
+- One write, step by step
+- Idempotent create
+- Never delete
+- Out of sync
+- Reconciliation
+- Comments
+
 The local ticket file is the working copy. The tracker is where people look,
 and where they sometimes change things. Sync keeps both telling the same story
 without losing anyone's edit and without creating anything twice.

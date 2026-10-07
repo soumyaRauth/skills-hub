@@ -1,5 +1,13 @@
 # Risk Scoring
 
+## Contents
+
+- The factors
+- Bands
+- Unassessed factors
+- Reporting
+- What the score is not
+
 `RISK` used to be a judgment with an argument attached. The score makes the
 argument explicit: six factors, each scored from evidence already in the report,
 each carrying the observation that set it.

@@ -1,5 +1,17 @@
 # Example — Feature development
 
+## Contents
+
+- 1. Investigate before asking
+- 2. Contract
+- 3. Proof plan
+- 4. Implement, then verify
+- 5. Contradiction
+- 6. Classify, then repair
+- 7. Evidence
+- 8. What the developer sees
+- What this example demonstrates
+
 A high-risk feature, one failed verification, one repair, and a four-line
 answer.
 

@@ -1,5 +1,19 @@
 # Communication
 
+## Contents
+
+- The gate
+- Activity is not a result
+- Default shape
+- When the work was a change, not a diagnosis
+- When there is no conclusion
+- When it is not the application
+- Writing the client response
+- What never appears in the response
+- Audience
+- Confidence, in words
+- Depth on demand
+
 The investigation is for you. The answer is for them. A reader who has to
 reconstruct the case from a transcript received a worse product than one who got
 four lines and a confidence level.

@@ -1,5 +1,15 @@
 # The baseline, item by item
 
+## Contents
+
+- Logs
+- Health
+- Errors
+- Uptime
+- Alert
+- Backups
+- Runbook
+
 Each item: what good looks like for one developer, how to add it, and the exact
 proof. The proof is the part that is never skipped. An item without a performed
 proof is `MISSING (never proven)`.

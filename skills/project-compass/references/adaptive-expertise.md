@@ -1,5 +1,13 @@
 # Adapting to the reader
 
+## Contents
+
+- Reading expertise
+- The same finding, four ways
+- Beginners
+- Seniors and above
+- Project maturity also adapts
+
 The finding does not change. The evidence standard does not change. What changes
 is vocabulary, how much is explained, and how much is left implicit.
 

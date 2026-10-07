@@ -1,5 +1,13 @@
 # Context analysis
 
+## Contents
+
+- What to gather per string
+- Questions that decide the wording
+- When the source hides required information
+- The classic ambiguous terms
+- Practical extraction
+
 The single biggest quality difference between translation and localization is
 whether the string was understood before it was rendered. English UI copy is
 short, ambiguous and grammatically underspecified; most target languages need

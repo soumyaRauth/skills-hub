@@ -1,5 +1,19 @@
 # Example — Correlation with a deploy, promoted to cause
 
+## Contents
+
+- Phase 0 — Access
+- Phase 1 — Normalize
+- Phase 2 — Establish the window independently
+- Phase 3 — What changed inside the window
+- Phase 4 — Hypotheses
+- Phase 5 — The discriminating experiment
+- Phase 6 — Attack the survivor
+- Phase 7 — Cause
+- Phase 8 — Fix and verify
+- The answer
+- What this example demonstrates
+
 Everything started after the deploy. That sentence is where this investigation
 begins, not where it ends.
 

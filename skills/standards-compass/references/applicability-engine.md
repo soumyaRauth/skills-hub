@@ -1,5 +1,14 @@
 # Applicability
 
+## Contents
+
+- The five states
+- The record for each standard
+- How to decide
+- A worked set
+- Traps
+- Restating applicability later
+
 The product is here. Everything else — evidence, findings, remediation — is
 downstream of getting this right, and a report that assesses the wrong standards
 carefully is worth less than one that assesses the right ones roughly.

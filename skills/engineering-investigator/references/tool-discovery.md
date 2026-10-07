@@ -1,5 +1,13 @@
 # Tool Discovery and Access Boundaries
 
+## Contents
+
+- Enumerate first
+- Three environments, three investigations
+- Adapting, not pretending
+- Asking the user to be the tool
+- Recording the boundary
+
 Two failures live here, and they are opposites: claiming access you do not have,
 and missing evidence that was sitting in the repository. Both are prevented by
 spending sixty seconds enumerating what is actually reachable, before

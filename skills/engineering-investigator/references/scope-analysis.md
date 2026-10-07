@@ -1,5 +1,13 @@
 # Scope Analysis
 
+## Contents
+
+- The scope grid
+- Contrasts beat descriptions
+- Intermittency has a shape
+- Time correlation
+- Scope changes the layer set
+
 Scope is the cheapest hypothesis killer available. Establishing that a symptom
 affects one account and not the other 4,000 eliminates every explanation that
 would affect everyone — before a single line of application code is read.

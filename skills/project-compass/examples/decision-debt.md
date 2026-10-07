@@ -1,5 +1,15 @@
 # Example — The same question, for the third time
 
+## Contents
+
+- The request
+- What the state already held
+- Verifying before speaking
+- Mode C, and why
+- The response
+- What makes this work
+- Recording it
+
 Decision debt is invisible in any single file. It shows up as three
 implementations quietly disagreeing about something nobody ever decided.
 

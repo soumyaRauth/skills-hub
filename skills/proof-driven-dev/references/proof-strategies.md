@@ -1,5 +1,16 @@
 # Proof Strategies
 
+## Contents
+
+- Mechanisms
+- Choosing per requirement
+- Use the project's own infrastructure
+- Staged verification
+- Performance requirements
+- Security requirements
+- Refactoring requirements
+- Evidence that is not proof
+
 A proof plan answers one question per requirement: **what evidence would make
 this true, and what is the cheapest mechanism that produces it?**
 

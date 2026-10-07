@@ -1,5 +1,12 @@
 # Evidence Model
 
+## Contents
+
+- Evidence record
+- What never goes in evidence
+- The artifact directory
+- Evidence outlives the conversation
+
 Evidence is what makes a status a claim rather than an opinion. It is judged on
 five properties:
 

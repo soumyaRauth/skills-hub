@@ -1,5 +1,15 @@
 # Evidence model
 
+## Contents
+
+- The four labels
+- Strong versus weak inference
+- Source hierarchy
+- Absence of evidence
+- Staleness
+- What is never evidence
+- Anti-fabrication
+
 A recommendation is only worth as much as the weakest claim under it. This file
 is how claims get priced.
 

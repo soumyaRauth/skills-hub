@@ -1,5 +1,14 @@
 # Report Schema
 
+## Contents
+
+- Skeleton
+- Counts
+- Finding fields
+- EXECUTED vs ANALYZED
+- Verdict rules
+- Anti-patterns
+
 The production-readiness report's structure. Formatting may adapt to context;
 the semantic structure may not. Omit sections with nothing relevant to say —
 except `VERDICT`, which is always present.

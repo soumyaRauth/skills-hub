@@ -1,5 +1,23 @@
 # Example 4 — Cross-module enterprise workflow change
 
+## Contents
+
+- Request
+- Change surface
+- 🟥 MUST CHANGE
+- 🟧 LIKELY AFFECTED
+- 🟨 NEEDS VERIFICATION
+- ⚠️ HIDDEN COUPLING
+- Dependency paths
+- Architecture graph
+- History and ownership
+- Database impact
+- API impact
+- Test impact
+- Risk
+- Recommended implementation order
+- Open questions
+
 A mixed-stack system (Python backend, React frontend, async jobs, SQL reporting)
 where a status value is renamed. Run in **deep mode**. Shows why a rename that
 the type checker "confirms is complete" is the classic production incident.

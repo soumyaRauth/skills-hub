@@ -1,5 +1,15 @@
 # Example — Eight isolated features that turned out to be a system
 
+## Contents
+
+- Ten weeks of requests
+- The question that gets asked at four entries
+- Checking it — three places that already disagree
+- Why this is Mode C rather than a flag
+- The response
+- Why it reads that way
+- Afterwards
+
 The pattern this skill exists to catch, and the one no single request reveals.
 Each ask was legitimate. Nobody in the loop ever asked what they added up to,
 because each one arrived alone and was cheap.

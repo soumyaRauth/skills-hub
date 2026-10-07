@@ -1,5 +1,15 @@
 # Verification Loops
 
+## Contents
+
+- Running verification
+- Contradiction detection
+- When a check cannot run
+- The repair budget
+- Repair by classification
+- Re-verification
+- Convergence
+
 Implementation is one step of a loop, not the end of the work.
 
 ```

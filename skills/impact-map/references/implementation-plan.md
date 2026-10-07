@@ -1,5 +1,14 @@
 # Implementation Plan
 
+## Contents
+
+- Structure
+- Coverage rules
+- Ordering rules
+- Verification rules
+- Handoff rules
+- What the plan is not
+
 The plan is the handoff artifact. It is produced **only when the user asks for
 it**, after the map, and it still contains no code — it tells an engineer (or a
 fresh agent session with no memory of the analysis) exactly what to do, in what

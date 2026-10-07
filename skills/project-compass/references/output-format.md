@@ -1,5 +1,16 @@
 # Output
 
+## Contents
+
+- The rule that governs everything else
+- The default sizes
+- Shapes
+- Language
+- Humor
+- Never in the output
+- Qualitative states only
+- `explain`
+
 Most output is the work, with nothing added. This file is about the rest.
 
 ## The rule that governs everything else

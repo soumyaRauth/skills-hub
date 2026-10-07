@@ -1,5 +1,13 @@
 # The pipeline minimum
 
+## Contents
+
+- The four stages
+- GitHub Actions shape
+- GitLab CI shape
+- Other CI systems
+- The smoke script
+
 What every project this skill touches ends up with, and the shapes to write it
 in. Extend the CI the project already has; these are shapes, not files to paste
 over existing ones.

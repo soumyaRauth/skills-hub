@@ -1,5 +1,16 @@
 # Evidence
 
+## Contents
+
+- Categories
+- Sources, in rough order of strength
+- Citations
+- Executed versus analyzed
+- Tool output is a lead, not a finding
+- Secrets
+- Evidence for what is working
+- Large repositories
+
 Everything this skill claims rests on something it read or ran. The difference
 between a useful standards report and a generic one is not the standards — it is
 whether a senior engineer can check the citations and find them accurate.

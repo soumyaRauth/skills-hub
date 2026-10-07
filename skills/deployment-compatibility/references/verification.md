@@ -1,5 +1,15 @@
 # Verification
 
+## Contents
+
+- Where the check ran
+- Proof per requirement class
+- The application-level check
+- Restart and recovery
+- Validating the artifact, not the source
+- The rehearsal
+- Handing proof over
+
 Turning deployment requirements into things that were observed. The rule this
 whole file exists to enforce: **starting once is not verification**, and
 *verified somewhere else* is not *verified here*.

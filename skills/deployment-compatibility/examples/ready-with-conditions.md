@@ -1,5 +1,13 @@
 # Example — the honest common case
 
+## Contents
+
+- Phase 1 — Target and tier
+- Phase 3 — Matrix
+- Verification
+- The answer
+- What makes this the honest outcome
+
 Most assessments of a reasonably prepared project end here, and the conditions
 are the deliverable. Illustrative; the repository and host are invented.
 

@@ -1,5 +1,13 @@
 # Worked example — a European language pair (de-DE, fr-FR, es-ES)
 
+## Contents
+
+- German — compounds, address form, and expansion
+- French — agreement, spacing, and the singular zero
+- Spanish — regional variation and inverted marks
+- Cross-locale mechanics
+- What this example does not claim
+
 A SaaS billing console, English source, three European locales at different
 stages. The user asks:
 

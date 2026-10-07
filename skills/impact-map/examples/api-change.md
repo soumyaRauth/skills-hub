@@ -1,5 +1,20 @@
 # Example 2 — API response change
 
+## Contents
+
+- Request
+- Change surface
+- 🟥 MUST CHANGE
+- 🟧 LIKELY AFFECTED
+- 🟨 NEEDS VERIFICATION
+- ⚠️ HIDDEN COUPLING
+- Dependency paths
+- API impact
+- Test impact
+- Risk
+- Recommended implementation order
+- Open questions
+
 A Next.js application where a response field is renamed. Shows how a
 "one-line serializer change" reaches consumers, tests, and documentation.
 

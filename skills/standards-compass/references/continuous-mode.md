@@ -1,5 +1,17 @@
 # Guardrail mode — standards during ordinary development
 
+## Contents
+
+- The cheap pass
+- Risk classification
+- Before implementing
+- Requirement sets by feature
+- During implementation
+- After implementing
+- Diff and pull-request review
+- Regression
+- What not to do
+
 The audit is the visible half of this skill. This is the half that prevents the
 audit from finding anything.
 

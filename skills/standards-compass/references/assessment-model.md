@@ -1,5 +1,15 @@
 # Assessment: status, gap type, confidence, severity, priority
 
+## Contents
+
+- Status
+- Gap type
+- Confidence
+- Severity
+- Risk and ordering
+- Maturity changes the bar
+- Over-compliance is a defect
+
 Five separate judgments. Collapsing any pair of them is how standards reports
 become untrustworthy — most commonly by turning "we could not verify this" into
 "this failed", and by inheriting severity from whichever standard sounds

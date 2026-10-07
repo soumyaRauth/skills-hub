@@ -1,5 +1,16 @@
 # Reporting
 
+## Contents
+
+- Structure of a full audit
+- Executive summary
+- Finding format
+- Unable to verify
+- Positive controls
+- Language rules
+- If a score is demanded
+- Depth variants
+
 Two audiences, one document. A manager needs to know how bad it is and what
 happens next; an engineer needs the evidence and the fix. Serve the first in the
 opening section and the second everywhere after it.

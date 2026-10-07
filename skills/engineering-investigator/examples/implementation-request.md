@@ -1,5 +1,16 @@
 # Example — A clear request is not an incident
 
+## Contents
+
+- Route
+- Phase 0 — What can be seen
+- The work
+- What the user must not receive
+- Phase 9 — The gate
+- The answer
+- If asked *"how exactly did you implement XLSX?"*
+- What this example demonstrates
+
 The failure this example exists to prevent is the opposite of the usual one. The
 usual failure is answering a mystery with a guess. This one is answering a
 *non*-mystery with an investigation, and then reporting the investigation.

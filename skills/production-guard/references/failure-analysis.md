@@ -1,5 +1,13 @@
 # Failure Analysis
 
+## Contents
+
+- Failure taxonomy
+- Idempotency
+- The failure matrix
+- Asynchronous work
+- External integrations
+
 The signature phase. Happy-path validation tells you the feature can work;
 failure analysis tells you what the product does when reality misbehaves.
 

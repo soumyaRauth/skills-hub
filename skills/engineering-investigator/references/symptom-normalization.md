@@ -1,5 +1,13 @@
 # Symptom Normalization
 
+## Contents
+
+- The investigation statement
+- Symptom words are not diagnoses
+- Fill slots from what you can reach — before asking
+- The minimal ask
+- Re-normalizing
+
 The report you receive is a compression of someone else's experience. "The app
 is slow" is what remains after a user's frustration, a support agent's summary,
 and a manager's relay have each dropped detail. Normalization recovers the shape

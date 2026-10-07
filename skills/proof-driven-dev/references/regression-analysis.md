@@ -1,5 +1,14 @@
 # Regression Analysis
 
+## Contents
+
+- Deriving the regression surface
+- Turning the surface into requirements
+- Targeted first, broad when justified
+- Baseline before blame
+- Tests are not the whole surface
+- Snapshots and fixtures
+
 Half of every contract is *the new thing works*. The other half is *the old
 things still do*. The second half is where the expensive failures live, because
 nobody is looking there.

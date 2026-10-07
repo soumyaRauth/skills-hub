@@ -1,5 +1,14 @@
 # Example — a supplied specification, and four findings behind the obvious one
 
+## Contents
+
+- Phase 1 — Target and tier
+- Phase 2 — The deployment contract
+- Phase 3 — Matrix
+- Findings
+- The answer
+- What this run did not do
+
 Illustrative. The repository and the server are invented; the shape of the
 assessment is the point.
 

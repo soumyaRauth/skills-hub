@@ -1,5 +1,14 @@
 # Terminology and translation memory
 
+## Contents
+
+- The glossary
+- Harvesting what already exists
+- Which term wins
+- Translation memory
+- One English word, several concepts
+- Terms that must not drift
+
 Consistency is the difference between a product that feels localized and one
 that feels like several translators took turns. It is also the cheapest quality
 win available: it needs no linguistic judgement, only discipline.

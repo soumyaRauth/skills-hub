@@ -1,5 +1,14 @@
 # Example — An ambiguous request
 
+## Contents
+
+- 1. Every question the request raises
+- 2. Why the last one is material
+- 3. Ask once, with options
+- 4. Contract, now that it is decidable
+- 5. Result
+- What this example demonstrates
+
 Nine questions could be asked here. Eight are answered by the repository. The
 ninth changes the product, so it is asked — once, with options.
 

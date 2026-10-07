@@ -1,5 +1,17 @@
 # Change-Type Checklists
 
+## Contents
+
+- Payments and financial mutations
+- Authentication and session changes
+- Authorization changes
+- Database migrations
+- File uploads
+- Bulk operations
+- API changes
+- Background jobs and queues
+- External integrations
+
 Starting points, not a closed list. When a change does not match anything here,
 derive the checks from the failure taxonomy instead.
 

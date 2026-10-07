@@ -1,5 +1,16 @@
 # Trajectory analysis
 
+## Contents
+
+- Extract the concept, not the words
+- What is worth recording
+- Reading a sequence
+- From entries to structure
+- Activity versus progress
+- Beware the pattern that is just a job
+- Sessions
+- Inherited history
+
 A request is a signal. A sequence of requests is a trajectory, and a trajectory
 carries information that no single request does — including information the
 person making the requests does not have, because they see them one at a time.

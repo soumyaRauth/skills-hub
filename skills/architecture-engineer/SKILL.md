@@ -304,19 +304,8 @@ Method, the read order, and what each signal establishes:
 entry with the evidence it requires and the consequence it produces:
 `references/architecture-smells.md`.
 
-Findings carry ids and evidence:
-
-```
-A-014   Order rules implemented in two places       INFERRED (High)
-
-Evidence    app/Http/Controllers/OrderController.php:88 recomputes the
-            cancellation window; app/Services/OrderService.php:42 is the
-            other implementation, and they disagree above 15 minutes
-Consequence Business-rule ownership is ambiguous. Changing the rule requires
-            finding both, and nothing fails if one is missed
-Question    Which is intended to be authoritative?
-Direction   One owner for the lifecycle rule; the other becomes a caller
-```
+Findings carry an id, a label, evidence, consequence, question and direction —
+format and a sample in `references/current-architecture.md`.
 
 Do not report every smell. Report what has evidence and is costing something.
 
@@ -464,25 +453,9 @@ HANDOFF → proof-driven-dev: the extracted OrderService must preserve the
 
 ## State
 
-`.architecture/`, created only when there is something worth carrying between
-sessions — and the reason this skill improves rather than restarts:
-
-```
-system.md        what this is, who it serves, the constraints that bind it
-requirements.md  the architectural requirements, each typed and sourced
-current.md       the architecture as implemented, from evidence
-target.md        the architecture decided, and what must not be violated
-decisions/       one ADR per decision, numbered
-risks.md         architectural risks and the open questions blocking decisions
-migration.md     the staged path, and which state it is actually in
-```
-
-Two files is a complete workspace for most sessions, and a first `DISCOVER`
-often writes only `requirements.md`. Record facts, decisions and open questions
-— never narration, never a transcript of the conversation. **The repository
-outranks the file**: re-verify a recorded claim before building on it, and
-correct it when it has gone stale. Never write a secret, a credential, or a
-customer's data into it.
+Read `references/state.md` before creating or updating `.architecture/`. The
+repository outranks the file: re-verify a recorded claim before building on it,
+and never write a secret or customer data into it.
 
 ## What this skill is not
 

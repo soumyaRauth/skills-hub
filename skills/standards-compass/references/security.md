@@ -1,5 +1,20 @@
 # Security assessment
 
+## Contents
+
+- Authorization first, not authentication
+- Authentication and sessions
+- Input and output
+- Secrets
+- Tenant isolation
+- APIs
+- File uploads
+- Cryptography
+- Logging, monitoring, error handling
+- Dependencies and supply chain
+- Mapping
+- Boundaries
+
 The `/standards security` focus, and the largest evidence surface in most
 projects. Order below is investigation order, which is roughly consequence
 order.

@@ -1,5 +1,14 @@
 # Example — Refactoring
 
+## Contents
+
+- 1. Investigate
+- 2. Contract
+- 3. Characterize first
+- 4. Refactor, then verify
+- 5. What the developer sees
+- What this example demonstrates
+
 A refactor is the one contract whose objective is that **nothing observable
 changes**. That inverts the usual proof: the evidence is not new tests passing,
 it is old tests passing *unchanged*.

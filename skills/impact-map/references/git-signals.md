@@ -1,5 +1,14 @@
 # Git Signals
 
+## Contents
+
+- Check availability first
+- Change source: analyzing work that already exists
+- Co-change coupling (temporal coupling)
+- Churn and hotspots
+- Ownership
+- What history is worth in the report
+
 History is the only source of coupling evidence that does not live in the code:
 which files real engineers keep changing together, which parts of the system
 churn, and who to ask. It is read-only — `git log`, `git blame`, `git diff`,

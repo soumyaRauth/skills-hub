@@ -1,5 +1,18 @@
 # Internal standards — template
 
+## Contents
+
+- Organizational context
+- Standards we have committed to
+- Standards we have explicitly decided not to pursue
+- Our security requirements
+- Our accessibility target
+- Our privacy rules
+- Our AI rules
+- Architecture rules
+- Exceptions already granted
+- How to treat conflicts
+
 Copy this file to `references/internal-standards.md` inside the installed skill,
 or to `.project-standards/internal-standards.md` in your project, and fill it in.
 

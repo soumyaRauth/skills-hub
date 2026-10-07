@@ -1,5 +1,14 @@
 # Worked example — Arabic (ar)
 
+## Contents
+
+- The two hard parts
+- Plurals
+- Direction
+- A terminology trap worth naming
+- Other observations
+- Report tail
+
 A file-sharing web app, English source, Arabic locale being added. The user
 asks:
 

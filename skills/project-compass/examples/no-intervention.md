@@ -1,5 +1,12 @@
 # Example — Mode A, five times
 
+## Contents
+
+- Setup
+- Five requests, five silences
+- What was suppressed, and by which rule
+- Underneath
+
 Every other example in this directory shows the skill saying something. This one
 shows it not saying anything, which is what it does almost all of the time and
 the only reason the other examples are worth reading.

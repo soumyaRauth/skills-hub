@@ -1,5 +1,12 @@
 # The project model
 
+## Contents
+
+- Reading order
+- The dimensions
+- Knowledge debt
+- Writing it down
+
 What to understand about a project, what evidence establishes each part, and —
 more important — what to write when the evidence is not there.
 

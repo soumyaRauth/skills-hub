@@ -548,6 +548,12 @@ add one. The reasoning is in [`ECOSYSTEM.md`](ECOSYSTEM.md#skills-considered-and
 
 ### Changed
 
+- **Skills follow Anthropic's length guidance.** SKILL.md bodies stay under
+  500 lines: Project Compass, Engineering Investigator and Architecture Engineer
+  moved formats, samples and state layouts verbatim into new reference files.
+  Every reference or example over 100 lines opens with a `## Contents` list,
+  since Claude may preview it with `head -100`. `validate.sh` enforces both.
+
 - **Contributing is a one-page read.** `CONTRIBUTING.md` is now five steps, a
   table of where things go, and the five hard rules in one line each, each
   linking to its reasoning. The full guide moved, unchanged apart from its

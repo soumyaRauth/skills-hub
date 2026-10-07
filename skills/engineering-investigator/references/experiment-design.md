@@ -1,5 +1,14 @@
 # Experiment Design
 
+## Contents
+
+- Selecting the next experiment
+- Experiments by question
+- The revert test
+- Bisecting
+- Verification experiments
+- Experiments not to run
+
 An investigation makes progress when a hypothesis dies. Reading more code is not
 progress; it is inventory. The question at every decision point is:
 
