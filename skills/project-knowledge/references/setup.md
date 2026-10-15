@@ -37,6 +37,9 @@ Re-running it updates the copied skill and hook and adds nothing twice.
 Type `/learn` in Claude Code (or ask to "update the project knowledge") to run
 the skill whenever you decide. It reads only the commits since the last run
 and never commits; commit the updated files with your work.
+With the Skills Hub plugin installed, `/learn` works in every project, with
+no `knowledge init` needed; init adds it to the repository for teammates who
+don't have the plugin.
 
 To change how often the hook asks on its own, set `LEARN_EVERY` (for example
 `"env": { "LEARN_EVERY": "10" }` in `.claude/settings.json`). A very large value

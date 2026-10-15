@@ -13,6 +13,8 @@ methodology and documentation.
   so updating the project knowledge on demand is `/learn` in Claude Code
   rather than the skill's name. It is manual-only
   (`disable-model-invocation`), and `knowledge remove` takes it out.
+  The plugin also ships it (`commands/learn.md`), so `/learn` works in any
+  project once Skills Hub is installed, with no `knowledge init` needed.
 
 - **Project Knowledge, and the first MCP server in the hub.** Every new
   developer and every new agent session rebuilt how a codebase works from the
