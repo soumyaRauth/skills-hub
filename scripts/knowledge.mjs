@@ -46,7 +46,7 @@ export function init(root, { dryRun = false, skill = true } = {}) {
   }
 
   // /learn: a manual trigger, so nobody has to remember the skill's name.
-  const cmdSrc = join(HUB, "integrations/claude-code/learn.md");
+  const cmdSrc = join(HUB, "commands/learn.md");
   const cmdDst = join(root, ".claude/commands/learn.md");
   if (!same(cmdSrc, cmdDst)) {
     step("add command     .claude/commands/learn.md (/learn)", () => {
