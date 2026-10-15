@@ -124,3 +124,9 @@ graders:
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-lead)"'
   min: 0
   max: 0
+- name: quiet-project-knowledge
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-knowledge)"'
+  min: 0
+  max: 0

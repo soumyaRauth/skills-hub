@@ -9,6 +9,27 @@ methodology and documentation.
 
 ### Added
 
+- **Project Knowledge, and the first MCP server in the hub.** Every new
+  developer and every new agent session rebuilt how a codebase works from the
+  code. **`project-knowledge`** writes it down in committed files
+  (`.agents/knowledge/`: architecture, an append-only decision log, gotchas,
+  and a shared cursor) and keeps it current incrementally: commit messages,
+  then `git diff --stat`, then full diffs only for paths that change structure
+  or contracts. It never records a secret value and never commits.
+  `npx -y github:soumyaRauth/skills-hub knowledge init` sets a repository up
+  for a whole team: it copies the skill into `.claude/skills/`, adds a Stop
+  hook (`integrations/claude-code/knowledge-check.sh`) that asks for a run once
+  `LEARN_EVERY` commits pile up and costs no tokens until it fires, and
+  registers a dependency-free stdio MCP server (`mcp/project-knowledge/`) in
+  `.mcp.json` with `knowledge_onboard`, `knowledge_search`, `knowledge_read`,
+  `knowledge_status` and an `onboard` prompt. `knowledge remove` takes it back
+  out and leaves the knowledge. The hook does nothing in a repository without
+  `.agents/knowledge/`, so it is safe globally. `validate.sh` runs the server
+  over real stdio, the init/remove round trip and the hook. New activation
+  cases: `pk-learn-codebase` (with a planted `.env` whose values must not
+  surface) and `quiet-explain-one-file`; every all-quiet case keeps the new
+  skill quiet too.
+
 - **Production Guard covers every common vulnerability class.** Its security
   checks named authorization, tenancy, exposure and input manipulation, and
   nothing asked about string-built SQL. `security-validation.md` now traces

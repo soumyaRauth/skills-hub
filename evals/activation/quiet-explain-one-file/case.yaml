@@ -1,0 +1,56 @@
+schema_version: '1.1'
+name: quiet-explain-one-file
+tags:
+- quiet
+- keyword-trap
+description: A one-off question about one file in a repository with no recorded knowledge.
+expected_outcome: 'Must engage: none required. Must stay quiet: project-knowledge,
+  project-compass, architecture-engineer, engineering-investigator, standards-compass,
+  production-guard.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: What does src/queue.js do?
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: quiet-project-knowledge
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-knowledge)"'
+  min: 0
+  max: 0
+- name: quiet-project-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-compass)"'
+  min: 0
+  max: 0
+- name: quiet-architecture-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:architecture-engineer)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-standards-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:standards-compass)"'
+  min: 0
+  max: 0
+- name: quiet-production-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:production-guard)"'
+  min: 0
+  max: 0
