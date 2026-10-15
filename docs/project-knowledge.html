@@ -67,9 +67,10 @@
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
-      Run it in the project&rsquo;s root, then ask your agent to <em>learn this
-      codebase</em>, and commit what it wrote. It adds, as files you commit:
-      the skill (so teammates install nothing), a Stop hook that keeps the
+      Run it in the project&rsquo;s root, then type <code>/learn</code> in Claude
+      Code (or ask it to <em>learn this codebase</em>), and commit what it wrote.
+      Type <code>/learn</code> again whenever you decide the knowledge should catch up. It adds, as files you commit:
+      the skill (so teammates install nothing), the <code>/learn</code> command, a Stop hook that keeps the
       knowledge current, and an MCP server entry in <code>.mcp.json</code>.
       <code>--dry-run</code> shows the plan first; <code>knowledge remove</code>
       takes it back out and keeps the knowledge.

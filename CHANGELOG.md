@@ -9,6 +9,11 @@ methodology and documentation.
 
 ### Added
 
+- **`/learn`.** `knowledge init` now also installs `.claude/commands/learn.md`,
+  so updating the project knowledge on demand is `/learn` in Claude Code
+  rather than the skill's name. It is manual-only
+  (`disable-model-invocation`), and `knowledge remove` takes it out.
+
 - **Project Knowledge, and the first MCP server in the hub.** Every new
   developer and every new agent session rebuilt how a codebase works from the
   code. **`project-knowledge`** writes it down in committed files
