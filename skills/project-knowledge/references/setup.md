@@ -3,6 +3,7 @@
 ## Contents
 
 - One command per repository
+- Learning on demand
 - The Stop hook
 - The MCP server
 - A new developer's first day
@@ -22,6 +23,7 @@ It writes, all as project files meant to be committed:
 | File | Why |
 | --- | --- |
 | `.claude/skills/project-knowledge/` | the skill, so every clone has it without installing anything (`--no-skill` skips it if you installed the skill globally) |
+| `.claude/commands/learn.md` | `/learn` in Claude Code: update the knowledge now, whenever you decide |
 | `.claude/hooks/knowledge-check.sh` + a `Stop` entry in `.claude/settings.json` | keeps the knowledge current |
 | `.mcp.json` entry `project-knowledge` | serves the knowledge to any MCP client |
 | `.agents/knowledge/` | where the knowledge lives |
@@ -29,6 +31,16 @@ It writes, all as project files meant to be committed:
 | one pointer line in `CLAUDE.md` / `AGENTS.md` | so agents know the knowledge exists |
 
 Re-running it updates the copied skill and hook and adds nothing twice.
+
+## Learning on demand
+
+Type `/learn` in Claude Code (or ask to "update the project knowledge") to run
+the skill whenever you decide. It reads only the commits since the last run
+and never commits; commit the updated files with your work.
+
+To change how often the hook asks on its own, set `LEARN_EVERY` (for example
+`"env": { "LEARN_EVERY": "10" }` in `.claude/settings.json`). A very large value
+leaves it manual-only.
 
 ## The Stop hook
 

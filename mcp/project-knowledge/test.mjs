@@ -27,6 +27,7 @@ try {
   assert.equal(settings.hooks.Stop.length, 2);
   assert.equal(settings.hooks.Stop[0].hooks[0].command, "other.sh");
   assert.ok(existsSync(join(repo, ".claude/skills/project-knowledge/SKILL.md")));
+  assert.match(readFileSync(join(repo, ".claude/commands/learn.md"), "utf8"), /project-knowledge skill/);
   assert.deepEqual(JSON.parse(readFileSync(join(repo, ".mcp.json"), "utf8")).mcpServers["project-knowledge"].args.slice(-2), ["knowledge", "mcp"]);
   assert.match(readFileSync(join(repo, "CLAUDE.md"), "utf8"), /\.agents\/knowledge/);
   assert.match(readFileSync(join(repo, ".gitignore"), "utf8"), /\.learn-nagged/);
@@ -75,6 +76,7 @@ try {
   assert.deepEqual(after.hooks.Stop, [{ hooks: [{ type: "command", command: "other.sh" }] }]);
   assert.ok(!existsSync(join(repo, ".mcp.json")));
   assert.ok(!existsSync(join(repo, ".claude/skills/project-knowledge")));
+  assert.ok(!existsSync(join(repo, ".claude/commands/learn.md")));
   assert.ok(existsSync(join(kdir, "architecture.md")));
   console.log("project-knowledge: all checks passed");
 } finally {

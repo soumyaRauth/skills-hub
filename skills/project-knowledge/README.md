@@ -19,7 +19,8 @@ all as files you commit:
 npx -y github:soumyaRauth/skills-hub knowledge init
 ```
 
-Then ask your agent to *learn this codebase*. After that, a developer who clones
+Then type `/learn` in Claude Code (or ask it to *learn this codebase*), and
+again whenever you decide the knowledge should catch up. After that, a developer who clones
 the repository approves the MCP server once and asks, or types
 `/mcp__project-knowledge__onboard` in Claude Code.
 

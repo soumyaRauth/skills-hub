@@ -45,6 +45,16 @@ export function init(root, { dryRun = false, skill = true } = {}) {
     });
   }
 
+  // /learn: a manual trigger, so nobody has to remember the skill's name.
+  const cmdSrc = join(HUB, "integrations/claude-code/learn.md");
+  const cmdDst = join(root, ".claude/commands/learn.md");
+  if (!same(cmdSrc, cmdDst)) {
+    step("add command     .claude/commands/learn.md (/learn)", () => {
+      mkdirSync(dirname(cmdDst), { recursive: true });
+      cpSync(cmdSrc, cmdDst);
+    });
+  }
+
   const settingsFile = join(root, ".claude/settings.json");
   const settings = readJson(settingsFile);
   const stop = settings.hooks?.Stop ?? [];
@@ -91,7 +101,7 @@ export function init(root, { dryRun = false, skill = true } = {}) {
 export function remove(root, { dryRun = false } = {}) {
   const done = [];
   const step = (msg, fn) => { done.push(msg); if (!dryRun) fn(); };
-  for (const p of [".claude/skills/project-knowledge", ".claude/hooks/knowledge-check.sh"]) {
+  for (const p of [".claude/skills/project-knowledge", ".claude/hooks/knowledge-check.sh", ".claude/commands/learn.md"]) {
     if (existsSync(join(root, p))) step(`delete          ${p}`, () => rmSync(join(root, p), { recursive: true }));
   }
   const settingsFile = join(root, ".claude/settings.json");
