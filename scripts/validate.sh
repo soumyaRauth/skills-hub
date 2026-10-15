@@ -440,6 +440,15 @@ else
   fail "skills/delivery-planner/scripts/test_tracker.py failed"
 fi
 
+head_ "Project knowledge MCP server, init and hook"
+if ! command -v node >/dev/null 2>&1 || ! command -v git >/dev/null 2>&1; then
+  skip "node or git unavailable; mcp/project-knowledge/test.mjs not run"
+elif node mcp/project-knowledge/test.mjs >/dev/null 2>&1; then
+  pass "MCP server over stdio, knowledge init/remove, Stop hook"
+else
+  fail "mcp/project-knowledge/test.mjs failed"
+fi
+
 head_ "Claude Code integration"
 if python3 integrations/claude-code/test_statusline_skills.py >/dev/null 2>&1; then
   pass "status line segment self-check"

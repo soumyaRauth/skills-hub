@@ -1,0 +1,11 @@
+{
+  "name": "orders-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js",
+    "worker": "node src/worker/charge.js",
+    "migrate": "psql \"$DATABASE_URL\" -f migrations/001_orders.sql",
+    "test": "node --test"
+  }
+}

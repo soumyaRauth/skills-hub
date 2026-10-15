@@ -78,7 +78,7 @@ its most recent part. Check it with
 `.claude-plugin/marketplace.json` makes it installable as one. That serves
 three purposes:
 
-- **Installing all seventeen skills in one step**, and updating them in one step
+- **Installing all eighteen skills in one step**, and updating them in one step
   later:
 
   ```
@@ -86,7 +86,7 @@ three purposes:
   /plugin install skills-hub@skills-hub
   ```
 
-- **Trying all seventeen skills at once**, without installing anything:
+- **Trying all eighteen skills at once**, without installing anything:
   `claude --plugin-dir /path/to/skills-hub`. Skills then appear namespaced, as
   `skills-hub:impact-map`.
 - **Testing activation.** `claude plugin eval` needs a plugin to load. See
@@ -179,3 +179,16 @@ the model already announced.
   exactly what the activation suite checks does not happen.
 - **No `systemMessage` announcement.** Claude Code already shows each skill load
   in the transcript. A second line per load would be noise.
+
+## 5. Keep project knowledge current
+
+[`knowledge-check.sh`](knowledge-check.sh) is the Stop hook behind the
+[`project-knowledge`](../../skills/project-knowledge/README.md) skill. It is
+bash, git and grep: when `.agents/knowledge/` is `LEARN_EVERY` (default 5)
+commits behind `HEAD`, it blocks the stop once and asks Claude to run the
+skill. It does nothing in a repository without `.agents/knowledge/`.
+
+You don't normally install it by hand. `npx -y github:soumyaRauth/skills-hub
+knowledge init` copies it into the repository and registers it in
+`.claude/settings.json`, beside the MCP server in `.mcp.json`. See
+[setup](../../skills/project-knowledge/references/setup.md).

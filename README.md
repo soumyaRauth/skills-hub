@@ -17,7 +17,7 @@
 [![Stars](https://img.shields.io/github/stars/soumyaRauth/skills-hub?style=for-the-badge&logo=github&color=eab308)](https://github.com/soumyaRauth/skills-hub/stargazers)
 
 **Agent Skills for real engineering work.** Installable with the Skills CLI, and usable with<br>
-Claude Code and other agents that support Agent Skills. No MCP server, no hosted service, only markdown.
+Claude Code and other agents that support Agent Skills. No hosted service: markdown, plus one optional MCP server that serves a project's knowledge.
 
 [**🌐 Website**](https://soumyaRauth.github.io/skills-hub/) &nbsp;·&nbsp;
 [**⚡ Install**](#installation) &nbsp;·&nbsp;
@@ -31,10 +31,10 @@ Claude Code and other agents that support Agent Skills. No MCP server, no hosted
 <br>
 
 ```bash
-# install all seventeen skills; asks which agents, and project or global
+# install all eighteen skills; asks which agents, and project or global
 npx skills add soumyaRauth/skills-hub --skill '*'
 
-# uninstall all seventeen, and nothing else
+# uninstall all eighteen, and nothing else
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
@@ -43,7 +43,7 @@ Claude Code only, or as a plugin: see [Installation](#installation).
 
 > [!IMPORTANT]
 > **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all
-> seventeen skills from every agent, and leaves your other skills alone.
+> eighteen skills from every agent, and leaves your other skills alone.
 
 ## 🧰 The skills
 
@@ -64,6 +64,7 @@ Claude Code only, or as a plugin: see [Installation](#installation).
 | 🗂️ | **[delivery-planner](skills/delivery-planner/README.md)** | Turns a spec into milestones and vertical-slice tickets, and keeps Jira, Trello, Nextcloud Deck, GitHub, GitLab, Linear or plain files in sync as work moves | *Before* the building starts, and whenever a ticket moves |
 | 🚢 | **[release-engineer](skills/release-engineer/README.md)** | Builds and runs the path to users: PR checks, one artifact, staging on merge, an authorized production promotion, a smoke check, a rollback tried before it is needed | *When* a verified change has to reach users |
 | 📡 | **[observability-baseline](skills/observability-baseline/README.md)** | Puts logs, health checks, error tracking, an uptime check, one alert, a restore-tested backup and a runbook in place, each proven by making it fire | *Before* the first production launch |
+| 📓 | **[project-knowledge](skills/project-knowledge/README.md)** | Writes down how the codebase works (architecture, dated decisions, gotchas) in committed files, keeps it current from each diff, and serves it to the next developer through an MCP server | *Once*, then every few commits on its own |
 | 🔗 | **[skills-pipeline](skills/skills-pipeline/README.md)** | Runs the skills you pick from a numbered menu, in the order you pick, and ends in a ledger with one status per stage | *Only* when you type `/skills-pipeline` |
 | 🏁 | **[delivery-lead](skills/delivery-lead/README.md)** | Takes the next ready ticket and drives it to done (proven, merged, tracker moved), then the next, until the milestone ships or only you can decide | *Only* when you ask it to work through the tickets |
 
@@ -1298,6 +1299,49 @@ afterwards. It never states the ship verdict.
 
 <br>
 
+### 📓 Project Knowledge
+
+**Every new developer rebuilds how the codebase works. This writes it down once, and keeps it true.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill project-knowledge
+```
+
+For a team, set the repository up once instead, as files you commit:
+
+```bash
+npx -y github:soumyaRauth/skills-hub knowledge init
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+What a new developer spends the first week on is mostly known already: why
+orders only turn paid on the webhook, which env var makes jobs run inline, which
+refactor was tried and reverted. It lives in someone's head or in a closed PR.
+
+```
+.agents/knowledge/
+  architecture.md     what each part is for, how a request flows, how to run it
+  decisions.md        dated, append-only: what was decided, why, what was rejected
+  gotchas.md          what will bite you, and "don't change X without Y"
+  .learn-state.json   learned as of which commit (committed, shared by every clone)
+```
+
+Each run after the first reads commit messages, then `git diff --stat`, then
+full diffs only for paths that change structure or contracts, so its cost
+follows the diff. `knowledge init` adds a Stop hook that asks for a run every
+few commits (no tokens until it fires) and an MCP server, so a developer who
+clones the repository types `/mcp__project-knowledge__onboard` and starts from
+what is known. It never records a secret value, never commits, and never starts
+a full scan in a repository nobody asked about.
+
+</details>
+
+**[Full documentation →](skills/project-knowledge/README.md)**
+
+<br>
+
 ### 🔗 Skills Pipeline
 
 **Every discipline you pick, in the order you pick, and only when you ask.**
@@ -1409,7 +1453,7 @@ and Codex, Cursor, Gemini CLI and the other agents that read that folder pick
 them up too.
 
 Claude Code can also install the whole repository as a plugin, which keeps the
-seventeen skills together under one namespace and updates them in one step:
+eighteen skills together under one namespace and updates them in one step:
 
 ```
 /plugin marketplace add soumyaRauth/skills-hub
@@ -1447,12 +1491,12 @@ Audit this application against the standards that matter.
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
-`skills-hub` stands for all seventeen skills. The command reads the list from this
+`skills-hub` stands for all eighteen skills. The command reads the list from this
 repository and passes it to the Skills CLI's own `npx skills remove`, one name
 per skill, for every agent. It never uses `--skill '*'`, which would remove
 every skill on the machine, including ones that have nothing to do with this
 repository. A skill that is not installed is skipped, so the same command works
-whether you installed one skill or all seventeen, and running it twice is harmless.
+whether you installed one skill or all eighteen, and running it twice is harmless.
 Skills added to this repository later are covered without a new command.
 
 | Option | Does |
@@ -1503,7 +1547,7 @@ Everything Claude Code-specific is kept outside the skills:
   dropped in one line, before the turn ends
 - a status line segment that shows the active skills in color
 - a plugin manifest and a marketplace manifest, so `/plugin install` or
-  `claude --plugin-dir` can load all seventeen at once and `claude plugin eval`
+  `claude --plugin-dir` can load all eighteen at once and `claude plugin eval`
   can test them
 
 See [integrations/claude-code](integrations/claude-code/README.md).
@@ -1558,10 +1602,12 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   ├── api-contract-guard/       ← two references, four examples, one of them silence
 │   ├── deployment-compatibility/ ← six references, four examples, one of them a refusal to assess
 │   ├── architecture-engineer/    ← seven references, four examples, one of them a refusal to engage
+│   ├── project-knowledge/        ← three references, three examples: first run, incremental, onboarding
 │   └── skills-pipeline/          ← the menu, three examples, one of them staying out
 ├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
 ├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
-├── integrations/claude-code/     ← optional: standing instruction, colored status line
+├── integrations/claude-code/     ← optional: standing instruction, colored status line, Stop hooks
+├── mcp/project-knowledge/        ← dependency-free MCP server for .agents/knowledge/, and its self-check
 ├── .claude-plugin/plugin.json    ← makes the repository loadable as a Claude Code plugin
 ├── tests/
 │   ├── fixtures/
@@ -1575,12 +1621,14 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   │   ├── dependency-guard/     ← an installed library that covers the need, an unverified name, SHA-pinned CI
 │   │   ├── api-contract-guard/   ← a public API with a flaw not to copy, and two services that deploy apart
 │   │   ├── deployment-compatibility/  ← a project and the server spec it does not fit, and an image that contradicts its app
-│   │   └── architecture-engineer/     ← a codebase whose README declares layers its code does not keep
+│   │   ├── architecture-engineer/     ← a codebase whose README declares layers its code does not keep
+│   │   └── project-knowledge/    ← a small API whose knowledge lives in comments, a changelog, and a planted .env
 │   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions and skills
 │   └── README.md                 ← expected findings per fixture
-├── package.json                  ← lets npx run the uninstall command from GitHub; never published
+├── package.json                  ← lets npx run the uninstall and knowledge commands from GitHub; never published
 ├── scripts/
-│   ├── skills-hub.mjs            ← npx github:soumyaRauth/skills-hub uninstall
+│   ├── skills-hub.mjs            ← npx github:soumyaRauth/skills-hub uninstall | knowledge
+│   ├── knowledge.mjs             ← knowledge init / remove / mcp
 │   ├── validate.sh               ← structure + frontmatter validation, all skills
 │   └── validate-registry.sh      ← standards registry schema, ids, sources, dates
 └── .github/workflows/validate.yml
@@ -1606,6 +1654,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 - **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction and status line
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
+- **[Project Knowledge](skills/project-knowledge/README.md)** · [SKILL.md](skills/project-knowledge/SKILL.md)
 
 ## Contributing
 
