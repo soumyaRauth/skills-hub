@@ -1452,32 +1452,35 @@ npx -y github:soumyaRauth/skills-hub runway calibrate
 For Claude Code. It needs Python 3, with no packages, no API key and no network.
 
 When you press Enter, Runway estimates the prompt before Claude sees it, and
-holds it back so you decide. The first line answers the question that matters:
-**how long you can keep working once this prompt has run.** Nothing is sent and
-nothing is spent until you decide:
+holds it back so you decide. It answers the question that matters: **how long
+you can keep working once this prompt has run**, if it turns out quick, typical
+or heavy. Nothing is sent and nothing is spent until you decide:
 
 ```
-[Runway] Before it runs: this prompt should fit.
-  Time left  after it, ~1h05m of work at your pace over the last hour (~1h09m now); the window resets in 4h05m
-  Estimate   ~2.5M tokens (multi, ~8 call(s))
-  5h window  39% used now, ~43% after it, resets in 4h05m
-  Context    30% -> ~32%
-  Rough: only 16 past turn(s) to learn from, so no error range yet.
+[Runway] Before it runs: this prompt should fit, even if it turns out heavy.
+  Time left after it, at your pace over the last hour (~1h07m now):
+    quick    ~1h06m left              1 step, ~360.7k tokens
+    typical  ~1h05m left              3 steps, ~1.1M tokens
+    heavy    ~55m left                19 steps, ~6.9M tokens
+  5h window  46% used now, resets in 3h53m
+  Context    36% now
+  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
 To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
 ```
 
-Here a large refactor would leave about 1h05m of work, against 1h09m if you
-skipped it. Send it again (Up, Enter) to run it, or do nothing to drop it. When
-a prompt would run out partway, the message says so (here with the quota set to
-92% used, to show it):
+Send it again (Up, Enter) to run it, or do nothing to drop it. When a prompt
+could run out partway, the message says so (here with the quota set to 92%
+used, to show it):
 
 ```
-[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
-  Time left  none: you would hit the 5-hour limit during this prompt; the window resets in 2h00m
-  Estimate   ~2.5M tokens (multi, ~8 call(s))
-  5h window  92% used now, ~100% after it, resets in 2h00m
-  Context    30% -> ~32%
-  Rough: only 16 past turn(s) to learn from, so no error range yet.
+[Runway] Paused: this prompt may not finish before your 5-hour limit, if it turns out heavy.
+  Time left after it, at your pace over the last hour (~5m now):
+    quick    ~4m left                 1 step, ~360.7k tokens
+    typical  ~3m left                 3 steps, ~1.1M tokens
+    heavy    limit hit partway        19 steps, ~6.9M tokens
+  5h window  92% used now, resets in 2h00m
+  Context    36% now
+  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
 Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
 ```
 
@@ -1490,14 +1493,24 @@ The status line shows what is left all the time:
 <details>
 <summary><b>Deep dive</b>: how it estimates, and the limits</summary>
 
-One prompt runs several API calls, and each call re-reads the whole context.
-So what a turn costs depends on how many calls it makes and how big the
-context already is, far more than on the prompt's length. Runway sorts a
-prompt into a tier (a question, a single edit, or multi-step work) by its
-wording and the `@files` it names. `calibrate` then measures each tier from
-your own past turns. The quota is Claude Code's own reading (percent used,
-reset time), which the status line receives on Pro, Max and Ultra plans, so
-Runway never guesses your plan's limit.
+One prompt runs several steps (API calls), and each step re-reads the whole
+context. So a prompt of N steps costs at least N × the current context, plus
+outputs and tool results. What a prompt costs depends almost entirely
+on how many steps Claude takes, and that is decided while it works. On real
+history, neither the prompt's wording nor the prompts before it predicted the
+number of steps. Once the steps are known, though, the cost is close to
+exact. So Runway shows the time left after a quick, a typical and a heavy
+outcome, with step counts from your own prompts (10th percentile, median, 90th
+percentile), and says how often past prompts landed inside that range. *Fits*
+means even the heavy case fits, *won't fit* means not even the quick case
+does, and *may not fit* is everything in between.
+
+*Time left* is the room left after the prompt, divided by your pace over the
+last hour (or your average this window, after a break), and it stops at the
+reset. The quota is Claude Code's own reading (percent used, reset time),
+which the status line receives on Pro, Max and Ultra plans, so Runway never
+guesses your plan's limit. The measurements refresh in the background every
+six hours.
 
 `"gate"` in `~/.claude/runway/config.json` sets when it holds a prompt back:
 `"always"` (the default) before every prompt, `"risky"` only when a prompt may
@@ -1508,11 +1521,11 @@ sending anything, and `runway status` shows context, quota, burn rate and time
 left.
 
 It checks itself: `runway backtest` replays your transcripts, predicting each
-turn only from the turns before it, and scores the result against a naive
-guess. `runway accuracy` does the same for live estimates. Until you have 30
-turns of history, the verdict rests on a single estimate and says it is rough.
-A prompt that sounds small but sets off long tool use is estimated as small.
-The example numbers above are illustrative.
+prompt only from the prompts before it, and reports how many landed inside the
+range. `runway accuracy` does the same for live prompts. A prompt heavier than
+nine in ten of your past prompts lands above the range: that is the case it
+cannot foresee. Until you have five prompts of history, the range uses
+starting defaults and says so. The status line example is illustrative.
 
 </details>
 
