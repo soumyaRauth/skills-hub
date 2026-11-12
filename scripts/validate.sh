@@ -470,6 +470,21 @@ if python3 -B integrations/claude-code/runway/test_runway.py >/dev/null 2>&1; th
 else
   fail "integrations/claude-code/runway/test_runway.py failed"
 fi
+# The site's install command: npx copies runway to a stable folder, and the hook points there.
+if ! command -v node >/dev/null 2>&1; then
+  skip "node unavailable; npx runway install not checked"
+else
+  rw_tmp=$(mktemp -d)
+  echo '{}' > "$rw_tmp/settings.json"
+  if CLAUDE_RUNWAY_HOME="$rw_tmp" node scripts/skills-hub.mjs runway install-hooks --settings "$rw_tmp/settings.json" >/dev/null 2>&1 \
+     && [ -x "$rw_tmp/bin/claude-runway" ] && [ ! -e "$rw_tmp/bin/test_runway.py" ] \
+     && grep -qF "$rw_tmp/bin/claude-runway" "$rw_tmp/settings.json"; then
+    pass "npx runway install-hooks copies the tool to a stable folder and points the hook there"
+  else
+    fail "node scripts/skills-hub.mjs runway install-hooks did not install from a stable copy"
+  fi
+  rm -rf "$rw_tmp"
+fi
 if python3 -c 'import json, sys; m = json.load(open(".claude-plugin/plugin.json")); sys.exit(0 if m.get("name") else 1)' 2>/dev/null; then
   pass ".claude-plugin/plugin.json parses and names the plugin"
 else

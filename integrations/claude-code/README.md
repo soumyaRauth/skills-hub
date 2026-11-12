@@ -209,19 +209,25 @@ Python tool (standard library only) that reads your transcripts in
 Example output (the numbers are illustrative):
 
 ```
-$ runway/claude-runway status
+$ npx -y github:soumyaRauth/skills-hub runway status
 Context    151,777 / 1,000,000 tokens (15.2%), ~42 turns to full at ~20.1k/turn
 Burn       266.2k tokens/min over the last 60 min
 5h window  33.2% used (Claude Code's rate limits), resets in 4h00m
 Time left  ~21m (at the current burn rate); ~2 typical turns
 ```
 
-Install it from a clone, with the path to that clone:
+Install it with one command. It needs Python 3 and nothing else:
 
 ```bash
-python3 /path/to/skills-hub/integrations/claude-code/runway/claude-runway install-hooks --statusline
-python3 /path/to/skills-hub/integrations/claude-code/runway/claude-runway calibrate
+npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline
+npx -y github:soumyaRauth/skills-hub runway calibrate
 ```
+
+`npx ... runway <command>` copies Runway to `~/.claude/runway/bin/` and runs
+it from there, so the hook points at a folder that stays put, not at npx's
+cache. Each run refreshes that copy. Every command below works the same way.
+From a clone, `python3 integrations/claude-code/runway/claude-runway <command>`
+works too, and the hook then points at the clone.
 
 `install-hooks` adds a UserPromptSubmit hook to `~/.claude/settings.json`
 and, with `--statusline`, sets the status line if you have none. It keeps
@@ -239,7 +245,7 @@ If you already have a status line, add runway's segment as a second line
 #!/usr/bin/env bash
 input=$(cat)
 echo "$input" | ~/.claude/your-statusline.sh
-echo "$input" | python3 /path/to/skills-hub/integrations/claude-code/runway/claude-runway statusline
+echo "$input" | python3 ~/.claude/runway/bin/claude-runway statusline
 ```
 
 | Command | What it does |
