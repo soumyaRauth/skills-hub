@@ -64,32 +64,41 @@
     <h2>Decide before it runs</h2>
     <p class="flow mono">
       you press Enter &nbsp;&rarr;&nbsp; Runway estimates the prompt and holds it back<br>
-      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you see <b>how long you can keep working once it has run</b><br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you see <b>how long you can keep working once it has run</b>: if it turns out quick, typical or heavy<br>
       &nbsp;&nbsp;&nbsp;&rarr;&nbsp; and the verdict: <b>fits</b>, <b>may not fit</b> or <b>won&rsquo;t fit</b><br>
       &nbsp;&nbsp;&nbsp;&rarr;&nbsp; nothing has been sent, so nothing is spent<br>
       &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you decide: send it again (&uarr;, Enter) to run it, or drop it
     </p>
-<pre class="block">[Runway] Before it runs: this prompt should fit.
-  Time left  after it, ~1h05m of work at your pace over the last hour (~1h09m now); the window resets in 4h05m
-  Estimate   ~2.5M tokens (multi, ~8 call(s))
-  5h window  39% used now, ~43% after it, resets in 4h05m
-  Context    30% -&gt; ~32%
-  Rough: only 16 past turn(s) to learn from, so no error range yet.
+<pre class="block">[Runway] Before it runs: this prompt should fit, even if it turns out heavy.
+  Time left after it, at your pace over the last hour (~1h07m now):
+    quick    ~1h06m left              1 step, ~360.7k tokens
+    typical  ~1h05m left              3 steps, ~1.1M tokens
+    heavy    ~55m left                19 steps, ~6.9M tokens
+  5h window  46% used now, resets in 3h53m
+  Context    36% now
+  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
 To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.</pre>
     <p>
-      Here a large refactor would leave about 1h05m of work, against 1h09m if
-      you skipped it. <em>Time left</em> is the room left after the prompt,
-      divided by your pace over the last hour (or your average this window,
-      after a break), and it stops at the reset. When a prompt would run out
-      partway, the message says so (here with the quota set to 92% used, to
-      show it):
+      <strong>Why three numbers, not one.</strong> What a prompt costs depends
+      almost entirely on how many steps Claude takes, and that is decided while
+      it works. On real history, neither the prompt&rsquo;s wording nor the
+      prompts before it predicted the number of steps; once the steps are
+      known, the cost is close to exact. So Runway shows the time left after a
+      quick, a typical and a heavy outcome, with step counts from your own
+      prompts, and how often past prompts landed inside that range.
+      <em>Time left</em> is the room left after the prompt, divided by your pace
+      over the last hour (or your average this window, after a break), and it
+      stops at the reset. When a prompt could run out partway, the message says
+      so (here with the quota set to 92% used, to show it):
     </p>
-<pre class="block">[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
-  Time left  none: you would hit the 5-hour limit during this prompt; the window resets in 2h00m
-  Estimate   ~2.5M tokens (multi, ~8 call(s))
-  5h window  92% used now, ~100% after it, resets in 2h00m
-  Context    30% -&gt; ~32%
-  Rough: only 16 past turn(s) to learn from, so no error range yet.
+<pre class="block">[Runway] Paused: this prompt may not finish before your 5-hour limit, if it turns out heavy.
+  Time left after it, at your pace over the last hour (~5m now):
+    quick    ~4m left                 1 step, ~360.7k tokens
+    typical  ~3m left                 3 steps, ~1.1M tokens
+    heavy    limit hit partway        19 steps, ~6.9M tokens
+  5h window  92% used now, resets in 2h00m
+  Context    36% now
+  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
 Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.</pre>
     <p>
       That is the default, <code>"gate": "always"</code>. In
@@ -139,7 +148,7 @@ Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was 
   <div class="wrap">
     <h2>What you see</h2>
     <p>Once a prompt runs, one line, shown to you and not to the model (all the numbers in this section are illustrative):</p>
-<pre class="block">[Runway] Running it, as you confirmed. next: edit, ~410k tokens over ~4 call(s), fits | context 10% -&gt; ~11%, ~45 turns to full | 5h 33% used (+3.1%), ~1h05m left at this pace</pre>
+<pre class="block">[Runway] Running it, as you confirmed. after it: ~1h06m left if quick · ~1h05m left if typical · ~55m left if heavy | 5h 46% used, resets in 3h53m | context 36%</pre>
     <p>In the status line, all the time:</p>
 <pre class="block">&#9981; ctx 10% &middot; 5h 33% &middot; resets 4h00m &middot; ~1h05m at this pace</pre>
     <p>And in the terminal, whenever you ask:</p>
@@ -157,14 +166,15 @@ Time left  ~21m (at the current burn rate); ~2 typical turns</pre>
     <p class="flow mono">
       one prompt &nbsp;&rarr;&nbsp; several API calls (the tool loop)<br>
       &nbsp;&nbsp;&nbsp;&rarr;&nbsp; each call re-reads the whole context<br>
-      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>cost &asymp; calls &times; (context + prompt) + extra</b>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>cost &asymp; steps &times; (context + prompt) + extra per step</b>
     </p>
     <p>
-      How many calls a turn makes matters far more than how long your prompt
-      is. Runway sorts each prompt into a tier (a question, a single edit, or
-      multi-step work) from its wording and the <code>@files</code> it names.
-      <code>calibrate</code> then measures each tier&rsquo;s typical calls and
-      growth from your own past turns.
+      How many steps a prompt takes matters far more than how long it is, and
+      nothing in the prompt reliably says how many it will take. So Runway
+      measures your own history: the step count at the 10th percentile, the
+      median and the 90th percentile become the quick, typical and heavy
+      cases. N steps re-read the context N times, so the quick case is a
+      floor. The measurements refresh in the background every six hours.
     </p>
     <ul class="plain">
       <li><strong>The quota is Claude&rsquo;s own number.</strong> For Pro, Max and Ultra plans, Claude Code hands the status line the real percentage used and the reset time. Runway saves it and builds on it, so it never guesses your plan&rsquo;s limit. With an API key, you can set a token cap yourself.</li>
@@ -179,17 +189,14 @@ Time left  ~21m (at the current burn rate); ~2 typical turns</pre>
   <div class="wrap">
     <h2>It checks itself</h2>
 <pre class="block">$ npx -y github:soumyaRauth/skills-hub runway backtest
-  runway, walk-forward   MAPE ...   median APE ...   within &plusmn;50%: ...
-  runway, defaults only  ...
-  naive: previous turn   ...
-  by tier (walk-forward) ...</pre>
+  ...
+  quick-to-heavy range   13 of 15 turns landed inside it (87%)</pre>
     <p>
       <code>backtest</code> replays every transcript you have, turn by turn.
-      Each turn is predicted using only the turns that came before it, then
-      scored against a naive guess (&ldquo;the same as last turn&rdquo;). With
-      fewer than 30 turns it says the sample is too small and draws no
-      verdict. <code>accuracy</code> does the same for the live predictions
-      the hook made.
+      Each prompt is predicted using only the prompts that came before it, and
+      the report says how many landed inside the quick-to-heavy range: on the
+      history Runway was built on, 13 of 15. <code>accuracy</code> does the
+      same for the live prompts the hook saw.
     </p>
   </div>
 </section>
@@ -203,8 +210,8 @@ Time left  ~21m (at the current burn rate); ~2 typical turns</pre>
           <tr><td class="klass">Plan weighting</td><td>Plans weigh models differently, and Runway counts raw tokens. It converts with the rate your last quota reading implies. When another device also used the window, that rate runs high, so the estimate errs toward less time left, not more.</td></tr>
           <tr><td class="klass">Auto-compact</td><td>Claude Code compacts the context before it is full, at a point Runway cannot see. So <em>turns to full</em> is an upper bound.</td></tr>
           <tr><td class="klass">Unseen calls</td><td>Background calls that never reach the transcript, such as generating a session title, are not counted.</td></tr>
-          <tr><td class="klass">Surprises</td><td>A request that sounds small but sets off long tool use (&ldquo;go and find the cheapest option&rdquo;) is predicted as small, and is not paused. Over time, <code>accuracy</code> shows you how often that happens.</td></tr>
-          <tr><td class="klass">Early days</td><td>Until you have 30 turns of history, the verdict rests on a single estimate and says it is rough. After that, <code>calibrate</code> measures how far your real turns land from their estimates, and the verdict uses that range.</td></tr>
+          <tr><td class="klass">Surprises</td><td>A prompt heavier than nine in ten of your past prompts lands above the range. That is the case no estimate can foresee. <code>accuracy</code> shows you how often it happens.</td></tr>
+          <tr><td class="klass">Early days</td><td>Until you have five prompts of history, the range uses starting defaults (1, 4 and 8 steps), and the message says so.</td></tr>
         </tbody>
       </table>
     </div>

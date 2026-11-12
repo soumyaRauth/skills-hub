@@ -26,6 +26,7 @@ Status line
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 import traceback
@@ -106,6 +107,7 @@ def resolve(session, current_prompt_id=None, now=None):
             "predicted": p.get("tokens"), "actual": actual, "calls": len(turn.calls) + len(turn.sub_calls),
             "predicted_calls": p.get("calls"),
             "error_pct": round(100.0 * (p.get("tokens", 0) - actual) / actual, 1) if actual else None,
+            "in_range": (p["quick_tokens"] <= actual <= p["heavy_tokens"]) if "heavy_tokens" in p else None,
             "resolved_at": now,
         })
         written += 1
@@ -129,7 +131,11 @@ def user_prompt_submit(payload, now=None):
     pred, ctx, quota, _ = assess(session, prompt, cwd, cfg, now)
     sha = prompt_hash(prompt)
     cal = cfg.get("calibrated") or {}
-    v = runway.verdict(pred, quota, cal.get("ratio_range"))
+    profile = cal.get("steps")
+    base = pred["context_before"] if pred["context_before"] is not None else (cal.get("first_context") or 0)
+    scen = estimator.scenarios(base, pred["prompt_tokens"], profile)
+    v = runway.verdict(scen, quota)
+    refresh_history(cal, now)
 
     # The gate. A prompt it pauses never reaches Claude; sending the same text
     # again within confirm_seconds runs it.
@@ -145,18 +151,45 @@ def user_prompt_submit(payload, now=None):
     save_pending(pending)
     if pause:
         return json.dumps({"decision": "block",
-                           "reason": runway.preflight_message(pred, ctx, quota, v, cal.get("turns", 0), wait)})
+                           "reason": runway.preflight_message(scen, ctx, quota, v, profile, wait)})
     config.append_jsonl("predictions.jsonl", {
         "ts": now, "session_id": payload.get("session_id") or (session.session_id if session else None),
         "prompt_id": prompt_id, "prompt_sha": sha, "prompt_key": prompt_id or sha,
-        "prompt_chars": len(prompt), "tier": pred["tier"], "calls": pred["calls"], "tokens": pred["tokens"],
+        "prompt_chars": len(prompt), "tier": pred["tier"], "calls": scen["typical"]["steps"],
+        "tokens": scen["typical"]["tokens"], "quick_tokens": scen["quick"]["tokens"],
+        "heavy_tokens": scen["heavy"]["tokens"],
         "prompt_tokens": pred["prompt_tokens"], "context_before": pred["context_before"],
         "context_limit": ctx["limit"], "quota_pct": quota["pct"], "quota_source": quota["source"],
         "calibrated": bool(cfg.get("calibrated")), "verdict": v["level"], "confirmed": confirmed,
     })
-    line = runway.summary_line(pred, ctx, quota, bool(cfg.get("calibrated")), v)
+    line = runway.summary_line(scen, ctx, quota)
     return json.dumps({"systemMessage": ("[Runway] Running it, as you confirmed. " + line[9:]) if confirmed
                        else line})
+
+
+REFRESH_EVERY = 6 * 3600  # seconds between background re-measurements of your history
+
+
+def refresh_history(cal, now):
+    """Re-measure your history in the background when it is missing or stale; never waits for it."""
+    if os.environ.get("CLAUDE_RUNWAY_NO_REFRESH"):
+        return
+    if cal.get("at_ts") and now - cal["at_ts"] < REFRESH_EVERY:
+        return
+    stamp = config.path("refresh.started")
+    try:
+        if now - os.path.getmtime(stamp) < 600:
+            return  # one is already running, or just ran
+    except OSError:
+        pass
+    try:
+        os.makedirs(config.home(), exist_ok=True)
+        open(stamp, "w").close()
+        script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "claude-runway")
+        subprocess.Popen([sys.executable, script, "calibrate", "--quiet"], stdin=subprocess.DEVNULL,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    except OSError:
+        pass
 
 
 def load_pending():

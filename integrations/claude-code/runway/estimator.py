@@ -13,7 +13,7 @@ with calls, extra_tokens and context_growth set per tier, from defaults until
 """
 import os
 import re
-from statistics import median
+from statistics import median, quantiles
 
 TIER_ORDER = ("multi", "edit", "qa")
 # @path mentions as Claude Code writes them: @src/app.py, @"path with spaces".
@@ -76,6 +76,45 @@ def predict(prompt, context, cfg, cwd=None):
         "context_growth": int(p_tok + t["context_growth"]),
         "context_after": int(base + p_tok + t["context_growth"]),
     }
+
+
+# Before there is history: a quick answer, a few steps of editing, a long multi-step task.
+DEFAULT_STEPS = {"quick": 1, "typical": 4, "heavy": 8}
+DEFAULT_EXTRA_PER_STEP = 2_000
+MIN_STEP_HISTORY = 5
+
+
+def step_profile(turns):
+    """How many API calls your prompts take: quick (10th percentile), typical (median), heavy (90th).
+
+    Measured, not guessed: on real history the number of steps did not follow
+    from a prompt's wording or from the prompts before it, but once the steps
+    are known the cost is close to exact. So the honest estimate is a range of
+    step counts, taken from your own turns. `turns` is a list of
+    (calls, total, before). Returns None with fewer than MIN_STEP_HISTORY turns.
+    """
+    turns = [t for t in turns if t[0] > 0 and t[2] is not None]
+    if len(turns) < MIN_STEP_HISTORY:
+        return None
+    steps = sorted(t[0] for t in turns)
+    cuts = quantiles(steps, n=10, method="inclusive")
+    extra = median((total - calls * before) / calls for calls, total, before in turns)
+    return {"quick": max(1, round(cuts[0])), "typical": max(1, round(median(steps))),
+            "heavy": max(1, round(cuts[-1])), "extra_per_step": max(0, int(extra)), "turns": len(turns)}
+
+
+def scenarios(context, prompt_tokens, profile):
+    """Tokens for a quick, typical and heavy outcome.
+
+    Every step re-reads the whole context, so N steps cost at least N x context:
+    that floor is the quick case. Typical and heavy add the measured extra per
+    step (outputs, tool results). Adding the extra to the quick case too put
+    six of seven one-step answers just below the range, by 0.2% to 7%.
+    """
+    p = profile or dict(DEFAULT_STEPS, extra_per_step=DEFAULT_EXTRA_PER_STEP)
+    base = (context or 0) + prompt_tokens
+    return {name: {"steps": p[name], "tokens": int(p[name] * (base + (0 if name == "quick" else p["extra_per_step"])))}
+            for name in ("quick", "typical", "heavy")}
 
 
 def calibrate(turns, tiers, chars_per_token):

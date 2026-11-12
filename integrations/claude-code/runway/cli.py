@@ -15,7 +15,7 @@ import os
 import shutil
 import sys
 import time
-from statistics import median, quantiles
+from statistics import median
 
 import config
 import estimator
@@ -72,21 +72,21 @@ def predict_row(row, cfg):
     return estimator.predict(row["prompt"], None if row["first"] else row["before"], cfg, row["cwd"])
 
 
-# The same bar the backtest sets before it draws any verdict. With fewer turns
-# the 10th-90th percentile is set by one or two outliers: on a history of fewer
-# than a dozen turns it came out at 0.2x-41x, which made every prompt look like it might not fit.
-MIN_RANGE_TURNS = 30
+def step_rows(rows):
+    return [(r["calls"], r["total"], r["before"]) for r in rows]
 
 
-def ratio_range(rows, cfg):
-    """10th and 90th percentile of actual/predicted, walk-forward, or None with under MIN_RANGE_TURNS turns."""
-    if len(rows) < MIN_RANGE_TURNS:
-        return None
-    ratios = sorted(r["total"] / p["tokens"] for r, p in zip(rows, walk_forward(rows, cfg)) if p["tokens"] > 0)
-    if len(ratios) < MIN_RANGE_TURNS:
-        return None
-    cuts = quantiles(ratios, n=10)
-    return [round(cuts[0], 3), round(cuts[-1], 3)]
+def range_coverage(rows, chars_per_token):
+    """Walk-forward: for each turn, the quick-to-heavy range from the turns before it. Returns (inside, scored)."""
+    inside = scored = 0
+    for i, r in enumerate(rows):
+        prof = estimator.step_profile(step_rows(rows[:i]))
+        if prof is None:
+            continue
+        s = estimator.scenarios(r["before"], len(r["prompt"]) / chars_per_token, prof)
+        scored += 1
+        inside += s["quick"]["tokens"] <= r["total"] <= s["heavy"]["tokens"]
+    return inside, scored
 
 
 def ape(pred, actual):
@@ -146,8 +146,10 @@ def cmd_backtest(args):
             naive_err.append(ape(prev, row["total"]))
         last_total[row["session"]] = row["total"]
 
+    inside, scored = range_coverage(rows, cfg["chars_per_token"])
     report = {
         "turns": len(rows), "sessions": sessions,
+        "range": {"inside": inside, "scored": scored},
         "walk_forward": score(walk), "defaults": score(default_err), "naive_previous_turn": score(naive_err),
         "by_tier": {t: dict(score([x[0] for x in v]),
                             predicted_calls=median(x[1] for x in v), actual_calls=median(x[2] for x in v))
@@ -162,6 +164,9 @@ def cmd_backtest(args):
     print(f"  runway, walk-forward   {fmt_score(report['walk_forward'])}")
     print(f"  runway, defaults only  {fmt_score(report['defaults'])}")
     print(f"  naive: previous turn   {fmt_score(report['naive_previous_turn'])}")
+    print(f"\n  quick-to-heavy range   {inside} of {scored} turns landed inside it"
+          + (f" ({100 * inside / scored:.0f}%)" if scored else "")
+          + "; this is the range the time-left estimate shows")
     print("\n  by tier (walk-forward)")
     for t, s in report["by_tier"].items():
         print(f"    {t:6} {fmt_score(s)}   calls: predicted {s['predicted_calls']:g}, actual {s['actual_calls']:g}")
@@ -178,31 +183,35 @@ def cmd_backtest(args):
 
 
 def cmd_calibrate(args):
+    say = (lambda *a: None) if args.quiet else print
     cfg = config.load()
     rows = history_rows(config.projects_dir(), cfg["chars_per_token"])
     tiers, first_ctx, counts = fit(rows, cfg)
     if not tiers:
-        print("Not enough history to calibrate: no completed turns with API calls.")
+        say("Not enough history to calibrate: no completed turns with API calls.")
         return 1
-    print(f"Measured from {len(rows)} turns (a tier with under 3 turns keeps its current numbers):")
-    for name, t in tiers.items():
-        print(f"  {name:6} turns {counts.get(name, 0):4}   calls {t['calls']:5g}   extra {t['extra_tokens']:>9,}"
-              f"   context growth {t['context_growth']:>8,}")
-    print(f"  first-turn context {first_ctx:,}" if first_ctx is not None else "  first-turn context: not measured")
-    rr = ratio_range(rows, cfg)
-    print(f"  error range: actual turns landed between {rr[0]:.2f}x and {rr[1]:.2f}x the estimate "
-          f"(10th-90th percentile)" if rr else
-          f"  error range: not set; needs {MIN_RANGE_TURNS} turns, have {len(rows)}. "
-          "Verdicts rest on the single estimate until then.")
+    profile = estimator.step_profile(step_rows(rows))
+    say(f"Measured from {len(rows)} turns.")
+    if profile:
+        profile["coverage"] = list(range_coverage(rows, cfg["chars_per_token"]))
+        inside, scored = profile["coverage"]
+        say(f"  steps per prompt   quick {profile['quick']}, typical {profile['typical']}, heavy {profile['heavy']}"
+            f" (10th percentile, median, 90th percentile)")
+        say(f"  extra per step     {profile['extra_per_step']:,} tokens beyond re-reading the context")
+        say(f"  track record       {inside} of {scored} prompts landed inside the quick-to-heavy range, each"
+            " predicted only from the prompts before it")
+    else:
+        say(f"  steps per prompt   needs {estimator.MIN_STEP_HISTORY} prompts of history, have {len(rows)};"
+            " starting defaults until then")
+    say(f"  first-turn context {first_ctx:,}" if first_ctx is not None else "  first-turn context: not measured")
     if args.dry_run:
-        print("\n--dry-run: config.json not changed.")
+        say("\n--dry-run: config.json not changed.")
         return 0
     cfg["tiers"] = tiers
-    cfg["calibrated"] = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "turns": len(rows),
-                         "turns_per_tier": counts, "first_context": first_ctx,
-                         "ratio_range": rr}
+    cfg["calibrated"] = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "at_ts": time.time(), "turns": len(rows),
+                         "turns_per_tier": counts, "first_context": first_ctx, "steps": profile}
     config.save(cfg)
-    print(f"\nWrote {config.path('config.json')}")
+    say(f"\nWrote {config.path('config.json')}")
     return 0
 
 
@@ -218,8 +227,12 @@ def cmd_accuracy(args):
     if not actuals:
         print("Nothing to score yet: actuals appear once a predicted turn has finished.")
         return 0
+    ranged = [a for a in actuals if a.get("in_range") is not None]
+    if ranged:
+        hits = sum(1 for a in ranged if a["in_range"])
+        print(f"  inside the quick-to-heavy range: {hits} of {len(ranged)} prompts")
     errs = [ape(a["predicted"], a["actual"]) for a in actuals if a.get("actual")]
-    print("  all     " + fmt_score(score(errs)))
+    print("  typical-case error " + fmt_score(score(errs)))
     for tier in sorted({a.get("tier") for a in actuals}):
         print(f"  {str(tier):7} " + fmt_score(score([ape(a["predicted"], a["actual"]) for a in actuals
                                                    if a.get("tier") == tier and a.get("actual")])))
@@ -302,8 +315,9 @@ def cmd_check(args):
     prompt = " ".join(args.prompt) if args.prompt else sys.stdin.read()
     pred, ctx, quota, _ = hooks.assess(session, prompt, cwd, cfg)
     cal = cfg.get("calibrated") or {}
-    v = runway.verdict(pred, quota, cal.get("ratio_range"))
-    print(runway.preflight_message(pred, ctx, quota, v, cal.get("turns", 0)))
+    base = pred["context_before"] if pred["context_before"] is not None else (cal.get("first_context") or 0)
+    scen = estimator.scenarios(base, pred["prompt_tokens"], cal.get("steps"))
+    print(runway.preflight_message(scen, ctx, quota, runway.verdict(scen, quota), cal.get("steps")))
     if session:
         print(f"  Session    {session.session_id} (the latest in {os.path.basename(os.path.dirname(path))})")
     return 0
@@ -460,6 +474,7 @@ def main(argv=None):
     p.set_defaults(func=cmd_backtest)
     p = sub.add_parser("calibrate", help="write per-tier numbers measured from your history to config.json")
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--quiet", action="store_true", help="print nothing (the hook runs it in the background)")
     p.set_defaults(func=cmd_calibrate)
     sub.add_parser("accuracy", help="score the live predictions the hook logged").set_defaults(func=cmd_accuracy)
     sub.add_parser("init", help="write config.json with defaults and notes").set_defaults(func=cmd_init)

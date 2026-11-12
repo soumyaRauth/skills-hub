@@ -39,11 +39,17 @@ methodology and documentation.
   text again within two minutes runs it. `gate` sets when this happens:
   `always` (the default: every prompt waits for you), `risky` (only prompts
   that may not fit) or `off`. Only the quota can pause a prompt;
-  a full context is compacted, not fatal. After 30 turns, `calibrate` adds a
-  measured error range (10th-90th percentile, walk-forward), and the verdict
-  becomes fits / may not fit / won't fit. Below 30 turns, the range from a
-  history of fewer than a dozen turns was 0.2x-41x and paused every prompt, so the verdict uses
-  the single estimate and says it is rough. `runway check "<prompt>"` gives
+  a full context is compacted, not fatal. The estimate is the time left after
+  a **quick, typical and heavy** outcome. What a prompt costs depends almost
+  entirely on how many steps Claude takes. On real history, neither the
+  wording (tiers: 91% median error) nor the prompts before it (momentum:
+  149%) predicted that, while the cost given the steps was close to exact.
+  So the steps come from your own prompts (10th percentile, median, 90th),
+  with N x context as the quick case's floor. Walk-forward, 13 of 15 prompts
+  landed inside the range. Fits / may not fit / won't fit compare the heavy
+  and quick cases with the room left. The measurements refresh in the
+  background every six hours, and `backtest` and `accuracy` report how often
+  prompts land inside the range. `runway check "<prompt>"` gives
   the same verdict from a terminal, without sending anything.
   The first line of every estimate is **how long you can keep working once
   this prompt has run**: the room left after it, divided by your pace over the

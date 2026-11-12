@@ -19,6 +19,7 @@ TMP = tempfile.mkdtemp(prefix="runway-test-")
 os.environ["CLAUDE_CONFIG_DIR"] = os.path.join(TMP, "claude")
 os.environ["CLAUDE_RUNWAY_HOME"] = os.path.join(TMP, "runway")
 os.environ["NO_COLOR"] = "1"
+os.environ["CLAUDE_RUNWAY_NO_REFRESH"] = "1"  # no background re-measurement during tests
 
 import cli  # noqa: E402
 import config  # noqa: E402
@@ -174,23 +175,31 @@ assert q["source"] == "claude-code" and abs(q["pct"] - 40.0) < 1e-9, q
 assert abs(q["next_turn_pct"] - 4.0) < 1e-9 and q["turns_left"] == 15
 assert abs(q["minutes_left"] - 60.0) < 1e-6 and q["limited_by"] == "reset"               # reset comes first
 
-# Time left after this prompt: 10% used, 90% room; a 1,000-token prompt costs 1% (cap 100k).
+# Time left after a prompt: 10% used, 90% room; 1,000 tokens cost 1% (cap 100k).
 q = runway.quota_runway(flat_calls, NOW, 1000, 1000.0, capped, {})
-assert abs(q["minutes_left"] - 90) < 1e-6 and abs(q["minutes_left_after"] - 89) < 1e-6
-assert q["after_limited_by"] == "quota" and not q["runs_out_during"] and q["pace_source"] == "recent"
-assert runway.time_left_after(q).startswith("after it, ~1h29m of work at your pace over the last hour (~1h30m now)")
-assert "~1h29m of work left after it" in runway.summary_line(
-    {"tier": "qa", "tokens": 1000, "calls": 1}, {"pct": None}, q, True)
-slow = runway.quota_runway(flat_calls, NOW, 1000, 100.0, capped, {})          # slower pace: the reset comes first
-assert slow["after_limited_by"] == "reset"
-assert runway.time_left_after(slow).startswith("after it, enough to keep working until the window resets in 4h50m")
-big = runway.quota_runway(flat_calls, NOW, 95_000, 1000.0, capped, {})        # 95% needed, 90% left
-assert big["runs_out_during"] and runway.time_left_after(big).startswith("none: you would hit the 5-hour limit")
+assert abs(q["minutes_left"] - 90) < 1e-6 and q["pace_source"] == "recent"
+a = runway.after(q, 1000)
+assert a["status"] == "time" and abs(a["minutes"] - 89) < 1e-6 and abs(a["pct_after"] - 11) < 1e-9
+assert runway.after(runway.quota_runway(flat_calls, NOW, 1000, 100.0, capped, {}), 1000)["status"] == "reset"
+assert runway.after(q, 95_000) == {"status": "limit", "minutes": 0.0, "pct_after": 100.0}  # 95% needed, 90% left
 idle = runway.quota_runway(flat_calls, NOW, 1000, 0.0, capped, {})            # after a break: the window's average
 # 10,000 tokens since the window opened 10 minutes ago: 1,000/min, the same answer as the fast pace above.
-assert idle["pace_source"] == "window" and abs(idle["minutes_left_after"] - 89) < 1e-6
-assert "your average pace this window" in runway.time_left_after(idle)
-assert runway.time_left_after(nothing).startswith("unknown: no 5-hour quota reading")
+assert idle["pace_source"] == "window" and abs(runway.after(idle, 1000)["minutes"] - 89) < 1e-6
+assert runway.after(nothing, 1000)["status"] == "unknown"
+scen3 = {"quick": {"steps": 1, "tokens": 1000}, "typical": {"steps": 3, "tokens": 3000},
+         "heavy": {"steps": 8, "tokens": 95_000}}
+line = runway.summary_line(scen3, {"pct": 12.0}, q)
+assert line.startswith("[Runway] after it: ~1h29m left if quick · ~1h27m left if typical · limit hit partway if heavy")
+
+# The step profile and the three outcomes.
+prof = estimator.step_profile([(1, 1100, 1000), (1, 1200, 1100), (3, 3600, 1000), (5, 6500, 1200),
+                               (20, 30_000, 1300), (2, 2500, 1100)])
+assert prof["quick"] == 1 and prof["typical"] == 2 and prof["heavy"] >= 5 and prof["turns"] == 6
+assert estimator.step_profile([(1, 10, 5)] * 4) is None                       # too little history
+sc = estimator.scenarios(10_000, 100, prof)
+assert sc["quick"]["tokens"] == 10_100                                         # floor: one re-read, no extra
+assert sc["heavy"]["tokens"] == prof["heavy"] * (10_100 + prof["extra_per_step"])
+assert estimator.scenarios(10_000, 100, None)["typical"]["steps"] == estimator.DEFAULT_STEPS["typical"]
 
 expired = {"rate_limits": {"five_hour": {"used_percentage": 99.0, "resets_at": NOW - 1}}, "captured_at": NOW - 9999}
 assert runway.quota_runway(flat_calls, NOW, 1000, 100.0, cfg, expired)["source"] == "unknown"
@@ -227,12 +236,13 @@ assert r.returncode == 0, r.stderr
 out = json.loads(r.stdout)                                                               # JSON, not plain text
 # The default gate is "always": the first send is held back with its estimate, before it runs.
 assert out["decision"] == "block", out
-assert out["reason"].startswith("[Runway] Before it runs: 5-hour quota unknown, so no verdict")
+assert out["reason"].startswith("[Runway] Before it runs: 5-hour quota unknown, so no time estimate")
 assert "To run it: press Up, then Enter" in out["reason"] and "secret" not in out["reason"]
 assert not config.read_jsonl("predictions.jsonl")                                        # nothing ran yet
 r = run_hook(json.dumps(dict(payload, prompt_id="p3")))                                  # sent again: runs
 out = json.loads(r.stdout)
-assert list(out) == ["systemMessage"] and out["systemMessage"].startswith("[Runway] Running it, as you confirmed. next: edit")
+assert list(out) == ["systemMessage"] and out["systemMessage"].startswith("[Runway] Running it, as you confirmed.")
+assert "quota unknown" in out["systemMessage"]
 preds = config.read_jsonl("predictions.jsonl")
 assert preds[-1]["prompt_id"] == "p3" and "secret" not in json.dumps(preds)              # prompt text not stored
 
@@ -299,13 +309,11 @@ assert "s1" in buf.getvalue()
 
 # --------------------------------------------- RUN-014 the gate, before a prompt runs --
 
-v = runway.verdict({"tokens": 1000}, {"room_tokens": 5000})
-assert v["level"] == runway.FITS and not v["ranged"]
-assert runway.verdict({"tokens": 1000}, {"room_tokens": 999})["level"] == runway.WONT_FIT
-assert runway.verdict({"tokens": 1000}, {"room_tokens": 2000}, (0.5, 3.0))["level"] == runway.MAY_NOT_FIT
-assert runway.verdict({"tokens": 1000}, {"room_tokens": 400}, (0.5, 3.0))["level"] == runway.WONT_FIT
-assert runway.verdict({"tokens": 1000}, {"room_tokens": 3000}, (0.5, 3.0))["level"] == runway.FITS
-assert runway.verdict({"tokens": 1000}, {})["level"] == runway.UNKNOWN
+sc = {"quick": {"tokens": 1000}, "heavy": {"tokens": 3000}}
+assert runway.verdict(sc, {"room_tokens": 5000})["level"] == runway.FITS          # even heavy fits
+assert runway.verdict(sc, {"room_tokens": 2000})["level"] == runway.MAY_NOT_FIT   # quick fits, heavy does not
+assert runway.verdict(sc, {"room_tokens": 999})["level"] == runway.WONT_FIT       # not even quick
+assert runway.verdict(sc, {})["level"] == runway.UNKNOWN
 
 os.remove(config.path("limits.json"))  # the gate tests set the quota through token_cap
 
@@ -322,40 +330,44 @@ def gate(gate_mode, cap, prompt="add a retry", sid="s1", now=NOW):
 assert config.DEFAULTS["gate"] == "always"                       # the default: decide before every prompt
 logged = lambda: len(config.read_jsonl("predictions.jsonl"))  # noqa: E731
 n0 = logged()
-ok = gate("risky", 10**9)                                        # plenty of room: runs, says it fits
-assert "decision" not in ok and ", fits" in ok["systemMessage"] and logged() == n0 + 1
+# The fixture window holds 31,302 tokens. "add a retry" at 8,205 context, with the starting defaults:
+# quick 8,208 · typical 40,832 · heavy 81,664 tokens.
+ok = gate("risky", 120_000)                                      # 88.7k left: even heavy fits, runs at once
+assert "decision" not in ok and ok["systemMessage"].startswith("[Runway] after it: ") and logged() == n0 + 1
 
-blocked = gate("risky", 50_000)                                  # ~40k needed, ~19k left: paused
-assert blocked["decision"] == "block" and blocked["reason"].startswith("[Runway] Paused: this prompt is unlikely")
-assert blocked["reason"].split("\n")[1].startswith("  Time left  none: you would hit the 5-hour limit")
+blocked = gate("risky", 35_000)                                  # 3.7k left: not even the quick case fits
+lines = blocked["reason"].split("\n")
+assert blocked["decision"] == "block" and lines[0] == "[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit."
+assert lines[1].startswith("  Time left after it, at your pace over the last hour")
+assert all("limit hit partway" in l for l in lines[2:5])
+assert "starting defaults until you have 5 prompts" in blocked["reason"]
 assert "Run it anyway: press Up, then Enter, within 2 min" in blocked["reason"] and logged() == n0 + 1  # not logged
-assert "Rough: only" in blocked["reason"]                        # no error range yet: says so
 
-assert gate("risky", 50_000, sid="other")["decision"] == "block"  # same text, other session: not a confirmation
-again = gate("risky", 50_000, now=NOW + 30)                      # sent again in time: runs
-assert again["systemMessage"].startswith("[Runway] Running it, as you confirmed. next: edit")
-assert logged() == n0 + 2 and config.read_jsonl("predictions.jsonl")[-1]["confirmed"] is True
-assert gate("risky", 50_000, now=NOW + 40)["decision"] == "block"  # the confirmation is used up
-assert gate("risky", 50_000, now=NOW + 40 + 121)["decision"] == "block"  # too late: paused afresh
+assert gate("risky", 35_000, sid="other")["decision"] == "block"  # same text, other session: not a confirmation
+again = gate("risky", 35_000, now=NOW + 30)                      # sent again in time: runs
+assert again["systemMessage"].startswith("[Runway] Running it, as you confirmed. after it: limit hit partway")
+p = config.read_jsonl("predictions.jsonl")[-1]
+assert logged() == n0 + 2 and p["confirmed"] is True and (p["quick_tokens"], p["heavy_tokens"]) == (8208, 81664)
+assert gate("risky", 35_000, now=NOW + 40)["decision"] == "block"  # the confirmation is used up
+assert gate("risky", 35_000, now=NOW + 40 + 121)["decision"] == "block"  # too late: paused afresh
 
-assert "decision" not in gate("off", 50_000, prompt="add a test")   # off: never pauses
+mnf = gate("risky", 60_000, prompt="add a cache")                 # 28.7k left: quick fits, heavy does not
+mlines = mnf["reason"].split("\n")
+assert mnf["decision"] == "block" and "may not finish" in mlines[0] and "if it turns out heavy" in mlines[0]
+# Quick: (28,698 - 8,208) tokens at 521.9 tokens/min is about 39 minutes.
+assert mlines[2].split()[:3] == ["quick", "~39m", "left"] and "limit hit partway" in mlines[4]
+
+assert "decision" not in gate("off", 35_000, prompt="add a test")   # off: never pauses
 fits_pause = gate("always", 10**9, prompt="add docs")           # always: pauses even when it fits
-assert fits_pause["decision"] == "block" and fits_pause["reason"].startswith("[Runway] Before it runs: this prompt should fit")
+assert fits_pause["decision"] == "block"
+assert fits_pause["reason"].startswith("[Runway] Before it runs: this prompt should fit, even if it turns out heavy")
 assert "To run it: press Up, then Enter" in fits_pause["reason"] and "anyway" not in fits_pause["reason"]
-assert fits_pause["reason"].split("\n")[1].startswith("  Time left  after it, ")       # the first thing you read
+assert fits_pause["reason"].split("\n")[1].startswith("  Time left after it")       # the first thing you read
 assert gate("always", 10**9, prompt="add docs")["systemMessage"].startswith("[Runway] Running it")
 assert "decision" not in gate("risky", None, prompt="add logs")   # quota unknown: no basis to pause
 
-# With a measured error range: ~40k estimated, 20k-122k likely, ~69k left -> "may not fit", paused.
 c = config.load()
-c["calibrated"]["ratio_range"] = [0.5, 3.0]
-config.save(c)
-mnf = gate("risky", 100_000, prompt="add a cache")
-assert mnf["decision"] == "block" and "may not finish" in mnf["reason"] and "likely" in mnf["reason"]
-assert "Rough: only" not in mnf["reason"]
-c = config.load()
-c["calibrated"]["ratio_range"] = None
-c["quota"]["token_cap"] = 50_000
+c["quota"]["token_cap"] = 35_000
 config.save(c)
 with redirect_stdout(io.StringIO()) as buf:                     # check: the same estimate, nothing sent
     assert cli.main(["check", "--cwd", "/work/app", "add", "a", "retry"]) == 0
