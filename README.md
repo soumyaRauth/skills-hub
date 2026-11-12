@@ -153,7 +153,8 @@ the skills considered and deliberately not added.
 > implementation work, not only when a request sounds like the skill's own name.
 > The skills alone passed 30 of 38 cases, and with the instruction they passed 37
 > of 38. Neither setup loaded a skill where it should have stayed quiet. The same
-> folder has an optional colored active-skills status line.
+> folder has an optional colored active-skills status line, and Runway, which
+> shows how much context and 5-hour quota is left and predicts the next turn's cost.
 
 ## 📚 Meet the skills
 
@@ -1531,6 +1532,7 @@ and not the skills'. Here is where each one lives:
 | The standing instruction, if you added it | a line or `@` import in a `CLAUDE.md` | Delete that line |
 | The status line, if you added it | `statusLine` in `~/.claude/settings.json` | Delete that entry |
 | The Stop hook, if you added it | `hooks.Stop` in `~/.claude/settings.json` | Delete that entry |
+| Runway, if you installed it | a `UserPromptSubmit` hook and maybe `statusLine` in `~/.claude/settings.json`, and `~/.claude/runway/` | `claude-runway uninstall-hooks`, then `rm -rf ~/.claude/runway` |
 
 ## Supported agents
 
@@ -1553,6 +1555,9 @@ Everything Claude Code-specific is kept outside the skills:
 - a Stop hook that makes every skill named in the ⚡ line actually load, or be
   dropped in one line, before the turn ends
 - a status line segment that shows the active skills in color
+- Runway, a standard-library Python tool that reports how much context and
+  5-hour quota is left, predicts what the next prompt will cost, and scores
+  those predictions against your own transcripts
 - a plugin manifest and a marketplace manifest, so `/plugin install` or
   `claude --plugin-dir` can load all eighteen at once and `claude plugin eval`
   can test them
@@ -1614,6 +1619,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 ├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
 ├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
 ├── integrations/claude-code/     ← optional: standing instruction, colored status line, Stop hooks
+│   └── runway/                   ← context and 5-hour quota left, next-turn prediction, backtest
 ├── mcp/project-knowledge/        ← dependency-free MCP server for .agents/knowledge/, and its self-check
 ├── .claude-plugin/plugin.json    ← makes the repository loadable as a Claude Code plugin
 ├── tests/
@@ -1658,7 +1664,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 - **[Architecture Engineer](skills/architecture-engineer/README.md)** · [SKILL.md](skills/architecture-engineer/SKILL.md)
 - **[How they work together](ECOSYSTEM.md)** — activation, composition, visibility, overrides, and what was not added
 - **[Activation suite](evals/activation/README.md)** — which skill a request should load, and which it must not
-- **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction and status line
+- **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction, status line, and Runway
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 - **[Project Knowledge](skills/project-knowledge/README.md)** · [SKILL.md](skills/project-knowledge/SKILL.md)
