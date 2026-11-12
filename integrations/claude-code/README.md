@@ -204,14 +204,27 @@ Python tool (standard library only) that reads your transcripts in
 - **The 5-hour window**: the percentage used, when it resets, and how many
   minutes and typical turns are left at your current pace.
 - **The next turn, before it runs**: what the prompt you just typed will
-  cost, and whether it is likely to finish before the 5-hour limit. When it
-  may not, Runway **pauses the prompt** so you can decide.
+  cost, and whether it is likely to finish before the 5-hour limit. Runway
+  **holds the prompt back** and shows this, so you decide whether to run it.
 
 ### Decide before a prompt runs
 
-When you press Enter, Runway estimates the prompt before Claude sees it. If
-it may not finish before your 5-hour limit, the prompt is paused. It never
-reaches Claude and costs nothing:
+When you press Enter, Runway estimates the prompt before Claude sees it,
+and holds it back. Nothing has been sent and nothing is spent:
+
+```
+[Runway] Before it runs: this prompt should fit.
+  Estimate   ~285.0k tokens (qa, ~1 call(s))
+  5h window  36% used, room for ~35.7M more tokens, resets in 4h11m
+  After it   ~37% of the window used
+  Context    28% -> ~28%
+  Rough: only 16 past turn(s) to learn from, so no error range yet.
+To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+```
+
+To run it, send the same text again within two minutes (Up, then Enter). To
+drop it, do nothing. When the prompt may not finish before the limit, the
+message says so:
 
 ```
 [Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
@@ -223,16 +236,16 @@ reaches Claude and costs nothing:
 Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
 ```
 
-To run it anyway, send the same text again within two minutes (Up, then
-Enter). To drop it, do nothing. A prompt that fits runs straight away, with
-one line saying so. `gate` in `config.json` sets when Runway pauses:
-`"risky"` (the default) only when a prompt may not fit, `"always"` before
-every prompt, so you decide each time, and `"off"` never.
+`gate` in `config.json` sets when Runway holds a prompt back: `"always"`
+(the default) before every prompt, so you decide each time; `"risky"` only
+when a prompt may not fit, while the rest run at once with one line; `"off"`
+never.
 
 Only the quota can stop a turn partway through. A full context does not:
 Claude Code compacts it and carries on. So context is shown, but it never
 pauses a prompt. With no quota reading (an API key and no `token_cap`),
-Runway has nothing to compare against, and `"risky"` lets everything through.
+Runway has nothing to compare against: `"always"` still shows the estimate
+and says there is no verdict, and `"risky"` lets everything through.
 
 Once you have 30 turns of history, `calibrate` also measures how far actual
 turns have landed from their estimates (10th to 90th percentile). The verdict

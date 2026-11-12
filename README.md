@@ -156,8 +156,7 @@ the skills considered and deliberately not added.
 > The skills alone passed 30 of 38 cases, and with the instruction they passed 37
 > of 38. Neither setup loaded a skill where it should have stayed quiet. The same
 > folder has an optional colored active-skills status line, and Runway, which
-> estimates each prompt before it runs and pauses it if it may not finish
-> before your 5-hour limit.
+> estimates each prompt before it runs and lets you decide whether to send it.
 
 ## 📚 Meet the skills
 
@@ -1443,7 +1442,7 @@ cost no tokens.
 
 ### ⛽ Runway
 
-**Can I afford this prompt? Runway estimates it before it runs, and pauses it if it may not finish.**
+**Can I afford this prompt? Runway estimates it before it runs, and lets you decide.**
 
 ```bash
 npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline
@@ -1452,8 +1451,21 @@ npx -y github:soumyaRauth/skills-hub runway calibrate
 
 For Claude Code. It needs Python 3, with no packages, no API key and no network.
 
-When you press Enter, Runway estimates the prompt before Claude sees it. If it
-may not finish before your 5-hour limit, it is paused: never sent, no cost.
+When you press Enter, Runway estimates the prompt before Claude sees it, and
+holds it back so you decide. Nothing is sent and nothing is spent until you do:
+
+```
+[Runway] Before it runs: this prompt should fit.
+  Estimate   ~285.0k tokens (qa, ~1 call(s))
+  5h window  36% used, room for ~35.7M more tokens, resets in 4h11m
+  After it   ~37% of the window used
+  Context    28% -> ~28%
+  Rough: only 16 past turn(s) to learn from, so no error range yet.
+To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+```
+
+Send it again (Up, Enter) to run it, or do nothing to drop it. When a prompt
+may not finish before the limit, the message says so:
 
 ```
 [Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
@@ -1465,8 +1477,7 @@ may not finish before your 5-hour limit, it is paused: never sent, no cost.
 Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
 ```
 
-A prompt that fits runs straight away, with one line saying so, and the status
-line shows what is left all the time:
+The status line shows what is left all the time:
 
 ```
 ⛽ ctx 10% · 5h 33% · resets 4h00m · ~1h05m at this pace
@@ -1484,8 +1495,9 @@ your own past turns. The quota is Claude Code's own reading (percent used,
 reset time), which the status line receives on Pro, Max and Ultra plans, so
 Runway never guesses your plan's limit.
 
-`"gate"` in `~/.claude/runway/config.json` sets when it pauses: `"risky"` (the
-default), `"always"` to decide before every prompt, or `"off"`. Only the quota
+`"gate"` in `~/.claude/runway/config.json` sets when it holds a prompt back:
+`"always"` (the default) before every prompt, `"risky"` only when a prompt may
+not fit, or `"off"`. Only the quota
 can pause a prompt. A full context is compacted and the turn carries on.
 `runway check "<prompt>"` gives the same verdict from a terminal without
 sending anything, and `runway status` shows context, quota, burn rate and time

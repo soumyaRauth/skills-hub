@@ -37,7 +37,8 @@ methodology and documentation.
   may not finish before the 5-hour limit, the hook blocks it, so it never
   reaches Claude and costs nothing, and shows the estimate. Sending the same
   text again within two minutes runs it. `gate` sets when this happens:
-  `risky` (the default), `always` or `off`. Only the quota can pause a prompt;
+  `always` (the default: every prompt waits for you), `risky` (only prompts
+  that may not fit) or `off`. Only the quota can pause a prompt;
   a full context is compacted, not fatal. After 30 turns, `calibrate` adds a
   measured error range (10th-90th percentile, walk-forward), and the verdict
   becomes fits / may not fit / won't fit. Below 30 turns, the range from a

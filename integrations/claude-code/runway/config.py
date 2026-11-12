@@ -54,11 +54,11 @@ DEFAULTS = {
         "token_cap": None,
         "window_hours": 5,
     },
-    "gate": "risky",
-    "_doc_gate": ("When to pause a prompt before it runs and show its estimate. \"risky\": only when it may not "
-                  "finish before the 5-hour limit. \"always\": every prompt, so you decide each time. \"off\": never "
-                  "pause, just show one line. To run a paused prompt, send it again (Up, Enter) within "
-                  "confirm_seconds."),
+    "gate": "always",
+    "_doc_gate": ("When to pause a prompt before it runs and show its estimate. \"always\" (the default): every "
+                  "prompt, so you decide each time. \"risky\": only when it may not finish before the 5-hour limit; "
+                  "the rest run at once with one line. \"off\": never pause, just show one line. To run a paused "
+                  "prompt, send it again (Up, Enter) within confirm_seconds."),
     "confirm_seconds": 120,
     "burn_window_minutes": 60,
     "_doc_burn_window_minutes": "Burn rate is measured over this many recent minutes of activity.",
