@@ -29,6 +29,10 @@ methodology and documentation.
   `install-hooks` / `uninstall-hooks` edit `~/.claude/settings.json` without
   losing anything already there, back it up first, are idempotent, and refuse
   to write over invalid JSON. `validate.sh` runs its self-check.
+  `npx -y github:soumyaRauth/skills-hub runway <command>` installs and runs it
+  without a clone: it copies Runway to `~/.claude/runway/bin/`, so the hook
+  points at a folder npx will not clear. The site has a new Tools section and
+  a Runway page (`docs/runway.html`).
 
 - **`/learn`.** `knowledge init` now also installs `.claude/commands/learn.md`,
   so updating the project knowledge on demand is `/learn` in Claude Code

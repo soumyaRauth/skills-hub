@@ -1532,7 +1532,7 @@ and not the skills'. Here is where each one lives:
 | The standing instruction, if you added it | a line or `@` import in a `CLAUDE.md` | Delete that line |
 | The status line, if you added it | `statusLine` in `~/.claude/settings.json` | Delete that entry |
 | The Stop hook, if you added it | `hooks.Stop` in `~/.claude/settings.json` | Delete that entry |
-| Runway, if you installed it | a `UserPromptSubmit` hook and maybe `statusLine` in `~/.claude/settings.json`, and `~/.claude/runway/` | `claude-runway uninstall-hooks`, then `rm -rf ~/.claude/runway` |
+| Runway, if you installed it | a `UserPromptSubmit` hook and maybe `statusLine` in `~/.claude/settings.json`, and `~/.claude/runway/` | `npx -y github:soumyaRauth/skills-hub runway uninstall-hooks`, then `rm -rf ~/.claude/runway` |
 
 ## Supported agents
 

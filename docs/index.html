@@ -15,6 +15,7 @@
     <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
     <nav class="links">
       <a href="#skills">Skills</a>
+      <a href="#tools">Tools</a>
       <a href="#activation">Activation</a>
       <a href="#install">Install</a>
       <a href="#uninstall">Uninstall</a>
@@ -413,6 +414,38 @@
   </div>
 </section>
 
+<section id="tools">
+  <div class="wrap">
+    <h2>Tools</h2>
+    <p>
+      Skills shape how the agent works. Tools are small programs that run on
+      your machine and do one job exactly, so the model never has to estimate
+      it.
+    </p>
+    <div class="grid two">
+
+      <a class="card" href="runway.html">
+        <h3>Runway</h3>
+        <p>
+          Answers <em>can I afford the next prompt?</em> in Claude Code: how much
+          context and 5-hour quota is left, how long that lasts at your
+          current pace, and what the prompt you just typed will likely cost.
+          It also checks its own predictions against your transcripts.
+        </p>
+        <div class="tags">
+          <span class="tag">Claude Code</span>
+          <span class="tag">usage limits</span>
+          <span class="tag">context window</span>
+          <span class="tag">Python, no dependencies</span>
+          <span class="tag">costs no tokens</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
 <section id="activation">
   <div class="wrap">
     <h2>Automatic activation</h2>
@@ -522,6 +555,13 @@
       work &mdash; and, optionally, a colored active-skills status line:
       <a href="https://github.com/soumyaRauth/skills-hub/tree/main/integrations/claude-code">integrations/claude-code</a>.
     </p>
+
+    <h3>Runway, for Claude Code</h3>
+    <div class="cmd">
+      <code>npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>Shows how much context and 5-hour quota is left. Needs Python&nbsp;3. <a href="runway.html">More &rarr;</a></p>
   </div>
 </section>
 
@@ -559,6 +599,9 @@
     </div>
 
     <p style="margin-top:20px">
+      If you installed Runway, run
+      <code>npx -y github:soumyaRauth/skills-hub runway uninstall-hooks</code>
+      first, then delete <code>~/.claude/runway</code>.
       Nothing is left running. What stays is yours: lessons in
       <code>~/.skills-hub/</code> (<code>rm -rf ~/.skills-hub</code>), and
       project notes such as <code>.project-compass/</code> in your repositories,

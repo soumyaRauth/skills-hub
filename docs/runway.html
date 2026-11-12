@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Runway — Skills Hub</title>
+<meta name="description" content="A small tool for Claude Code that shows how much context and 5-hour quota is left, predicts what the next prompt will cost, and checks those predictions against your own transcripts.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./#tools">All tools</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/tree/main/integrations/claude-code#6-runway-how-much-room-is-left">README</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Tool &middot; Claude Code &middot; runs on your machine</span>
+    <h1>Runway</h1>
+    <p class="lede">Can I afford the next prompt? Runway reads your Claude Code transcripts and shows how much of the context window and the 5-hour quota is left, how long that lasts at your current pace, and what the prompt you just typed is likely to cost.</p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>a big refactor, started at 90% of the window</b> &nbsp;&rarr;&nbsp; cut off halfway, with nothing committed</p>
+    <p>
+      Claude Code tells you when you have hit a limit, not how close you are
+      to one or what the next request will spend. A one-line question and a
+      multi-file refactor look the same in the prompt box. In the history Runway
+      was first tested on, one turn cost 95k tokens and another 1.8M.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Install</h2>
+    <div class="cmd">
+      <code>npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <div class="cmd">
+      <code>npx -y github:soumyaRauth/skills-hub runway calibrate</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>
+      It needs Python&nbsp;3 and nothing else: no packages, no API key, no
+      network. The first command copies Runway to
+      <code>~/.claude/runway/</code> and registers it in
+      <code>~/.claude/settings.json</code>, keeping everything already there and
+      backing the file up first. <code>--statusline</code> sets the status line
+      only if you have none. The second measures your own history, so
+      predictions fit how you work.
+    </p>
+    <p>
+      To remove it:
+      <code>npx -y github:soumyaRauth/skills-hub runway uninstall-hooks</code>,
+      then delete <code>~/.claude/runway</code>.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What you see</h2>
+    <p>On every prompt, one line, shown to you and not to the model (all the numbers in this section are illustrative):</p>
+<pre class="block">[Runway] next: edit, ~410k tokens over ~4 call(s) | context 10% -&gt; ~11%, ~45 turns to full | 5h 33% used (+3.1%), ~1h05m left at this pace</pre>
+    <p>In the status line, all the time:</p>
+<pre class="block">&#9981; ctx 10% &middot; 5h 33% &middot; resets 4h00m &middot; ~1h05m at this pace</pre>
+    <p>And in the terminal, whenever you ask:</p>
+<pre class="block">$ npx -y github:soumyaRauth/skills-hub runway status
+Context    151,777 / 1,000,000 tokens (15.2%), ~42 turns to full at ~20.1k/turn
+Burn       266.2k tokens/min over the last 60 min
+5h window  33.2% used (Claude Code's rate limits), resets in 4h00m
+Time left  ~21m (at the current burn rate); ~2 typical turns</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>How it counts</h2>
+    <p class="flow mono">
+      one prompt &nbsp;&rarr;&nbsp; several API calls (the tool loop)<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; each call re-reads the whole context<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>cost &asymp; calls &times; (context + prompt) + extra</b>
+    </p>
+    <p>
+      How many calls a turn makes matters far more than how long your prompt
+      is. Runway sorts each prompt into a tier (a question, a single edit, or
+      multi-step work) from its wording and the <code>@files</code> it names.
+      <code>calibrate</code> then measures each tier&rsquo;s typical calls and
+      growth from your own past turns.
+    </p>
+    <ul class="plain">
+      <li><strong>The quota is Claude&rsquo;s own number.</strong> For Pro, Max and Ultra plans, Claude Code hands the status line the real percentage used and the reset time. Runway saves it and builds on it, so it never guesses your plan&rsquo;s limit. With an API key, you can set a token cap yourself.</li>
+      <li><strong>Each response is counted once.</strong> Claude Code writes one response as several log entries that repeat the same usage. Adding them all up counts most turns two or three times.</li>
+      <li><strong>It costs no tokens.</strong> The hook talks to you through <code>systemMessage</code>. Plain output from that hook would be added to Claude&rsquo;s context on every prompt.</li>
+      <li><strong>Your prompts stay private.</strong> A prediction is logged with a hash, the prompt&rsquo;s length and its tier, never the text.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>It checks itself</h2>
+<pre class="block">$ npx -y github:soumyaRauth/skills-hub runway backtest
+  runway, walk-forward   MAPE ...   median APE ...   within &plusmn;50%: ...
+  runway, defaults only  ...
+  naive: previous turn   ...
+  by tier (walk-forward) ...</pre>
+    <p>
+      <code>backtest</code> replays every transcript you have, turn by turn.
+      Each turn is predicted using only the turns that came before it, then
+      scored against a naive guess (&ldquo;the same as last turn&rdquo;). With
+      fewer than 30 turns it says the sample is too small and draws no
+      verdict. <code>accuracy</code> does the same for the live predictions
+      the hook made.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it does not know</h2>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Plan weighting</td><td>Plans weigh models differently, and Runway counts raw tokens. It converts with the rate your last quota reading implies. When another device also used the window, that rate runs high, so the estimate errs toward less time left, not more.</td></tr>
+          <tr><td class="klass">Auto-compact</td><td>Claude Code compacts the context before it is full, at a point Runway cannot see. So <em>turns to full</em> is an upper bound.</td></tr>
+          <tr><td class="klass">Unseen calls</td><td>Background calls that never reach the transcript, such as generating a session title, are not counted.</td></tr>
+          <tr><td class="klass">Surprises</td><td>A request that sounds small but sets off long tool use (&ldquo;go and find the cheapest option&rdquo;) is predicted as small. Over time, <code>accuracy</code> shows you how often that happens.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Runway is a tool, not a skill. It does arithmetic on your logs, which
+      code does exactly and for free, so the model is never asked to estimate
+      it.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed · built by <a href="https://github.com/soumyaRauth">Soumya Rauth</a></span>
+    <span><a href="https://github.com/soumyaRauth/skills-hub">Source on GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>
