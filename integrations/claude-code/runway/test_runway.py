@@ -272,6 +272,65 @@ with redirect_stdout(io.StringIO()) as buf:
 assert "Context    8,205 / 1,000,000" in buf.getvalue()  # s1's window size came from the status line
 assert "s1" in buf.getvalue()
 
+# --------------------------------------------- RUN-014 the gate, before a prompt runs --
+
+v = runway.verdict({"tokens": 1000}, {"room_tokens": 5000})
+assert v["level"] == runway.FITS and not v["ranged"]
+assert runway.verdict({"tokens": 1000}, {"room_tokens": 999})["level"] == runway.WONT_FIT
+assert runway.verdict({"tokens": 1000}, {"room_tokens": 2000}, (0.5, 3.0))["level"] == runway.MAY_NOT_FIT
+assert runway.verdict({"tokens": 1000}, {"room_tokens": 400}, (0.5, 3.0))["level"] == runway.WONT_FIT
+assert runway.verdict({"tokens": 1000}, {"room_tokens": 3000}, (0.5, 3.0))["level"] == runway.FITS
+assert runway.verdict({"tokens": 1000}, {})["level"] == runway.UNKNOWN
+
+os.remove(config.path("limits.json"))  # the gate tests set the quota through token_cap
+
+
+def gate(gate_mode, cap, prompt="add a retry", sid="s1", now=NOW):
+    c = config.load()
+    c["gate"], c["quota"]["token_cap"] = gate_mode, cap
+    config.save(c)
+    out = hooks.user_prompt_submit({"session_id": sid, "transcript_path": S1, "cwd": proj, "prompt": prompt,
+                                    "prompt_id": f"g{time.time()}"}, now)
+    return json.loads(out)
+
+
+logged = lambda: len(config.read_jsonl("predictions.jsonl"))  # noqa: E731
+n0 = logged()
+ok = gate("risky", 10**9)                                        # plenty of room: runs, says it fits
+assert "decision" not in ok and ", fits" in ok["systemMessage"] and logged() == n0 + 1
+
+blocked = gate("risky", 50_000)                                  # ~40k needed, ~19k left: paused
+assert blocked["decision"] == "block" and blocked["reason"].startswith("[Runway] Paused: this prompt is unlikely")
+assert "Run it anyway: press Up, then Enter, within 2 min" in blocked["reason"] and logged() == n0 + 1  # not logged
+assert "Rough: only" in blocked["reason"]                        # no error range yet: says so
+
+assert gate("risky", 50_000, sid="other")["decision"] == "block"  # same text, other session: not a confirmation
+again = gate("risky", 50_000, now=NOW + 30)                      # sent again in time: runs
+assert again["systemMessage"].startswith("[Runway] Running it, as you confirmed. next: edit")
+assert logged() == n0 + 2 and config.read_jsonl("predictions.jsonl")[-1]["confirmed"] is True
+assert gate("risky", 50_000, now=NOW + 40)["decision"] == "block"  # the confirmation is used up
+assert gate("risky", 50_000, now=NOW + 40 + 121)["decision"] == "block"  # too late: paused afresh
+
+assert "decision" not in gate("off", 50_000, prompt="add a test")   # off: never pauses
+assert gate("always", 10**9, prompt="add docs")["decision"] == "block"  # always: pauses even when it fits
+assert gate("always", 10**9, prompt="add docs")["systemMessage"].startswith("[Runway] Running it")
+assert "decision" not in gate("risky", None, prompt="add logs")   # quota unknown: no basis to pause
+
+# With a measured error range: ~40k estimated, 20k-122k likely, ~69k left -> "may not fit", paused.
+c = config.load()
+c["calibrated"]["ratio_range"] = [0.5, 3.0]
+config.save(c)
+mnf = gate("risky", 100_000, prompt="add a cache")
+assert mnf["decision"] == "block" and "may not finish" in mnf["reason"] and "likely" in mnf["reason"]
+assert "Rough: only" not in mnf["reason"]
+c = config.load()
+c["calibrated"]["ratio_range"] = None
+c["quota"]["token_cap"] = 50_000
+config.save(c)
+with redirect_stdout(io.StringIO()) as buf:                     # check: the same estimate, nothing sent
+    assert cli.main(["check", "--cwd", "/work/app", "add", "a", "retry"]) == 0
+assert buf.getvalue().startswith("[Runway] this prompt is unlikely") and "Run it anyway" not in buf.getvalue()
+
 # ---------------------------------------------------- RUN-010 install-hooks --
 
 settings = os.path.join(TMP, "settings.json")

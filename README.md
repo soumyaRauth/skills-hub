@@ -154,7 +154,8 @@ the skills considered and deliberately not added.
 > The skills alone passed 30 of 38 cases, and with the instruction they passed 37
 > of 38. Neither setup loaded a skill where it should have stayed quiet. The same
 > folder has an optional colored active-skills status line, and Runway, which
-> shows how much context and 5-hour quota is left and predicts the next turn's cost.
+> estimates each prompt before it runs and pauses it if it may not finish
+> before your 5-hour limit.
 
 ## 📚 Meet the skills
 
@@ -1555,9 +1556,10 @@ Everything Claude Code-specific is kept outside the skills:
 - a Stop hook that makes every skill named in the ⚡ line actually load, or be
   dropped in one line, before the turn ends
 - a status line segment that shows the active skills in color
-- Runway, a standard-library Python tool that reports how much context and
-  5-hour quota is left, predicts what the next prompt will cost, and scores
-  those predictions against your own transcripts
+- Runway, a standard-library Python tool that estimates each prompt before it
+  runs, pauses it when it may not finish before the 5-hour limit, reports how
+  much context and quota is left, and scores its estimates against your own
+  transcripts
 - a plugin manifest and a marketplace manifest, so `/plugin install` or
   `claude --plugin-dir` can load all eighteen at once and `claude plugin eval`
   can test them

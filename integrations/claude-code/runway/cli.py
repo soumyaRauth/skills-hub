@@ -1,6 +1,7 @@
 """claude-runway: how much room is left in this session's context and in the 5-hour window.
 
     claude-runway status            context, 5-hour window, burn rate, time left
+    claude-runway check "<prompt>"  estimate a prompt and say whether it fits, without sending it
     claude-runway backtest          replay your transcripts and score the predictor
     claude-runway calibrate         write per-tier numbers measured from your history
     claude-runway accuracy          how the live predictions compared with what turns cost
@@ -14,7 +15,7 @@ import os
 import shutil
 import sys
 import time
-from statistics import median
+from statistics import median, quantiles
 
 import config
 import estimator
@@ -53,10 +54,15 @@ def history_rows(root, chars_per_token):
 
 
 def fit(rows, cfg):
-    """Calibrated tiers and first-turn context from rows, or (None, None, counts) with too little data."""
+    """Calibrated tiers and first-turn context from rows, or (None, None, counts) with too little data.
+
+    Always starts from the shipped defaults (with your keywords), never from
+    numbers an earlier calibrate measured: those already saw every turn, which
+    would leak later turns into a walk-forward test and compound on re-runs.
+    """
     tiers, counts = estimator.calibrate(
         [(r["prompt"], r["before"], r["calls"], r["total"], r["after"]) for r in rows],
-        cfg["tiers"], cfg["chars_per_token"])
+        uncalibrated(cfg)["tiers"], cfg["chars_per_token"])
     firsts = [r["before"] for r in rows if r["first"]]
     return tiers, (int(median(firsts)) if firsts else None), counts
 
@@ -64,6 +70,23 @@ def fit(rows, cfg):
 def predict_row(row, cfg):
     """What the predictor would have said before this turn ran."""
     return estimator.predict(row["prompt"], None if row["first"] else row["before"], cfg, row["cwd"])
+
+
+# The same bar the backtest sets before it draws any verdict. With fewer turns
+# the 10th-90th percentile is set by one or two outliers: on a history of fewer
+# than a dozen turns it came out at 0.2x-41x, which made every prompt look like it might not fit.
+MIN_RANGE_TURNS = 30
+
+
+def ratio_range(rows, cfg):
+    """10th and 90th percentile of actual/predicted, walk-forward, or None with under MIN_RANGE_TURNS turns."""
+    if len(rows) < MIN_RANGE_TURNS:
+        return None
+    ratios = sorted(r["total"] / p["tokens"] for r, p in zip(rows, walk_forward(rows, cfg)) if p["tokens"] > 0)
+    if len(ratios) < MIN_RANGE_TURNS:
+        return None
+    cuts = quantiles(ratios, n=10)
+    return [round(cuts[0], 3), round(cuts[-1], 3)]
 
 
 def ape(pred, actual):
@@ -166,12 +189,18 @@ def cmd_calibrate(args):
         print(f"  {name:6} turns {counts.get(name, 0):4}   calls {t['calls']:5g}   extra {t['extra_tokens']:>9,}"
               f"   context growth {t['context_growth']:>8,}")
     print(f"  first-turn context {first_ctx:,}" if first_ctx is not None else "  first-turn context: not measured")
+    rr = ratio_range(rows, cfg)
+    print(f"  error range: actual turns landed between {rr[0]:.2f}x and {rr[1]:.2f}x the estimate "
+          f"(10th-90th percentile)" if rr else
+          f"  error range: not set; needs {MIN_RANGE_TURNS} turns, have {len(rows)}. "
+          "Verdicts rest on the single estimate until then.")
     if args.dry_run:
         print("\n--dry-run: config.json not changed.")
         return 0
     cfg["tiers"] = tiers
     cfg["calibrated"] = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "turns": len(rows),
-                         "turns_per_tier": counts, "first_context": first_ctx}
+                         "turns_per_tier": counts, "first_context": first_ctx,
+                         "ratio_range": rr}
     config.save(cfg)
     print(f"\nWrote {config.path('config.json')}")
     return 0
@@ -260,6 +289,23 @@ def cmd_status(args):
               "           quota, or set quota.token_cap in " + config.path("config.json"))
     if not cfg.get("calibrated"):
         print("\nPredictions use uncalibrated defaults. Run `claude-runway calibrate`.")
+    return 0
+
+
+def cmd_check(args):
+    """Estimate a prompt without sending it anywhere."""
+    cfg = config.load()
+    root = config.projects_dir()
+    cwd = args.cwd or os.getcwd()
+    path = transcripts.find_transcript(root, cwd=cwd, session_id=args.session)
+    session = transcripts.parse_session(path) if path else None
+    prompt = " ".join(args.prompt) if args.prompt else sys.stdin.read()
+    pred, ctx, quota, _ = hooks.assess(session, prompt, cwd, cfg)
+    cal = cfg.get("calibrated") or {}
+    v = runway.verdict(pred, quota, cal.get("ratio_range"))
+    print(runway.preflight_message(pred, ctx, quota, v, cal.get("turns", 0)))
+    if session:
+        print(f"  Session    {session.session_id} (the latest in {os.path.basename(os.path.dirname(path))})")
     return 0
 
 
@@ -404,6 +450,11 @@ def main(argv=None):
     p.add_argument("--cwd", help="project directory (default: the current one)")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_status)
+    p = sub.add_parser("check", help="estimate a prompt and say whether it fits, without sending it")
+    p.add_argument("prompt", nargs="*", help="the prompt (or pipe it on stdin)")
+    p.add_argument("--session", help="session id (default: latest in this directory's project)")
+    p.add_argument("--cwd", help="project directory, for @file mentions (default: the current one)")
+    p.set_defaults(func=cmd_check)
     p = sub.add_parser("backtest", help="replay your transcripts and score the predictor")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_backtest)

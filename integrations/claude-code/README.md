@@ -203,10 +203,52 @@ Python tool (standard library only) that reads your transcripts in
   roughly how many turns are left before it is full.
 - **The 5-hour window**: the percentage used, when it resets, and how many
   minutes and typical turns are left at your current pace.
-- **The next turn**: a prediction of what the prompt you just typed will cost,
-  logged so it can be compared with the turn's actual cost afterwards.
+- **The next turn, before it runs**: what the prompt you just typed will
+  cost, and whether it is likely to finish before the 5-hour limit. When it
+  may not, Runway **pauses the prompt** so you can decide.
 
-Example output (the numbers are illustrative):
+### Decide before a prompt runs
+
+When you press Enter, Runway estimates the prompt before Claude sees it. If
+it may not finish before your 5-hour limit, the prompt is paused. It never
+reaches Claude and costs nothing:
+
+```
+[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
+  Estimate   ~2.0M tokens (multi, ~8 call(s))
+  5h window  92% used, room for ~1.2M more tokens, resets in 2h00m
+  After it   ~100% of the window used
+  Context    25% -> ~27%
+  Rough: only 11 past turn(s) to learn from, so no error range yet.
+Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+```
+
+To run it anyway, send the same text again within two minutes (Up, then
+Enter). To drop it, do nothing. A prompt that fits runs straight away, with
+one line saying so. `gate` in `config.json` sets when Runway pauses:
+`"risky"` (the default) only when a prompt may not fit, `"always"` before
+every prompt, so you decide each time, and `"off"` never.
+
+Only the quota can stop a turn partway through. A full context does not:
+Claude Code compacts it and carries on. So context is shown, but it never
+pauses a prompt. With no quota reading (an API key and no `token_cap`),
+Runway has nothing to compare against, and `"risky"` lets everything through.
+
+Once you have 30 turns of history, `calibrate` also measures how far actual
+turns have landed from their estimates (10th to 90th percentile). The verdict
+then uses that range: *fits* when even the high end fits, *won't fit* when
+even the low end does not, *may not fit* in between. Before 30 turns, a
+handful of outliers would set the range. On a history of fewer than a dozen
+turns it came out at 0.2× to 41× the estimate, which paused every prompt. So until then the
+verdict rests on the single estimate, and the message says so.
+
+To estimate a prompt without sending it, from any terminal:
+
+```
+npx -y github:soumyaRauth/skills-hub runway check "refactor the auth module"
+```
+
+Example `status` output (the numbers are illustrative):
 
 ```
 $ npx -y github:soumyaRauth/skills-hub runway status
@@ -236,7 +278,7 @@ run, and refuses to write over a settings file it cannot parse. The hook is
 guarded with `|| true`, so a moved clone cannot block your prompts.
 `uninstall-hooks` takes it back out. Runway's own files live in
 `~/.claude/runway/` (`config.json`, `predictions.jsonl`, `actuals.jsonl`,
-`limits.json`).
+`limits.json`, `pending.json`).
 
 If you already have a status line, add runway's segment as a second line
 (Claude Code shows every line your command prints):
@@ -251,6 +293,7 @@ echo "$input" | python3 ~/.claude/runway/bin/claude-runway statusline
 | Command | What it does |
 | --- | --- |
 | `status` | Context, 5-hour window, burn rate and time left for the session in the current directory (`--session`, `--json`) |
+| `check "<prompt>"` | Estimates a prompt and gives the verdict, without sending it anywhere |
 | `backtest` | Replays every transcript turn by turn and scores the predictor: MAPE, median error, share within ±50%, by tier, against a naive baseline that repeats the previous turn |
 | `calibrate` | Writes the per-tier numbers measured from your history into `config.json` (`--dry-run` to only show them) |
 | `accuracy` | Compares the live predictions the hook logged with what those turns actually cost |

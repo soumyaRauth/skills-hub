@@ -33,6 +33,17 @@ methodology and documentation.
   without a clone: it copies Runway to `~/.claude/runway/bin/`, so the hook
   points at a folder npx will not clear. The site has a new Tools section and
   a Runway page (`docs/runway.html`).
+  Runway also checks a prompt **before** it runs. When the estimate says it
+  may not finish before the 5-hour limit, the hook blocks it, so it never
+  reaches Claude and costs nothing, and shows the estimate. Sending the same
+  text again within two minutes runs it. `gate` sets when this happens:
+  `risky` (the default), `always` or `off`. Only the quota can pause a prompt;
+  a full context is compacted, not fatal. After 30 turns, `calibrate` adds a
+  measured error range (10th-90th percentile, walk-forward), and the verdict
+  becomes fits / may not fit / won't fit. Below 30 turns, the range from a
+  history of fewer than a dozen turns was 0.2x-41x and paused every prompt, so the verdict uses
+  the single estimate and says it is rough. `runway check "<prompt>"` gives
+  the same verdict from a terminal, without sending anything.
 
 - **`/learn`.** `knowledge init` now also installs `.claude/commands/learn.md`,
   so updating the project knowledge on demand is `/learn` in Claude Code

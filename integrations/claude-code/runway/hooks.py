@@ -1,7 +1,11 @@
 """The two places Claude Code runs runway: a UserPromptSubmit hook and a status line segment.
 
 UserPromptSubmit
-    Predicts the prompt, appends the prediction to predictions.jsonl, and shows
+    Predicts the prompt before it runs. When it may not finish before the
+    5-hour limit (or on every prompt, with gate "always"), it blocks the prompt
+    and shows the estimate; the prompt never reaches Claude, so this costs
+    nothing. Sending the same text again within confirm_seconds runs it.
+    Otherwise it appends the prediction to predictions.jsonl and shows
     one line through `systemMessage`. Plain stdout from this hook would be added
     to Claude's context on every prompt, costing tokens and steering the model;
     systemMessage is shown to the person only. It never blocks a prompt: every
@@ -124,16 +128,49 @@ def user_prompt_submit(payload, now=None):
         return ""  # runs no model turn: nothing to predict
     pred, ctx, quota, _ = assess(session, prompt, cwd, cfg, now)
     sha = prompt_hash(prompt)
+    cal = cfg.get("calibrated") or {}
+    v = runway.verdict(pred, quota, cal.get("ratio_range"))
+
+    # The gate. A prompt it pauses never reaches Claude; sending the same text
+    # again within confirm_seconds runs it.
+    gate = cfg.get("gate", "risky")
+    wait = int(cfg.get("confirm_seconds") or 120)
+    key = f"{payload.get('session_id') or (session.session_id if session else '')}:{sha}"
+    pending = {k: t for k, t in load_pending().items() if isinstance(t, (int, float)) and now - t < wait}
+    confirmed = pending.pop(key, None) is not None
+    pause = not confirmed and (gate == "always" or (gate == "risky" and v["level"] in (runway.MAY_NOT_FIT,
+                                                                                         runway.WONT_FIT)))
+    if pause:
+        pending[key] = now
+    save_pending(pending)
+    if pause:
+        return json.dumps({"decision": "block",
+                           "reason": runway.preflight_message(pred, ctx, quota, v, cal.get("turns", 0), wait)})
     config.append_jsonl("predictions.jsonl", {
         "ts": now, "session_id": payload.get("session_id") or (session.session_id if session else None),
         "prompt_id": prompt_id, "prompt_sha": sha, "prompt_key": prompt_id or sha,
         "prompt_chars": len(prompt), "tier": pred["tier"], "calls": pred["calls"], "tokens": pred["tokens"],
         "prompt_tokens": pred["prompt_tokens"], "context_before": pred["context_before"],
         "context_limit": ctx["limit"], "quota_pct": quota["pct"], "quota_source": quota["source"],
-        "calibrated": bool(cfg.get("calibrated")),
+        "calibrated": bool(cfg.get("calibrated")), "verdict": v["level"], "confirmed": confirmed,
     })
-    line = runway.summary_line(pred, ctx, quota, bool(cfg.get("calibrated")))
-    return json.dumps({"systemMessage": line})
+    line = runway.summary_line(pred, ctx, quota, bool(cfg.get("calibrated")), v)
+    return json.dumps({"systemMessage": ("[Runway] Running it, as you confirmed. " + line[9:]) if confirmed
+                       else line})
+
+
+def load_pending():
+    try:
+        with open(config.path("pending.json")) as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def save_pending(pending):
+    if pending or os.path.exists(config.path("pending.json")):
+        config.write_atomic(config.path("pending.json"), pending)
 
 
 def save_limits(payload, now=None):
