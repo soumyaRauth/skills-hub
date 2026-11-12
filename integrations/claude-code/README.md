@@ -192,3 +192,116 @@ You don't normally install it by hand. `npx -y github:soumyaRauth/skills-hub
 knowledge init` copies it into the repository and registers it in
 `.claude/settings.json`, beside the MCP server in `.mcp.json`. See
 [setup](../../skills/project-knowledge/references/setup.md).
+
+## 6. Runway: how much room is left
+
+[`runway/`](runway/) answers *can I afford the next prompt?* It is a small
+Python tool (standard library only) that reads your transcripts in
+`~/.claude/projects/` and reports three things:
+
+- **Context**: tokens in this session's window, the percentage used, and
+  roughly how many turns are left before it is full.
+- **The 5-hour window**: the percentage used, when it resets, and how many
+  minutes and typical turns are left at your current pace.
+- **The next turn**: a prediction of what the prompt you just typed will cost,
+  logged so it can be compared with the turn's actual cost afterwards.
+
+Example output (the numbers are illustrative):
+
+```
+$ runway/claude-runway status
+Context    151,777 / 1,000,000 tokens (15.2%), ~42 turns to full at ~20.1k/turn
+Burn       266.2k tokens/min over the last 60 min
+5h window  33.2% used (Claude Code's rate limits), resets in 4h00m
+Time left  ~21m (at the current burn rate); ~2 typical turns
+```
+
+Install it from a clone, with the path to that clone:
+
+```bash
+python3 /path/to/skills-hub/integrations/claude-code/runway/claude-runway install-hooks --statusline
+python3 /path/to/skills-hub/integrations/claude-code/runway/claude-runway calibrate
+```
+
+`install-hooks` adds a UserPromptSubmit hook to `~/.claude/settings.json`
+and, with `--statusline`, sets the status line if you have none. It keeps
+everything already there, backs the file up first, does nothing on a second
+run, and refuses to write over a settings file it cannot parse. The hook is
+guarded with `|| true`, so a moved clone cannot block your prompts.
+`uninstall-hooks` takes it back out. Runway's own files live in
+`~/.claude/runway/` (`config.json`, `predictions.jsonl`, `actuals.jsonl`,
+`limits.json`).
+
+If you already have a status line, add runway's segment as a second line
+(Claude Code shows every line your command prints):
+
+```bash
+#!/usr/bin/env bash
+input=$(cat)
+echo "$input" | ~/.claude/your-statusline.sh
+echo "$input" | python3 /path/to/skills-hub/integrations/claude-code/runway/claude-runway statusline
+```
+
+| Command | What it does |
+| --- | --- |
+| `status` | Context, 5-hour window, burn rate and time left for the session in the current directory (`--session`, `--json`) |
+| `backtest` | Replays every transcript turn by turn and scores the predictor: MAPE, median error, share within ±50%, by tier, against a naive baseline that repeats the previous turn |
+| `calibrate` | Writes the per-tier numbers measured from your history into `config.json` (`--dry-run` to only show them) |
+| `accuracy` | Compares the live predictions the hook logged with what those turns actually cost |
+| `init` | Writes `config.json` with every setting and a note on each |
+
+### How it counts
+
+- **Each API response once.** Claude Code writes one response as several
+  transcript entries, each repeating the same `usage`. Runway counts it once
+  per `message.id`. Summing every entry counts most turns two or three times.
+- **A turn is many calls.** One prompt runs the tool loop, and every call
+  re-reads the whole context, mostly as cache reads. So the cost of a turn
+  depends on how many calls it makes and how big the context already is. The
+  prompt's own length matters much less. Runway predicts
+  `calls × (context + prompt) + extra` per tier (`qa`, `edit`, `multi`, chosen
+  by keywords and `@file` mentions), and `calibrate` measures `calls`, `extra`
+  and context growth from your own turns.
+- **The quota comes from Claude Code when it can.** The status line receives
+  `rate_limits.five_hour` (percentage used and reset time) for Pro, Max and
+  Ultra plans. The runway segment saves it, and the hook and `status` use it.
+  It covers everything your plan counts, including other devices. Without it
+  (an API key, or no status line), set `quota.token_cap` in `config.json`, or
+  runway shows usage and burn rate and says that time left is unknown.
+  Anthropic does not publish plan limits as token counts, so runway ships no
+  cap of its own.
+- **The context limit comes from Claude Code too.** It is
+  `context_window.context_window_size` from the status line (200k, or 1M for
+  extended context), or `context_limit` in `config.json`, or 200k by default.
+
+### Why it is built this way
+
+- **The hook speaks through `systemMessage`.** Plain stdout from a
+  UserPromptSubmit hook is added to Claude's context, so printing the
+  summary there would spend tokens on every prompt to report on tokens.
+  `systemMessage` is shown to you, not to the model.
+- **No Stop hook.** Claude Code writes the transcript asynchronously, so at
+  Stop the last calls of the turn may not be on disk yet. Instead, each prompt
+  resolves the earlier, finished turns of its session against their
+  predictions, matched by `prompt_id`, and `accuracy` resolves the rest.
+- **No tokenizer and no network.** `tiktoken` is OpenAI's tokenizer, not
+  Claude's. Calling `count_tokens` would send every prompt over the network
+  before it runs. The prompt is a small share of a turn, so a
+  characters-per-token approximation is enough.
+- **The prompt text is not stored.** A prediction records a hash, the length
+  and the tier.
+- **The backtest is honest about its sample.** Each turn is predicted using
+  only turns that finished before it. A short history says so in the report.
+
+### What it does not know
+
+- Plan limits weight models differently, and runway counts raw tokens. Turns
+  left in the window are converted at the percent-per-token the last snapshot
+  implies. When other devices used the same window, that rate is higher than
+  local usage alone, so the estimate errs toward less runway.
+- Claude Code compacts the context automatically before the window is full,
+  at a threshold runway does not read, so *turns to full* is an upper bound.
+- Background calls that never reach the transcript, such as title generation
+  on a small model, are not counted.
+
+Check it with `python3 integrations/claude-code/runway/test_runway.py`.

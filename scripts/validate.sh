@@ -465,6 +465,11 @@ if python3 integrations/claude-code/test_prompt_named_skills.py >/dev/null 2>&1;
 else
   fail "integrations/claude-code/test_prompt_named_skills.py failed"
 fi
+if python3 -B integrations/claude-code/runway/test_runway.py >/dev/null 2>&1; then
+  pass "runway self-check (parser, prediction, quota, hook, settings install)"
+else
+  fail "integrations/claude-code/runway/test_runway.py failed"
+fi
 if python3 -c 'import json, sys; m = json.load(open(".claude-plugin/plugin.json")); sys.exit(0 if m.get("name") else 1)' 2>/dev/null; then
   pass ".claude-plugin/plugin.json parses and names the plugin"
 else

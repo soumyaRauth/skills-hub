@@ -9,6 +9,27 @@ methodology and documentation.
 
 ### Added
 
+- **Runway: how much room is left.** A standard-library Python tool in
+  `integrations/claude-code/runway/` that reads `~/.claude/projects/` and
+  reports this session's context use, the 5-hour window's percentage used and
+  reset time, the burn rate, and the minutes and turns left at that pace. A
+  UserPromptSubmit hook predicts each prompt's cost, shows one line through
+  `systemMessage` (plain stdout would be added to Claude's context on every
+  prompt), and logs the prediction. Later prompts and `claude-runway accuracy`
+  resolve the logged predictions against the finished turns by `prompt_id`.
+  Resolving at Stop would be unreliable, because Claude Code writes the
+  transcript asynchronously. The quota is Claude Code's own
+  `rate_limits.five_hour`, which the runway status line segment saves, so
+  there is no guessed token cap. `quota.token_cap` is the fallback for API-key
+  use. Usage is counted once per `message.id`; Claude Code repeats a response's
+  `usage` on every content block, and summing them counts most turns two or
+  three times. `backtest` scores the predictor walk-forward, predicting each
+  turn only from the turns before it, against a naive baseline. `calibrate`
+  writes per-tier medians from your own history into `config.json`.
+  `install-hooks` / `uninstall-hooks` edit `~/.claude/settings.json` without
+  losing anything already there, back it up first, are idempotent, and refuse
+  to write over invalid JSON. `validate.sh` runs its self-check.
+
 - **`/learn`.** `knowledge init` now also installs `.claude/commands/learn.md`,
   so updating the project knowledge on demand is `/learn` in Claude Code
   rather than the skill's name. It is manual-only
