@@ -130,11 +130,12 @@ def preflight_message(pred, ctx, quota, v, history_turns, confirm_seconds=None):
     """What the prompt is estimated to cost and the verdict; with confirm_seconds, the block message."""
     head = {WONT_FIT: "this prompt is unlikely to finish before your 5-hour limit",
             MAY_NOT_FIT: "this prompt may not finish before your 5-hour limit",
-            FITS: "this prompt should fit", UNKNOWN: "estimate before running"}[v["level"]]
+            FITS: "this prompt should fit", UNKNOWN: "5-hour quota unknown, so no verdict"}[v["level"]]
     est = f"~{human_tokens(pred['tokens'])} tokens ({pred['tier']}, ~{pred['calls']} call(s))"
     if v["ranged"]:
         est += f", likely {human_tokens(v['low'])}-{human_tokens(v['high'])}"
-    lines = [f"[Runway] {'Paused: ' if confirm_seconds else ''}{head}.", f"  Estimate   {est}"]
+    paused = "Paused" if v["level"] in (WONT_FIT, MAY_NOT_FIT) else "Before it runs"
+    lines = [f"[Runway] {paused + ': ' if confirm_seconds else ''}{head}.", f"  Estimate   {est}"]
     if quota.get("pct") is not None:
         q = f"  5h window  {quota['pct']:.0f}% used, room for ~{human_tokens(v['room_tokens'])} more tokens"
         if quota.get("minutes_to_reset") is not None:
@@ -150,8 +151,9 @@ def preflight_message(pred, ctx, quota, v, history_turns, confirm_seconds=None):
     if not v["ranged"]:
         lines.append(f"  Rough: only {history_turns} past turn(s) to learn from, so no error range yet.")
     if confirm_seconds:
-        lines.append(f"Run it anyway: press Up, then Enter, within {confirm_seconds // 60 or 1} min. "
-                     "Otherwise do nothing; it was not sent.")
+        mins = confirm_seconds // 60 or 1
+        go = "Run it anyway" if v["level"] in (WONT_FIT, MAY_NOT_FIT) else "To run it"
+        lines.append(f"{go}: press Up, then Enter, within {mins} min. Otherwise do nothing; it was not sent.")
     return "\n".join(lines)
 
 

@@ -133,7 +133,7 @@ def user_prompt_submit(payload, now=None):
 
     # The gate. A prompt it pauses never reaches Claude; sending the same text
     # again within confirm_seconds runs it.
-    gate = cfg.get("gate", "risky")
+    gate = cfg.get("gate", "always")
     wait = int(cfg.get("confirm_seconds") or 120)
     key = f"{payload.get('session_id') or (session.session_id if session else '')}:{sha}"
     pending = {k: t for k, t in load_pending().items() if isinstance(t, (int, float)) and now - t < wait}

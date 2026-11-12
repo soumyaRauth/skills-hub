@@ -207,7 +207,14 @@ payload = {"session_id": "s1", "transcript_path": S1, "cwd": proj, "prompt": "se
 r = run_hook(json.dumps(payload))
 assert r.returncode == 0, r.stderr
 out = json.loads(r.stdout)                                                               # JSON, not plain text
-assert list(out) == ["systemMessage"] and out["systemMessage"].startswith("[Runway] next: edit")
+# The default gate is "always": the first send is held back with its estimate, before it runs.
+assert out["decision"] == "block", out
+assert out["reason"].startswith("[Runway] Before it runs: 5-hour quota unknown, so no verdict")
+assert "To run it: press Up, then Enter" in out["reason"] and "secret" not in out["reason"]
+assert not config.read_jsonl("predictions.jsonl")                                        # nothing ran yet
+r = run_hook(json.dumps(dict(payload, prompt_id="p3")))                                  # sent again: runs
+out = json.loads(r.stdout)
+assert list(out) == ["systemMessage"] and out["systemMessage"].startswith("[Runway] Running it, as you confirmed. next: edit")
 preds = config.read_jsonl("predictions.jsonl")
 assert preds[-1]["prompt_id"] == "p3" and "secret" not in json.dumps(preds)              # prompt text not stored
 
@@ -294,6 +301,7 @@ def gate(gate_mode, cap, prompt="add a retry", sid="s1", now=NOW):
     return json.loads(out)
 
 
+assert config.DEFAULTS["gate"] == "always"                       # the default: decide before every prompt
 logged = lambda: len(config.read_jsonl("predictions.jsonl"))  # noqa: E731
 n0 = logged()
 ok = gate("risky", 10**9)                                        # plenty of room: runs, says it fits
@@ -312,7 +320,9 @@ assert gate("risky", 50_000, now=NOW + 40)["decision"] == "block"  # the confirm
 assert gate("risky", 50_000, now=NOW + 40 + 121)["decision"] == "block"  # too late: paused afresh
 
 assert "decision" not in gate("off", 50_000, prompt="add a test")   # off: never pauses
-assert gate("always", 10**9, prompt="add docs")["decision"] == "block"  # always: pauses even when it fits
+fits_pause = gate("always", 10**9, prompt="add docs")           # always: pauses even when it fits
+assert fits_pause["decision"] == "block" and fits_pause["reason"].startswith("[Runway] Before it runs: this prompt should fit")
+assert "To run it: press Up, then Enter" in fits_pause["reason"] and "anyway" not in fits_pause["reason"]
 assert gate("always", 10**9, prompt="add docs")["systemMessage"].startswith("[Runway] Running it")
 assert "decision" not in gate("risky", None, prompt="add logs")   # quota unknown: no basis to pause
 
