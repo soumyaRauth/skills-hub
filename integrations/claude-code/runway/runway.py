@@ -85,17 +85,34 @@ def quota_runway(calls, now, predicted_tokens, burn, cfg, snapshot):
 
     if out["resets_at"] is not None:
         out["minutes_to_reset"] = max(0.0, (out["resets_at"] - now) / 60.0)
+
+    # Your pace: tokens per minute over the last burn window. After a break
+    # that is zero, which would say nothing about how long you can work, so
+    # fall back to your average since this 5-hour window opened.
+    pace, out["pace_source"] = burn, "recent"
+    if pace <= 0 and start is not None and out["tokens"] > 0:
+        pace, out["pace_source"] = out["tokens"] / max(5.0, (now - start) / 60.0), "window"
+    out["pace"] = pace
+
     if pct_per_token and out["pct"] is not None:
         room = max(0.0, 100.0 - out["pct"])
         out["room_tokens"] = room / pct_per_token
         out["next_turn_pct"] = pct_per_token * predicted_tokens
         if out["next_turn_pct"] > 0:
             out["turns_left"] = int(room // out["next_turn_pct"])
-        if burn > 0:
-            mins = room / (pct_per_token * burn)
-            reset = out["minutes_to_reset"]
-            out["minutes_left"] = min(mins, reset) if reset is not None else mins
-            out["limited_by"] = "reset" if reset is not None and reset <= mins else "quota"
+        room_after = max(0.0, room - out["next_turn_pct"])
+        out["runs_out_during"] = out["next_turn_pct"] > room
+        reset = out["minutes_to_reset"]
+
+        def minutes(r):
+            mins = r / (pct_per_token * pace)
+            return (min(mins, reset) if reset is not None else mins), (
+                "reset" if reset is not None and reset <= mins else "quota")
+
+        if pace > 0:
+            out["minutes_left"], out["limited_by"] = minutes(room)
+            # The main number: how long you can keep working once this prompt has run.
+            out["minutes_left_after"], out["after_limited_by"] = minutes(room_after)
     return out
 
 
@@ -126,6 +143,29 @@ def verdict(pred, quota, ratio_range=None):
     return {"level": level, "low": lo, "high": hi, "room_tokens": room, "ranged": bool(ratio_range)}
 
 
+def time_left_after(quota):
+    """How long you can keep working once this prompt has run, in one phrase."""
+    reset = quota.get("minutes_to_reset")
+    if quota.get("pct") is None:
+        return "unknown: no 5-hour quota reading (install the runway status line, or set quota.token_cap)"
+    if quota.get("runs_out_during"):
+        return ("none: you would hit the 5-hour limit during this prompt"
+                + (f"; the window resets in {human_minutes(reset)}" if reset is not None else ""))
+    after = quota.get("minutes_left_after")
+    if after is None:
+        turns = quota.get("turns_left")
+        return ("after it, no pace to measure yet (nothing used in this window)"
+                + (f"; room for ~{max(0, turns - 1)} more prompts like this one" if turns is not None else ""))
+    pace = "your pace over the last hour" if quota.get("pace_source") == "recent" else "your average pace this window"
+    if quota.get("after_limited_by") == "reset":
+        return (f"after it, enough to keep working until the window resets in {human_minutes(reset)} "
+                f"(at {pace} you would not run out)")
+    now = quota.get("minutes_left")
+    return (f"after it, ~{human_minutes(after)} of work at {pace}"
+            + (f" (~{human_minutes(now)} now)" if now is not None else "")
+            + (f"; the window resets in {human_minutes(reset)}" if reset is not None else ""))
+
+
 def preflight_message(pred, ctx, quota, v, history_turns, confirm_seconds=None):
     """What the prompt is estimated to cost and the verdict; with confirm_seconds, the block message."""
     head = {WONT_FIT: "this prompt is unlikely to finish before your 5-hour limit",
@@ -135,16 +175,16 @@ def preflight_message(pred, ctx, quota, v, history_turns, confirm_seconds=None):
     if v["ranged"]:
         est += f", likely {human_tokens(v['low'])}-{human_tokens(v['high'])}"
     paused = "Paused" if v["level"] in (WONT_FIT, MAY_NOT_FIT) else "Before it runs"
-    lines = [f"[Runway] {paused + ': ' if confirm_seconds else ''}{head}.", f"  Estimate   {est}"]
+    lines = [f"[Runway] {paused + ': ' if confirm_seconds else ''}{head}.",
+             f"  Time left  {time_left_after(quota)}",
+             f"  Estimate   {est}"]
     if quota.get("pct") is not None:
-        q = f"  5h window  {quota['pct']:.0f}% used, room for ~{human_tokens(v['room_tokens'])} more tokens"
+        q = f"  5h window  {quota['pct']:.0f}% used now"
+        if quota.get("next_turn_pct") is not None:
+            q += f", ~{min(100.0, quota['pct'] + quota['next_turn_pct']):.0f}% after it"
         if quota.get("minutes_to_reset") is not None:
             q += f", resets in {human_minutes(quota['minutes_to_reset'])}"
         lines.append(q)
-        if quota.get("next_turn_pct") is not None:
-            lines.append(f"  After it   ~{min(100.0, quota['pct'] + quota['next_turn_pct']):.0f}% of the window used")
-    else:
-        lines.append("  5h window  unknown (install the runway status line, or set quota.token_cap)")
     if ctx.get("pct") is not None:
         lines.append(f"  Context    {ctx['pct']:.0f}% -> ~{min(ctx['after_pct'], 100):.0f}%"
                      + (" (Claude Code will compact it and carry on)" if ctx["after_pct"] >= 100 else ""))
@@ -187,10 +227,12 @@ def summary_line(pred, ctx, quota, calibrated, v=None):
         q = f"5h {quota['pct']:.0f}% used"
         if quota["next_turn_pct"] is not None:
             q += f" (+{quota['next_turn_pct']:.1f}%)"
-        if quota["minutes_left"] is not None:
-            q += (f", resets in {human_minutes(quota['minutes_to_reset'])} before you run out"
-                  if quota.get("limited_by") == "reset"
-                  else f", ~{human_minutes(quota['minutes_left'])} left at this pace")
+        if quota.get("runs_out_during"):
+            q += ", the limit would be hit during this prompt"
+        elif quota.get("minutes_left_after") is not None:
+            q += (f", enough after it to work until the reset in {human_minutes(quota['minutes_to_reset'])}"
+                  if quota.get("after_limited_by") == "reset"
+                  else f", ~{human_minutes(quota['minutes_left_after'])} of work left after it")
         elif quota["minutes_to_reset"] is not None:
             q += f", resets in {human_minutes(quota['minutes_to_reset'])}"
         parts.append(q)

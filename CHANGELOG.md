@@ -45,6 +45,10 @@ methodology and documentation.
   history of fewer than a dozen turns was 0.2x-41x and paused every prompt, so the verdict uses
   the single estimate and says it is rough. `runway check "<prompt>"` gives
   the same verdict from a terminal, without sending anything.
+  The first line of every estimate is **how long you can keep working once
+  this prompt has run**: the room left after it, divided by your pace over the
+  last hour (or your average this window, after a break), stopping at the
+  reset. When the prompt alone would use up what is left, it says so.
 
 - **`/learn`.** `knowledge init` now also installs `.claude/commands/learn.md`,
   so updating the project knowledge on demand is `/learn` in Claude Code

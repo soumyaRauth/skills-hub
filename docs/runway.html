@@ -25,7 +25,7 @@
   <div class="wrap">
     <span class="eyebrow">Tool &middot; Claude Code &middot; runs on your machine</span>
     <h1>Runway</h1>
-    <p class="lede">Can I afford this prompt? When you press Enter, Runway estimates what the prompt will cost before Claude sees it, and whether it will finish before your 5-hour limit, then lets you decide whether to send it. It also shows how much context and quota is left, and how long that lasts at your current pace.</p>
+    <p class="lede">Can I afford this prompt? When you press Enter, Runway tells you, before Claude sees the prompt, how long you can keep working once it has run and whether it will finish before your 5-hour limit. Then you decide whether to send it. It also shows how much context and quota is left, and how long that lasts at your current pace.</p>
     <div class="hero-foot">
       <div class="byline">
         <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
@@ -64,24 +64,32 @@
     <h2>Decide before it runs</h2>
     <p class="flow mono">
       you press Enter &nbsp;&rarr;&nbsp; Runway estimates the prompt and holds it back<br>
-      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you see the estimate and the verdict: <b>fits</b>, <b>may not fit</b> or <b>won&rsquo;t fit</b><br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you see <b>how long you can keep working once it has run</b><br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; and the verdict: <b>fits</b>, <b>may not fit</b> or <b>won&rsquo;t fit</b><br>
       &nbsp;&nbsp;&nbsp;&rarr;&nbsp; nothing has been sent, so nothing is spent<br>
       &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you decide: send it again (&uarr;, Enter) to run it, or drop it
     </p>
 <pre class="block">[Runway] Before it runs: this prompt should fit.
-  Estimate   ~285.0k tokens (qa, ~1 call(s))
-  5h window  36% used, room for ~35.7M more tokens, resets in 4h11m
-  After it   ~37% of the window used
-  Context    28% -&gt; ~28%
+  Time left  after it, ~1h05m of work at your pace over the last hour (~1h09m now); the window resets in 4h05m
+  Estimate   ~2.5M tokens (multi, ~8 call(s))
+  5h window  39% used now, ~43% after it, resets in 4h05m
+  Context    30% -&gt; ~32%
   Rough: only 16 past turn(s) to learn from, so no error range yet.
 To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.</pre>
-    <p>When a prompt may not finish before the limit, the message says so:</p>
+    <p>
+      Here a large refactor would leave about 1h05m of work, against 1h09m if
+      you skipped it. <em>Time left</em> is the room left after the prompt,
+      divided by your pace over the last hour (or your average this window,
+      after a break), and it stops at the reset. When a prompt would run out
+      partway, the message says so (here with the quota set to 92% used, to
+      show it):
+    </p>
 <pre class="block">[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
-  Estimate   ~2.0M tokens (multi, ~8 call(s))
-  5h window  92% used, room for ~1.2M more tokens, resets in 2h00m
-  After it   ~100% of the window used
-  Context    25% -&gt; ~27%
-  Rough: only 11 past turn(s) to learn from, so no error range yet.
+  Time left  none: you would hit the 5-hour limit during this prompt; the window resets in 2h00m
+  Estimate   ~2.5M tokens (multi, ~8 call(s))
+  5h window  92% used now, ~100% after it, resets in 2h00m
+  Context    30% -&gt; ~32%
+  Rough: only 16 past turn(s) to learn from, so no error range yet.
 Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.</pre>
     <p>
       That is the default, <code>"gate": "always"</code>. In
