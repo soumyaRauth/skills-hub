@@ -174,6 +174,24 @@ assert q["source"] == "claude-code" and abs(q["pct"] - 40.0) < 1e-9, q
 assert abs(q["next_turn_pct"] - 4.0) < 1e-9 and q["turns_left"] == 15
 assert abs(q["minutes_left"] - 60.0) < 1e-6 and q["limited_by"] == "reset"               # reset comes first
 
+# Time left after this prompt: 10% used, 90% room; a 1,000-token prompt costs 1% (cap 100k).
+q = runway.quota_runway(flat_calls, NOW, 1000, 1000.0, capped, {})
+assert abs(q["minutes_left"] - 90) < 1e-6 and abs(q["minutes_left_after"] - 89) < 1e-6
+assert q["after_limited_by"] == "quota" and not q["runs_out_during"] and q["pace_source"] == "recent"
+assert runway.time_left_after(q).startswith("after it, ~1h29m of work at your pace over the last hour (~1h30m now)")
+assert "~1h29m of work left after it" in runway.summary_line(
+    {"tier": "qa", "tokens": 1000, "calls": 1}, {"pct": None}, q, True)
+slow = runway.quota_runway(flat_calls, NOW, 1000, 100.0, capped, {})          # slower pace: the reset comes first
+assert slow["after_limited_by"] == "reset"
+assert runway.time_left_after(slow).startswith("after it, enough to keep working until the window resets in 4h50m")
+big = runway.quota_runway(flat_calls, NOW, 95_000, 1000.0, capped, {})        # 95% needed, 90% left
+assert big["runs_out_during"] and runway.time_left_after(big).startswith("none: you would hit the 5-hour limit")
+idle = runway.quota_runway(flat_calls, NOW, 1000, 0.0, capped, {})            # after a break: the window's average
+# 10,000 tokens since the window opened 10 minutes ago: 1,000/min, the same answer as the fast pace above.
+assert idle["pace_source"] == "window" and abs(idle["minutes_left_after"] - 89) < 1e-6
+assert "your average pace this window" in runway.time_left_after(idle)
+assert runway.time_left_after(nothing).startswith("unknown: no 5-hour quota reading")
+
 expired = {"rate_limits": {"five_hour": {"used_percentage": 99.0, "resets_at": NOW - 1}}, "captured_at": NOW - 9999}
 assert runway.quota_runway(flat_calls, NOW, 1000, 100.0, cfg, expired)["source"] == "unknown"
 
@@ -309,6 +327,7 @@ assert "decision" not in ok and ", fits" in ok["systemMessage"] and logged() == 
 
 blocked = gate("risky", 50_000)                                  # ~40k needed, ~19k left: paused
 assert blocked["decision"] == "block" and blocked["reason"].startswith("[Runway] Paused: this prompt is unlikely")
+assert blocked["reason"].split("\n")[1].startswith("  Time left  none: you would hit the 5-hour limit")
 assert "Run it anyway: press Up, then Enter, within 2 min" in blocked["reason"] and logged() == n0 + 1  # not logged
 assert "Rough: only" in blocked["reason"]                        # no error range yet: says so
 
@@ -323,6 +342,7 @@ assert "decision" not in gate("off", 50_000, prompt="add a test")   # off: never
 fits_pause = gate("always", 10**9, prompt="add docs")           # always: pauses even when it fits
 assert fits_pause["decision"] == "block" and fits_pause["reason"].startswith("[Runway] Before it runs: this prompt should fit")
 assert "To run it: press Up, then Enter" in fits_pause["reason"] and "anyway" not in fits_pause["reason"]
+assert fits_pause["reason"].split("\n")[1].startswith("  Time left  after it, ")       # the first thing you read
 assert gate("always", 10**9, prompt="add docs")["systemMessage"].startswith("[Runway] Running it")
 assert "decision" not in gate("risky", None, prompt="add logs")   # quota unknown: no basis to pause
 

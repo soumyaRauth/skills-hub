@@ -210,29 +210,31 @@ Python tool (standard library only) that reads your transcripts in
 ### Decide before a prompt runs
 
 When you press Enter, Runway estimates the prompt before Claude sees it,
-and holds it back. Nothing has been sent and nothing is spent:
+and holds it back. The first line is the answer that matters most: **how long
+you can keep working once this prompt has run**, at your pace. Nothing has
+been sent and nothing is spent:
 
 ```
 [Runway] Before it runs: this prompt should fit.
-  Estimate   ~285.0k tokens (qa, ~1 call(s))
-  5h window  36% used, room for ~35.7M more tokens, resets in 4h11m
-  After it   ~37% of the window used
-  Context    28% -> ~28%
+  Time left  after it, ~1h05m of work at your pace over the last hour (~1h09m now); the window resets in 4h05m
+  Estimate   ~2.5M tokens (multi, ~8 call(s))
+  5h window  39% used now, ~43% after it, resets in 4h05m
+  Context    30% -> ~32%
   Rough: only 16 past turn(s) to learn from, so no error range yet.
 To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
 ```
 
 To run it, send the same text again within two minutes (Up, then Enter). To
-drop it, do nothing. When the prompt may not finish before the limit, the
-message says so:
+drop it, do nothing. When the prompt would run out partway, the message says
+so (here with the quota set to 92% used, to show it):
 
 ```
 [Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
-  Estimate   ~2.0M tokens (multi, ~8 call(s))
-  5h window  92% used, room for ~1.2M more tokens, resets in 2h00m
-  After it   ~100% of the window used
-  Context    25% -> ~27%
-  Rough: only 11 past turn(s) to learn from, so no error range yet.
+  Time left  none: you would hit the 5-hour limit during this prompt; the window resets in 2h00m
+  Estimate   ~2.5M tokens (multi, ~8 call(s))
+  5h window  92% used now, ~100% after it, resets in 2h00m
+  Context    30% -> ~32%
+  Rough: only 16 past turn(s) to learn from, so no error range yet.
 Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
 ```
 
@@ -240,6 +242,11 @@ Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was 
 (the default) before every prompt, so you decide each time; `"risky"` only
 when a prompt may not fit, while the rest run at once with one line; `"off"`
 never.
+
+*Time left* is the room left after this prompt, divided by your pace. Your
+pace is tokens per minute over the last hour, or your average since the
+window opened if you have been idle for an hour. It is capped at the reset:
+if you would not run out before the window resets, it says so.
 
 Only the quota can stop a turn partway through. A full context does not:
 Claude Code compacts it and carries on. So context is shown, but it never
