@@ -17,12 +17,14 @@
 [![Stars](https://img.shields.io/github/stars/soumyaRauth/skills-hub?style=for-the-badge&logo=github&color=eab308)](https://github.com/soumyaRauth/skills-hub/stargazers)
 
 **Agent Skills for real engineering work.** Installable with the Skills CLI, and usable with<br>
-Claude Code and other agents that support Agent Skills. No hosted service: markdown, plus one optional MCP server that serves a project's knowledge.
+Claude Code and other agents that support Agent Skills. No hosted service: markdown, one optional MCP server that serves a project's knowledge,<br>
+and [Runway](#-runway), a local tool that tells you whether a prompt will finish before your Claude Code limit.
 
 [**🌐 Website**](https://soumyaRauth.github.io/skills-hub/) &nbsp;·&nbsp;
 [**⚡ Install**](#installation) &nbsp;·&nbsp;
 [**🧰 Skills**](#-the-skills) &nbsp;·&nbsp;
 [**🔀 How they compose**](#-how-they-compose) &nbsp;·&nbsp;
+[**🔧 Tools**](#-tools) &nbsp;·&nbsp;
 [**🧹 Uninstall**](#uninstalling) &nbsp;·&nbsp;
 [**📖 Ecosystem**](ECOSYSTEM.md)
 
@@ -1430,6 +1432,75 @@ compressed question. A new session resumes from the run ledger.
 </details>
 
 **[Full documentation →](skills/delivery-lead/README.md)**
+
+<br>
+
+## 🔧 Tools
+
+Skills shape how the agent works. Tools are small programs that run on your
+machine and do one job exactly, so the model never has to estimate it. They
+cost no tokens.
+
+### ⛽ Runway
+
+**Can I afford this prompt? Runway estimates it before it runs, and pauses it if it may not finish.**
+
+```bash
+npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline
+npx -y github:soumyaRauth/skills-hub runway calibrate
+```
+
+For Claude Code. It needs Python 3, with no packages, no API key and no network.
+
+When you press Enter, Runway estimates the prompt before Claude sees it. If it
+may not finish before your 5-hour limit, it is paused: never sent, no cost.
+
+```
+[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
+  Estimate   ~2.0M tokens (multi, ~8 call(s))
+  5h window  92% used, room for ~1.2M more tokens, resets in 2h00m
+  After it   ~100% of the window used
+  Context    25% -> ~27%
+  Rough: only 11 past turn(s) to learn from, so no error range yet.
+Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+```
+
+A prompt that fits runs straight away, with one line saying so, and the status
+line shows what is left all the time:
+
+```
+⛽ ctx 10% · 5h 33% · resets 4h00m · ~1h05m at this pace
+```
+
+<details>
+<summary><b>Deep dive</b>: how it estimates, and the limits</summary>
+
+One prompt runs several API calls, and each call re-reads the whole context.
+So what a turn costs depends on how many calls it makes and how big the
+context already is, far more than on the prompt's length. Runway sorts a
+prompt into a tier (a question, a single edit, or multi-step work) by its
+wording and the `@files` it names. `calibrate` then measures each tier from
+your own past turns. The quota is Claude Code's own reading (percent used,
+reset time), which the status line receives on Pro, Max and Ultra plans, so
+Runway never guesses your plan's limit.
+
+`"gate"` in `~/.claude/runway/config.json` sets when it pauses: `"risky"` (the
+default), `"always"` to decide before every prompt, or `"off"`. Only the quota
+can pause a prompt. A full context is compacted and the turn carries on.
+`runway check "<prompt>"` gives the same verdict from a terminal without
+sending anything, and `runway status` shows context, quota, burn rate and time
+left.
+
+It checks itself: `runway backtest` replays your transcripts, predicting each
+turn only from the turns before it, and scores the result against a naive
+guess. `runway accuracy` does the same for live estimates. Until you have 30
+turns of history, the verdict rests on a single estimate and says it is rough.
+A prompt that sounds small but sets off long tool use is estimated as small.
+The example numbers above are illustrative.
+
+</details>
+
+**[Full documentation →](integrations/claude-code/README.md#6-runway-how-much-room-is-left)** &nbsp;·&nbsp; **[Website →](https://soumyarauth.github.io/skills-hub/runway.html)**
 
 <br>
 
