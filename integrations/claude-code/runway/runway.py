@@ -87,6 +87,7 @@ def quota_runway(calls, now, predicted_tokens, burn, cfg, snapshot):
         out["minutes_to_reset"] = max(0.0, (out["resets_at"] - now) / 60.0)
     if pct_per_token and out["pct"] is not None:
         room = max(0.0, 100.0 - out["pct"])
+        out["room_tokens"] = room / pct_per_token
         out["next_turn_pct"] = pct_per_token * predicted_tokens
         if out["next_turn_pct"] > 0:
             out["turns_left"] = int(room // out["next_turn_pct"])
@@ -96,6 +97,62 @@ def quota_runway(calls, now, predicted_tokens, burn, cfg, snapshot):
             out["minutes_left"] = min(mins, reset) if reset is not None else mins
             out["limited_by"] = "reset" if reset is not None and reset <= mins else "quota"
     return out
+
+
+FITS, MAY_NOT_FIT, WONT_FIT, UNKNOWN = "fits", "may not fit", "won't fit", "unknown"
+
+
+def verdict(pred, quota, ratio_range=None):
+    """Will this turn finish before the 5-hour quota runs out?
+
+    Only the quota can cut a turn off. A full context does not: Claude Code
+    compacts it and carries on, so context is reported, never a reason to stop.
+
+    ratio_range is (low, high): how far actual turns have landed from their
+    predictions in your history (see `calibrate`). Without it the verdict rests
+    on the single estimate and says so.
+    """
+    est = pred["tokens"]
+    lo, hi = (est * ratio_range[0], est * ratio_range[1]) if ratio_range else (est, est)
+    room = quota.get("room_tokens")
+    if room is None:
+        level = UNKNOWN
+    elif hi <= room:
+        level = FITS
+    elif lo > room:
+        level = WONT_FIT
+    else:
+        level = MAY_NOT_FIT
+    return {"level": level, "low": lo, "high": hi, "room_tokens": room, "ranged": bool(ratio_range)}
+
+
+def preflight_message(pred, ctx, quota, v, history_turns, confirm_seconds=None):
+    """What the prompt is estimated to cost and the verdict; with confirm_seconds, the block message."""
+    head = {WONT_FIT: "this prompt is unlikely to finish before your 5-hour limit",
+            MAY_NOT_FIT: "this prompt may not finish before your 5-hour limit",
+            FITS: "this prompt should fit", UNKNOWN: "estimate before running"}[v["level"]]
+    est = f"~{human_tokens(pred['tokens'])} tokens ({pred['tier']}, ~{pred['calls']} call(s))"
+    if v["ranged"]:
+        est += f", likely {human_tokens(v['low'])}-{human_tokens(v['high'])}"
+    lines = [f"[Runway] {'Paused: ' if confirm_seconds else ''}{head}.", f"  Estimate   {est}"]
+    if quota.get("pct") is not None:
+        q = f"  5h window  {quota['pct']:.0f}% used, room for ~{human_tokens(v['room_tokens'])} more tokens"
+        if quota.get("minutes_to_reset") is not None:
+            q += f", resets in {human_minutes(quota['minutes_to_reset'])}"
+        lines.append(q)
+        if quota.get("next_turn_pct") is not None:
+            lines.append(f"  After it   ~{min(100.0, quota['pct'] + quota['next_turn_pct']):.0f}% of the window used")
+    else:
+        lines.append("  5h window  unknown (install the runway status line, or set quota.token_cap)")
+    if ctx.get("pct") is not None:
+        lines.append(f"  Context    {ctx['pct']:.0f}% -> ~{min(ctx['after_pct'], 100):.0f}%"
+                     + (" (Claude Code will compact it and carry on)" if ctx["after_pct"] >= 100 else ""))
+    if not v["ranged"]:
+        lines.append(f"  Rough: only {history_turns} past turn(s) to learn from, so no error range yet.")
+    if confirm_seconds:
+        lines.append(f"Run it anyway: press Up, then Enter, within {confirm_seconds // 60 or 1} min. "
+                     "Otherwise do nothing; it was not sent.")
+    return "\n".join(lines)
 
 
 def human_tokens(n):
@@ -115,10 +172,11 @@ def human_minutes(m):
     return f"{m // 60}h{m % 60:02d}m" if m >= 60 else f"{m}m"
 
 
-def summary_line(pred, ctx, quota, calibrated):
+def summary_line(pred, ctx, quota, calibrated, v=None):
     """The one line the hook shows the user."""
     parts = [f"next: {pred['tier']}, ~{human_tokens(pred['tokens'])} tokens over ~{pred['calls']} call(s)"
-             + ("" if calibrated else " (uncalibrated)")]
+             + ("" if calibrated else " (uncalibrated)")
+             + (f", {v['level']}" if v and v["level"] != UNKNOWN else "")]
     if ctx["pct"] is not None:
         tl = ctx["turns_left"]
         parts.append(f"context {ctx['pct']:.0f}% -> ~{min(ctx['after_pct'], 100):.0f}%"

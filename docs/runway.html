@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Runway — Skills Hub</title>
-<meta name="description" content="A small tool for Claude Code that shows how much context and 5-hour quota is left, predicts what the next prompt will cost, and checks those predictions against your own transcripts.">
+<meta name="description" content="A small tool for Claude Code that estimates a prompt before it runs, pauses it when it may not finish before your 5-hour limit, and shows how much context and quota is left.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
 </head>
@@ -25,7 +25,7 @@
   <div class="wrap">
     <span class="eyebrow">Tool &middot; Claude Code &middot; runs on your machine</span>
     <h1>Runway</h1>
-    <p class="lede">Can I afford the next prompt? Runway reads your Claude Code transcripts and shows how much of the context window and the 5-hour quota is left, how long that lasts at your current pace, and what the prompt you just typed is likely to cost.</p>
+    <p class="lede">Can I afford this prompt? When you press Enter, Runway estimates what the prompt will cost before Claude sees it. If it may not finish before your 5-hour limit, Runway pauses it and lets you decide. It also shows how much context and quota is left, and how long that lasts at your current pace.</p>
     <div class="hero-foot">
       <div class="byline">
         <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
@@ -61,6 +61,38 @@
 
 <section>
   <div class="wrap">
+    <h2>Decide before it runs</h2>
+    <p class="flow mono">
+      you press Enter &nbsp;&rarr;&nbsp; Runway estimates the prompt<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>fits</b>: it runs, with one line saying so<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>may not fit</b>: it is paused, never sent, and costs nothing<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you decide: send it again (&uarr;, Enter) to run it, or drop it
+    </p>
+<pre class="block">[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit.
+  Estimate   ~2.0M tokens (multi, ~8 call(s))
+  5h window  92% used, room for ~1.2M more tokens, resets in 2h00m
+  After it   ~100% of the window used
+  Context    25% -&gt; ~27%
+  Rough: only 11 past turn(s) to learn from, so no error range yet.
+Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.</pre>
+    <p>
+      By default it pauses only the prompts that may not fit. Set
+      <code>"gate": "always"</code> in <code>~/.claude/runway/config.json</code>
+      to see the estimate and decide before every prompt, or
+      <code>"off"</code> to never pause. Only the quota can stop a turn
+      partway through. A full context does not, because Claude Code compacts
+      it and carries on, so context never pauses a prompt.
+    </p>
+    <p>To estimate a prompt without sending it, from any terminal:</p>
+    <div class="cmd">
+      <code>npx -y github:soumyaRauth/skills-hub runway check "refactor the auth module"</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
     <h2>Install</h2>
     <div class="cmd">
       <code>npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline</code>
@@ -90,8 +122,8 @@
 <section>
   <div class="wrap">
     <h2>What you see</h2>
-    <p>On every prompt, one line, shown to you and not to the model (all the numbers in this section are illustrative):</p>
-<pre class="block">[Runway] next: edit, ~410k tokens over ~4 call(s) | context 10% -&gt; ~11%, ~45 turns to full | 5h 33% used (+3.1%), ~1h05m left at this pace</pre>
+    <p>On a prompt that fits, one line, shown to you and not to the model (all the numbers in this section are illustrative):</p>
+<pre class="block">[Runway] next: edit, ~410k tokens over ~4 call(s), fits | context 10% -&gt; ~11%, ~45 turns to full | 5h 33% used (+3.1%), ~1h05m left at this pace</pre>
     <p>In the status line, all the time:</p>
 <pre class="block">&#9981; ctx 10% &middot; 5h 33% &middot; resets 4h00m &middot; ~1h05m at this pace</pre>
     <p>And in the terminal, whenever you ask:</p>
@@ -155,7 +187,8 @@ Time left  ~21m (at the current burn rate); ~2 typical turns</pre>
           <tr><td class="klass">Plan weighting</td><td>Plans weigh models differently, and Runway counts raw tokens. It converts with the rate your last quota reading implies. When another device also used the window, that rate runs high, so the estimate errs toward less time left, not more.</td></tr>
           <tr><td class="klass">Auto-compact</td><td>Claude Code compacts the context before it is full, at a point Runway cannot see. So <em>turns to full</em> is an upper bound.</td></tr>
           <tr><td class="klass">Unseen calls</td><td>Background calls that never reach the transcript, such as generating a session title, are not counted.</td></tr>
-          <tr><td class="klass">Surprises</td><td>A request that sounds small but sets off long tool use (&ldquo;go and find the cheapest option&rdquo;) is predicted as small. Over time, <code>accuracy</code> shows you how often that happens.</td></tr>
+          <tr><td class="klass">Surprises</td><td>A request that sounds small but sets off long tool use (&ldquo;go and find the cheapest option&rdquo;) is predicted as small, and is not paused. Over time, <code>accuracy</code> shows you how often that happens.</td></tr>
+          <tr><td class="klass">Early days</td><td>Until you have 30 turns of history, the verdict rests on a single estimate and says it is rough. After that, <code>calibrate</code> measures how far your real turns land from their estimates, and the verdict uses that range.</td></tr>
         </tbody>
       </table>
     </div>
