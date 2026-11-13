@@ -60,6 +60,9 @@ DEFAULTS = {
                   "the rest run at once with one line. \"off\": never pause, just show one line. To run a paused "
                   "prompt, send it again (Up, Enter) within confirm_seconds."),
     "confirm_seconds": 120,
+    "color": True,
+    "_doc_color": ("Highlight the time left (and the verdict) in color in Runway's messages. Set false if your "
+                   "terminal shows stray codes. The NO_COLOR environment variable also turns it off."),
     "burn_window_minutes": 60,
     "_doc_burn_window_minutes": "Burn rate is measured over this many recent minutes of activity.",
     "chars_per_token": 3.5,

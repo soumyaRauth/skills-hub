@@ -317,9 +317,10 @@ def cmd_check(args):
     cal = cfg.get("calibrated") or {}
     base = pred["context_before"] if pred["context_before"] is not None else (cal.get("first_context") or 0)
     scen = estimator.scenarios(base, pred["prompt_tokens"], cal.get("steps"))
-    print(runway.preflight_message(scen, ctx, quota, runway.verdict(scen, quota), cal.get("steps")))
+    color = sys.stdout.isatty() and "NO_COLOR" not in os.environ and bool(cfg.get("color", True))
+    print(runway.preflight_message(scen, ctx, quota, runway.verdict(scen, quota), cal.get("steps"), color=color))
     if session:
-        print(f"  Session    {session.session_id} (the latest in {os.path.basename(os.path.dirname(path))})")
+        print(f"   Session     {session.session_id} (the latest in {os.path.basename(os.path.dirname(path))})")
     return 0
 
 

@@ -55,9 +55,13 @@ methodology and documentation.
   this prompt has run**: the room left after it, divided by your pace over the
   last hour (or your average this window, after a break), stopping at the
   reset. When the prompt alone would use up what is left, it says so.
-  On every prompt, that answer is the highlighted lead: `⏳ TIME LEFT after
-  it: ~1h05m if typical (quick: ~1h06m · heavy: ~55m)`, with the typical row
-  marked `▶` in the full estimate. The status line labels each figure:
+  On every prompt, that answer is the lead, in bold and colored by the verdict
+  (green fits, yellow may not fit, red won't fit; `"color": false` or
+  `NO_COLOR` turns it off): `⏳ TIME LEFT after this prompt: ~1h05m`. The held
+  prompt reads as a short card: the time left, the verdict, a table of the
+  quick, typical and heavy outcomes, then the window, context and what the
+  range is based on. It no longer repeats your prompt underneath
+  (`suppressOriginalPrompt`); press ↑ to get it back. The status line labels each figure:
   `⛽ context 10% · 5h used 33% · resets in 4h00m · time left ~1h05m at this pace`.
   Time left is always shown; when the window resets before you would run
   out, it reads `time left ~4h42m, lasts to the reset`.

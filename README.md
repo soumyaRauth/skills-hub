@@ -1457,15 +1457,23 @@ you can keep working once this prompt has run**, if it turns out quick, typical
 or heavy. Nothing is sent and nothing is spent until you decide:
 
 ```
-[Runway] Before it runs: this prompt should fit, even if it turns out heavy.
-  ⏳ TIME LEFT after it: ~1h05m if typical, at your pace over the last hour (~1h07m now):
-    quick    ~1h06m left              1 step, ~360.7k tokens
-  ▶ typical  ~1h05m left              3 steps, ~1.1M tokens
-    heavy    ~55m left                19 steps, ~6.9M tokens
-  5h window  46% used now, resets in 3h53m
-  Context    36% now
-  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
-To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+⛽ Runway · waiting for you to confirm this prompt
+
+⏳ TIME LEFT after this prompt: ~1h05m
+   if it turns out typical, at your pace over the last hour · ~1h07m left right now
+
+✅ Should fit, even if it turns out heavy.
+
+   If it turns out  Steps   Tokens   Time left after
+   quick                1   360.7k   ~1h06m
+ ▸ typical              3     1.1M   ~1h05m
+   heavy               19     6.9M   ~55m
+
+   5h window   46% used · resets in 3h53m
+   Context     36% used
+   Based on    your last 20 prompts · 13 of 15 landed in this range
+
+👉 To run it: press ↑ then Enter within 2 min. To drop it, do nothing; it was not sent.
 ```
 
 Send it again (Up, Enter) to run it, or do nothing to drop it. When a prompt
@@ -1473,15 +1481,23 @@ could run out partway, the message says so (here with the quota set to 92%
 used, to show it):
 
 ```
-[Runway] Paused: this prompt may not finish before your 5-hour limit, if it turns out heavy.
-  ⏳ TIME LEFT after it: ~3m if typical, at your pace over the last hour (~5m now):
-    quick    ~4m left                 1 step, ~360.7k tokens
-  ▶ typical  ~3m left                 3 steps, ~1.1M tokens
-    heavy    limit hit partway        19 steps, ~6.9M tokens
-  5h window  92% used now, resets in 2h00m
-  Context    36% now
-  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
-Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+⛽ Runway · waiting for you to confirm this prompt
+
+⏳ TIME LEFT after this prompt: ~3m
+   if it turns out typical, at your pace over the last hour · ~5m left right now
+
+⚠️  May not finish before your 5-hour limit if it turns out heavy.
+
+   If it turns out  Steps   Tokens   Time left after
+   quick                1   360.7k   ~4m
+ ▸ typical              3     1.1M   ~3m
+   heavy               19     6.9M   limit hit partway
+
+   5h window   92% used · resets in 2h00m
+   Context     36% used
+   Based on    your last 20 prompts · 13 of 15 landed in this range
+
+👉 Run it anyway: press ↑ then Enter within 2 min. To drop it, do nothing; it was not sent.
 ```
 
 The status line shows what is left all the time:
