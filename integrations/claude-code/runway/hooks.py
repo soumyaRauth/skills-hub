@@ -231,17 +231,22 @@ def statusline(payload, now=None):
     parts = []
     cw = payload.get("context_window") or {}
     if cw.get("used_percentage") is not None:
-        parts.append(f"ctx {float(cw['used_percentage']):.0f}%")
+        parts.append(f"context {float(cw['used_percentage']):.0f}%")
     hours = cfg["quota"]["window_hours"]
     calls = transcripts.scan_calls(config.projects_dir(), now - 2 * hours * runway.HOUR, now)
     burn = transcripts.burn_rate(calls, now, cfg["burn_window_minutes"])
     quota = runway.quota_runway(calls, now, 0, burn, cfg, limits)
     if quota["pct"] is not None:
-        q = f"5h {quota['pct']:.0f}%"
+        q = f"5h used {quota['pct']:.0f}%"
         if quota["minutes_to_reset"] is not None:
-            q += f" · resets {runway.human_minutes(quota['minutes_to_reset'])}"
-        if quota["minutes_left"] is not None and quota.get("limited_by") == "quota":
-            q += f" · ~{runway.human_minutes(quota['minutes_left'])} at this pace"
+            q += f" · resets in {runway.human_minutes(quota['minutes_to_reset'])}"
+        left = quota["minutes_left"]
+        if left is None:
+            q += " · time left ?"  # no pace measured yet, or no percent-per-token to convert with
+        elif quota.get("limited_by") == "reset":
+            q += f" · time left ~{runway.human_minutes(left)}, lasts to the reset"
+        else:
+            q += f" · time left ~{runway.human_minutes(left)} at this pace"
         parts.append(q)
     if not parts:
         return ""
