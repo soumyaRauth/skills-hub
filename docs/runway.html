@@ -70,9 +70,9 @@
       &nbsp;&nbsp;&nbsp;&rarr;&nbsp; you decide: send it again (&uarr;, Enter) to run it, or drop it
     </p>
 <pre class="block">[Runway] Before it runs: this prompt should fit, even if it turns out heavy.
-  Time left after it, at your pace over the last hour (~1h07m now):
+  ⏳ TIME LEFT after it: ~1h05m if typical, at your pace over the last hour (~1h07m now):
     quick    ~1h06m left              1 step, ~360.7k tokens
-    typical  ~1h05m left              3 steps, ~1.1M tokens
+  ▶ typical  ~1h05m left              3 steps, ~1.1M tokens
     heavy    ~55m left                19 steps, ~6.9M tokens
   5h window  46% used now, resets in 3h53m
   Context    36% now
@@ -92,9 +92,9 @@ To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not 
       so (here with the quota set to 92% used, to show it):
     </p>
 <pre class="block">[Runway] Paused: this prompt may not finish before your 5-hour limit, if it turns out heavy.
-  Time left after it, at your pace over the last hour (~5m now):
+  ⏳ TIME LEFT after it: ~3m if typical, at your pace over the last hour (~5m now):
     quick    ~4m left                 1 step, ~360.7k tokens
-    typical  ~3m left                 3 steps, ~1.1M tokens
+  ▶ typical  ~3m left                 3 steps, ~1.1M tokens
     heavy    limit hit partway        19 steps, ~6.9M tokens
   5h window  92% used now, resets in 2h00m
   Context    36% now
@@ -148,9 +148,9 @@ Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was 
   <div class="wrap">
     <h2>What you see</h2>
     <p>Once a prompt runs, one line, shown to you and not to the model (all the numbers in this section are illustrative):</p>
-<pre class="block">[Runway] Running it, as you confirmed. after it: ~1h06m left if quick · ~1h05m left if typical · ~55m left if heavy | 5h 46% used, resets in 3h53m | context 36%</pre>
+<pre class="block">[Runway] Running it, as you confirmed. ⏳ TIME LEFT after it: ~1h05m if typical (quick: ~1h06m · heavy: ~55m) | 5h used 46%, resets in 3h53m | context 36%</pre>
     <p>In the status line, all the time:</p>
-<pre class="block">&#9981; ctx 10% &middot; 5h 33% &middot; resets 4h00m &middot; ~1h05m at this pace</pre>
+<pre class="block">&#9981; context 10% &middot; 5h used 33% &middot; resets in 4h00m &middot; time left ~1h05m at this pace</pre>
     <p>And in the terminal, whenever you ask:</p>
 <pre class="block">$ npx -y github:soumyaRauth/skills-hub runway status
 Context    151,777 / 1,000,000 tokens (15.2%), ~42 turns to full at ~20.1k/turn

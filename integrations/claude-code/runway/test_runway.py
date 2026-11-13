@@ -189,7 +189,8 @@ assert runway.after(nothing, 1000)["status"] == "unknown"
 scen3 = {"quick": {"steps": 1, "tokens": 1000}, "typical": {"steps": 3, "tokens": 3000},
          "heavy": {"steps": 8, "tokens": 95_000}}
 line = runway.summary_line(scen3, {"pct": 12.0}, q)
-assert line.startswith("[Runway] after it: ~1h29m left if quick · ~1h27m left if typical · limit hit partway if heavy")
+assert line.startswith("[Runway] ⏳ TIME LEFT after it: ~1h27m if typical (quick: ~1h29m · heavy: limit hit partway)"), line
+assert " | 5h used 10%, resets in " in line, line
 
 # The step profile and the three outcomes.
 prof = estimator.step_profile([(1, 1100, 1000), (1, 1200, 1100), (3, 3600, 1000), (5, 6500, 1200),
@@ -264,11 +265,12 @@ assert all(x["prompt_key"] != "p3" for x in config.read_jsonl("actuals.jsonl"))
 line = hooks.statusline({"session_id": "s1", "rate_limits": {"five_hour": {"used_percentage": 12,
                          "resets_at": NOW + 1800}}, "context_window": {"context_window_size": 1_000_000,
                          "used_percentage": 7}}, NOW)
-assert line.startswith("⛽ ctx 7% · 5h 12%"), line
+assert line.startswith("⛽ context 7% · 5h used 12% · resets in 30m"), line
+assert line.rstrip("\033[0m").endswith("time left ~30m, lasts to the reset"), line   # shown even when the reset comes first
 lim = hooks.load_limits()
 assert lim["sessions"]["s1"]["context_window_size"] == 1_000_000
 assert hooks.context_limit(cfg, lim, "s1") == 1_000_000 and hooks.context_limit(cfg, lim, "zz") == 200_000
-assert hooks.statusline({"session_id": "s9"}, NOW).startswith("⛽ 5h 12%")              # keeps the last quota
+assert hooks.statusline({"session_id": "s9"}, NOW).startswith("⛽ 5h used 12%")              # keeps the last quota
 assert hooks.load_limits()["rate_limits"]["five_hour"]["used_percentage"] == 12
 
 # ------------------------------------------------- RUN-011 backtest, RUN-012 --
@@ -333,19 +335,20 @@ n0 = logged()
 # The fixture window holds 31,302 tokens. "add a retry" at 8,205 context, with the starting defaults:
 # quick 8,208 · typical 40,832 · heavy 81,664 tokens.
 ok = gate("risky", 120_000)                                      # 88.7k left: even heavy fits, runs at once
-assert "decision" not in ok and ok["systemMessage"].startswith("[Runway] after it: ") and logged() == n0 + 1
+assert "decision" not in ok and ok["systemMessage"].startswith("[Runway] ⏳ TIME LEFT after it: ") and logged() == n0 + 1
 
 blocked = gate("risky", 35_000)                                  # 3.7k left: not even the quick case fits
 lines = blocked["reason"].split("\n")
 assert blocked["decision"] == "block" and lines[0] == "[Runway] Paused: this prompt is unlikely to finish before your 5-hour limit."
-assert lines[1].startswith("  Time left after it, at your pace over the last hour")
+assert lines[1].startswith("  ⏳ TIME LEFT after it: limit hit partway if typical, at your pace over the last hour")
+assert lines[3].startswith("  ▶ typical")                                   # the typical row is marked
 assert all("limit hit partway" in l for l in lines[2:5])
 assert "starting defaults until you have 5 prompts" in blocked["reason"]
 assert "Run it anyway: press Up, then Enter, within 2 min" in blocked["reason"] and logged() == n0 + 1  # not logged
 
 assert gate("risky", 35_000, sid="other")["decision"] == "block"  # same text, other session: not a confirmation
 again = gate("risky", 35_000, now=NOW + 30)                      # sent again in time: runs
-assert again["systemMessage"].startswith("[Runway] Running it, as you confirmed. after it: limit hit partway")
+assert again["systemMessage"].startswith("[Runway] Running it, as you confirmed. ⏳ TIME LEFT after it: limit hit partway if typical")
 p = config.read_jsonl("predictions.jsonl")[-1]
 assert logged() == n0 + 2 and p["confirmed"] is True and (p["quick_tokens"], p["heavy_tokens"]) == (8208, 81664)
 assert gate("risky", 35_000, now=NOW + 40)["decision"] == "block"  # the confirmation is used up
@@ -362,7 +365,7 @@ fits_pause = gate("always", 10**9, prompt="add docs")           # always: pauses
 assert fits_pause["decision"] == "block"
 assert fits_pause["reason"].startswith("[Runway] Before it runs: this prompt should fit, even if it turns out heavy")
 assert "To run it: press Up, then Enter" in fits_pause["reason"] and "anyway" not in fits_pause["reason"]
-assert fits_pause["reason"].split("\n")[1].startswith("  Time left after it")       # the first thing you read
+assert fits_pause["reason"].split("\n")[1].startswith("  ⏳ TIME LEFT after it")       # the first thing you read
 assert gate("always", 10**9, prompt="add docs")["systemMessage"].startswith("[Runway] Running it")
 assert "decision" not in gate("risky", None, prompt="add logs")   # quota unknown: no basis to pause
 

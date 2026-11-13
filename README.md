@@ -1458,9 +1458,9 @@ or heavy. Nothing is sent and nothing is spent until you decide:
 
 ```
 [Runway] Before it runs: this prompt should fit, even if it turns out heavy.
-  Time left after it, at your pace over the last hour (~1h07m now):
+  ⏳ TIME LEFT after it: ~1h05m if typical, at your pace over the last hour (~1h07m now):
     quick    ~1h06m left              1 step, ~360.7k tokens
-    typical  ~1h05m left              3 steps, ~1.1M tokens
+  ▶ typical  ~1h05m left              3 steps, ~1.1M tokens
     heavy    ~55m left                19 steps, ~6.9M tokens
   5h window  46% used now, resets in 3h53m
   Context    36% now
@@ -1474,9 +1474,9 @@ used, to show it):
 
 ```
 [Runway] Paused: this prompt may not finish before your 5-hour limit, if it turns out heavy.
-  Time left after it, at your pace over the last hour (~5m now):
+  ⏳ TIME LEFT after it: ~3m if typical, at your pace over the last hour (~5m now):
     quick    ~4m left                 1 step, ~360.7k tokens
-    typical  ~3m left                 3 steps, ~1.1M tokens
+  ▶ typical  ~3m left                 3 steps, ~1.1M tokens
     heavy    limit hit partway        19 steps, ~6.9M tokens
   5h window  92% used now, resets in 2h00m
   Context    36% now
@@ -1487,7 +1487,7 @@ Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was 
 The status line shows what is left all the time:
 
 ```
-⛽ ctx 10% · 5h 33% · resets 4h00m · ~1h05m at this pace
+⛽ context 10% · 5h used 33% · resets in 4h00m · time left ~1h05m at this pace
 ```
 
 <details>
