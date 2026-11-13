@@ -159,76 +159,85 @@ def verdict(scen, quota):
     return {"level": level, "low": lo, "high": hi, "room_tokens": room}
 
 
-def _outcome(a):
-    if a["status"] == "limit":
-        return "limit hit partway"
-    if a["status"] == "reset":
-        return "enough until the reset"
-    if a["status"] == "nopace":
-        return f"{a['pct_after']:.0f}% used after it"
-    return f"~{human_minutes(a['minutes'])} left"
+BOLD, GREEN, YELLOW, RED, DIM, RESET = "\033[1m", "\033[32m", "\033[33m", "\033[31m", "\033[2m", "\033[0m"
+TONE = {"fits": GREEN, "may not fit": YELLOW, "won't fit": RED, "unknown": YELLOW}
+
+
+def paint(text, *codes, color=True):
+    """Wrap text in ANSI codes when color is on. Claude Code shows them, or strips them cleanly."""
+    return "".join(codes) + text + RESET if color and codes else text
 
 
 def _short(a):
-    """The time left after a prompt, in a few words, for the highlighted line."""
+    """The time left after a prompt, in a few words."""
     if a["status"] == "limit":
-        return "limit hit partway"
+        return "none, the 5h limit is hit partway"
     if a["status"] == "reset":
-        return "enough until the reset"
+        return f"~{human_minutes(a['minutes'])}, it lasts until the reset"
     if a["status"] == "nopace":
-        return f"{a['pct_after']:.0f}% used"
+        return f"{a['pct_after']:.0f}% used after it"
     return f"~{human_minutes(a['minutes'])}"
 
 
-def time_left_headline(scen, quota):
-    """The highlighted answer: time left after the prompt if typical, with the quick and heavy ends."""
-    a = {n: _short(after(quota, scen[n]["tokens"])) for n in ("quick", "typical", "heavy")}
-    return f"⏳ TIME LEFT after it: {a['typical']} if typical (quick: {a['quick']} · heavy: {a['heavy']})"
+def _cell(a):
+    """The same, for a table cell."""
+    if a["status"] == "reset":
+        return f"~{human_minutes(a['minutes'])} (until the reset)"
+    return "limit hit partway" if a["status"] == "limit" else _short(a)
 
 
-def preflight_message(scen, ctx, quota, v, profile, confirm_seconds=None):
-    """Time left after the prompt for a quick, typical and heavy outcome; with confirm_seconds, the block message."""
-    head = {WONT_FIT: "this prompt is unlikely to finish before your 5-hour limit",
-            MAY_NOT_FIT: "this prompt may not finish before your 5-hour limit, if it turns out heavy",
-            FITS: "this prompt should fit, even if it turns out heavy",
-            UNKNOWN: "5-hour quota unknown, so no time estimate"}[v["level"]]
-    paused = "Paused" if v["level"] in (WONT_FIT, MAY_NOT_FIT) else "Before it runs"
-    lines = [f"[Runway] {paused + ': ' if confirm_seconds else ''}{head}."]
+def time_left_headline(scen, quota, level, color=False):
+    """The highlighted answer: time left once the prompt has run, if it is typical."""
+    typ = _short(after(quota, scen["typical"]["tokens"]))
+    return paint(f"⏳ TIME LEFT after this prompt: {typ}", BOLD, TONE.get(level, ""), color=color)
+
+
+VERDICT = {WONT_FIT: "⛔ Unlikely to finish before your 5-hour limit, even if it turns out quick.",
+           MAY_NOT_FIT: "⚠️  May not finish before your 5-hour limit if it turns out heavy.",
+           FITS: "✅ Should fit, even if it turns out heavy.",
+           UNKNOWN: "❔ No 5-hour quota reading yet, so no time estimate."}
+
+
+def preflight_message(scen, ctx, quota, v, profile, confirm_seconds=None, color=False):
+    """The estimate shown before a prompt runs; with confirm_seconds, the message that holds it back."""
+    lines = ["⛽ Runway · " + ("waiting for you to confirm this prompt" if confirm_seconds
+                               else "estimate for this prompt (nothing was sent)"), ""]
     reset = quota.get("minutes_to_reset")
     if quota.get("pct") is None:
-        lines.append("  Time left  unknown: no 5-hour quota reading (install the runway status line, "
-                     "or set quota.token_cap)")
+        lines += [VERDICT[UNKNOWN],
+                  "   Install the runway status line (install-hooks --statusline), or set quota.token_cap.", ""]
     else:
-        pace = ("at your pace over the last hour" if quota.get("pace_source") == "recent"
-                else "at your average pace this window")
+        lines.append(time_left_headline(scen, quota, v["level"], color))
+        pace = "at your pace over the last hour" if quota.get("pace_source") == "recent" else \
+            "at your average pace this window"
         now = quota.get("minutes_left")
-        typical = _short(after(quota, scen["typical"]["tokens"]))
-        lines.append(f"  ⏳ TIME LEFT after it: {typical} if typical, {pace}"
-                     + (f" (~{human_minutes(now)} now)" if now is not None else "") + ":")
+        lines.append(paint(f"   if it turns out typical, {pace}"
+                           + (f" · ~{human_minutes(now)} left right now" if now is not None else ""),
+                           DIM, color=color))
+        lines += ["", paint(VERDICT[v["level"]], BOLD, color=color), ""]
+        lines.append(paint(f"   {'If it turns out':<17}{'Steps':>5}{'Tokens':>9}   Time left after", DIM, color=color))
         for name in ("quick", "typical", "heavy"):
-            s = scen[name]
-            mark = "▶ " if name == "typical" else "  "
-            lines.append(f"  {mark}{name:8} {_outcome(after(quota, s['tokens'])):24} "
-                         f"{s['steps']} step{'s' if s['steps'] != 1 else ''}, ~{human_tokens(s['tokens'])} tokens")
-        q = f"  5h window  {quota['pct']:.0f}% used now"
-        if reset is not None:
-            q += f", resets in {human_minutes(reset)}"
-        lines.append(q)
+            sc = scen[name]
+            row = (f" {'▸' if name == 'typical' else ' '} {name:<17}{sc['steps']:>5}"
+                   f"{human_tokens(sc['tokens']):>9}   {_cell(after(quota, sc['tokens']))}")
+            lines.append(paint(row, BOLD, color=color) if name == "typical" else row)
+        q = f"{quota['pct']:.0f}% used" + (f" · resets in {human_minutes(reset)}" if reset is not None else "")
+        lines += ["", f"   5h window   {q}"]
     if ctx.get("pct") is not None:
-        lines.append(f"  Context    {ctx['pct']:.0f}% now"
-                     + (" (Claude Code compacts it when full, and carries on)" if ctx["pct"] >= 80 else ""))
+        lines.append(f"   Context     {ctx['pct']:.0f}% used"
+                     + (" · Claude Code compacts it when full, and carries on" if ctx["pct"] >= 80 else ""))
     if profile:
         cov = profile.get("coverage")
-        lines.append(f"  The range comes from your last {profile['turns']} prompts"
-                     + (f"; {cov[0]} of {cov[1]} past prompts landed inside it." if cov and cov[1] else "."))
+        lines.append(f"   Based on    your last {profile['turns']} prompts"
+                     + (f" · {cov[0]} of {cov[1]} landed in this range" if cov and cov[1] else ""))
     else:
-        lines.append(f"  The range uses starting defaults until you have {MIN_PROFILE_TURNS} prompts of history.")
+        lines.append(f"   Based on    starting defaults, until you have {MIN_PROFILE_TURNS} prompts of history")
     if confirm_seconds:
         mins = confirm_seconds // 60 or 1
         go = "Run it anyway" if v["level"] in (WONT_FIT, MAY_NOT_FIT) else "To run it"
-        lines.append(f"{go}: press Up, then Enter, within {mins} min. Otherwise do nothing; it was not sent.")
+        lines += ["", paint(f"👉 {go}: press ↑ then Enter within {mins} min.", BOLD, color=color)
+                  + " To drop it, do nothing; it was not sent."]
     return "\n".join(lines)
-
 
 
 def human_tokens(n):
@@ -248,11 +257,14 @@ def human_minutes(m):
     return f"{m // 60}h{m % 60:02d}m" if m >= 60 else f"{m}m"
 
 
-def summary_line(scen, ctx, quota):
+def summary_line(scen, ctx, quota, confirmed=False, color=False):
     """The one line shown once a prompt runs."""
-    parts = []
+    parts = ["⛽ Runway" + (" · running it, as you confirmed" if confirmed else "")]
     if quota["pct"] is not None:
-        parts.append(time_left_headline(scen, quota))
+        v = verdict(scen, quota)
+        ends = {n: _cell(after(quota, scen[n]["tokens"])) for n in ("quick", "heavy")}
+        parts.append(time_left_headline(scen, quota, v["level"], color)
+                     + f" (quick: {ends['quick']} · heavy: {ends['heavy']})")
         parts.append(f"5h used {quota['pct']:.0f}%"
                      + (f", resets in {human_minutes(quota['minutes_to_reset'])}"
                         if quota.get("minutes_to_reset") is not None else ""))
@@ -260,4 +272,4 @@ def summary_line(scen, ctx, quota):
         parts.append(f"5h window {human_tokens(quota['tokens'])} tokens, quota unknown")
     if ctx.get("pct") is not None:
         parts.append(f"context {ctx['pct']:.0f}%")
-    return "[Runway] " + " | ".join(parts)
+    return " · ".join(parts)

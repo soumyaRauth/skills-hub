@@ -149,9 +149,13 @@ def user_prompt_submit(payload, now=None):
     if pause:
         pending[key] = now
     save_pending(pending)
+    color = bool(cfg.get("color", True)) and "NO_COLOR" not in os.environ
     if pause:
+        # suppressOriginalPrompt: Claude Code otherwise repeats the whole prompt under the estimate.
         return json.dumps({"decision": "block",
-                           "reason": runway.preflight_message(scen, ctx, quota, v, profile, wait)})
+                           "reason": runway.preflight_message(scen, ctx, quota, v, profile, wait, color),
+                           "hookSpecificOutput": {"hookEventName": "UserPromptSubmit",
+                                                  "suppressOriginalPrompt": True}})
     config.append_jsonl("predictions.jsonl", {
         "ts": now, "session_id": payload.get("session_id") or (session.session_id if session else None),
         "prompt_id": prompt_id, "prompt_sha": sha, "prompt_key": prompt_id or sha,
@@ -162,9 +166,7 @@ def user_prompt_submit(payload, now=None):
         "context_limit": ctx["limit"], "quota_pct": quota["pct"], "quota_source": quota["source"],
         "calibrated": bool(cfg.get("calibrated")), "verdict": v["level"], "confirmed": confirmed,
     })
-    line = runway.summary_line(scen, ctx, quota)
-    return json.dumps({"systemMessage": ("[Runway] Running it, as you confirmed. " + line[9:]) if confirmed
-                       else line})
+    return json.dumps({"systemMessage": runway.summary_line(scen, ctx, quota, confirmed, color)})
 
 
 REFRESH_EVERY = 6 * 3600  # seconds between background re-measurements of your history
