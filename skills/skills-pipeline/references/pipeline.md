@@ -5,7 +5,9 @@ by number. The numbers are in the recommended build order, so `all` runs 1 to
 10. Number 11 is for a bug or symptom, not a build, so pick it by number.
 Numbers 12 to 15 cover the rest of a project's life: 12 before 1 on a new
 project, 13 before a build that needs tickets, 14 and 15 after the ship gate.
-Pick them by number. For working through a whole backlog, ask for the delivery
+Pick them by number. Number 16 reviews the experience of what was built,
+for the people who will use it; pick it by number, usually after Build and
+before Ship gate. For working through a whole backlog, ask for the delivery
 lead instead of the pipeline.
 Edit this file to add, remove or renumber skills.
 
@@ -26,3 +28,4 @@ Edit this file to add, remove or renumber skills.
 | 13 | Plan | `delivery-planner` | A ticket depends on a business rule nobody has decided |
 | 14 | Release | `release-engineer` | A production deploy lacks a ship verdict or authorization, a rollback is untested, or a smoke check fails and rolls back |
 | 15 | Observe | `observability-baseline` | Never. MISSING items carry into the ledger with their next step; it is not a gate |
+| 16 | Empathy | `human-empathy` | A finding needs a product decision from a person: removing a step or field, changing consent or data collection, or changing a book's direction |

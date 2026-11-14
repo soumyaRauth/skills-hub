@@ -9,6 +9,28 @@ methodology and documentation.
 
 ### Added
 
+- **Human Empathy (`human-empathy`), under a new Empathy menu.** A skill for
+  how people experience what you make, applied equally to software products
+  and books: journeys, forms, error and empty states, microcopy, trust and
+  deceptive patterns; reader fit and promise, structure, learning progression
+  and cognitive load, editorial quality, technical accuracy with the code
+  executed, typography and layout on rendered pages, PDF navigation and
+  accessibility, and publication readiness. Every claim is labelled
+  `VERIFIED`, `SUPPORTED`, `HYPOTHESIS` or `PREFERENCE`; ten dimensions are
+  scored one to five against published anchors, with an overall derived by a
+  documented rule (median, rounded down, capped at 2 when the experience
+  deceives, excludes or fails its promise) and `INSUFFICIENT EVIDENCE` where
+  inspection cannot tell. Twelve references, five worked examples, two
+  fixtures (`human-empathy/signup-flow`, `human-empathy/beginner-book`), three
+  activation cases (`he-signup-journey`, `he-book-readers-lost`,
+  `quiet-book-typo`) and a quiet grader on every all-quiet case. The site and
+  README gain an **Empathy** menu item and section, the skill gets its own page
+  (`docs/human-empathy.html`), and the pipeline menu gains stage 16, Empathy.
+  Building the examples against the fixtures found two gaps that are now in
+  the PDF reference: coding ligatures make the rendered page differ from the
+  text layer, and clipped or column-split code is only visible on rendered
+  pages.
+
 - **Runway: how much room is left.** A standard-library Python tool in
   `integrations/claude-code/runway/` that reads `~/.claude/projects/` and
   reports this session's context use, the 5-hour window's percentage used and

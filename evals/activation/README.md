@@ -63,7 +63,7 @@ change is not · `low-risk-high-risk-project` — a trivial change inside a proj
 with real findings · `already-satisfied` — the requested property already holds
 · `override` — the user named a skill, or opted out of one · `passive` — a skill
 may read but must not speak · `new-skill` — covers `dependency-guard`,
-`api-contract-guard`, `deployment-compatibility`, `architecture-engineer`, `project-kickoff`, `delivery-planner`, `release-engineer`, `observability-baseline`, `delivery-lead` and `project-knowledge` ·
+`api-contract-guard`, `deployment-compatibility`, `architecture-engineer`, `project-kickoff`, `delivery-planner`, `release-engineer`, `observability-baseline`, `delivery-lead`, `project-knowledge` and `human-empathy` ·
 `core` — the smaller set used for before/after comparisons.
 
 ## Cases
@@ -106,6 +106,9 @@ may read but must not speak · `new-skill` — covers `dependency-guard`,
 | `compose-split-customer-name` | Split the customer name field into firstName and lastName. | impact-map | standards-compass, practical-localizer, engineering-investigator, dependency-guard | A schema change with every reader in scope. It restructures personal data but adds none, so Standards Compass stays quiet. |
 | `compose-duplicate-orders` | Users sometimes see duplicate orders after retrying checkout. | engineering-investigator | practical-localizer, dependency-guard, project-compass | An intermittent symptom first. Impact Map and ProofBuild may follow once a cause exists. |
 | `compose-keyboard-table` | Make the customer table usable with a keyboard and a screen reader. | standards-compass | impact-map, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard, production-guard | Accessibility implementation. Standards Compass owns it; there is no separate accessibility skill to compete. |
+| `he-signup-journey` | People keep giving up halfway through our sign-up. Walk through it as a new user would and tell me what it's like. | human-empathy | impact-map, dependency-guard, api-contract-guard, practical-localizer, release-engineer, delivery-lead, project-kickoff | An experience question about a flow, with support tickets as evidence. Standards Compass and Engineering Investigator are left ungraded: sign-up is in Standards Compass's scope, and "giving up" can read as a symptom. |
+| `he-book-readers-lost` | Readers of my beginner book say they get lost in chapter 3. Can you review it and tell me why? | human-empathy | engineering-investigator, impact-map, proof-driven-dev, production-guard, standards-compass, dependency-guard, practical-localizer, project-kickoff | A book, not software. "Tell me why" is the investigator's request shape, but the symptom is readers' understanding, and the evidence is the manuscript and the reader notes. |
+| `quiet-book-typo` | Fix the typo 'recieve' in chapter 2. | — | all | A typo in a book with serious, real problems in the next chapter. A typo is not a book review. |
 | `ctx-another-status-state-machine` | Add an on_hold state to adjustments. | — | standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard | The same request shape as pc-another-status-lifecycle, in a project with a declared state machine. Project Compass has nothing to say. |
 | `ctx-button-copy-localized` | Change the 'Invite member' button to say 'Add teammate'. | — | standards-compass, impact-map, production-guard, engineering-investigator, dependency-guard, project-compass, api-contract-guard | Copy change in a translated app. Practical Localizer may add one line: the Bengali catalog still says the old thing. |
 | `quiet-button-copy` | Change the 'Download PDF' button label to 'Get PDF'. | — | all | Copy change, no catalogs. No discipline improves it. |
@@ -138,7 +141,9 @@ the three `architecture-engineer` cases (`ae-review-layered`,
 as were `sp-explicit-invocation`, `compose-app-deploy-ready` and the `quiet-skills-pipeline` graders on
 thirteen existing cases. So were the five cases for the delivery skills added on 2026-09-28
 (`pk-new-app-idea`, `dp-plan-into-tickets`, `re-ci-cd-setup`, `ob-launch-monitoring`,
-`dl-work-backlog`) and their quiet graders on every `quiet-*` case. None of them **has been measured** — the numbers
+`dl-work-backlog`) and their quiet graders on every `quiet-*` case, and the three
+`human-empathy` cases added on 2026-11-15 (`he-signup-journey`, `he-book-readers-lost`,
+`quiet-book-typo`) with its quiet grader on every all-quiet case. None of them **has been measured** — the numbers
 below are the 38 cases that existed on that date, and folding the new rows into
 them would be inventing a result.
 

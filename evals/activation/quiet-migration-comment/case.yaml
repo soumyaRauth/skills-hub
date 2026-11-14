@@ -129,3 +129,9 @@ graders:
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-knowledge)"'
   min: 0
   max: 0
+- name: quiet-human-empathy
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:human-empathy)"'
+  min: 0
+  max: 0

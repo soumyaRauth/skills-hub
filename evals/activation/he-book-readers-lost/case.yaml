@@ -1,0 +1,71 @@
+schema_version: '1.1'
+name: he-book-readers-lost
+tags:
+- positive
+- keyword-trap
+- new-skill
+description: A book, not software. 'Tell me why' is the investigator's request shape, but the symptom is readers' understanding, and the evidence is the manuscript and reader notes.
+expected_outcome: 'Must engage: human-empathy. Must stay quiet: engineering-investigator, impact-map, proof-driven-dev, production-guard, standards-compass, dependency-guard, practical-localizer, project-kickoff.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Readers of my beginner book say they get lost in chapter 3. Can you review it and tell me why?
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-human-empathy
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:human-empathy)"'
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-impact-map
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:impact-map)"'
+  min: 0
+  max: 0
+- name: quiet-proof-driven-dev
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:proof-driven-dev)"'
+  min: 0
+  max: 0
+- name: quiet-production-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:production-guard)"'
+  min: 0
+  max: 0
+- name: quiet-standards-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:standards-compass)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-project-kickoff
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-kickoff)"'
+  min: 0
+  max: 0

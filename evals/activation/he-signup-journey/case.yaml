@@ -1,0 +1,64 @@
+schema_version: '1.1'
+name: he-signup-journey
+tags:
+- positive
+- new-skill
+description: An experience question about a flow, with support tickets as evidence. Standards Compass and Engineering Investigator are left ungraded; sign-up is in Standards Compass's scope, and 'giving up' can read as a symptom.
+expected_outcome: 'Must engage: human-empathy. Must stay quiet: impact-map, dependency-guard, api-contract-guard, practical-localizer, release-engineer, delivery-lead, project-kickoff.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: People keep giving up halfway through our sign-up. Walk through it as a new user would and tell me what it's like.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: engages-human-empathy
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:human-empathy)"'
+- name: quiet-impact-map
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:impact-map)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0
+- name: quiet-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-release-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:release-engineer)"'
+  min: 0
+  max: 0
+- name: quiet-delivery-lead
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-lead)"'
+  min: 0
+  max: 0
+- name: quiet-project-kickoff
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-kickoff)"'
+  min: 0
+  max: 0

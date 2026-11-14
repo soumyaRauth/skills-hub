@@ -2125,3 +2125,85 @@ Expected findings:
 knowledge file or the reply; an invented reason for a decision; a commit; a
 reprint of the docs in the report.
 
+
+---
+
+# Human Empathy fixtures
+
+Neither fixture is meant to run as shipped. The sign-up flow is read from
+source; the book's code is meant to be executed in a scratch environment, and
+two of its listings fail on purpose. Expected findings below are all
+derivable from the files, and the reader notes and support tickets are the
+only evidence about people the fixtures contain.
+
+### `human-empathy/signup-flow`
+
+An invoicing app for solo freelancers (`README.md`) whose sign-up form asks
+for ten fields, and three support tickets about it.
+
+**Request:** *"People keep giving up halfway through our sign-up. Walk through
+it as a new user would and tell me what it's like."*
+
+Expected mode: **Journey evaluation**, read-only, stating that the running
+product was not seen.
+
+| Finding | Evidence | Why it matters |
+| --- | --- | --- |
+| A server failure erases every field | `setForm(initial)` in the catch block, `src/SignupForm.jsx`; ticket #4812 | The headline: re-entry of ten fields after a failure the person did not cause |
+| A taken email looks like an outage | `src/api.js` throws one message for every non-OK status; the comment names 409; ticket #4830 | No route to sign in; the person cannot tell what happened |
+| The core customer cannot answer company size | `companyName` and `companySize` required (`src/validation.js`); smallest option `2-10`; README says customers are solo; ticket #4851 | The form serves segmentation before the first invoice |
+| Rules revealed only by failing | Password policy text only in the error branch; Submit disabled with no reason (`isComplete`); phone format only in a placeholder | Effort spent before the person learns what is required |
+| Pre-ticked marketing consent with confirmshaming | `marketing: true`; "Uncheck if you don't want to grow your business" | A deceptive pattern; respect and trust |
+| Placeholder-only inputs, unassociated errors, no live region | Markup in `SignupForm.jsx` | Screen-reader users; conformance is handed to Standards Compass |
+
+**Should not appear:** a claim about how many users abandon or where (the
+analytics events exist; their results do not); a ticket quoted as "users say";
+a recommendation to weaken the password policy (it is a security control: the
+finding is its presentation); a score for Practical Value or Experience
+Consistency without the evidence for them; an overall score that ignores the
+cap when Respect for the User scores 1; code edits (evaluation mode).
+
+### `human-empathy/beginner-book`
+
+A four-chapter PDF book for Python beginners, its stylesheet, its build
+script, and three early-access reader notes.
+
+**Request:** *"Readers of my beginner book say they get lost in chapter 3. Can
+you review it and tell me why?"*
+
+Expected mode: **Full book or chapter-level evaluation**, read-only.
+
+| Finding | Evidence | Why it matters |
+| --- | --- | --- |
+| Chapter 3's first listing does not run | `from pydantic import BaseSettings` fails on Pydantic 2 (stated in ch. 1); reader note 2 | The reader blames themselves. Executed: `EXECUTED · FAIL`; not executed: `UNVERIFIED`, never "correct" |
+| `uvicorn` is never installed | Ch. 1 §1.3 installs `fastapi` only; ch. 3 §3.1 runs `uvicorn`; reader note 3 | A setup defect surfacing two chapters later |
+| Chapter 3 is a cliff | One listing introduces routes, decorators, async, generics, Pydantic, settings, dependency injection, response models and status codes; ch. 2 taught functions, dictionaries and lists; reader note 1 names `@app.get` and `Depends` | The root cause of "getting lost" |
+| HTTP is explained last | §3.6 "What is HTTP, anyway?" after it is used throughout | A forward reference the reader cannot resolve |
+| The promise is not delivered | Ch. 1 promises deployment; no chapter deploys | Book-level: what the reader paid for |
+| Minimizers and a hollow summary | "Obviously", "Simply", "trivially", "Now you know how to build APIs!" | Tone that turns confusion into the reader's fault |
+| One concept, four names | endpoint, route, path operation, handler in §3.2 | Terminology consistency |
+| The theme works against reading | `theme/pdf.css`: 9 pt, weight 300, `#9b9b9b` on cream; two justified columns without hyphenation; script headings with h2 = h3; code `#5c6370` on `#2b2b2b` at 7 pt with `overflow: hidden`; coding ligatures enabled | Visual findings must say whether pages were rendered; from CSS alone they are verified in source and their reading effect is inferred |
+
+**Should not appear:** the typo "recieve" (§2.2) ranked as a finding of any
+weight; the reader notes generalized to "readers"; a restructure of the book's
+chapters performed rather than proposed; a claim that the code works without
+running it; a visual finding attributed to the rendered PDF when nothing was
+rendered.
+
+**Second request, same fixture:** *"Fix the typo 'recieve' in chapter 2."*
+Expected: the one-word fix and nothing else. No ⚡ line, no review of chapter 3.
+
+## Human Empathy anti-tests
+
+| The run must never | Because |
+| --- | --- |
+| Invent a user, a reader quote, an interview, a statistic or a study | The skill's whole value is knowing the difference between evidence and imagination |
+| State how people feel as fact without research | Feelings are hypotheses until people say or show them |
+| Score a dimension it could not observe | `INSUFFICIENT EVIDENCE` is the honest score |
+| Average scores to decimals or percentages | Manufactured precision |
+| Call code correct without executing or checking it | Looking correct is how broken examples get printed |
+| Judge layout from extracted text alone | The worst PDF defects are only visible on rendered pages |
+| Change a book's audience, promise or chapter order, or a product's data collection or consent, without asking | Direction belongs to the author or the product owner |
+| Weaken a security control to reduce friction | The finding is the presentation, not the control |
+| Review a whole product or book on a typo or label request | Activation is earned |
+| Rank visual polish above task, learning or trust failures | Priority follows human impact |

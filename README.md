@@ -10,7 +10,7 @@
 <br>
 
 [![Validate](https://img.shields.io/github/actions/workflow/status/soumyaRauth/skills-hub/validate.yml?branch=main&style=for-the-badge&label=validate&logo=githubactions&logoColor=white)](https://github.com/soumyaRauth/skills-hub/actions/workflows/validate.yml)
-[![Skills](https://img.shields.io/badge/skills-17-ea580c?style=for-the-badge&logo=bookstack&logoColor=white)](#-the-skills)
+[![Skills](https://img.shields.io/badge/skills-19-ea580c?style=for-the-badge&logo=bookstack&logoColor=white)](#-the-skills)
 [![Agent Skills](https://img.shields.io/badge/Agent_Skills-compatible-1c1917?style=for-the-badge&logo=markdown&logoColor=white)](https://code.claude.com/docs/en/skills)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=for-the-badge&logo=claude&logoColor=white)](integrations/claude-code/README.md)
 [![License: MIT](https://img.shields.io/github/license/soumyaRauth/skills-hub?style=for-the-badge&color=16a34a)](LICENSE)
@@ -23,6 +23,7 @@ and [Runway](#-runway), a local tool that tells you whether a prompt will finish
 [**🌐 Website**](https://soumyaRauth.github.io/skills-hub/) &nbsp;·&nbsp;
 [**⚡ Install**](#installation) &nbsp;·&nbsp;
 [**🧰 Skills**](#-the-skills) &nbsp;·&nbsp;
+[**💛 Empathy**](#-empathy) &nbsp;·&nbsp;
 [**🔀 How they compose**](#-how-they-compose) &nbsp;·&nbsp;
 [**🔧 Tools**](#-tools) &nbsp;·&nbsp;
 [**🧹 Uninstall**](#uninstalling) &nbsp;·&nbsp;
@@ -33,10 +34,10 @@ and [Runway](#-runway), a local tool that tells you whether a prompt will finish
 <br>
 
 ```bash
-# install all eighteen skills; asks which agents, and project or global
+# install all nineteen skills; asks which agents, and project or global
 npx skills add soumyaRauth/skills-hub --skill '*'
 
-# uninstall all eighteen, and nothing else
+# uninstall all nineteen, and nothing else
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
@@ -45,7 +46,7 @@ Claude Code only, or as a plugin: see [Installation](#installation).
 
 > [!IMPORTANT]
 > **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all
-> eighteen skills from every agent, and leaves your other skills alone.
+> nineteen skills from every agent, and leaves your other skills alone.
 
 ## 🧰 The skills
 
@@ -76,6 +77,28 @@ the link goes to the skill's own page with the full findings. Grade A means the
 static scan found few risk signals — a starting point, not a guarantee, and
 bundled scripts and references are not part of the score.
 `project-knowledge` is not listed there yet, so it has no badge.
+
+## 💛 Empathy
+
+The skills above ask whether the work is correct. This one asks whether it is
+good *for the person on the other end*. **Design with empathy:** start by
+asking how people feel while they use what we build, understand their needs
+more deeply than anyone else does, then build for those people. It applies the
+same standard to software products and to books, because both are an
+experience between a creator and one human being.
+
+| | Skill | What it does | When |
+| :-: | --- | --- | --- |
+| 💛 | **[human-empathy](skills/human-empathy/README.md)** | Evaluates and improves how people experience a product or a book: journeys, errors, forms and trust; reader fit, learning progression, explanation, technical accuracy, page design and PDF accessibility. Separates evidence from imagination, scores ten empathy dimensions against a published rubric, finds root causes, and makes the changes when you ask | *When* you want to know what it is like to use or read what you made |
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill human-empathy
+```
+
+It never invents users, readers, quotes or research, runs a book's code
+rather than trusting it, renders PDF pages rather than reading extracted
+text, and hands conformance questions (WCAG, PDF/UA, consent) to
+`standards-compass`. A typo or a label change stays a typo or a label change.
 
 ## 🔀 How they compose
 
@@ -1578,7 +1601,7 @@ and Codex, Cursor, Gemini CLI and the other agents that read that folder pick
 them up too.
 
 Claude Code can also install the whole repository as a plugin, which keeps the
-eighteen skills together under one namespace and updates them in one step:
+nineteen skills together under one namespace and updates them in one step:
 
 ```
 /plugin marketplace add soumyaRauth/skills-hub
@@ -1616,12 +1639,12 @@ Audit this application against the standards that matter.
 npx github:soumyaRauth/skills-hub uninstall
 ```
 
-`skills-hub` stands for all eighteen skills. The command reads the list from this
+`skills-hub` stands for all nineteen skills. The command reads the list from this
 repository and passes it to the Skills CLI's own `npx skills remove`, one name
 per skill, for every agent. It never uses `--skill '*'`, which would remove
 every skill on the machine, including ones that have nothing to do with this
 repository. A skill that is not installed is skipped, so the same command works
-whether you installed one skill or all eighteen, and running it twice is harmless.
+whether you installed one skill or all nineteen, and running it twice is harmless.
 Skills added to this repository later are covered without a new command.
 
 | Option | Does |
@@ -1677,7 +1700,7 @@ Everything Claude Code-specific is kept outside the skills:
   much context and quota is left, and scores its estimates against your own
   transcripts
 - a plugin manifest and a marketplace manifest, so `/plugin install` or
-  `claude --plugin-dir` can load all eighteen at once and `claude plugin eval`
+  `claude --plugin-dir` can load all nineteen at once and `claude plugin eval`
   can test them
 
 See [integrations/claude-code](integrations/claude-code/README.md).
@@ -1733,6 +1756,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   ├── deployment-compatibility/ ← six references, four examples, one of them a refusal to assess
 │   ├── architecture-engineer/    ← seven references, four examples, one of them a refusal to engage
 │   ├── project-knowledge/        ← three references, three examples: first run, incremental, onboarding
+│   ├── human-empathy/            ← twelve references, five examples: a sign-up flow, a beginner's book, a chapter rebuilt, an unreadable PDF, staying quiet
 │   └── skills-pipeline/          ← the menu, three examples, one of them staying out
 ├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
 ├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
@@ -1753,7 +1777,8 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 │   │   ├── api-contract-guard/   ← a public API with a flaw not to copy, and two services that deploy apart
 │   │   ├── deployment-compatibility/  ← a project and the server spec it does not fit, and an image that contradicts its app
 │   │   ├── architecture-engineer/     ← a codebase whose README declares layers its code does not keep
-│   │   └── project-knowledge/    ← a small API whose knowledge lives in comments, a changelog, and a planted .env
+│   │   ├── project-knowledge/    ← a small API whose knowledge lives in comments, a changelog, and a planted .env
+│   │   └── human-empathy/        ← a sign-up flow with support tickets, and a beginner's book whose chapter 3 is a cliff
 │   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions and skills
 │   └── README.md                 ← expected findings per fixture
 ├── package.json                  ← lets npx run the uninstall and knowledge commands from GitHub; never published
