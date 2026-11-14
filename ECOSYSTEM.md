@@ -75,6 +75,7 @@ of four depths, and the depth is part of its contract:
 | **Skills Pipeline** · `skills-pipeline` | Which disciplines, in what order, when I want all of them? | The user types `/skills-pipeline` or asks for the skills pipeline by name | Every other request, however large or risky, and a request that names one skill | `ACTIVE`, only when invoked |
 | **Project Knowledge** · `project-knowledge` | What does the next developer need to know, and is it still true? | Asked to learn the codebase, capture or update knowledge, prep a handover; the knowledge Stop hook reports it behind HEAD | Ordinary work in a repository without `.agents/knowledge/`, one-off file questions, user documentation | `ACTIVE` when asked · `PASSIVE` reading where `.agents/knowledge/` exists |
 | **Delivery Lead** · `delivery-lead` | What is the next ticket, and has it actually reached done? | The user asks for the loop: work through the backlog, take the next ticket, keep going until the milestone is done, build the whole thing; or resuming an unfinished run | A single request however large, a request naming one skill, `/skills-pipeline`, planning or re-ordering tickets | `ACTIVE`, opt-in by request shape |
+| **Human Empathy** · `human-empathy` | Does this leave the person using or reading it understood, supported and capable? | How people experience a product, feature, flow, document or book; why they struggle or give up; planning, writing, reviewing or improving a book, chapter, tutorial or PDF for its readers | A label, a typo, a grammar fix, a spacing tweak or any single mechanical edit nobody framed as an experience question; features with no user-facing experience in question | `ACTIVE` · `CONSULT` when a build request names its people · `GATING` only for a readiness verdict someone asked for |
 
 ## How they relate
 
@@ -122,6 +123,11 @@ flowchart LR
   RE -. target fit unknown .-> DC
   RE -. first production deploy .-> OB[Observability Baseline]
   OB -. incident .-> EI
+  HE[Human Empathy] -- experience changes --> PB
+  HE -. conformance, consent .-> SC
+  HE -. another language .-> PL
+  HE -. what to build .-> PC
+  HE -. ship decision .-> PG
 ```
 
 What each skill does *not* do matters as much as the edges:
@@ -129,6 +135,7 @@ What each skill does *not* do matters as much as the edges:
 - **Impact Map** maps consequences. It does not judge direction (Project Compass), API semantics (API Contract Guard), or readiness (Production Guard).
 - **Project Compass** decides what should happen next. It does not review architecture on demand — that is **Architecture Engineer** — and it never gates.
 - **Standards Compass** is the only authority on standards, frameworks and regulations. Accessibility *implementation* happens inside the work it informs. There is no separate accessibility skill.
+- **Human Empathy** judges how an experience treats the people in it: who is stuck, confused, excluded or handled, in a product or in a book. It finds the human impact of an accessibility or consent problem and hands the conformance question to Standards Compass. It never states a ship verdict, and it changes a product's behaviour or a book's direction only when its owner agrees.
 - **Production Guard** owns the ship verdict, and observability is one of its categories. **ProofBuild** owns `VERIFIED`. Neither overrules the other.
 - **Deployment Compatibility Engineer** is the only skill here that takes two operands — a project *and* a named environment. It owns the readiness state; it does not own the ship decision, and a `READY` environment says nothing about whether the change belongs in it.
 - **Project Kickoff** starts a project that does not exist yet. Project Compass reads an existing one; Kickoff writes the `docs/spec.md` that Compass later reads.

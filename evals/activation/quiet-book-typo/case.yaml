@@ -1,0 +1,138 @@
+schema_version: '1.1'
+name: quiet-book-typo
+tags:
+- quiet
+- keyword-trap
+- new-skill
+description: A typo in a book with serious, real problems in the next chapter. A typo is not a book review.
+expected_outcome: 'Must engage: none required. Must stay quiet: every Skills Hub skill.'
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Fix the typo 'recieve' in chapter 2.
+  max_turns: 6
+  allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+graders:
+- name: quiet-api-contract-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:api-contract-guard)"'
+  min: 0
+  max: 0
+- name: quiet-architecture-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:architecture-engineer)"'
+  min: 0
+  max: 0
+- name: quiet-delivery-lead
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-lead)"'
+  min: 0
+  max: 0
+- name: quiet-delivery-planner
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:delivery-planner)"'
+  min: 0
+  max: 0
+- name: quiet-dependency-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:dependency-guard)"'
+  min: 0
+  max: 0
+- name: quiet-deployment-compatibility
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:deployment-compatibility)"'
+  min: 0
+  max: 0
+- name: quiet-engineering-investigator
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:engineering-investigator)"'
+  min: 0
+  max: 0
+- name: quiet-human-empathy
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:human-empathy)"'
+  min: 0
+  max: 0
+- name: quiet-impact-map
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:impact-map)"'
+  min: 0
+  max: 0
+- name: quiet-observability-baseline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:observability-baseline)"'
+  min: 0
+  max: 0
+- name: quiet-practical-localizer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:practical-localizer)"'
+  min: 0
+  max: 0
+- name: quiet-production-guard
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:production-guard)"'
+  min: 0
+  max: 0
+- name: quiet-project-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-compass)"'
+  min: 0
+  max: 0
+- name: quiet-project-kickoff
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-kickoff)"'
+  min: 0
+  max: 0
+- name: quiet-project-knowledge
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:project-knowledge)"'
+  min: 0
+  max: 0
+- name: quiet-proof-driven-dev
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:proof-driven-dev)"'
+  min: 0
+  max: 0
+- name: quiet-release-engineer
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:release-engineer)"'
+  min: 0
+  max: 0
+- name: quiet-skills-pipeline
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:skills-pipeline)"'
+  min: 0
+  max: 0
+- name: quiet-standards-compass
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:standards-compass)"'
+  min: 0
+  max: 0
+- name: no-activation-line
+  type: regex
+  pattern: ⚡
+  match: not_contains
+  target: last_message

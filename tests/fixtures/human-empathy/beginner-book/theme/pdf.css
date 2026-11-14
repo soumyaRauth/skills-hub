@@ -1,0 +1,50 @@
+/* "Editorial" theme — light, airy, premium feel. */
+@page {
+  size: A4;
+  margin: 12mm 12mm 14mm 12mm;
+  background: #fdf8f0;
+}
+
+body {
+  font-family: "Raleway", "Avenir Next", sans-serif;
+  font-weight: 300;
+  font-size: 9pt;
+  line-height: 1.15;
+  color: #9b9b9b;
+  text-align: justify;
+  hyphens: none;
+  column-count: 2;
+  column-gap: 8mm;
+}
+
+h1, h2, h3 {
+  font-family: "Great Vibes", "Snell Roundhand", cursive;
+  font-weight: 400;
+  color: #c9a96e;
+  column-span: all;
+}
+h1 { font-size: 34pt; }
+h2 { font-size: 20pt; }
+h3 { font-size: 20pt; }
+
+pre, code {
+  font-family: "Fira Code", monospace;
+  font-variant-ligatures: common-ligatures;
+}
+pre {
+  background: #2b2b2b;
+  color: #5c6370;
+  font-size: 7pt;
+  padding: 6pt;
+  white-space: pre;
+  overflow: hidden;
+}
+
+blockquote {
+  font-style: italic;
+  color: #b8b8b8;
+  border-left: 1px solid #e6dccb;
+  padding-left: 8pt;
+}
+
+a { color: #c9a96e; text-decoration: none; }

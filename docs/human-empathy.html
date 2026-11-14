@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Human Empathy — Skills Hub</title>
+<meta name="description" content="Design with empathy. Evaluates and improves how people experience a product or a book: journeys, errors and trust; reader fit, learning progression, technical accuracy, page design and PDF accessibility. Evidence, not imagination.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23ea580c'/><path d='M16 7v18M7 16h18' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
+    <nav class="links">
+      <a href="./#empathy">Empathy</a>
+      <a href="./">All skills</a>
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/human-empathy/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/soumyaRauth/skills-hub">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Skill &middot; empathy</span>
+    <h1>Human Empathy</h1>
+    <p class="lede">
+      Design with empathy. Start by asking how people feel while they use what
+      you build, understand their needs more deeply than anyone else does,
+      then build for those people. The same standard for a sign-up form and a
+      PDF book: does this leave the person understood, supported, capable,
+      and closer to what they came for?
+    </p>
+    <div class="hero-foot">
+      <div class="byline">
+        <a class="portrait" href="https://github.com/soumyaRauth" aria-label="Soumya Rauth on GitHub">
+          <img src="https://avatars.githubusercontent.com/u/12175775?v=4"
+               alt="Soumya Rauth" width="46" height="46">
+        </a>
+        <span class="credit">
+          <a class="name" href="https://github.com/soumyaRauth">Soumya Rauth</a>
+          <span class="sep">&middot;</span>
+          <span class="role">Creator &amp; maintainer</span>
+        </span>
+      </div>
+      <div class="cmd">
+        <code>npx skills add soumyaRauth/skills-hub --skill human-empathy</code>
+        <button type="button" data-copy>Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p class="flow mono"><b>it works &ne; people can finish it &middot; it looks good &ne; people can read it</b></p>
+    <p>
+      Most reviews check the artifact. The failures that cost you people live
+      in their experience, and each of these passes a functional check:
+    </p>
+<pre class="block">sign-up      a server hiccup erases all ten fields the person typed on a phone
+sign-up      "Something went wrong" for an email that already has an account
+book, ch. 3  nine new concepts in the first listing; HTTP explained last
+book, ch. 3  the listing does not run on the versions chapter 1 names
+the PDF      a coding ligature draws --reload as a dash; beginners type the dash</pre>
+    <p>
+      The person meeting any of these rarely thinks <em>the product is
+      broken</em>. They think <em>I&rsquo;m not good at this</em>, and they
+      leave.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>When it activates</h2>
+    <p>
+      No slash command needed. Installed, it is loaded when a request is about
+      people&rsquo;s experience and stays out of the way otherwise.
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/ECOSYSTEM.md">How the skills work together &rarr;</a>
+    </p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">Engages</td><td>How people experience a product, feature, flow, document or book; why they struggle or give up; improving a journey; whether a feature serves real needs; planning, writing, reviewing or improving a book, chapter, tutorial or PDF for its readers.</td></tr>
+          <tr><td class="klass">Stays quiet</td><td>A label change, a typo, a grammar fix, a spacing tweak, or any single edit nobody framed as an experience question. A typo in a book is a typo, not a book review.</td></tr>
+          <tr><td class="klass">Depth</td><td>Active in its modes. Two or three lines when a build request names its people and an experience risk would change the build. A verdict only when you ask for one.</td></tr>
+          <tr><td class="klass">Works with</td><td><a href="standards-compass.html">Standards Compass</a> (WCAG, PDF/UA, consent), <a href="practical-localizer.html">Practical Localizer</a>, <a href="proof-driven-dev.html">ProofBuild</a>, <a href="project-compass.html">Project Compass</a>, <a href="production-guard.html">Production Guard</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="flow mono">
+      the person &nbsp;&rarr;&nbsp; their situation and needs &nbsp;&rarr;&nbsp; the real experience (run it, read it, render it)<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; <b>walk it as them</b> &nbsp;&rarr;&nbsp; findings with evidence levels &nbsp;&rarr;&nbsp; root causes<br>
+      &nbsp;&nbsp;&nbsp;&rarr;&nbsp; scores from a published rubric &nbsp;&rarr;&nbsp; specific changes &nbsp;&rarr;&nbsp; re-check
+    </p>
+    <p>Every claim carries one of four labels, so you always know what is known:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Label</th><th>Means</th></tr></thead>
+        <tbody>
+          <tr><td class="klass">Verified</td><td>Observed in the product or document, or in research you supplied</td></tr>
+          <tr><td class="klass">Supported</td><td>An inference from what was observed plus named, established research or convention</td></tr>
+          <tr><td class="klass">Hypothesis</td><td>Plausible, untested, and could be wrong either way</td></tr>
+          <tr><td class="klass">Preference</td><td>Taste, with no evidence it changes the experience</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>How someone feels is never &ldquo;verified&rdquo;</strong> without
+      real people saying or showing it. The skill writes what a design is
+      likely to cause, explains the mechanism, and tells you how to find out.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Products and books, one framework</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>Products</h3>
+        <p>
+          Purpose and value · discovery, onboarding, first value, core tasks,
+          recovery, returning, leaving · forms, controls, feedback · loading,
+          empty, error and success states · microcopy · emotional experience ·
+          accessibility as lived · privacy, consent and deceptive patterns ·
+          whether each feature serves a real need.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Books</h3>
+        <p>
+          The reader and the promise · architecture and chapter order ·
+          learning progression and cognitive load · explanation, examples and
+          practice · editorial quality without imposing a style · technical
+          accuracy, with the code executed · typography, layout and code on
+          rendered pages · PDF navigation and accessibility · publication
+          readiness.
+        </p>
+      </div>
+    </div>
+    <p>Both are scored on the same ten dimensions, one to five, against anchors published in the skill:</p>
+    <div class="tablewrap">
+      <table>
+        <tbody>
+          <tr><td class="klass">1&ndash;5</td><td>Human Understanding · Emotional Experience · Cognitive Simplicity · Clarity and Communication · Personal Relevance · Accessibility and Inclusion · Respect for the User · Practical Value · Experience Consistency · Trustworthiness</td></tr>
+          <tr><td class="klass">Overall</td><td>The median of the scored dimensions, rounded down, capped at 2 when the experience deceives people, excludes them or cannot deliver its promise. Fewer than six dimensions scored means insufficient evidence, not a guess.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Example output</h2>
+    <p>Abbreviated, from a review of a beginner&rsquo;s book whose readers said they got lost in chapter 3:</p>
+<pre class="block">⚡ Human Empathy — beginner book review; readers report getting lost in ch. 3
+
+F1  The first listing in chapter 3 does not run          Critical · HIGH
+    EXECUTED · FAIL  from pydantic import BaseSettings → PydanticImportError
+    EXECUTED · FAIL  uvicorn main:app → command not found (ch. 1 installs fastapi only)
+    Reader note 2: "Spent an hour thinking I'd installed something wrong."
+    Fix (verified): pip install "fastapi[standard]"; settings move to a later chapter
+
+F2  Chapter 3 is a cliff                                 Critical · HIGH
+    One listing introduces routes, decorators, async, generics, Pydantic,
+    settings, dependency injection, response models and status codes.
+    Chapter 2 taught functions, dictionaries and lists. HTTP is explained last.
+    Proposed: one concept per section, HTTP first. Needs your decision.
+
+F4  The page shows different characters from the code    Critical · HIGH
+    Rendered: --reload drawn as a dash, -&gt; as an arrow. Text layer: correct.
+    Fix: font-variant-ligatures: none on code
+
+Overall 2 · Significant weaknesses (median 2 of 10; capped: Practical Value = 1) · HIGH
+Not a finding: the typo "recieve" in §2.2, listed for proofreading.</pre>
+    <p>
+      Worked examples ship with the skill:
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/human-empathy/examples/product-evaluation.md">a registration flow</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/human-empathy/examples/book-evaluation.md">a technical book for beginners</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/human-empathy/examples/chapter-improvement.md">a chapter rebuilt</a>,
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/human-empathy/examples/pdf-visual-review.md">an attractive, unreadable PDF</a>, and
+      <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/human-empathy/examples/stays-quiet.md">staying quiet</a>.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What it will not do</h2>
+    <ul class="plain">
+      <li><strong>Invent people.</strong> No made-up interviews, reader quotes, personas presented as research, statistics, studies or citations</li>
+      <li><strong>Claim validation it did not do.</strong> A change is never &ldquo;validated with users&rdquo; unless people tested it; the report names the test that would</li>
+      <li><strong>Trust code that looks right.</strong> Examples are executed, checked against documentation, or marked unverified</li>
+      <li><strong>Judge a page from its text.</strong> PDF pages are rendered and looked at; when nothing can render them, it says so</li>
+      <li><strong>Manufacture precision.</strong> No percentages, no decimals, no score where the evidence is insufficient</li>
+      <li><strong>Take over your work.</strong> A book&rsquo;s audience, promise or chapter order, a product&rsquo;s data collection or consent: proposed, then your decision</li>
+      <li><strong>Weaken a control to remove friction.</strong> A password policy stays; how it is explained changes</li>
+      <li><strong>Flatter.</strong> When the design or the manuscript fails people, it says so, with evidence</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Install</h2>
+
+    <h3>Any Agent Skills-compatible agent</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill human-empathy</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Claude Code</h3>
+    <div class="cmd">
+      <code>npx skills add soumyaRauth/skills-hub --skill human-empathy --agent claude-code --copy</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+
+    <h3>Using it</h3>
+    <ul class="plain">
+      <li>&ldquo;Walk through our sign-up as a first-time user and tell me what it&rsquo;s like.&rdquo;</li>
+      <li>&ldquo;Should we add streaks to the habit tracker?&rdquo;</li>
+      <li>&ldquo;Review my Python book for beginners. Readers say chapter 3 loses them.&rdquo;</li>
+      <li>&ldquo;Is book.pdf easy to read on a laptop?&rdquo;</li>
+      <li>&ldquo;Fix chapter 3 so beginners can follow it.&rdquo;</li>
+      <li>&ldquo;Help me plan a book on SQL for data analysts.&rdquo;</li>
+      <li>&ldquo;Is this manuscript ready to publish?&rdquo;</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Limitations</h2>
+    <ul class="plain">
+      <li><strong>It cannot know how people feel.</strong> It finds what is likely to cause a feeling, says why, and recommends the research that would tell you</li>
+      <li>Without the running product it reads the code and says so; visual and timing findings are then inferred</li>
+      <li>Visual PDF review needs something that renders pages: poppler, PyMuPDF, Ghostscript or a headless browser. Without one, it limits itself to what the source proves</li>
+      <li>Conformance with WCAG, PDF/UA or privacy law is not its call; it hands the evidence to Standards Compass</li>
+      <li>Judgements about natural phrasing in languages other than English carry lower confidence unless the project or the author supplies conventions</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>MIT licensed &middot; <a href="https://github.com/soumyaRauth/skills-hub/blob/main/skills/human-empathy/SKILL.md">Read the skill source</a></span>
+    <span><a href="./">&larr; All skills</a></span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var text = btn.parentElement.querySelector("code").textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = "Copied";
+      btn.classList.add("done");
+      setTimeout(function () {
+        btn.textContent = "Copy";
+        btn.classList.remove("done");
+      }, 1600);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

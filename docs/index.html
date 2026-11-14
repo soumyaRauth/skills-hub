@@ -15,6 +15,7 @@
     <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
     <nav class="links">
       <a href="#skills">Skills</a>
+      <a href="#empathy">Empathy</a>
       <a href="#tools">Tools</a>
       <a href="#activation">Activation</a>
       <a href="#install">Install</a>
@@ -414,6 +415,55 @@
   </div>
 </section>
 
+<section id="empathy">
+  <div class="wrap">
+    <h2>Empathy</h2>
+    <p>
+      The skills above ask whether the work is correct. This one asks whether
+      it is good <em>for the person on the other end</em>.
+      <strong>Design with empathy:</strong> start by asking how people feel
+      while they use what we build, understand their needs more deeply than
+      anyone else does, then build for those people. A sign-up form and a PDF
+      book are judged by the same question: does this leave the person
+      understood, supported, capable, and closer to what they came for?
+    </p>
+    <div class="grid two">
+
+      <a class="card" href="human-empathy.html">
+        <h3>Human Empathy</h3>
+        <p>
+          Walks your product or your book as the person using or reading it,
+          and tells you where they get stuck, lose work, lose trust or give
+          up &mdash; and why. It runs a book&rsquo;s code instead of trusting
+          it, renders PDF pages instead of reading extracted text, scores ten
+          empathy dimensions against a published rubric, and never invents a
+          user, a reader or a quote. Ask, and it makes the changes.
+        </p>
+        <div class="tags">
+          <span class="tag">user experience</span>
+          <span class="tag">books &amp; PDFs</span>
+          <span class="tag">learning design</span>
+          <span class="tag">editorial review</span>
+          <span class="tag">accessibility</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+    </div>
+    <div class="cmd" style="margin-top:16px">
+      <code>npx skills add soumyaRauth/skills-hub --skill human-empathy</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>
+      One skill, for any Agent Skills-compatible agent, and part of the full
+      set. Then ask the way you would ask a colleague:
+      <em>&ldquo;Walk through our sign-up as a new user&rdquo;</em>,
+      <em>&ldquo;Readers get lost in chapter 3 &mdash; why?&rdquo;</em>,
+      <em>&ldquo;Is this PDF easy to read?&rdquo;</em>
+    </p>
+  </div>
+</section>
+
 <section id="tools">
   <div class="wrap">
     <h2>Tools</h2>
@@ -508,7 +558,7 @@
     <h2>Installing</h2>
     <p>Skills install through the Skills CLI and work with any Agent Skills-compatible agent.</p>
 
-    <h3>All eighteen skills, any compatible agent</h3>
+    <h3>All nineteen skills, any compatible agent</h3>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill '*'</code>
       <button type="button" data-copy>Copy</button>
@@ -531,7 +581,7 @@
       <code>--copy</code> keeps the skills out of <code>~/.agents/skills</code>,
       a folder Codex, Cursor and other agents also read.
     </p>
-    <p>Or as a plugin, which keeps the eighteen together and updates them in one step:</p>
+    <p>Or as a plugin, which keeps the nineteen together and updates them in one step:</p>
     <div class="cmd">
       <code>/plugin marketplace add soumyaRauth/skills-hub</code>
       <button type="button" data-copy>Copy</button>
@@ -581,7 +631,7 @@
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
-      <code>skills-hub</code> stands for all eighteen skills. The command removes
+      <code>skills-hub</code> stands for all nineteen skills. The command removes
       each one by name through the Skills CLI, and never uses
       <code>--skill '*'</code>, which would remove every skill on the machine.
       Skills that are not installed are skipped. Add <code>--dry-run</code> to
