@@ -331,15 +331,20 @@ guarded with `|| true`, so a moved clone cannot block your prompts.
 `~/.claude/runway/` (`config.json`, `predictions.jsonl`, `actuals.jsonl`,
 `limits.json`, `pending.json`).
 
-If you already have a status line, add runway's segment as a second line
-(Claude Code shows every line your command prints):
+If you already have a status line, `--statusline` keeps it and prints this recipe instead.
+Wiring it is not cosmetic: Claude Code reports the 5-hour quota to the status line and
+nowhere else, so until runway's segment runs, `status` cannot show time left. Add it as a
+second line (Claude Code shows every line your command prints):
 
 ```bash
 #!/usr/bin/env bash
 input=$(cat)
-echo "$input" | ~/.claude/your-statusline.sh
-echo "$input" | python3 ~/.claude/runway/bin/claude-runway statusline
+printf '%s' "$input" | ~/.claude/your-statusline.sh
+printf '%s' "$input" | python3 ~/.claude/runway/bin/claude-runway statusline
 ```
+
+`printf '%s'` rather than `echo`, because the session JSON arrives with backslashes in it
+and `echo` in some shells reads those as escapes.
 
 | Command | What it does |
 | --- | --- |

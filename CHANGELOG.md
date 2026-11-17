@@ -50,7 +50,10 @@ methodology and documentation.
   writes per-tier medians from your own history into `config.json`.
   `install-hooks` / `uninstall-hooks` edit `~/.claude/settings.json` without
   losing anything already there, back it up first, are idempotent, and refuse
-  to write over invalid JSON. `validate.sh` runs its self-check.
+  to write over invalid JSON. A status line that is not Runway's is never
+  overwritten; `--statusline` keeps it and prints the recipe for running both,
+  with the reason — the quota reaches the status line and nowhere else, so
+  without that segment `status` has no real window to report. `validate.sh` runs its self-check.
   `npx -y github:soumyaRauth/skills-hub runway <command>` installs and runs it
   without a clone: it copies Runway to `~/.claude/runway/bin/`, so the hook
   points at a folder npx will not clear. The site has a new Tools section and

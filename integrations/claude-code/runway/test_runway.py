@@ -405,11 +405,19 @@ assert json.load(open(os.path.join(TMP, backups[0]))) == existing
 assert not any(c.startswith("added") for c in cli.install(settings, statusline=True))     # idempotent
 assert len(json.load(open(settings))["hooks"]["UserPromptSubmit"]) == 2
 
+with redirect_stdout(io.StringIO()) as buf:            # keeping their line prints how to run both
+    assert cli.main(["install-hooks", "--statusline", "--settings", settings]) == 0
+out = buf.getvalue()
+assert "claude-runway\" statusline" in out and "printf '%s'" in out    # the recipe, not "see the README"
+assert "quota" in out and settings in out                               # what it costs, and where to wire it
+
 cli.uninstall(settings)
 assert json.load(open(settings)) == existing                                             # round trip
 
 fresh = os.path.join(TMP, "fresh", "settings.json")
-cli.install(fresh, statusline=True)
+with redirect_stdout(io.StringIO()) as buf:
+    assert cli.main(["install-hooks", "--statusline", "--settings", fresh]) == 0
+assert "printf" not in buf.getvalue()                  # nothing to wire by hand: it set the line itself
 assert "claude-runway" in json.load(open(fresh))["statusLine"]["command"]
 cli.uninstall(fresh)
 assert json.load(open(fresh)) == {}
