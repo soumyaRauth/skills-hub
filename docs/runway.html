@@ -71,8 +71,8 @@
     </p>
 <pre class="block">⛽ Runway · waiting for you to confirm this prompt
 
-⏳ TIME LEFT after this prompt: ~1h05m
-   if it turns out typical, at your pace over the last hour · ~1h07m left right now
+⏳ TIME LEFT after this prompt: ~1h05m of quota at this pace
+   if it turns out typical, at your pace over the last 40m · ~1h07m left right now
 
 ✅ Should fit, even if it turns out heavy.
 
@@ -94,15 +94,17 @@
       known, the cost is close to exact. So Runway shows the time left after a
       quick, a typical and a heavy outcome, with step counts from your own
       prompts, and how often past prompts landed inside that range.
-      <em>Time left</em> is the room left after the prompt, divided by your pace
-      over the last hour (or your average this window, after a break), and it
+      <em>Time left</em> is the room left after the prompt, divided by your
+      pace over the stretch you have been working, within the last hour, so a
+      burst after an idle hour is measured over the burst and the message names
+      that span; after a full idle hour it is your average this window. It
       stops at the reset. When a prompt could run out partway, the message says
       so (here with the quota set to 92% used, to show it):
     </p>
 <pre class="block">⛽ Runway · waiting for you to confirm this prompt
 
-⏳ TIME LEFT after this prompt: ~3m
-   if it turns out typical, at your pace over the last hour · ~5m left right now
+⏳ TIME LEFT after this prompt: ~3m of quota at this pace
+   if it turns out typical, at your pace over the last 40m · ~5m left right now
 
 ⚠️  May not finish before your 5-hour limit if it turns out heavy.
 
@@ -166,15 +168,15 @@
   <div class="wrap">
     <h2>What you see</h2>
     <p>Once a prompt runs, one line, shown to you and not to the model (all the numbers in this section are illustrative):</p>
-<pre class="block">⛽ Runway · running it, as you confirmed · ⏳ TIME LEFT after this prompt: ~1h05m (quick: ~1h06m · heavy: ~55m) · 5h used 46%, resets in 3h53m · context 36%</pre>
+<pre class="block">⛽ Runway · running it, as you confirmed · ⏳ TIME LEFT after this prompt: ~1h05m of quota at this pace (quick: ~1h06m · heavy: ~55m) · 5h used 46%, resets in 3h53m · context 36%</pre>
     <p>In the status line, all the time:</p>
 <pre class="block">&#9981; context 10% &middot; 5h used 33% &middot; resets in 4h00m &middot; time left ~1h05m at this pace</pre>
     <p>And in the terminal, whenever you ask:</p>
 <pre class="block">$ npx -y github:soumyaRauth/skills-hub runway status
 Context    151,777 / 1,000,000 tokens (15.2%), ~42 turns to full at ~20.1k/turn
-Burn       266.2k tokens/min over the last 60 min
+Burn       266.2k tokens/min over the last 17m of work (looking back 60 min)
 5h window  33.2% used (Claude Code's rate limits), resets in 4h00m
-Time left  ~21m (at the current burn rate); ~2 typical turns</pre>
+Time left  ~21m (at your pace over the last 17m); ~2 typical turns</pre>
   </div>
 </section>
 

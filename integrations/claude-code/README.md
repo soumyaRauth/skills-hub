@@ -217,8 +217,8 @@ quick, typical or heavy. Nothing has been sent and nothing is spent:
 ```
 ⛽ Runway · waiting for you to confirm this prompt
 
-⏳ TIME LEFT after this prompt: ~1h05m
-   if it turns out typical, at your pace over the last hour · ~1h07m left right now
+⏳ TIME LEFT after this prompt: ~1h05m of quota at this pace
+   if it turns out typical, at your pace over the last 40m · ~1h07m left right now
 
 ✅ Should fit, even if it turns out heavy.
 
@@ -241,8 +241,8 @@ so (here with the quota set to 92% used, to show it):
 ```
 ⛽ Runway · waiting for you to confirm this prompt
 
-⏳ TIME LEFT after this prompt: ~3m
-   if it turns out typical, at your pace over the last hour · ~5m left right now
+⏳ TIME LEFT after this prompt: ~3m of quota at this pace
+   if it turns out typical, at your pace over the last 40m · ~5m left right now
 
 ⚠️  May not finish before your 5-hour limit if it turns out heavy.
 
@@ -274,9 +274,13 @@ means even the heavy case fits, *won't fit* means not even the quick case
 does, and *may not fit* is everything in between.
 
 *Time left* is the room left after the prompt, divided by your pace. Your
-pace is tokens per minute over the last hour, or your average since the
-window opened if you have been idle for an hour. It stops at the reset: if
-you would not run out before the window resets, it says so.
+pace is tokens per minute over the stretch you have been working, within the
+last hour — so twenty minutes of work after an idle hour reads as a
+twenty-minute pace, and the message names the span it measured rather than
+claiming an hour of it. After a full idle hour it falls back to your average
+since the window opened. It stops at the reset: if you would not run out
+before the window resets, it says so instead, and `of quota at this pace`
+marks the numbers that are your pace rather than the clock.
 
 Only the quota can stop a turn partway through. A full context does not:
 Claude Code compacts it and carries on. So context is shown, but it never
@@ -304,9 +308,9 @@ Example `status` output (the numbers are illustrative):
 ```
 $ npx -y github:soumyaRauth/skills-hub runway status
 Context    151,777 / 1,000,000 tokens (15.2%), ~42 turns to full at ~20.1k/turn
-Burn       266.2k tokens/min over the last 60 min
+Burn       266.2k tokens/min over the last 17m of work (looking back 60 min)
 5h window  33.2% used (Claude Code's rate limits), resets in 4h00m
-Time left  ~21m (at the current burn rate); ~2 typical turns
+Time left  ~21m (at your pace over the last 17m); ~2 typical turns
 ```
 
 Install it with one command. It needs Python 3 and nothing else:

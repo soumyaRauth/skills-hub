@@ -460,6 +460,22 @@ methodology and documentation.
 
 ### Fixed
 
+- **Runway reported a 17-minute burst as "your pace over the last hour".**
+  `burn_rate` divides the tokens in its window by the span from the *first
+  call in that window* to now, so after an idle hour, twenty minutes of work
+  is a twenty-minute pace — correct, and the right thing to extrapolate from,
+  but the preflight message and `status` both printed the hour they looked
+  back over rather than the span they measured. It now returns that span with
+  the rate, and both report it (`at your pace over the last 22m`,
+  `over the last 22m of work (looking back 60 min)`). Two hours of time-left
+  predictions were resting on sixteen minutes of evidence with nothing saying
+  so.
+- **A bare "time left" read as time left in the window.**
+  `⏳ TIME LEFT after this prompt: ~2h44m` printed three lines above
+  `resets in 3h59m` looks like a contradiction; it was not. The reset-bound
+  case already said "it lasts until the reset", while the quota-bound case —
+  you run out before the window resets, at this pace — said nothing. It now
+  reads `~2h44m of quota at this pace`. The table cells stay terse.
 - **A pasted spec for a new project loaded no skill.** A real session was given a
   detailed spec for a Node CLI, pasted into an empty directory with nothing
   typed around it. It built and tested the whole tool without loading Project

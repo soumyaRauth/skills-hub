@@ -235,14 +235,18 @@ def scan_calls(root, since, until=None):
 
 
 def burn_rate(calls, now, minutes):
-    """Tokens per minute over the last `minutes`, measured from the first call in that span.
+    """(tokens per minute, minutes measured) over the last `minutes` of activity.
 
-    The span is at least five minutes so one call just now does not read as an
-    enormous rate. Returns 0.0 when nothing ran in the span.
+    The span runs from the first call in that window to now, with a five-minute
+    floor so one call just now does not read as an enormous rate. A burst after
+    an idle hour is therefore measured over the burst: 20 minutes of work reads
+    as a 20-minute pace, not an hour's. The span comes back with the rate
+    because a caller that says "over the last hour" regardless is claiming
+    evidence it does not have. Returns (0.0, 0.0) when nothing ran in the span.
     """
     since = now - minutes * 60
     recent = [c for c in calls if c.ts >= since]
     if not recent:
-        return 0.0
+        return 0.0, 0.0
     span = max(now - recent[0].ts, 300.0)
-    return sum(c.total for c in recent) / (span / 60.0)
+    return sum(c.total for c in recent) / (span / 60.0), span / 60.0
