@@ -278,8 +278,10 @@ def cmd_status(args):
         print(f"Turns      {len(done)} with API calls; median of the last {min(10, len(done))}: "
               f"{runway.human_tokens(typical)} tokens, "
               f"{median(len(t.calls) for t in done[-10:]):g} calls")
-    print(f"Burn       {runway.human_tokens(burn)} tokens/min over the last {cfg['burn_window_minutes']} min"
-          + (" (idle)" if burn == 0 else ""))
+    rate, rate_minutes = burn
+    print(f"Burn       {runway.human_tokens(rate)} tokens/min"
+          + (f" over the last {runway.human_minutes(rate_minutes)} of work"
+             f" (looking back {cfg['burn_window_minutes']} min)" if rate else " (idle)"))
     src = {"claude-code": "Claude Code's rate limits", "token_cap": "quota.token_cap in config.json",
            "unknown": "unknown"}[quota["source"]]
     if quota["pct"] is not None:
@@ -288,7 +290,8 @@ def cmd_status(args):
             line += f", resets in {runway.human_minutes(quota['minutes_to_reset'])}"
         print(line)
         if quota["minutes_left"] is not None:
-            how = "the window resets first" if quota.get("limited_by") == "reset" else "at the current burn rate"
+            how = ("the window resets first" if quota.get("limited_by") == "reset"
+                   else f"at your pace over the last {runway.human_minutes(quota.get('pace_minutes'))}")
             print(f"Time left  ~{runway.human_minutes(quota['minutes_left'])} ({how})"
                   + (f"; ~{quota['turns_left']} typical turns" if quota["turns_left"] is not None else ""))
         else:
@@ -363,6 +366,30 @@ def hook_command(kind):
     return f'python3 "{SCRIPT}" hook {kind} || true'
 
 
+# install-hooks --statusline keeps a status line it did not write. Claude Code reports the quota to the
+# status line and nowhere else (hooks.save_limits runs in that segment alone), so a user who stops at
+# this message never gets a real 5-hour window. Say what is lost and give the recipe in full: whoever
+# installed with npx has no clone to open the README in.
+STATUSLINE_KEPT = "left your existing status line alone"
+
+
+def statusline_recipe(settings_path):
+    return f"""
+Your status line is your own, so runway left it alone — but Claude Code reports the 5-hour quota to
+the status line and nowhere else, so until runway's segment runs, `status` cannot show time left and
+`check` has no real window to judge against.
+
+Print both. Claude Code shows every line your command emits:
+
+    #!/usr/bin/env bash
+    input=$(cat)
+    printf '%s' "$input" | <your current status line command>
+    printf '%s' "$input" | python3 "{SCRIPT}" statusline
+
+Save that as, say, ~/.claude/statusline-combined.sh, chmod +x it, and point statusLine.command in
+{settings_path} at it."""
+
+
 def install(settings_path, statusline=False):
     """Returns a list of what changed. Raises ValueError on unreadable settings, writing nothing."""
     data = _load_settings(settings_path)
@@ -383,7 +410,7 @@ def install(settings_path, statusline=False):
             data["statusLine"] = {"type": "command", "command": f'python3 "{SCRIPT}" statusline'}
             changes.append("set the status line")
         elif not _ours(current):
-            changes.append("left your existing status line alone (see the README to add runway beside it)")
+            changes.append(STATUSLINE_KEPT)
     if any(c.startswith(("added", "set")) for c in changes):
         backup = _backup(settings_path)
         if backup:
@@ -439,6 +466,8 @@ def cmd_install(args):
     print(path + ": " + ("; ".join(changes) if changes else "already installed, nothing changed"))
     if created:
         print("Wrote " + target)
+    if STATUSLINE_KEPT in changes:
+        print(statusline_recipe(path))
     if not args.statusline:
         print("For the real 5-hour quota, also install the status line: install-hooks --statusline")
     return 0

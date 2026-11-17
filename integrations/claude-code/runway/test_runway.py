@@ -6,6 +6,7 @@ writes the real ~/.claude.
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -127,8 +128,9 @@ assert transcripts.project_dir_for("/a b/c.d", "/r") == "/r/-a-b-c-d"
 # ---------------------------------------------------------------- RUN-005 burn --
 
 recent = [c for c in calls if c.ts >= NOW - 3600]
-assert transcripts.burn_rate(calls, NOW, 60) == sum(c.total for c in recent) / ((NOW - recent[0].ts) / 60)
-assert transcripts.burn_rate(calls, NOW + 7200, 60) == 0.0                               # idle
+span = (NOW - recent[0].ts) / 60                     # measured from the first call, not the whole 60 min
+assert transcripts.burn_rate(calls, NOW, 60) == (sum(c.total for c in recent) / span, span)
+assert transcripts.burn_rate(calls, NOW + 7200, 60) == (0.0, 0.0)                        # idle
 
 # ----------------------------------------------------------- RUN-006 estimator --
 
@@ -155,46 +157,54 @@ assert estimator.predict("add a retry", None, cfg)["context_before"] is None    
 # -------------------------------------------------------------- RUN-009 quota --
 
 flat_calls = [transcripts.Call(f"c{i}", NOW - 600 + i * 60, "m", {"input_tokens": 1000}) for i in range(10)]
-nothing = runway.quota_runway(flat_calls, NOW, 1000, 100.0, cfg, {})
+nothing = runway.quota_runway(flat_calls, NOW, 1000, (100.0, 60), cfg, {})
 assert nothing["source"] == "unknown" and nothing["pct"] is None and nothing["tokens"] == 10_000
 assert nothing["minutes_left"] is None
 
 capped = dict(cfg, quota=dict(cfg["quota"], token_cap=100_000))
-q = runway.quota_runway(flat_calls, NOW, 1000, 100.0, capped, {})
+q = runway.quota_runway(flat_calls, NOW, 1000, (100.0, 60), capped, {})
 assert q["source"] == "token_cap" and abs(q["pct"] - 10.0) < 1e-9
 # 90% room at 0.001%/token: 90 turns of 1,000; 900 minutes at 100/min, but the window resets after 290.
 assert q["turns_left"] == 90 and abs(q["minutes_to_reset"] - 290) < 1e-6
 assert abs(q["minutes_left"] - 290) < 1e-6 and q["limited_by"] == "reset"
-q = runway.quota_runway(flat_calls, NOW, 1000, 1000.0, capped, {})
+q = runway.quota_runway(flat_calls, NOW, 1000, (1000.0, 60), capped, {})
 assert abs(q["minutes_left"] - 90) < 1e-6 and q["limited_by"] == "quota"                  # faster burn: quota first
 
 snap = {"rate_limits": {"five_hour": {"used_percentage": 20.0, "resets_at": NOW + 3600}}, "captured_at": NOW - 330}
-q = runway.quota_runway(flat_calls, NOW, 1000, 100.0, cfg, snap)
+q = runway.quota_runway(flat_calls, NOW, 1000, (100.0, 60), cfg, snap)
 # 5 calls (5,000 tokens) before the snapshot made 20%: 0.004%/token; 5 more since add 20% -> 40%.
 assert q["source"] == "claude-code" and abs(q["pct"] - 40.0) < 1e-9, q
 assert abs(q["next_turn_pct"] - 4.0) < 1e-9 and q["turns_left"] == 15
 assert abs(q["minutes_left"] - 60.0) < 1e-6 and q["limited_by"] == "reset"               # reset comes first
 
 # Time left after a prompt: 10% used, 90% room; 1,000 tokens cost 1% (cap 100k).
-q = runway.quota_runway(flat_calls, NOW, 1000, 1000.0, capped, {})
+q = runway.quota_runway(flat_calls, NOW, 1000, (1000.0, 60), capped, {})
 assert abs(q["minutes_left"] - 90) < 1e-6 and q["pace_source"] == "recent"
 a = runway.after(q, 1000)
 assert a["status"] == "time" and abs(a["minutes"] - 89) < 1e-6 and abs(a["pct_after"] - 11) < 1e-9
-assert runway.after(runway.quota_runway(flat_calls, NOW, 1000, 100.0, capped, {}), 1000)["status"] == "reset"
+assert runway.after(runway.quota_runway(flat_calls, NOW, 1000, (100.0, 60), capped, {}), 1000)["status"] == "reset"
 assert runway.after(q, 95_000) == {"status": "limit", "minutes": 0.0, "pct_after": 100.0}  # 95% needed, 90% left
-idle = runway.quota_runway(flat_calls, NOW, 1000, 0.0, capped, {})            # after a break: the window's average
+idle = runway.quota_runway(flat_calls, NOW, 1000, (0.0, 0.0), capped, {})            # after a break: the window's average
 # 10,000 tokens since the window opened 10 minutes ago: 1,000/min, the same answer as the fast pace above.
 assert idle["pace_source"] == "window" and abs(runway.after(idle, 1000)["minutes"] - 89) < 1e-6
 assert runway.after(nothing, 1000)["status"] == "unknown"
 scen3 = {"quick": {"steps": 1, "tokens": 1000}, "typical": {"steps": 3, "tokens": 3000},
          "heavy": {"steps": 8, "tokens": 95_000}}
 line = runway.summary_line(scen3, {"pct": 12.0}, q)
-assert line.startswith("⛽ Runway · ⏳ TIME LEFT after this prompt: ~1h27m (quick: ~1h29m · heavy: limit hit partway)"), line
+head = "⏳ TIME LEFT after this prompt: ~1h27m of quota at this pace"   # not time left in the window
+assert line.startswith(f"⛽ Runway · {head} (quick: ~1h29m · heavy: limit hit partway)"), line
 assert " · 5h used 10%, resets in " in line and "\033" not in line, line
-assert "\033[1m\033[33m⏳ TIME LEFT after this prompt: ~1h27m\033[0m" in runway.summary_line(scen3, {"pct": 12.0}, q, color=True)
+assert f"\033[1m\033[33m{head}\033[0m" in runway.summary_line(scen3, {"pct": 12.0}, q, color=True)
 pre = runway.preflight_message(scen3, {"pct": 12.0}, q, runway.verdict(scen3, q), None, 120, color=True)
-assert "\033[1m\033[33m⏳ TIME LEFT after this prompt: ~1h27m\033[0m" in pre          # may not fit: yellow
-assert "\033" not in runway.preflight_message(scen3, {"pct": 12.0}, q, runway.verdict(scen3, q), None, 120)
+assert f"\033[1m\033[33m{head}\033[0m" in pre                                      # may not fit: yellow
+plain = runway.preflight_message(scen3, {"pct": 12.0}, q, runway.verdict(scen3, q), None, 120)
+assert "\033" not in plain
+assert "   if it turns out typical, at your pace over the last 1h00m · " in plain      # the span, as measured
+assert "\n ▸ typical              3     3.0k   ~1h27m\n" in plain                         # the cell stays terse
+burst = runway.quota_runway(flat_calls, NOW, 1000, (1000.0, 17.0), capped, {})
+assert burst["pace_minutes"] == 17.0
+assert "at your pace over the last 17m" in runway.preflight_message(
+    scen3, {"pct": 12.0}, burst, runway.verdict(scen3, burst), None, 120)             # never "over the last hour"
 
 # The step profile and the three outcomes.
 prof = estimator.step_profile([(1, 1100, 1000), (1, 1200, 1100), (3, 3600, 1000), (5, 6500, 1200),
@@ -207,7 +217,7 @@ assert sc["heavy"]["tokens"] == prof["heavy"] * (10_100 + prof["extra_per_step"]
 assert estimator.scenarios(10_000, 100, None)["typical"]["steps"] == estimator.DEFAULT_STEPS["typical"]
 
 expired = {"rate_limits": {"five_hour": {"used_percentage": 99.0, "resets_at": NOW - 1}}, "captured_at": NOW - 9999}
-assert runway.quota_runway(flat_calls, NOW, 1000, 100.0, cfg, expired)["source"] == "unknown"
+assert runway.quota_runway(flat_calls, NOW, 1000, (100.0, 60), cfg, expired)["source"] == "unknown"
 
 # A window opens at the first call after five idle hours.
 H = runway.HOUR
@@ -348,7 +358,8 @@ assert blocked["decision"] == "block" and lines[0] == "⛽ Runway · waiting for
 assert blocked["hookSpecificOutput"] == {"hookEventName": "UserPromptSubmit", "suppressOriginalPrompt": True}
 assert lines[5].startswith("⛔ Unlikely to finish before your 5-hour limit")
 assert lines[2] == "⏳ TIME LEFT after this prompt: none, the 5h limit is hit partway"   # the first thing you read
-assert lines[3].startswith("   if it turns out typical, at your pace over the last hour")
+assert re.match(r"   if it turns out typical, at your pace over the last (\d+h\d\dm|\d+m) · ", lines[3]), lines[3]
+assert "over the last hour" not in blocked["reason"]              # an hour is never assumed, only measured
 assert lines[9].startswith(" ▸ typical")                                     # the typical row is marked
 assert all("limit hit partway" in l for l in lines[8:11])
 assert "starting defaults, until you have 5 prompts" in blocked["reason"]
@@ -405,11 +416,19 @@ assert json.load(open(os.path.join(TMP, backups[0]))) == existing
 assert not any(c.startswith("added") for c in cli.install(settings, statusline=True))     # idempotent
 assert len(json.load(open(settings))["hooks"]["UserPromptSubmit"]) == 2
 
+with redirect_stdout(io.StringIO()) as buf:            # keeping their line prints how to run both
+    assert cli.main(["install-hooks", "--statusline", "--settings", settings]) == 0
+out = buf.getvalue()
+assert "claude-runway\" statusline" in out and "printf '%s'" in out    # the recipe, not "see the README"
+assert "quota" in out and settings in out                               # what it costs, and where to wire it
+
 cli.uninstall(settings)
 assert json.load(open(settings)) == existing                                             # round trip
 
 fresh = os.path.join(TMP, "fresh", "settings.json")
-cli.install(fresh, statusline=True)
+with redirect_stdout(io.StringIO()) as buf:
+    assert cli.main(["install-hooks", "--statusline", "--settings", fresh]) == 0
+assert "printf" not in buf.getvalue()                  # nothing to wire by hand: it set the line itself
 assert "claude-runway" in json.load(open(fresh))["statusLine"]["command"]
 cli.uninstall(fresh)
 assert json.load(open(fresh)) == {}

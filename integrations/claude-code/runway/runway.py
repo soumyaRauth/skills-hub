@@ -59,12 +59,17 @@ def recent_growth(turns, n=10):
 
 
 def quota_runway(calls, now, predicted_tokens, burn, cfg, snapshot):
-    """Percent used, reset time, minutes and turns left. `calls` covers at least the last 2 x window hours."""
+    """Percent used, reset time, minutes and turns left. `calls` covers at least the last 2 x window hours.
+
+    `burn` is (tokens per minute, minutes measured) from transcripts.burn_rate.
+    """
+    rate, rate_minutes = burn
     hours = cfg["quota"]["window_hours"]
     five = ((snapshot or {}).get("rate_limits") or {}).get("five_hour") or {}
     resets_at = five.get("resets_at")
     out = {"source": "unknown", "pct": None, "resets_at": None, "minutes_to_reset": None,
-           "tokens": 0, "burn_per_min": burn, "minutes_left": None, "turns_left": None, "next_turn_pct": None}
+           "tokens": 0, "burn_per_min": rate, "minutes_left": None, "turns_left": None,
+           "next_turn_pct": None, "pace_minutes": None}
 
     pct_per_token = None
     if isinstance(resets_at, (int, float)) and resets_at > now and five.get("used_percentage") is not None:
@@ -91,9 +96,10 @@ def quota_runway(calls, now, predicted_tokens, burn, cfg, snapshot):
     # Your pace: tokens per minute over the last burn window. After a break
     # that is zero, which would say nothing about how long you can work, so
     # fall back to your average since this 5-hour window opened.
-    pace, out["pace_source"] = burn, "recent"
+    pace, out["pace_source"], out["pace_minutes"] = rate, "recent", rate_minutes
     if pace <= 0 and start is not None and out["tokens"] > 0:
-        pace, out["pace_source"] = out["tokens"] / max(5.0, (now - start) / 60.0), "window"
+        elapsed = max(5.0, (now - start) / 60.0)
+        pace, out["pace_source"], out["pace_minutes"] = out["tokens"] / elapsed, "window", elapsed
     out["pace"] = pace
 
     if pct_per_token and out["pct"] is not None:
@@ -169,21 +175,29 @@ def paint(text, *codes, color=True):
 
 
 def _short(a):
-    """The time left after a prompt, in a few words."""
+    """The time left after a prompt, in a few words: how long, and what ends it.
+
+    A bare duration printed above "resets in 3h53m" reads as time left in the
+    window, when "time" means the opposite: the quota goes first, at this pace.
+    """
     if a["status"] == "limit":
         return "none, the 5h limit is hit partway"
     if a["status"] == "reset":
         return f"~{human_minutes(a['minutes'])}, it lasts until the reset"
+    if a["status"] == "time":
+        return f"~{human_minutes(a['minutes'])} of quota at this pace"
     if a["status"] == "nopace":
         return f"{a['pct_after']:.0f}% used after it"
-    return f"~{human_minutes(a['minutes'])}"
+    return "unknown"
 
 
 def _cell(a):
-    """The same, for a table cell."""
+    """The same, for a table cell: terse, the row and the headline carry the rest."""
     if a["status"] == "reset":
         return f"~{human_minutes(a['minutes'])} (until the reset)"
-    return "limit hit partway" if a["status"] == "limit" else _short(a)
+    if a["status"] == "limit":
+        return "limit hit partway"
+    return f"~{human_minutes(a['minutes'])}" if a["status"] == "time" else _short(a)
 
 
 def time_left_headline(scen, quota, level, color=False):
@@ -208,8 +222,8 @@ def preflight_message(scen, ctx, quota, v, profile, confirm_seconds=None, color=
                   "   Install the runway status line (install-hooks --statusline), or set quota.token_cap.", ""]
     else:
         lines.append(time_left_headline(scen, quota, v["level"], color))
-        pace = "at your pace over the last hour" if quota.get("pace_source") == "recent" else \
-            "at your average pace this window"
+        pace = (f"at your pace over the last {human_minutes(quota.get('pace_minutes'))}"
+                if quota.get("pace_source") == "recent" else "at your average pace this window")
         now = quota.get("minutes_left")
         lines.append(paint(f"   if it turns out typical, {pace}"
                            + (f" · ~{human_minutes(now)} left right now" if now is not None else ""),
