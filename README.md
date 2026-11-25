@@ -1958,7 +1958,7 @@ guarantee production safety, and a human owns the release decision.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) · Created and maintained by [Soumya Rauth](https://soumya-rauth.cyou)
 
 <div align="center">
 <br>
