@@ -15,8 +15,13 @@
     <a class="brand" href="./"><span class="dot"></span> skills-hub</a>
     <nav class="links">
       <a href="#skills">Skills</a>
-      <a href="#empathy">Empathy</a>
-      <a href="#growth">Growth</a>
+      <details class="navmenu">
+        <summary>Beyond code</summary>
+        <div class="navmenu-panel">
+          <a href="#empathy"><strong>Empathy</strong><span>Human Empathy: how people experience what you make</span></a>
+          <a href="#growth"><strong>Growth</strong><span>SEO Growth Engine: being found in search</span></a>
+        </div>
+      </details>
       <a href="#tools">Tools</a>
       <a href="#activation">Activation</a>
       <a href="#install">Install</a>
@@ -734,6 +739,24 @@
 </footer>
 
 <script>
+// The menu works without this; it adds closing on Escape, outside clicks,
+// a chosen link, and focus leaving it.
+document.querySelectorAll("details.navmenu").forEach(function (menu) {
+  var summary = menu.querySelector("summary");
+  menu.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && menu.open) { menu.open = false; summary.focus(); }
+  });
+  menu.addEventListener("focusout", function (e) {
+    if (menu.open && !menu.contains(e.relatedTarget)) menu.open = false;
+  });
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () { menu.open = false; });
+  });
+  document.addEventListener("click", function (e) {
+    if (menu.open && !menu.contains(e.target)) menu.open = false;
+  });
+});
+
 document.querySelectorAll("[data-copy]").forEach(function (btn) {
   btn.addEventListener("click", function () {
     var text = btn.parentElement.querySelector("code").textContent;

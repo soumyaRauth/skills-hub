@@ -107,6 +107,66 @@ nav.links { display: flex; gap: 22px; font-size: 14px; }
 nav.links a { color: var(--text-muted); }
 nav.links a:hover { color: var(--text); text-decoration: none; }
 
+/* A disclosure menu in the header: <details> opens and closes without script. */
+.navmenu { position: relative; }
+.navmenu summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+}
+.navmenu summary::-webkit-details-marker { display: none; }
+.navmenu summary::after {
+  content: "";
+  width: 5px; height: 5px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+.navmenu[open] summary::after { transform: translateY(1px) rotate(-135deg); }
+.navmenu summary:hover,
+.navmenu[open] summary { color: var(--text); }
+.navmenu summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.navmenu-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+nav.links .navmenu-panel a {
+  display: grid;
+  gap: 2px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  color: var(--text);
+}
+nav.links .navmenu-panel a:hover,
+nav.links .navmenu-panel a:focus-visible { background: var(--surface); }
+.navmenu-panel strong { font-weight: 600; }
+.navmenu-panel span { color: var(--text-muted); font-size: 13px; line-height: 1.4; }
+
+/* On a phone the panel spans the header instead of hanging off the summary,
+   so it never runs past the screen edge. */
+@media (max-width: 640px) {
+  .navmenu { position: static; }
+  .navmenu-panel { top: calc(100% + 8px); left: 16px; right: 16px; width: auto; max-width: none; }
+}
+
 /* ------------------------------------------------------------------ hero -- */
 
 .hero { padding: 76px 0 52px; }
