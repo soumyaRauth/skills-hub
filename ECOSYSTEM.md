@@ -76,6 +76,7 @@ of four depths, and the depth is part of its contract:
 | **Project Knowledge** · `project-knowledge` | What does the next developer need to know, and is it still true? | Asked to learn the codebase, capture or update knowledge, prep a handover; the knowledge Stop hook reports it behind HEAD | Ordinary work in a repository without `.agents/knowledge/`, one-off file questions, user documentation | `ACTIVE` when asked · `PASSIVE` reading where `.agents/knowledge/` exists |
 | **Delivery Lead** · `delivery-lead` | What is the next ticket, and has it actually reached done? | The user asks for the loop: work through the backlog, take the next ticket, keep going until the milestone is done, build the whole thing; or resuming an unfinished run | A single request however large, a request naming one skill, `/skills-pipeline`, planning or re-ordering tickets | `ACTIVE`, opt-in by request shape |
 | **Human Empathy** · `human-empathy` | Does this leave the person using or reading it understood, supported and capable? | How people experience a product, feature, flow, document or book; why they struggle or give up; planning, writing, reviewing or improving a book, chapter, tutorial or PDF for its readers | A label, a typo, a grammar fix, a spacing tweak or any single mechanical edit nobody framed as an experience question; features with no user-facing experience in question | `ACTIVE` · `CONSULT` when a build request names its people · `GATING` only for a readiness verdict someone asked for |
+| **SEO Growth Engine** · `seo-growth` | Can the people who should find this site, and the person behind it, find it, and what is the next best step? | Search visibility work: audits, technical SEO, keywords, competitors, optimizing a page for search, content to attract search traffic, internal links, backlinks, Search Console, a name in search results, `/seo-growth`, or resuming `.seo-growth/` records | A typo, copy or styling edit nobody framed as search work, even on a page with SEO problems; paid ads; social media growth; unrelated work in a repository with records | `ACTIVE` when asked · `CONSULT` when a change would move or remove URLs, noindex pages, change the domain or switch to client-only rendering · never `GATING` |
 
 ## How they relate
 
@@ -128,6 +129,13 @@ flowchart LR
   HE -. another language .-> PL
   HE -. what to build .-> PC
   HE -. ship decision .-> PG
+  SG[SEO Growth Engine] -- larger site changes --> PB
+  SG -. route or URL renames .-> IM
+  SG -. content for its readers .-> HE
+  SG -. multilingual content .-> PL
+  SG -. analytics consent, accessibility .-> SC
+  SG -. SEO package .-> DG
+  SG -. deploy .-> RE
 ```
 
 What each skill does *not* do matters as much as the edges:
@@ -136,6 +144,7 @@ What each skill does *not* do matters as much as the edges:
 - **Project Compass** decides what should happen next. It does not review architecture on demand — that is **Architecture Engineer** — and it never gates.
 - **Standards Compass** is the only authority on standards, frameworks and regulations. Accessibility *implementation* happens inside the work it informs. There is no separate accessibility skill.
 - **Human Empathy** judges how an experience treats the people in it: who is stuck, confused, excluded or handled, in a product or in a book. It finds the human impact of an accessibility or consent problem and hands the conformance question to Standards Compass. It never states a ship verdict, and it changes a product's behaviour or a book's direction only when its owner agrees.
+- **SEO Growth Engine** runs a website's search work as a project across sessions, with its own records in `.seo-growth/<domain>/`. It decides what the site's search work should be next and does the safe parts; it hands larger code changes to ProofBuild, route renames to Impact Map, and whether content serves its reader to Human Empathy. It never states a ship verdict, and it publishes, redirects, changes robots or canonical directives, or contacts anyone only with the owner's yes.
 - **Production Guard** owns the ship verdict, and observability is one of its categories. **ProofBuild** owns `VERIFIED`. Neither overrules the other.
 - **Deployment Compatibility Engineer** is the only skill here that takes two operands — a project *and* a named environment. It owns the readiness state; it does not own the ship decision, and a `READY` environment says nothing about whether the change belongs in it.
 - **Project Kickoff** starts a project that does not exist yet. Project Compass reads an existing one; Kickoff writes the `docs/spec.md` that Compass later reads.

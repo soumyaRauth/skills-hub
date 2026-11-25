@@ -135,3 +135,9 @@ graders:
   input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:human-empathy)"'
   min: 0
   max: 0
+- name: quiet-seo-growth
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?(?:seo-growth)"'
+  min: 0
+  max: 0

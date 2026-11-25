@@ -16,6 +16,7 @@
     <nav class="links">
       <a href="#skills">Skills</a>
       <a href="#empathy">Empathy</a>
+      <a href="#growth">Growth</a>
       <a href="#tools">Tools</a>
       <a href="#activation">Activation</a>
       <a href="#install">Install</a>
@@ -464,6 +465,52 @@
   </div>
 </section>
 
+<section id="growth">
+  <div class="wrap">
+    <h2>Growth</h2>
+    <p>
+      The skills above make the work correct and good for the people using
+      it. This one makes sure the right people can <em>find</em> it. It runs a
+      website&rsquo;s search visibility as a long-term project, with the person
+      behind the site as a first-class target: when someone searches your
+      name, what do they find?
+    </p>
+    <div class="grid two">
+
+      <a class="card" href="seo-growth.html">
+        <h3>SEO Growth Engine</h3>
+        <p>
+          Finds what actually stands between your site and search results,
+          ranks the next best action, makes the safe changes in your
+          site&rsquo;s own code and validates them, and asks before anything
+          risky. Per-domain records carry every session forward. It never
+          invents search volumes or rankings, and never promises them.
+        </p>
+        <div class="tags">
+          <span class="tag">technical SEO</span>
+          <span class="tag">personal brand</span>
+          <span class="tag">content strategy</span>
+          <span class="tag">Search Console</span>
+          <span class="tag">structured data</span>
+        </div>
+        <span class="more">Read the guide &rarr;</span>
+      </a>
+
+    </div>
+    <div class="cmd" style="margin-top:16px">
+      <code>npx skills add soumyaRauth/skills-hub --skill seo-growth</code>
+      <button type="button" data-copy>Copy</button>
+    </div>
+    <p>
+      One skill, for any Agent Skills-compatible agent, and part of the full
+      set. Then type <code>/seo-growth https://your-site</code>, or ask:
+      <em>&ldquo;My name doesn&rsquo;t show up on Google&rdquo;</em>,
+      <em>&ldquo;What should I write next?&rdquo;</em>,
+      <em>&ldquo;How is search doing?&rdquo;</em>
+    </p>
+  </div>
+</section>
+
 <section id="tools">
   <div class="wrap">
     <h2>Tools</h2>
@@ -558,7 +605,7 @@
     <h2>Installing</h2>
     <p>Skills install through the Skills CLI and work with any Agent Skills-compatible agent.</p>
 
-    <h3>All nineteen skills, any compatible agent</h3>
+    <h3>All twenty skills, any compatible agent</h3>
     <div class="cmd">
       <code>npx skills add soumyaRauth/skills-hub --skill '*'</code>
       <button type="button" data-copy>Copy</button>
@@ -581,7 +628,7 @@
       <code>--copy</code> keeps the skills out of <code>~/.agents/skills</code>,
       a folder Codex, Cursor and other agents also read.
     </p>
-    <p>Or as a plugin, which keeps the nineteen together and updates them in one step:</p>
+    <p>Or as a plugin, which keeps the twenty together and updates them in one step:</p>
     <div class="cmd">
       <code>/plugin marketplace add soumyaRauth/skills-hub</code>
       <button type="button" data-copy>Copy</button>
@@ -631,7 +678,7 @@
       <button type="button" data-copy>Copy</button>
     </div>
     <p>
-      <code>skills-hub</code> stands for all nineteen skills. The command removes
+      <code>skills-hub</code> stands for all twenty skills. The command removes
       each one by name through the Skills CLI, and never uses
       <code>--skill '*'</code>, which would remove every skill on the machine.
       Skills that are not installed are skipped. Add <code>--dry-run</code> to
