@@ -30,9 +30,12 @@ report:
    URL in the framework config (`site`, `baseURL`, `url`, `siteUrl`,
    `metadataBase`, `homepage`), the domain in deployment config, or the owner
    saying so. Use `<repository root>/.seo-growth/`.
-4. **Otherwise** (a URL with no source here, or an unrelated repository), use
-   `~/.seo-growth/`. Never create records inside a repository that is not the
-   site's source.
+4. **The site's source is elsewhere on this machine.** A repository whose
+   `CNAME`, framework config or deployment config names the domain. Use that
+   repository's `.seo-growth/`, do the code work there, and say so.
+5. **Otherwise** (a URL with no source on this machine, or an unrelated
+   repository), use `~/.seo-growth/`. Never create records inside a
+   repository that is not the site's source.
 
 ## The site key
 

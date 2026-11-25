@@ -559,7 +559,8 @@ def crawl(start, max_pages=200, delay=0.5, origin_map=None):
     in_sitemap = {origin_map(u["loc"]) for u in sitemap["urls"]}
 
     pages, inlinks, depth, blocked = {}, {}, {start_local: 0}, []
-    queue = deque([start_local])
+    queue, queued = deque([start_local]), {start_local}
+    seeded = False
     fetched = 0
 
     def visit(url):
@@ -581,7 +582,20 @@ def crawl(start, max_pages=200, delay=0.5, origin_map=None):
         pages[url] = page
         return page
 
-    while queue and fetched < max_pages:
+    # Links from the start page first, breadth-first, so depth is the shortest
+    # click path. Then sitemap URLs those links never reached become extra
+    # starting points, and their links are followed too: a page reached only
+    # that way has no depth, but its links still count as inlinks.
+    while fetched < max_pages:
+        if not queue:
+            if seeded:
+                break
+            seeded = True
+            for url in sorted(in_sitemap - queued):
+                if urllib.parse.urlsplit(url).netloc == host:
+                    queued.add(url)
+                    queue.append(url)
+            continue
         url = queue.popleft()
         if url in pages:
             continue
@@ -594,16 +608,11 @@ def crawl(start, max_pages=200, delay=0.5, origin_map=None):
                 continue
             if target != url:
                 inlinks.setdefault(target, []).append({"from": url, "text": link["text"]})
-            if target not in depth:
+            if url in depth and target not in depth:
                 depth[target] = depth[url] + 1
+            if target not in queued:
+                queued.add(target)
                 queue.append(target)
-
-    # Sitemap URLs the links never reached: fetch them too, to judge them.
-    for url in sorted(in_sitemap):
-        if fetched >= max_pages:
-            break
-        if url not in pages and urllib.parse.urlsplit(url).netloc == host:
-            visit(url)
     truncated = bool(queue) or any(u not in pages for u in in_sitemap)
     return summarize_crawl(start_local, pages, inlinks, depth, in_sitemap, sitemap, robots,
                            robots_res, blocked, truncated, max_pages, origin_map)
@@ -644,21 +653,26 @@ def summarize_crawl(start, pages, inlinks, depth, in_sitemap, sitemap, robots, r
         [f"{u} → {p['canonical']}" for u, p in canon_elsewhere.items()])
     add("medium", "sitemap-canonicalized", "sitemap lists pages that canonicalize elsewhere",
         [u for u in canon_elsewhere if u in in_sitemap])
-    add("medium", "orphan", "in the sitemap, but no crawled page links to it",
-        [u for u in in_sitemap if u in indexable and not inlinks.get(u) and u != start])
+    # Canonicalized to another page on this site: an intended variant (a filter, a
+    # parameter). Canonicalized off-site: more likely a broken canonical, so it is
+    # still judged as a page of its own.
+    same_site_duplicate = {u for u, p in canon_elsewhere.items()
+                           if origin(origin_map(p["canonical"])) == origin(origin_map(p["final_url"]))}
+    orphans = [u for u in in_sitemap if u in indexable and not inlinks.get(u) and u != start]
+    add("medium", "orphan", "in the sitemap, but no crawled page links to it", orphans)
+    add("medium", "unreachable-from-start",
+        "linked from other pages, but no chain of HTML links leads here from the start page",
+        [u for u in indexable if u not in depth and u not in orphans and u not in same_site_duplicate])
     if in_sitemap:
-        # A page canonicalized to another page on this site is a duplicate and belongs outside the
-        # sitemap; one whose canonical points off-site is more likely a broken canonical, so list it.
-        same_site_duplicate = {u for u, p in canon_elsewhere.items()
-                               if origin(origin_map(p["canonical"])) == origin(origin_map(p["final_url"]))}
         add("low", "missing-from-sitemap", "indexable pages the sitemap does not list",
             [u for u in indexable if u not in in_sitemap and u not in same_site_duplicate])
     add("low", "deep", "pages more than three clicks from the start page",
-        [f"{u} (depth {depth[u]})" for u in indexable if depth.get(u, 0) > 3])
+        [f"{u} (depth {depth[u]})" for u in indexable if (depth.get(u) or 0) > 3])
     for field, code, label in (("title", "duplicate-title", "titles"), ("meta_description", "duplicate-description", "meta descriptions")):
         groups = {}
         for u, p in indexable.items():
-            if p.get(field):
+            # Variants that name another page as canonical are expected to repeat it.
+            if p.get(field) and u not in same_site_duplicate:
                 groups.setdefault(p[field].strip().lower(), []).append(u)
         add("medium", code, f"indexable pages sharing the same {label}",
             [f"\"{indexable[us[0]][field]}\": " + ", ".join(sorted(us)) for us in groups.values() if len(us) > 1])

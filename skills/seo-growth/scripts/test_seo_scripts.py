@@ -45,7 +45,10 @@ PAGES = {
     "new.html": """<!doctype html><html lang="en"><head><title>New</title>
 <link rel="canonical" href="https://site.example/new.html"></head><body><h1>New</h1></body></html>""",
     "orphan.html": """<!doctype html><html lang="en"><head><title>Talks</title>
-<link rel="canonical" href="https://site.example/orphan.html"></head><body><h1>Talks</h1></body></html>""",
+<link rel="canonical" href="https://site.example/orphan.html"></head><body><h1>Talks</h1>
+<a href="/seed-child.html">Slides</a></body></html>""",
+    "seed-child.html": """<!doctype html><html lang="en"><head><title>Slides</title>
+<link rel="canonical" href="https://site.example/seed-child.html"></head><body><h1>Slides</h1></body></html>""",
     "private/x.html": "<html><head><title>Private</title></head><body>secret</body></html>",
     "robots.txt": "User-agent: *\nDisallow: /private/\n\nUser-agent: Googlebot\nDisallow: /orphan.html$\n\n"
                   "Sitemap: https://site.example/sitemap_index.xml\n",
@@ -165,6 +168,10 @@ class SiteTests(unittest.TestCase):
         self.assertTrue(any("/blog/missing.html [404]" in u and "/blog/" in u for u in found["broken-internal"]))
         self.assertTrue(any(u.endswith("/about.html") for u in found["sitemap-noindex"]))
         self.assertTrue(any(u.endswith("/orphan.html") for u in found["orphan"]))
+        # Reached only through a sitemap page: it has an inlink, so it is not an orphan,
+        # but no link path leads to it from the start page.
+        self.assertFalse(any(u.endswith("/seed-child.html") for u in found["orphan"]))
+        self.assertTrue(any(u.endswith("/seed-child.html") for u in found["unreachable-from-start"]))
         self.assertTrue(any("/old" in u for u in found["internal-link-to-redirect"]))
         self.assertTrue(any("/old" in u for u in found["sitemap-not-200"]))
         self.assertIn("redirect-chain", found)
