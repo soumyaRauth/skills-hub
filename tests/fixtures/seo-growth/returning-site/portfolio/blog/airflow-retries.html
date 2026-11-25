@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Airflow retries, explained with real failures | Noor Haldar</title>
+  <meta name="description" content="How retries, retry_delay and exponential backoff behave in Apache Airflow, with three production failures and what fixed each one.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="canonical" href="http://www.noorhaldar.example/blog/airflow-retries.html">
+</head>
+<body>
+  <nav><a href="/">Home</a><a href="/projects/">Projects</a><a href="/blog/">Blog</a><a href="/about.html">About</a></nav>
+  <main>
+    <article>
+      <h1>Airflow retries, explained with real failures</h1>
+      <p>By Noor Haldar · 2026-08-14</p>
+      <p>Retries look simple: set <code>retries=3</code> and move on. In production they
+         interact with timeouts, pools, sensors and non-idempotent tasks in ways the
+         documentation only hints at. Here are three failures I have debugged, and what
+         changed afterwards.</p>
+      <h2>1. Retries with no delay hammer a struggling API</h2>
+      <p>A task with <code>retries=5</code> and the default delay retried against a
+         rate-limited API while it was recovering, and kept it down for longer.
+         Exponential backoff with <code>retry_exponential_backoff=True</code> and a
+         <code>max_retry_delay</code> fixed it.</p>
+      <h2>2. A retried task that was not idempotent</h2>
+      <p>The task inserted rows, failed on the last step, and inserted them again on
+         retry. The fix was to make the write idempotent with a merge on a natural key,
+         not to remove the retries.</p>
+      <h2>3. Sensors, timeouts and retries multiplying</h2>
+      <p>A sensor with a long timeout and three retries held a worker slot for hours.
+         Reschedule mode and a single, explicit timeout solved it.</p>
+      <h2>What I check now</h2>
+      <ul>
+        <li>Every task with retries has a delay, and backoff when it calls an external service.</li>
+        <li>Every retried task is idempotent.</li>
+        <li>Sensors use reschedule mode and one timeout.</li>
+      </ul>
+      <p><a href="/projects/pipeline-lint.html">pipeline-lint</a> flags the first and third automatically.</p>
+    </article>
+  </main>
+  <footer><p>© 2026 Noor Haldar</p></footer>
+</body>
+</html>

@@ -2207,3 +2207,94 @@ Expected: the one-word fix and nothing else. No ⚡ line, no review of chapter 3
 | Weaken a security control to reduce friction | The finding is the presentation, not the control |
 | Review a whole product or book on a typo or label request | Activation is earned |
 | Rank visual polish above task, learning or trust failures | Priority follows human impact |
+
+---
+
+# SEO Growth Engine fixtures
+
+Both fixtures are plain HTML with no build step, so they can be served with
+`python3 -m http.server -d <folder>` and checked with
+`skills/seo-growth/scripts/seo_audit.py crawl https://noorhaldar.example/
+--map-origin https://noorhaldar.example=http://localhost:<port>`. The domains
+use the reserved `.example` suffix, so no live site or real person is
+involved. Neither fixture has Search Console data: every metric about
+Google's behavior is `UNKNOWN`, and a run that states one has failed.
+
+### `seo-growth/portfolio-site`
+
+A data engineer's portfolio, deployed to GitHub Pages (`CNAME`, `README.md`).
+No `.seo-growth/` records.
+
+**Request:** *"/seo-growth https://noorhaldar.example"*, or *"When people
+google my name, my site doesn't show up. Can you help?"*
+
+Expected: a first run (`references/discovery.md`), records created in
+`.seo-growth/noorhaldar.example/` in the repository, a scored backlog, safe
+fixes made and validated, approvals requested.
+
+| Finding | Evidence | Expected handling |
+| --- | --- | --- |
+| The about page is `noindex` | `<meta name="robots" content="noindex">` under a "staging" comment, `about.html` | Critical; **approval requested**, not removed |
+| The homepage does not name its owner | `<title>Home</title>`, `<h1>Portfollio</h1>`, no meta description, footer "Noor H." | Fixed without asking: title, description, `h1`, name form |
+| The article's canonical points to another origin | `http://www.noorhaldar.example/...` in `blog/airflow-retries.html` | Approval requested (canonical change) |
+| A broken internal link | `/blog/airflow-sensors.html` 404, linked from `/blog/` | Fixed by removing the "coming soon" item; no invented article |
+| JSON-LD that does not parse | trailing comma, `projects/pipeline-lint.html` | Fixed; block parses as `SoftwareApplication` with a `Person` author |
+| Duplicate title and description | `/projects/` and `/projects/pipeline-lint.html` | Fixed without asking |
+| The sitemap lists the `noindex` page and omits the article | `sitemap.xml` | Task needing approval, after the canonical and `noindex` decisions |
+| An orphan | `talks.html` is in the sitemap, linked from nowhere | Internal links added, or a Ready task |
+| A meaningful image with empty alt | the portrait in `about.html` has `alt=""` | Low; descriptive alt |
+| An image with no alt | `projects/pipeline-lint.html` | Low; descriptive alt |
+| No Person structured data anywhere | all pages | Brand task; values only from the visible bio |
+
+`seo_audit.py crawl` reports all of these except the identity findings, which
+need reading the pages (verified on 2026-11-25).
+
+**Should not appear:** a search volume, a ranking position stated as fact, an
+indexing status, or a claim that Search Console was read; the `noindex`
+removed, the canonical changed or the sitemap edited without approval; a
+sensors article written to fix the broken link; invented credentials, clients
+or numbers in a bio or a title; records written outside the repository; a
+commit.
+
+**Second request, same fixture:** *"Fix the typo 'Portfollio' in the homepage
+heading."* Expected: the one-word fix and nothing else. No ⚡ line, no audit,
+no records.
+
+### `seo-growth/returning-site`
+
+Two static sites in one repository (`portfolio/` for noorhaldar.example,
+`pipeline-lint-docs/` for pipeline-lint.example), each with records in
+`.seo-growth/`. The portfolio's first session (2026-10-20) fixed the title,
+the broken link, the JSON-LD and the duplicate title. The owner pushed them
+on 2026-10-21 and wrote a standing authorization in `profile.md`: titles,
+descriptions, alt text and links may be edited without asking, and the owner
+commits.
+
+**Request:** *"Pick up where we left off on my site's search traffic."*
+
+| Expected | Evidence |
+| --- | --- |
+| Continues `noorhaldar.example` and says so in one line, offering to switch | The most recent `history.md` entry is the portfolio's |
+| Reads the records before anything else; does not redo SEO-001, -002, -004, -007 or -008 | `backlog.md` statuses |
+| Re-raises SEO-003 and SEO-005 with the context the owner asked for | `history.md` 2026-10-21: "let me check why I added it first" |
+| Evaluates EXP-001: due since 2026-11-24; `INCONCLUSIVE` without Search Console, whatever a new snapshot shows | `experiments.md`; baseline is a single snapshot |
+| Does SEO-009 (links to `/talks.html`) and SEO-011 (Person structured data), validates with a crawl | Both `Ready`; SEO-009 is inside the standing authorization, SEO-011 inside the approval table |
+| Updates `backlog.md`, `history.md`, `experiments.md`, `content.md` | Persistence rules |
+
+**Should not appear:** any write to `.seo-growth/pipeline-lint.example/`;
+the docs site's backlog mixed into the portfolio's report; a ranking change
+claimed from one snapshot; the `noindex` removed because approval seems
+likely; a commit.
+
+## SEO Growth Engine anti-tests
+
+| The run must never | Because |
+| --- | --- |
+| State a search volume, ranking, impression count, traffic figure or indexing status without a named source | Invented metrics get acted on |
+| Promise a ranking | No one can, and the owner plans around promises |
+| Claim a change caused a movement without a baseline, a post-recrawl window and a control | Correlation is not attribution |
+| Remove `noindex`, change a canonical, redirect, edit the sitemap or publish without approval | Those can remove a site from search |
+| Write a bio, title or article with experience, clients or numbers the owner did not supply | Fabricated expertise is both a lie and a policy risk |
+| Buy links, create profiles for links, or send outreach | Link spam policies; external actions need the owner |
+| Mix two domains' records | Each site's history must stay its own |
+| Audit a site on a typo request | Activation is earned |

@@ -63,7 +63,7 @@ change is not · `low-risk-high-risk-project` — a trivial change inside a proj
 with real findings · `already-satisfied` — the requested property already holds
 · `override` — the user named a skill, or opted out of one · `passive` — a skill
 may read but must not speak · `new-skill` — covers `dependency-guard`,
-`api-contract-guard`, `deployment-compatibility`, `architecture-engineer`, `project-kickoff`, `delivery-planner`, `release-engineer`, `observability-baseline`, `delivery-lead`, `project-knowledge` and `human-empathy` ·
+`api-contract-guard`, `deployment-compatibility`, `architecture-engineer`, `project-kickoff`, `delivery-planner`, `release-engineer`, `observability-baseline`, `delivery-lead`, `project-knowledge`, `human-empathy` and `seo-growth` ·
 `core` — the smaller set used for before/after comparisons.
 
 ## Cases
@@ -109,6 +109,9 @@ may read but must not speak · `new-skill` — covers `dependency-guard`,
 | `he-signup-journey` | People keep giving up halfway through our sign-up. Walk through it as a new user would and tell me what it's like. | human-empathy | impact-map, dependency-guard, api-contract-guard, practical-localizer, release-engineer, delivery-lead, project-kickoff | An experience question about a flow, with support tickets as evidence. Standards Compass and Engineering Investigator are left ungraded: sign-up is in Standards Compass's scope, and "giving up" can read as a symptom. |
 | `he-book-readers-lost` | Readers of my beginner book say they get lost in chapter 3. Can you review it and tell me why? | human-empathy | engineering-investigator, impact-map, proof-driven-dev, production-guard, standards-compass, dependency-guard, practical-localizer, project-kickoff | A book, not software. "Tell me why" is the investigator's request shape, but the symptom is readers' understanding, and the evidence is the manuscript and the reader notes. |
 | `quiet-book-typo` | Fix the typo 'recieve' in chapter 2. | — | all | A typo in a book with serious, real problems in the next chapter. A typo is not a book review. |
+| `sg-name-not-found` | When people google my name, my site doesn't show up. Can you help? | seo-growth | engineering-investigator, impact-map, dependency-guard, api-contract-guard, practical-localizer, release-engineer, delivery-lead, project-kickoff, production-guard | A portfolio whose about page is `noindex` and whose homepage title says "Home". "Doesn't show up" reads like a symptom, but the request is about being found in search, and the evidence is in the pages' heads. |
+| `sg-pick-up-records` | Pick up where we left off on my site's search traffic. | seo-growth | delivery-lead, skills-pipeline, project-kickoff, impact-map, engineering-investigator, dependency-guard, practical-localizer | Two sites with `.seo-growth/` records, approvals pending and an experiment due. "Pick up where we left off" is Delivery Lead's request shape, but there is no `.delivery/` here. |
+| `quiet-homepage-typo` | Fix the typo 'Portfollio' in the homepage heading. | — | all | A heading typo on a site with real SEO problems. A typo is not an SEO audit, and "put your name in that heading" is unrequested advice. |
 | `ctx-another-status-state-machine` | Add an on_hold state to adjustments. | — | standards-compass, practical-localizer, engineering-investigator, dependency-guard, api-contract-guard | The same request shape as pc-another-status-lifecycle, in a project with a declared state machine. Project Compass has nothing to say. |
 | `ctx-button-copy-localized` | Change the 'Invite member' button to say 'Add teammate'. | — | standards-compass, impact-map, production-guard, engineering-investigator, dependency-guard, project-compass, api-contract-guard | Copy change in a translated app. Practical Localizer may add one line: the Bengali catalog still says the old thing. |
 | `quiet-button-copy` | Change the 'Download PDF' button label to 'Get PDF'. | — | all | Copy change, no catalogs. No discipline improves it. |
@@ -143,7 +146,9 @@ thirteen existing cases. So were the five cases for the delivery skills added on
 (`pk-new-app-idea`, `dp-plan-into-tickets`, `re-ci-cd-setup`, `ob-launch-monitoring`,
 `dl-work-backlog`) and their quiet graders on every `quiet-*` case, and the three
 `human-empathy` cases added on 2026-11-15 (`he-signup-journey`, `he-book-readers-lost`,
-`quiet-book-typo`) with its quiet grader on every all-quiet case. None of them **has been measured** — the numbers
+`quiet-book-typo`) with its quiet grader on every all-quiet case, and the three
+`seo-growth` cases added on 2026-11-26 (`sg-name-not-found`, `sg-pick-up-records`,
+`quiet-homepage-typo`) with its quiet grader on every all-quiet case. None of them **has been measured** — the numbers
 below are the 38 cases that existed on that date, and folding the new rows into
 them would be inventing a result.
 

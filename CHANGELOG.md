@@ -9,6 +9,35 @@ methodology and documentation.
 
 ### Added
 
+- **SEO Growth Engine (`seo-growth`), under a new Growth menu.** A skill that
+  runs a website's search visibility as a long-term project, with the person
+  behind the site as a first-class target. Invoked as `/seo-growth <url>` or
+  with a command (`audit`, `improve`, `plan`, `keywords`, `competitors`,
+  `personal-brand`, `technical`, `content`, `page`, `backlinks`, `analytics`,
+  `review`, `status`, `experiment`), or in plain words. Each session reads the
+  site's records in `.seo-growth/<domain>/` (profile, strategy, a scored
+  backlog with a `Now` list of five, append-only history, dated baselines,
+  content inventory, keywords, competitors, personal brand, authority
+  opportunities, experiments, reviews), verifies issues, ranks the next action
+  with a published score, makes the safe changes in the site's own code,
+  validates them, and asks before publishing, redirects, robots, canonical or
+  sitemap changes, outreach or anything paid. Every claim is labelled
+  `VERIFIED`, `ESTIMATED`, `INFERRED`, `HYPOTHESIS`, `UNKNOWN` or `ASSUMED`;
+  search volumes, rankings, traffic and indexing status are never invented,
+  rankings never promised, and spam tactics declined even when asked.
+  Eighteen references, thirteen record templates, seven worked examples, and
+  two standard-library scripts with a self-check run by `validate.sh`:
+  `seo_audit.py` (page, crawl, sitemap and robots checks, RFC 9309 robots
+  matching, and `--map-origin` to check a local build against production
+  URLs) and `gsc_report.py` (Search Console exports: brand split, positions
+  8–20, low CTR against the site's own medians, period changes). Two fixtures
+  (`seo-growth/portfolio-site` with planted problems the crawler finds, and
+  `seo-growth/returning-site` with two sites' records from earlier sessions),
+  three activation cases (`sg-name-not-found`, `sg-pick-up-records`,
+  `quiet-homepage-typo`) and a quiet grader on every all-quiet case. The site
+  and README gain a **Growth** menu item and section, the skill gets its own
+  page (`docs/seo-growth.html`), and the pipeline menu gains stage 17, Search.
+
 - **Human Empathy (`human-empathy`), under a new Empathy menu.** A skill for
   how people experience what you make, applied equally to software products
   and books: journeys, forms, error and empty states, microcopy, trust and

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects | Noor Haldar</title>
+  <meta name="description" content="Open-source projects by Noor Haldar.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="canonical" href="https://noorhaldar.example/projects/pipeline-lint.html">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "pipeline-lint",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Linux, macOS, Windows",
+    "author": { "@type": "Person", "name": "Noor Haldar" },
+  }
+  </script>
+</head>
+<body>
+  <nav><a href="/">Home</a><a href="/projects/">Projects</a><a href="/blog/">Blog</a><a href="/about.html">About</a></nav>
+  <main>
+    <h1>pipeline-lint</h1>
+    <img src="/images/pipeline-lint-output.png" width="800" height="420">
+    <p>pipeline-lint reads your Airflow DAG files without running them and reports the
+       mistakes that usually surface in production: tasks with retries but no retry delay,
+       sensors in poke mode holding worker slots, missing <code>catchup=False</code>, and
+       start dates computed from <code>datetime.now()</code>.</p>
+    <pre><code>pip install pipeline-lint
+pipeline-lint dags/</code></pre>
+    <p>Source and issues: <a href="https://github.com/noorhaldar-example/pipeline-lint">github.com/noorhaldar-example/pipeline-lint</a>.</p>
+  </main>
+  <footer><p>© 2026 Noor H.</p></footer>
+</body>
+</html>

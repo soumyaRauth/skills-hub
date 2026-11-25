@@ -1,10 +1,10 @@
 {
   "name": "skills-hub",
   "displayName": "Skills Hub",
-  "description": "Engineering skills that engage on their own when they change the result, and stay quiet when they would not: impact mapping, outcome proof, production readiness, investigation, project direction, standards, localization, dependency and API-contract decisions, project-to-server deployment compatibility, system architecture design, project kickoff, delivery planning with any ticket tracker, release engineering, an observability baseline, a committed project knowledge base, and an empathy review of how people experience a product or a book, plus an opt-in pipeline that runs them in the order you pick and a delivery lead that works through a project's tickets.",
+  "description": "Engineering skills that engage on their own when they change the result, and stay quiet when they would not: impact mapping, outcome proof, production readiness, investigation, project direction, standards, localization, dependency and API-contract decisions, project-to-server deployment compatibility, system architecture design, project kickoff, delivery planning with any ticket tracker, release engineering, an observability baseline, a committed project knowledge base, an empathy review of how people experience a product or a book, and a long-running SEO engine for a site's search visibility and its owner's name, plus an opt-in pipeline that runs them in the order you pick and a delivery lead that works through a project's tickets.",
   "author": { "name": "Soumya Rauth" },
   "homepage": "https://soumyaRauth.github.io/skills-hub/",
   "repository": "https://github.com/soumyaRauth/skills-hub",
   "license": "MIT",
-  "keywords": ["engineering", "impact-analysis", "verification", "production-readiness", "standards", "localization", "deployment", "architecture"]
+  "keywords": ["engineering", "impact-analysis", "verification", "production-readiness", "standards", "localization", "deployment", "architecture", "seo"]
 }

@@ -439,6 +439,11 @@ elif python3 -B skills/delivery-planner/scripts/test_tracker.py >/dev/null 2>&1;
 else
   fail "skills/delivery-planner/scripts/test_tracker.py failed"
 fi
+if python3 -B skills/seo-growth/scripts/test_seo_scripts.py >/dev/null 2>&1; then
+  pass "seo-growth seo_audit.py and gsc_report.py self-check (local server, no network)"
+else
+  fail "skills/seo-growth/scripts/test_seo_scripts.py failed"
+fi
 
 head_ "Project knowledge MCP server, init and hook"
 if ! command -v node >/dev/null 2>&1 || ! command -v git >/dev/null 2>&1; then
