@@ -160,9 +160,31 @@ nav.links .navmenu-panel a:focus-visible { background: var(--surface); }
 .navmenu-panel strong { font-weight: 600; }
 .navmenu-panel span { color: var(--text-muted); font-size: 13px; line-height: 1.4; }
 
-/* On a phone the panel spans the header instead of hanging off the summary,
-   so it never runs past the screen edge. */
+/* On a phone the header stays one row: the links scroll sideways inside it,
+   with a fade at the right edge to show there are more. The menu panel spans
+   the header instead of hanging off its toggle, so it stays on screen; it is
+   positioned against the header row, so the scrolling strip does not clip it. */
 @media (max-width: 640px) {
+  header.site .wrap { position: relative; }
+  header.site .wrap::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 32px;
+    background: linear-gradient(to right, transparent, var(--bg));
+    pointer-events: none;
+  }
+  .brand { flex-shrink: 0; white-space: nowrap; }
+  nav.links {
+    min-width: 0;
+    gap: 18px;
+    /* room for focus outlines, and for the last link to clear the fade */
+    padding: 6px 20px 6px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav.links::-webkit-scrollbar { display: none; }
+  nav.links > a { white-space: nowrap; }
   .navmenu { position: static; }
   .navmenu-panel { top: calc(100% + 8px); left: 16px; right: 16px; width: auto; max-width: none; }
 }
