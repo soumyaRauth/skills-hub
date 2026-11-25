@@ -489,6 +489,16 @@ methodology and documentation.
 
 ### Fixed
 
+- **SEO Growth Engine: crawling a site whose home page is drawn by JavaScript.**
+  The first run on a live site exposed two `seo_audit.py crawl` bugs. Pages
+  reached only through the sitemap had their own links ignored, so a blog whose
+  posts link to each other was reported as orphans; they are now crawled like
+  any other page, and a new `unreachable-from-start` finding names pages no
+  chain of HTML links reaches from the start page. Filter URLs that name
+  another page on the same site as canonical were counted as duplicate titles;
+  they no longer are. `references/records.md` adds the case of a site whose
+  source is elsewhere on the machine: records go in that repository.
+
 - **Runway reported a 17-minute burst as "your pace over the last hour".**
   `burn_rate` divides the tokens in its window by the span from the *first
   call in that window* to now, so after an idle hour, twenty minutes of work
